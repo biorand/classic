@@ -327,9 +327,16 @@ namespace IntelOrca.Biohazard.BioRand
                     using (progress.BeginTask(config.Player, "Randomizing doors"))
                     {
                         graph = config.RandomDoors ?
-                        doorRando.CreateRandomGraph() :
-                        doorRando.CreateOriginalGraph();
+                            doorRando.CreateRandomGraph() :
+                            doorRando.CreateOriginalGraph();
                     }
+
+                    var sss = JsonSerializer.Serialize(map, new JsonSerializerOptions()
+                    {
+                        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
+                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                        WriteIndented = true
+                    });
                     try
                     {
                         using (progress.BeginTask(config.Player, "Randomizing items"))

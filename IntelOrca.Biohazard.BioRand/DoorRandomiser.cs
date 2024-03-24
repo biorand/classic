@@ -1091,6 +1091,25 @@ namespace IntelOrca.Biohazard.BioRand
                 node.Items = items.Where(x => x.Type != 0).ToArray();
             }
 
+            mapRoom.Items = items
+                .Select(x => new MapRoomItem()
+                {
+                    Nop = x.Raw?.Nop,
+                    Offsets = x.Raw?.Offsets,
+                    Id = x.Id,
+                    GlobalId = (short)(x.GlobalId ?? -1),
+                    Type = (byte)x.Type,
+                    Amount = (byte)x.Amount,
+                    Priority = x.Raw?.Priority,
+                    Requires = x.Raw?.Requires,
+                    RequiresRoom = x.Raw?.RequiresRoom,
+                    AllowDocuments = x.Raw?.AllowDocuments,
+                    DoorRando = x.Raw?.DoorRando,
+                    Player = x.Raw?.Player,
+                    Scenario = x.Raw?.Scenario
+                })
+                .ToArray();
+
             if (mapRoom.DoorRando != null)
             {
                 foreach (var spec in mapRoom.DoorRando)

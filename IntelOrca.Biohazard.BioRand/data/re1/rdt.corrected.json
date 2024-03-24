@@ -1,0 +1,7357 @@
+{
+  "beginEndRooms": [
+    {
+      "start": "106",
+      "end": "501"
+    }
+  ],
+  "rooms": {
+    "100": {
+      "linkedRoom": "600",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "101",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 4,
+          "globalId": 22,
+          "type": 51,
+          "amount": 3
+        },
+        {
+          "id": 6,
+          "globalId": 23,
+          "type": 0,
+          "amount": 1
+        },
+        {
+          "id": 7,
+          "globalId": 24,
+          "type": 0,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0,
+          "restricted": true,
+          "condition": "1:34",
+          "player": 1
+        }
+      ],
+      "doorRando": [
+        {
+          "category": "box",
+          "cutscene": false
+        }
+      ]
+    },
+    "101": {
+      "linkedRoom": "601",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "100",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "102",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requires": [
+            52
+          ]
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "103",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "201",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ],
+      "doorRando": [
+        {
+          "cutscene": true,
+          "player": 0
+        }
+      ]
+    },
+    "102": {
+      "linkedRoom": "602",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "101",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 48,
+          "type": 28,
+          "amount": 1
+        },
+        {
+          "id": 2,
+          "globalId": 49,
+          "type": 12,
+          "amount": 7
+        },
+        {
+          "id": 3,
+          "globalId": 50,
+          "type": 11,
+          "amount": 15
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "103": {
+      "linkedRoom": "603",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "101",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "104",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "10C",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "10D",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "10E",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requires": [
+            51
+          ]
+        }
+      ],
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "104": {
+      "linkedRoom": "604",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "103",
+          "lock": "side",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "105",
+          "randomize": false,
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "10F",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requires": [
+            51
+          ]
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "610",
+          "lock": "side",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 5,
+          "globalId": 41,
+          "type": 11,
+          "amount": 15
+        },
+        {
+          "id": 9,
+          "globalId": 47,
+          "type": 11,
+          "amount": 15
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            3,
+            4,
+            10
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "randomPlacements": false
+        }
+      ],
+      "npcs": []
+    },
+    "105": {
+      "linkedRoom": "605",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "104",
+          "randomize": false,
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "106",
+          "randomize": false,
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 3,
+          "globalId": 33,
+          "type": 53,
+          "amount": 1
+        },
+        {
+          "id": 4,
+          "globalId": 42,
+          "type": 31,
+          "amount": 1
+        },
+        {
+          "id": 5,
+          "globalId": 43,
+          "type": 0,
+          "amount": 1
+        },
+        {
+          "id": 18,
+          "globalId": 44,
+          "type": 33,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "player": 0
+        }
+      ],
+      "npcs": [
+        {
+          "includeOffsets": [
+            164604,
+            164650,
+            164674
+          ],
+          "cutscene": 0
+        },
+        {
+          "includeOffsets": [
+            164772
+          ],
+          "includeTypes": [
+            32,
+            33,
+            34,
+            35,
+            36
+          ],
+          "cutscene": 1
+        }
+      ]
+    },
+    "106": {
+      "linkedRoom": "606",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "105",
+          "randomize": false,
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "107",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "111",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requires": [
+            52
+          ]
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "203",
+          "randomize": false,
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": true,
+          "texture": 3,
+          "special": 6,
+          "id": 3,
+          "entrance": {
+            "x": 17200,
+            "y": 0,
+            "z": 3000,
+            "d": -1024,
+            "floor": 0,
+            "cut": 0
+          },
+          "target": "100",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "doorRando": true
+        }
+      ],
+      "items": [
+        {
+          "id": 5,
+          "globalId": 52,
+          "type": 47,
+          "amount": 3
+        },
+        {
+          "id": 6,
+          "globalId": 26,
+          "type": 2,
+          "amount": 15
+        }
+      ],
+      "enemies": [
+        {
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "condition": "!1:0 \u0026\u0026 !1:2 \u0026\u0026 !1:3",
+          "player": 0
+        },
+        {
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "condition": "!1:5 \u0026\u0026 !7:13",
+          "player": 1
+        }
+      ],
+      "npcs": [
+        {
+          "player": 0,
+          "cutscene": 0
+        },
+        {
+          "player": 0,
+          "cutscene": 1
+        },
+        {
+          "includeOffsets": [
+            196006,
+            196028
+          ],
+          "excludeTypes": [
+            39,
+            40
+          ],
+          "player": 1,
+          "cutscene": 0
+        },
+        {
+          "includeOffsets": [
+            195950
+          ],
+          "excludeTypes": [
+            39,
+            40
+          ],
+          "player": 1,
+          "cutscene": 1
+        },
+        {
+          "includeOffsets": [
+            195772,
+            195858
+          ],
+          "excludeTypes": [
+            39,
+            40
+          ],
+          "player": 1,
+          "cutscene": 2
+        },
+        {
+          "includeOffsets": [
+            195696
+          ],
+          "excludeTypes": [
+            39,
+            40
+          ],
+          "player": 1,
+          "cutscene": 3
+        }
+      ]
+    },
+    "107": {
+      "linkedRoom": "607",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "106",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "108",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requires": [
+            51
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": 2,
+          "globalId": 145,
+          "type": 0,
+          "amount": 1
+        },
+        {
+          "id": 131,
+          "globalId": 39,
+          "type": 47,
+          "amount": 3
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "108": {
+      "linkedRoom": "608",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "107",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "109",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 3,
+          "globalId": 19,
+          "type": 11,
+          "amount": 15
+        }
+      ],
+      "enemies": [
+        {
+          "nop": [
+            "0x19754-0x197EE"
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1
+        }
+      ]
+    },
+    "109": {
+      "linkedRoom": "609",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "108",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "10A",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "114",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requires": [
+            52
+          ]
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "113",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "115",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 5,
+          "globalId": 111,
+          "type": 68,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4,
+            12
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0,
+          "player": 0
+        },
+        {
+          "excludeTypes": [
+            4,
+            12
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0,
+          "condition": "!(!1:32 \u0026\u0026 1:33)",
+          "player": 1
+        }
+      ]
+    },
+    "10A": {
+      "linkedRoom": "60A",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "109",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "10B",
+          "lock": "side",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "117",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "619",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requires": [
+            54
+          ]
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "11A",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1
+        }
+      ]
+    },
+    "10B": {
+      "linkedRoom": "60B",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "10A",
+          "lock": "side",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "118",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "207",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 4,
+          "globalId": 110,
+          "type": 68,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1
+        }
+      ]
+    },
+    "10C": {
+      "linkedRoom": "60C",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "103",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 4,
+          "globalId": 27,
+          "type": 52,
+          "amount": 6
+        },
+        {
+          "id": 5,
+          "globalId": 103,
+          "type": 67,
+          "amount": 1
+        },
+        {
+          "id": 6,
+          "globalId": 243,
+          "type": 67,
+          "amount": 1
+        },
+        {
+          "id": 7,
+          "globalId": 132,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 8,
+          "globalId": 242,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 9,
+          "globalId": 244,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 10,
+          "globalId": 245,
+          "type": 68,
+          "amount": 1
+        }
+      ],
+      "enemies": []
+    },
+    "10D": {
+      "linkedRoom": "60D",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "103",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 131,
+          "globalId": 174,
+          "type": 41,
+          "amount": 1
+        },
+        {
+          "id": 4,
+          "globalId": 175,
+          "type": 5,
+          "amount": 6
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4,
+            12
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "10E": {
+      "linkedRoom": "60E",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "103",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 146,
+          "type": 11,
+          "amount": 15
+        },
+        {
+          "id": 2,
+          "globalId": 5,
+          "type": 12,
+          "amount": 7
+        },
+        {
+          "id": 3,
+          "globalId": 4,
+          "type": 0,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            2,
+            4,
+            10
+          ],
+          "keepState": true,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "10F": {
+      "linkedRoom": "60F",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "104",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 3,
+          "globalId": 20,
+          "type": 0,
+          "amount": 1
+        },
+        {
+          "id": 4,
+          "globalId": 21,
+          "type": 32,
+          "amount": 1
+        },
+        {
+          "id": 5,
+          "globalId": 7,
+          "type": 35,
+          "amount": 0
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            3,
+            4,
+            7,
+            10
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1,
+          "player": 1
+        }
+      ],
+      "npcs": [
+        {
+          "includeTypes": [
+            35
+          ],
+          "player": 0,
+          "cutscene": 0
+        }
+      ]
+    },
+    "110": {
+      "items": [],
+      "enemies": []
+    },
+    "111": {
+      "linkedRoom": "611",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "106",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "112",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 3,
+          "globalId": 2,
+          "type": 12,
+          "amount": 7
+        },
+        {
+          "id": 4,
+          "globalId": 96,
+          "type": 11,
+          "amount": 15
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1
+        }
+      ]
+    },
+    "112": {
+      "linkedRoom": "612",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "111",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "11C",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requires": [
+            56
+          ],
+          "doorRando": true
+        }
+      ],
+      "items": [
+        {
+          "id": 2,
+          "globalId": 142,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 3,
+          "globalId": 143,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 4,
+          "globalId": 212,
+          "type": 47,
+          "amount": 3
+        }
+      ],
+      "enemies": [
+        {
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1
+        }
+      ],
+      "doorRando": [
+        {
+          "nop": [
+            "0x17864-0x17866",
+            "0x17884-0x17886"
+          ],
+          "cutscene": false
+        }
+      ]
+    },
+    "113": {
+      "linkedRoom": "613",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "109",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 3,
+          "type": 61,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "114": {
+      "linkedRoom": "614",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "109",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 10,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 2,
+          "globalId": 221,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 3,
+          "globalId": 222,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 4,
+          "globalId": 223,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 5,
+          "globalId": 224,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 6,
+          "globalId": 225,
+          "type": 68,
+          "amount": 1
+        }
+      ],
+      "enemies": []
+    },
+    "115": {
+      "linkedRoom": "615",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "109",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "116",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0,
+          "condition": "!(7:0 \u0026\u0026 7:1 \u0026\u0026 1:32)",
+          "player": 0
+        },
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0,
+          "condition": "!(7:0 \u0026\u0026 7:1)",
+          "player": 1
+        }
+      ]
+    },
+    "116": {
+      "linkedRoom": "616",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "115",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 0,
+          "type": 3,
+          "amount": 7
+        },
+        {
+          "id": 2,
+          "globalId": 1,
+          "type": 0,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1
+        }
+      ]
+    },
+    "117": {
+      "linkedRoom": "617",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "10A",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 9,
+          "globalId": 31,
+          "type": 45,
+          "amount": 1
+        }
+      ],
+      "enemies": []
+    },
+    "118": {
+      "linkedRoom": "618",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "10B",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 13,
+          "type": 38,
+          "amount": 1
+        },
+        {
+          "id": 2,
+          "globalId": -1,
+          "type": 65,
+          "amount": 1,
+          "priority": "low"
+        },
+        {
+          "id": 4,
+          "globalId": -1,
+          "type": 12,
+          "amount": 7,
+          "priority": "low"
+        },
+        {
+          "id": 5,
+          "globalId": -1,
+          "type": 11,
+          "amount": 15,
+          "priority": "low"
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4,
+            12
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0,
+          "restricted": true
+        }
+      ],
+      "doorRando": [
+        {
+          "category": "box",
+          "cutscene": false
+        }
+      ]
+    },
+    "119": {
+      "items": [
+        {
+          "id": 1,
+          "globalId": 67,
+          "type": 64,
+          "amount": 0
+        },
+        {
+          "id": 4,
+          "globalId": 101,
+          "type": 14,
+          "amount": 6
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4,
+            12
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "11A": {
+      "linkedRoom": "61A",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "10A",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "11B",
+          "noReturn": false,
+          "noUnlock": true,
+          "isBridgeEdge": false,
+          "requires": [
+            41,
+            44,
+            45,
+            46
+          ]
+        }
+      ],
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1
+        }
+      ],
+      "doorRando": [
+        {
+          "category": "bridge",
+          "cutscene": false
+        }
+      ]
+    },
+    "11B": {
+      "linkedRoom": "61B",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "11A",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "300",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 2,
+          "globalId": 34,
+          "type": 61,
+          "amount": 1
+        },
+        {
+          "id": 3,
+          "globalId": 35,
+          "type": 29,
+          "amount": 0
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1
+        }
+      ]
+    },
+    "11C": {
+      "linkedRoom": "61C",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "112",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [],
+      "doorRando": [
+        {
+          "category": "exclude",
+          "cutscene": false
+        }
+      ]
+    },
+    "201": {
+      "linkedRoom": "701",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "101",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "202",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "714",
+          "lock": "side",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "715",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requires": [
+            54
+          ]
+        }
+      ],
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1
+        }
+      ]
+    },
+    "202": {
+      "linkedRoom": "702",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "201",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "203",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "203": {
+      "linkedRoom": "703",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "106",
+          "randomize": false,
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "202",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "204",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "211",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [],
+      "enemies": [],
+      "npcs": [
+        {
+          "player": 1,
+          "cutscene": 0,
+          "use": "106;0x2FC70"
+        }
+      ],
+      "doorRando": [
+        {
+          "nop": [
+            "0x23698-0x236EA"
+          ],
+          "cutscene": false,
+          "player": 1
+        }
+      ]
+    },
+    "204": {
+      "linkedRoom": "704",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "203",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "205",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requires": [
+            52
+          ]
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "206",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "207",
+          "lock": "side",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "20D",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requires": [
+            52
+          ]
+        }
+      ],
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "205": {
+      "linkedRoom": "705",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "204",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 9,
+          "globalId": 36,
+          "type": 46,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            2,
+            3,
+            4,
+            10
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1
+        }
+      ]
+    },
+    "206": {
+      "linkedRoom": "706",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "204",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "207",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "doorRando": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "entrance": {
+            "x": 9180,
+            "y": 0,
+            "z": 11280,
+            "d": 2048,
+            "floor": 0,
+            "cut": 3
+          },
+          "target": "207",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "doorRando": true
+        }
+      ],
+      "items": [
+        {
+          "id": 2,
+          "globalId": 247,
+          "type": 110,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1
+        }
+      ]
+    },
+    "207": {
+      "linkedRoom": "707",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "10B",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "204",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "208",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requires": [
+            52
+          ]
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "20B",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": true,
+          "texture": 0,
+          "id": 4,
+          "target": "206",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "doorRando": true
+        }
+      ],
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "208": {
+      "linkedRoom": "708",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "207",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "209",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "20A",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            2
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "randomPlacements": false
+        }
+      ]
+    },
+    "209": {
+      "linkedRoom": "709",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "208",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 37,
+          "type": 48,
+          "amount": 0
+        },
+        {
+          "id": 2,
+          "globalId": 38,
+          "type": 12,
+          "amount": 7
+        },
+        {
+          "id": 3,
+          "globalId": 211,
+          "type": 67,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "20A": {
+      "linkedRoom": "70A",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "208",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 7,
+          "globalId": 15,
+          "type": 12,
+          "amount": 7
+        },
+        {
+          "id": 8,
+          "globalId": 16,
+          "type": 0,
+          "amount": 1
+        },
+        {
+          "id": 9,
+          "globalId": 184,
+          "type": 47,
+          "amount": 3
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            3,
+            4,
+            7,
+            10
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0,
+          "player": 0
+        },
+        {
+          "excludeTypes": [
+            3,
+            4,
+            7,
+            10
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0,
+          "condition": "!(1:8 \u0026\u0026 1:98 \u0026\u0026 1:7)",
+          "player": 1
+        }
+      ],
+      "doorRando": [
+        {
+          "cutscene": true,
+          "player": 1
+        }
+      ]
+    },
+    "20B": {
+      "linkedRoom": "70B",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "207",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "70C",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requires": [
+            54
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": 3,
+          "globalId": 162,
+          "type": 68,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1
+        }
+      ]
+    },
+    "20C": {
+      "items": [],
+      "enemies": [
+        {
+          "includeTypes": [
+            11,
+            12,
+            18
+          ],
+          "keepState": true,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": true
+        }
+      ],
+      "npcs": [
+        {
+          "player": 1,
+          "cutscene": 0
+        }
+      ]
+    },
+    "20D": {
+      "linkedRoom": "70D",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "204",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "20E",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 2,
+          "globalId": 40,
+          "type": 11,
+          "amount": 15
+        },
+        {
+          "id": 3,
+          "globalId": 197,
+          "type": 68,
+          "amount": 1
+        }
+      ],
+      "enemies": [],
+      "npcs": [
+        {
+          "includeOffsets": [
+            168024,
+            168170,
+            168194
+          ],
+          "includeTypes": [
+            40,
+            42
+          ],
+          "player": 0,
+          "cutscene": 0
+        },
+        {
+          "includeOffsets": [
+            168034,
+            168098,
+            168126
+          ],
+          "includeTypes": [
+            40,
+            42
+          ],
+          "player": 1,
+          "cutscene": 0
+        }
+      ],
+      "doorRando": [
+        {
+          "category": "exclude",
+          "cutscene": false
+        }
+      ]
+    },
+    "20E": {
+      "linkedRoom": "70E",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "20D",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "20F",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "210",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requires": [
+            53
+          ]
+        }
+      ],
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4,
+            11
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0,
+          "condition": "1:67"
+        }
+      ]
+    },
+    "20F": {
+      "linkedRoom": "70F",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "20E",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 3,
+          "globalId": 11,
+          "type": 11,
+          "amount": 15
+        },
+        {
+          "id": 4,
+          "globalId": 12,
+          "type": 12,
+          "amount": 7
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "210": {
+      "linkedRoom": "710",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "20E",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 129,
+          "type": 44,
+          "amount": 1
+        },
+        {
+          "id": 2,
+          "globalId": 130,
+          "type": 12,
+          "amount": 7
+        }
+      ],
+      "enemies": [
+        {
+          "includeTypes": [
+            4,
+            11,
+            12,
+            13
+          ],
+          "keepState": true,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": true
+        }
+      ]
+    },
+    "211": {
+      "linkedRoom": "711",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "203",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "212",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 5,
+          "globalId": 149,
+          "type": 61,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4,
+            12
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "212": {
+      "linkedRoom": "712",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "211",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 6,
+          "type": 11,
+          "amount": 15
+        }
+      ],
+      "enemies": [],
+      "npcs": [
+        {
+          "includeOffsets": [
+            149348
+          ],
+          "excludeTypes": [
+            39
+          ],
+          "player": 1,
+          "cutscene": 0
+        }
+      ],
+      "doorRando": [
+        {
+          "nop": [
+            "0x2474E-0x2475A"
+          ],
+          "cutscene": true,
+          "player": 1
+        }
+      ]
+    },
+    "213": {
+      "items": [
+        {
+          "id": 4,
+          "globalId": 161,
+          "type": 68,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "214": {
+      "items": [
+        {
+          "id": 2,
+          "globalId": 169,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 3,
+          "globalId": 170,
+          "type": 69,
+          "amount": 1
+        },
+        {
+          "id": 4,
+          "globalId": 171,
+          "type": 68,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "215": {
+      "items": [
+        {
+          "id": 3,
+          "globalId": 29,
+          "type": 12,
+          "amount": 7
+        },
+        {
+          "id": 4,
+          "globalId": 116,
+          "type": 98,
+          "amount": 0
+        },
+        {
+          "id": 5,
+          "globalId": 30,
+          "type": 34,
+          "amount": 1
+        },
+        {
+          "id": 6,
+          "globalId": 200,
+          "type": 14,
+          "amount": 6
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "216": {
+      "items": [
+        {
+          "id": 3,
+          "globalId": 84,
+          "type": 102,
+          "amount": 1
+        },
+        {
+          "id": 4,
+          "globalId": 121,
+          "type": 14,
+          "amount": 6
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "217": {
+      "items": [
+        {
+          "id": 5,
+          "globalId": 77,
+          "type": 40,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "218": {
+      "items": [
+        {
+          "id": 2,
+          "globalId": 199,
+          "type": 11,
+          "amount": 15
+        },
+        {
+          "id": 3,
+          "globalId": 91,
+          "type": 47,
+          "amount": 3
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1
+        }
+      ]
+    },
+    "219": {
+      "items": [
+        {
+          "id": 1,
+          "globalId": 55,
+          "type": 12,
+          "amount": 7
+        },
+        {
+          "id": 2,
+          "globalId": 56,
+          "type": 12,
+          "amount": 7
+        },
+        {
+          "id": 3,
+          "globalId": 57,
+          "type": 39,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "21A": {
+      "items": [
+        {
+          "id": 3,
+          "globalId": 219,
+          "type": 12,
+          "amount": 7
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "21B": {
+      "items": [
+        {
+          "id": 2,
+          "globalId": 93,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 3,
+          "globalId": 213,
+          "type": 68,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "21C": {
+      "items": [
+        {
+          "id": 10,
+          "globalId": 228,
+          "type": 61,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "randomPlacements": false
+        },
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": true,
+          "ignoreRatio": false,
+          "randomPlacements": true
+        }
+      ]
+    },
+    "300": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "11B",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "301",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "302",
+          "randomize": false,
+          "lock": "gate",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 4,
+          "globalId": 79,
+          "type": 0,
+          "amount": 1
+        },
+        {
+          "id": 6,
+          "globalId": 185,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 7,
+          "globalId": 186,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 8,
+          "globalId": 187,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 9,
+          "globalId": 188,
+          "type": 67,
+          "amount": 1
+        },
+        {
+          "id": 10,
+          "globalId": 189,
+          "type": 67,
+          "amount": 1
+        },
+        {
+          "id": 11,
+          "globalId": 191,
+          "type": 69,
+          "amount": 1
+        },
+        {
+          "id": 12,
+          "globalId": 192,
+          "type": 69,
+          "amount": 1
+        }
+      ]
+    },
+    "301": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "300",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "302",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requires": [
+            29
+          ]
+        }
+      ],
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            3,
+            4,
+            7,
+            10
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "randomPlacements": true
+        }
+      ],
+      "doorRando": [
+        {
+          "category": "exclude",
+          "cutscene": false
+        }
+      ]
+    },
+    "302": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "300",
+          "randomize": false,
+          "lock": "unblock",
+          "noReturn": false,
+          "noUnlock": true,
+          "isBridgeEdge": false,
+          "requires": [
+            39
+          ]
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "301",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "304",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "307",
+          "noReturn": false,
+          "noUnlock": true,
+          "isBridgeEdge": false,
+          "requires": [
+            39
+          ]
+        }
+      ],
+      "items": [],
+      "doorRando": [
+        {
+          "nop": [
+            "0x192C4",
+            "0x192D0",
+            "0x192DC",
+            "0x1944A",
+            "0x19450"
+          ],
+          "cutscene": false
+        }
+      ]
+    },
+    "303": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "500",
+          "lock": "always",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 71,
+          "type": 0,
+          "amount": 4
+        },
+        {
+          "id": 2,
+          "globalId": 73,
+          "type": 0,
+          "amount": 1
+        }
+      ],
+      "enemies": [],
+      "doorRando": [
+        {
+          "category": "exclude",
+          "cutscene": false
+        }
+      ]
+    },
+    "304": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "302",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "400",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 3,
+          "globalId": 193,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 4,
+          "globalId": 194,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 5,
+          "globalId": 195,
+          "type": 69,
+          "amount": 1
+        },
+        {
+          "id": 6,
+          "globalId": 196,
+          "type": 69,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "305": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "30F",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "310",
+          "randomize": false,
+          "noReturn": true,
+          "noUnlock": true,
+          "isBridgeEdge": false,
+          "requires": [
+            63,
+            64
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": 15,
+          "globalId": 203,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 16,
+          "globalId": 204,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 17,
+          "globalId": 205,
+          "type": 69,
+          "amount": 1
+        },
+        {
+          "id": 18,
+          "globalId": 206,
+          "type": 69,
+          "amount": 1
+        }
+      ],
+      "doorRando": [
+        {
+          "category": "bridge",
+          "nop": [
+            "0x3EEEC",
+            "0x3EEF8"
+          ],
+          "cutscene": false
+        }
+      ]
+    },
+    "306": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "30F",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 6,
+          "globalId": 119,
+          "type": 63,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            3,
+            4,
+            7,
+            10
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1
+        }
+      ]
+    },
+    "307": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "302",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "doorRando": true
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "308",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "30B",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requires": [
+            30
+          ]
+        }
+      ],
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            3,
+            4,
+            7,
+            10
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "player": 0
+        },
+        {
+          "excludeTypes": [
+            3,
+            4,
+            7,
+            10
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "condition": "!(!1:92 \u0026\u0026 !1:72)",
+          "player": 1
+        }
+      ],
+      "npcs": [
+        {
+          "includeTypes": [
+            42
+          ],
+          "player": 1,
+          "cutscene": 0
+        }
+      ]
+    },
+    "308": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "307",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "id": 1,
+          "target": "309:0",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "id": 2,
+          "target": "309:1",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 3,
+          "globalId": 154,
+          "type": 6,
+          "amount": 240
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "player": 0
+        }
+      ],
+      "doorRando": [
+        {
+          "nop": [
+            "0x1AFD8-0x1B074"
+          ],
+          "cutscene": false,
+          "player": 1
+        }
+      ]
+    },
+    "309": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "id": 0,
+          "target": "308:1",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "id": 1,
+          "target": "308:2",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "id": 2,
+          "target": "30A",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 132,
+          "globalId": 202,
+          "type": 12,
+          "amount": 7
+        },
+        {
+          "id": 133,
+          "globalId": 248,
+          "type": 65,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "player": 0
+        }
+      ],
+      "npcs": [
+        {
+          "includeTypes": [
+            45
+          ],
+          "player": 1,
+          "cutscene": 0
+        }
+      ]
+    },
+    "30A": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "309",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 252,
+          "type": 11,
+          "amount": 15
+        },
+        {
+          "id": 137,
+          "globalId": 46,
+          "type": 30,
+          "amount": 0
+        }
+      ],
+      "enemies": [],
+      "npcs": [
+        {
+          "includeTypes": [
+            40
+          ],
+          "player": 0,
+          "cutscene": 0
+        },
+        {
+          "includeOffsets": [
+            43940
+          ],
+          "includeTypes": [
+            40
+          ],
+          "player": 1,
+          "cutscene": 0
+        },
+        {
+          "includeOffsets": [
+            43940
+          ],
+          "includeTypes": [
+            40
+          ],
+          "player": 1,
+          "cutscene": 1
+        },
+        {
+          "includeOffsets": [
+            43814,
+            43868
+          ],
+          "player": 1,
+          "cutscene": 1
+        }
+      ]
+    },
+    "30B": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "307",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "30C",
+          "lock": "unblock",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 2,
+          "globalId": 125,
+          "type": 14,
+          "amount": 6
+        },
+        {
+          "id": 3,
+          "globalId": 153,
+          "type": 6,
+          "amount": 240
+        }
+      ],
+      "enemies": []
+    },
+    "30C": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "30B",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "30D",
+          "lock": "unblock",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 2,
+          "globalId": 246,
+          "type": 1,
+          "amount": 1
+        },
+        {
+          "id": 3,
+          "globalId": 250,
+          "type": 47,
+          "amount": 3
+        }
+      ]
+    },
+    "30D": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "30C",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "30E",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "30F",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requires": [
+            6
+          ],
+          "player": 0
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "30F",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "player": 1
+        }
+      ],
+      "items": [
+        {
+          "id": 3,
+          "globalId": 172,
+          "type": 0,
+          "amount": 240
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "randomPlacements": true
+        }
+      ]
+    },
+    "30E": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "30D",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 3,
+          "globalId": 236,
+          "type": 69,
+          "amount": 1
+        },
+        {
+          "id": 4,
+          "globalId": 239,
+          "type": 65,
+          "amount": 1
+        },
+        {
+          "id": 5,
+          "globalId": 240,
+          "type": 47,
+          "amount": 3
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0,
+          "restricted": true
+        }
+      ],
+      "doorRando": [
+        {
+          "category": "box",
+          "cutscene": false
+        }
+      ]
+    },
+    "30F": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "305",
+          "noReturn": false,
+          "noUnlock": true,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "306",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requires": [
+            30
+          ]
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "30D",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 4,
+          "globalId": 118,
+          "type": 0,
+          "amount": 1
+        },
+        {
+          "id": 5,
+          "globalId": 251,
+          "type": 40,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            3,
+            4,
+            7,
+            10
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "310": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "305",
+          "randomize": false,
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "500",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": []
+    },
+    "400": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "304",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "401",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "403",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "404",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "405",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 5,
+          "globalId": 157,
+          "type": 69,
+          "amount": 1
+        },
+        {
+          "id": 7,
+          "globalId": 209,
+          "type": 69,
+          "amount": 1
+        },
+        {
+          "id": 8,
+          "globalId": 210,
+          "type": 69,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "randomPlacements": true
+        }
+      ]
+    },
+    "401": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "400",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "402",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 2,
+          "globalId": 99,
+          "type": 62,
+          "amount": 1
+        },
+        {
+          "id": 3,
+          "globalId": 100,
+          "type": 61,
+          "amount": 1
+        },
+        {
+          "id": 4,
+          "globalId": 165,
+          "type": 12,
+          "amount": 7
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1,
+          "randomPlacements": true
+        }
+      ]
+    },
+    "402": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "401",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 156,
+          "type": 59,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0,
+          "randomPlacements": true
+        }
+      ]
+    },
+    "403": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "400",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 3,
+          "globalId": 167,
+          "type": 16,
+          "amount": 6
+        },
+        {
+          "id": 4,
+          "globalId": 180,
+          "type": 65,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1,
+          "restricted": true
+        }
+      ],
+      "doorRando": [
+        {
+          "category": "box",
+          "cutscene": false
+        }
+      ]
+    },
+    "404": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "400",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 127,
+          "type": 11,
+          "amount": 15
+        },
+        {
+          "id": 8,
+          "globalId": 182,
+          "type": 47,
+          "amount": 3
+        }
+      ],
+      "enemies": [
+        {
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "randomPlacements": true
+        }
+      ],
+      "doorRando": [
+        {
+          "cutscene": true,
+          "player": 0
+        }
+      ]
+    },
+    "405": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "400",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "406",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requires": [
+            57
+          ]
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "408",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 3,
+          "globalId": 106,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 4,
+          "globalId": 107,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 5,
+          "globalId": 108,
+          "type": 68,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeOffsets": [
+            103644,
+            103666,
+            103688
+          ],
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "condition": "!(1:171 \u0026\u0026 !0:0)",
+          "player": 0
+        },
+        {
+          "excludeOffsets": [
+            103668,
+            103690,
+            103712
+          ],
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "condition": "!(1:175 \u0026\u0026 !0:0)",
+          "player": 1
+        }
+      ],
+      "npcs": [
+        {
+          "includeTypes": [
+            32,
+            33,
+            34,
+            35,
+            36
+          ],
+          "cutscene": 0
+        }
+      ]
+    },
+    "406": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "405",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "407",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "40D",
+          "lock": "unblock",
+          "noReturn": false,
+          "noUnlock": true,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 6,
+          "globalId": 25,
+          "type": 12,
+          "amount": 7
+        },
+        {
+          "id": 7,
+          "globalId": 134,
+          "type": 100,
+          "amount": 1
+        },
+        {
+          "id": 8,
+          "globalId": 135,
+          "type": 0,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1,
+          "player": 0
+        },
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1,
+          "condition": "!(1:178 \u0026\u0026 !1:174 \u0026\u0026 1:176 \u0026\u0026 1:177)",
+          "player": 1
+        }
+      ]
+    },
+    "407": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "406",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 109,
+          "type": 11,
+          "amount": 15
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "408": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "405",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "409",
+          "lock": "unblock",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "40A",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requires": [
+            58
+          ]
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "40C",
+          "lock": "always",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 5,
+          "globalId": 72,
+          "type": 57,
+          "amount": 1
+        },
+        {
+          "id": 6,
+          "globalId": 8,
+          "type": 0,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "condition": "!(!0:0 \u0026\u0026 1:61 \u0026\u0026 1:170)",
+          "randomPlacements": true,
+          "player": 0
+        },
+        {
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "randomPlacements": true,
+          "player": 1
+        }
+      ],
+      "npcs": [
+        {
+          "excludeTypes": [
+            39
+          ],
+          "cutscene": 0
+        }
+      ],
+      "doorRando": [
+        {
+          "nop": [
+            199372,
+            199374,
+            199404,
+            199406
+          ],
+          "cutscene": false
+        }
+      ]
+    },
+    "409": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "408",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 60,
+          "type": 0,
+          "amount": 1
+        },
+        {
+          "id": 2,
+          "globalId": 61,
+          "type": 0,
+          "amount": 1
+        },
+        {
+          "id": 3,
+          "globalId": 62,
+          "type": 0,
+          "amount": 1
+        },
+        {
+          "id": 4,
+          "globalId": 63,
+          "type": 0,
+          "amount": 1
+        },
+        {
+          "id": 5,
+          "globalId": 64,
+          "type": 0,
+          "amount": 1
+        },
+        {
+          "id": 6,
+          "globalId": 65,
+          "type": 0,
+          "amount": 1
+        },
+        {
+          "id": 7,
+          "globalId": 66,
+          "type": 0,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0,
+          "player": 0
+        },
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0,
+          "player": 1
+        }
+      ],
+      "doorRando": [
+        {
+          "category": "exclude",
+          "cutscene": false,
+          "player": 0
+        }
+      ]
+    },
+    "40A": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "408",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "40B",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "40C",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requires": [
+            62
+          ],
+          "doorRando": false
+        }
+      ],
+      "items": [
+        {
+          "id": 3,
+          "globalId": 78,
+          "type": 0,
+          "amount": 1
+        },
+        {
+          "id": 4,
+          "globalId": 255,
+          "type": 0,
+          "amount": 1
+        },
+        {
+          "id": 8,
+          "globalId": 120,
+          "type": 47,
+          "amount": 3
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "40B": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "40A",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 168,
+          "type": 11,
+          "amount": 15
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "40C": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "40A",
+          "lock": "always",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "408",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 3,
+          "globalId": 88,
+          "type": 54,
+          "amount": 3
+        }
+      ],
+      "npcs": [
+        {
+          "player": 0,
+          "cutscene": 0
+        },
+        {
+          "player": 1,
+          "cutscene": 0
+        }
+      ],
+      "doorRando": [
+        {
+          "category": "exclude",
+          "cutscene": false
+        }
+      ]
+    },
+    "40D": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "406",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "40E",
+          "lock": "unblock",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 6,
+          "globalId": 158,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 7,
+          "globalId": 159,
+          "type": 68,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "40E": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "40D",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "40F",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "410",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requiresRoom": [
+            "411"
+          ]
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "411",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requires": [
+            59
+          ]
+        }
+      ],
+      "items": []
+    },
+    "40F": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "40E",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 105,
+          "type": 61,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            3,
+            4,
+            7,
+            10
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "410": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "40E",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 122,
+          "type": 12,
+          "amount": 7
+        },
+        {
+          "id": 2,
+          "globalId": 131,
+          "type": 12,
+          "amount": 7
+        },
+        {
+          "id": 131,
+          "globalId": 112,
+          "type": 11,
+          "amount": 15
+        },
+        {
+          "id": 132,
+          "globalId": 92,
+          "type": 11,
+          "amount": 15
+        },
+        {
+          "id": 5,
+          "globalId": 114,
+          "type": 58,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "411": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "40E",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4,
+            12
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1
+        }
+      ]
+    },
+    "500": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "310",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "501",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requires": [
+            55
+          ],
+          "requiresRoom": [
+            "505",
+            "513"
+          ]
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "502",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "condition": "!(!0:55 \u0026\u0026 !1:75)",
+          "player": 0
+        },
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "condition": "0:55",
+          "player": 1
+        }
+      ],
+      "doorRando": [
+        {
+          "nop": [
+            "0xCF1A-0xCF5E"
+          ],
+          "cutscene": false,
+          "player": 0
+        },
+        {
+          "nop": [
+            "0xCF1A-0xCF90"
+          ],
+          "cutscene": false,
+          "player": 1
+        }
+      ]
+    },
+    "501": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "500",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "50D",
+          "randomize": false,
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requires": [
+            39
+          ]
+        }
+      ],
+      "items": [
+        {
+          "id": 2,
+          "globalId": 69,
+          "type": 39,
+          "amount": 1
+        },
+        {
+          "id": 3,
+          "globalId": 70,
+          "type": 39,
+          "amount": 1
+        }
+      ]
+    },
+    "502": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "500",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "player": 0
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "500",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "doorRando": false,
+          "player": 1
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "500",
+          "lock": "unblock",
+          "noReturn": false,
+          "noUnlock": true,
+          "isBridgeEdge": false,
+          "doorRando": true,
+          "player": 1
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "503",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1,
+          "restricted": true,
+          "condition": "1:75",
+          "player": 0
+        }
+      ],
+      "npcs": [
+        {
+          "excludeTypes": [
+            39
+          ],
+          "player": 0,
+          "cutscene": 0
+        },
+        {
+          "includeOffsets": [
+            18776
+          ],
+          "includeTypes": [
+            42
+          ],
+          "player": 1,
+          "cutscene": 0
+        },
+        {
+          "includeOffsets": [
+            18798
+          ],
+          "excludeTypes": [
+            39
+          ],
+          "player": 1,
+          "cutscene": 1
+        }
+      ],
+      "doorRando": [
+        {
+          "category": "box",
+          "nop": [
+            "0x4934-0x4964",
+            "0x4970-0x497A"
+          ],
+          "cutscene": false,
+          "player": 0
+        },
+        {
+          "category": "box",
+          "nop": [
+            "0x498E-0x499C",
+            "0x49A8",
+            "0x4A00"
+          ],
+          "cutscene": true,
+          "player": 1
+        }
+      ]
+    },
+    "503": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "502",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "504",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requiresRoom": [
+            "506"
+          ]
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "505",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 3,
+          "globalId": 176,
+          "type": 40,
+          "amount": 1
+        },
+        {
+          "id": 4,
+          "globalId": 177,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 5,
+          "globalId": 178,
+          "type": 68,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "504": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "503",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 137,
+          "type": 60,
+          "amount": 1
+        },
+        {
+          "id": 2,
+          "globalId": 136,
+          "type": 103,
+          "amount": 0
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "505": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "503",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "506",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "507",
+          "lock": "side",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "508",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "50C",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requires": [
+            60
+          ]
+        }
+      ],
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "506": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "505",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 2,
+          "globalId": 179,
+          "type": 43,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1
+        }
+      ]
+    },
+    "507": {
+      "requires": [
+        40
+      ],
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "505",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "doorRando": true
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "50C",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "doorRando": false
+        }
+      ],
+      "items": [
+        {
+          "id": 2,
+          "globalId": 123,
+          "type": 67,
+          "amount": 1
+        },
+        {
+          "id": 3,
+          "globalId": 148,
+          "type": 14,
+          "amount": 6
+        },
+        {
+          "id": 14,
+          "globalId": 98,
+          "type": 0,
+          "amount": 1
+        },
+        {
+          "id": 15,
+          "globalId": 124,
+          "type": 12,
+          "amount": 7
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "508": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "505",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "509",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requiresRoom": [
+            "506"
+          ]
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "50A",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "50B",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "requires": [
+            40
+          ],
+          "requiresRoom": [
+            "507",
+            "509",
+            "510"
+          ]
+        }
+      ],
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 2
+        }
+      ],
+      "npcs": [
+        {
+          "player": 0,
+          "doorRando": false,
+          "cutscene": 0,
+          "use": "502;0x493A"
+        },
+        {
+          "player": 1,
+          "doorRando": false,
+          "cutscene": 0,
+          "use": "502;0x496E"
+        }
+      ],
+      "doorRando": [
+        {
+          "nop": [
+            "0x442",
+            "0x450",
+            "0x480"
+          ],
+          "cutscene": false
+        }
+      ]
+    },
+    "509": {
+      "requires": [
+        40
+      ],
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "508",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 82,
+          "type": 0,
+          "amount": 1
+        },
+        {
+          "id": 2,
+          "globalId": 83,
+          "type": 101,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1
+        }
+      ]
+    },
+    "50A": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "508",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 81,
+          "type": 104,
+          "amount": 1
+        },
+        {
+          "id": 6,
+          "globalId": 163,
+          "type": 11,
+          "amount": 15
+        },
+        {
+          "id": 7,
+          "globalId": 229,
+          "type": 11,
+          "amount": 15
+        },
+        {
+          "id": 8,
+          "globalId": 164,
+          "type": 68,
+          "amount": 1
+        }
+      ]
+    },
+    "50B": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "508",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "512",
+          "lock": "always",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [],
+      "enemies": [],
+      "doorRando": [
+        {
+          "cutscene": true
+        }
+      ]
+    },
+    "50C": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "505",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "507",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "50E",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "50F",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "515",
+          "randomize": false,
+          "noReturn": false,
+          "noUnlock": true,
+          "isBridgeEdge": false,
+          "requiresRoom": [
+            "50F",
+            "511"
+          ]
+        }
+      ],
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "condition": "0:45"
+        }
+      ],
+      "doorRando": [
+        {
+          "cutscene": true
+        }
+      ]
+    },
+    "50D": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "501",
+          "randomize": false,
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "303",
+          "randomize": false,
+          "noReturn": true,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [],
+      "doorRando": [
+        {
+          "category": "exclude",
+          "cutscene": false
+        }
+      ]
+    },
+    "50E": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "50C",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 2,
+          "globalId": 232,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 3,
+          "globalId": 233,
+          "type": 69,
+          "amount": 1
+        },
+        {
+          "id": 132,
+          "globalId": 234,
+          "type": 14,
+          "amount": 6
+        },
+        {
+          "id": 5,
+          "globalId": 235,
+          "type": 47,
+          "amount": 3
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1,
+          "restricted": true
+        }
+      ],
+      "doorRando": [
+        {
+          "category": "box",
+          "cutscene": false
+        }
+      ]
+    },
+    "50F": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "50C",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "510",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "510": {
+      "requires": [
+        40
+      ],
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "50F",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "511",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 2,
+          "globalId": 90,
+          "type": 0,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "511": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "510",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "condition": "!(!1:90 \u0026\u0026 0:43)",
+          "player": 0
+        },
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "player": 1
+        }
+      ]
+    },
+    "512": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "50B",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [],
+      "doorRando": [
+        {
+          "cutscene": true
+        }
+      ]
+    },
+    "513": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "514",
+          "randomize": false,
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 2,
+          "globalId": 95,
+          "type": 55,
+          "amount": 2
+        },
+        {
+          "id": 4,
+          "globalId": 207,
+          "type": 11,
+          "amount": 15
+        }
+      ],
+      "enemies": [],
+      "npcs": [
+        {
+          "includeTypes": [
+            46
+          ],
+          "player": 0,
+          "cutscene": 0
+        },
+        {
+          "includeOffsets": [
+            116516
+          ],
+          "includeTypes": [
+            46
+          ],
+          "player": 1,
+          "cutscene": 0
+        },
+        {
+          "includeOffsets": [
+            116458
+          ],
+          "includeTypes": [
+            45
+          ],
+          "player": 1,
+          "cutscene": 0
+        }
+      ]
+    },
+    "514": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "513",
+          "randomize": false,
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "515",
+          "randomize": false,
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [],
+      "npcs": [
+        {
+          "includeOffsets": [
+            61400
+          ],
+          "includeTypes": [
+            36
+          ],
+          "player": 0,
+          "cutscene": 0
+        },
+        {
+          "includeOffsets": [
+            61428
+          ],
+          "includeTypes": [
+            35
+          ],
+          "player": 0,
+          "cutscene": 0
+        },
+        {
+          "includeOffsets": [
+            61472
+          ],
+          "player": 0,
+          "cutscene": 0
+        },
+        {
+          "includeOffsets": [
+            61396
+          ],
+          "includeTypes": [
+            36
+          ],
+          "player": 1,
+          "cutscene": 0
+        },
+        {
+          "includeOffsets": [
+            61428
+          ],
+          "includeTypes": [
+            32,
+            33,
+            34,
+            35,
+            36
+          ],
+          "player": 1,
+          "cutscene": 0
+        },
+        {
+          "includeOffsets": [
+            61612
+          ],
+          "player": 1,
+          "cutscene": 0
+        }
+      ]
+    },
+    "515": {
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "50C",
+          "randomize": false,
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "514",
+          "randomize": false,
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": []
+    },
+    "600": {
+      "items": [
+        {
+          "id": 4,
+          "globalId": 22,
+          "type": 51,
+          "amount": 1
+        },
+        {
+          "id": 6,
+          "globalId": 23,
+          "type": 66,
+          "amount": 1
+        },
+        {
+          "id": 7,
+          "globalId": 24,
+          "type": 66,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0,
+          "restricted": true
+        }
+      ]
+    },
+    "601": {
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "player": 1
+        }
+      ],
+      "npcs": [
+        {
+          "includeTypes": [
+            44
+          ],
+          "player": 0,
+          "cutscene": 0
+        }
+      ]
+    },
+    "602": {
+      "items": [
+        {
+          "id": 1,
+          "globalId": 48,
+          "type": 28,
+          "amount": 1
+        },
+        {
+          "id": 2,
+          "globalId": 49,
+          "type": 12,
+          "amount": 7
+        },
+        {
+          "id": 3,
+          "globalId": 50,
+          "type": 11,
+          "amount": 15
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "603": {
+      "items": [],
+      "enemies": []
+    },
+    "604": {
+      "items": [
+        {
+          "id": 4,
+          "globalId": 41,
+          "type": 11,
+          "amount": 15
+        },
+        {
+          "id": 8,
+          "globalId": 47,
+          "type": 11,
+          "amount": 15
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "605": {
+      "items": [
+        {
+          "id": 3,
+          "globalId": 33,
+          "type": 53,
+          "amount": 1
+        },
+        {
+          "id": 4,
+          "globalId": 42,
+          "type": 31,
+          "amount": 1
+        },
+        {
+          "id": 5,
+          "globalId": 43,
+          "type": 32,
+          "amount": 1
+        },
+        {
+          "id": 18,
+          "globalId": 44,
+          "type": 33,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "607": {
+      "items": [
+        {
+          "id": 2,
+          "globalId": 145,
+          "type": 78,
+          "amount": 1
+        },
+        {
+          "id": 131,
+          "globalId": 39,
+          "type": 47,
+          "amount": 3
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "608": {
+      "items": [
+        {
+          "id": 3,
+          "globalId": 19,
+          "type": 11,
+          "amount": 15
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "609": {
+      "items": [
+        {
+          "id": 5,
+          "globalId": 111,
+          "type": 68,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "nop": [
+            "0x1CB8E-0x1CBC0"
+          ],
+          "excludeTypes": [
+            4,
+            12
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        },
+        {
+          "nop": [
+            "0x1CB52-0x1CB84"
+          ],
+          "excludeTypes": [
+            4,
+            12
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "60A": {
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            3,
+            4,
+            7,
+            10
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1
+        }
+      ]
+    },
+    "60B": {
+      "items": [
+        {
+          "id": 4,
+          "globalId": 110,
+          "type": 68,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1
+        }
+      ]
+    },
+    "60C": {
+      "items": [
+        {
+          "id": 4,
+          "globalId": 27,
+          "type": 52,
+          "amount": 6
+        },
+        {
+          "id": 5,
+          "globalId": 103,
+          "type": 67,
+          "amount": 1
+        },
+        {
+          "id": 6,
+          "globalId": 243,
+          "type": 67,
+          "amount": 1
+        },
+        {
+          "id": 7,
+          "globalId": 132,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 8,
+          "globalId": 242,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 9,
+          "globalId": 244,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 10,
+          "globalId": 245,
+          "type": 68,
+          "amount": 1
+        }
+      ],
+      "enemies": []
+    },
+    "60D": {
+      "items": [
+        {
+          "id": 131,
+          "globalId": 174,
+          "type": 41,
+          "amount": 1
+        },
+        {
+          "id": 4,
+          "globalId": 175,
+          "type": 5,
+          "amount": 6
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4,
+            12
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "60E": {
+      "items": [
+        {
+          "id": 1,
+          "globalId": 146,
+          "type": 11,
+          "amount": 15
+        },
+        {
+          "id": 2,
+          "globalId": 5,
+          "type": 12,
+          "amount": 7
+        },
+        {
+          "id": 3,
+          "globalId": 4,
+          "type": 97,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            2,
+            4
+          ],
+          "keepState": true,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "60F": {
+      "items": [
+        {
+          "id": 3,
+          "globalId": 20,
+          "type": 31,
+          "amount": 1
+        },
+        {
+          "id": 4,
+          "globalId": 21,
+          "type": 32,
+          "amount": 1
+        },
+        {
+          "id": 5,
+          "globalId": 7,
+          "type": 35,
+          "amount": 0
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            3,
+            4,
+            7,
+            10
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1,
+          "player": 1
+        }
+      ]
+    },
+    "610": {
+      "linkedRoom": "110",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "id": 0,
+          "target": "104",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "71C",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [],
+      "enemies": []
+    },
+    "611": {
+      "items": [
+        {
+          "id": 3,
+          "globalId": 2,
+          "type": 12,
+          "amount": 7
+        },
+        {
+          "id": 4,
+          "globalId": 96,
+          "type": 11,
+          "amount": 15
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1
+        }
+      ]
+    },
+    "613": {
+      "items": [
+        {
+          "id": 1,
+          "globalId": 3,
+          "type": 61,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "614": {
+      "items": [
+        {
+          "id": 1,
+          "globalId": 10,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 2,
+          "globalId": 221,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 3,
+          "globalId": 222,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 4,
+          "globalId": 223,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 5,
+          "globalId": 224,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 6,
+          "globalId": 225,
+          "type": 68,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "615": {
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "616": {
+      "items": [
+        {
+          "id": 1,
+          "globalId": 0,
+          "type": 3,
+          "amount": 7
+        },
+        {
+          "id": 2,
+          "globalId": 1,
+          "type": 28,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1
+        }
+      ]
+    },
+    "617": {
+      "items": [
+        {
+          "id": 9,
+          "globalId": 31,
+          "type": 45,
+          "amount": 1
+        }
+      ],
+      "enemies": []
+    },
+    "618": {
+      "items": [
+        {
+          "id": 2,
+          "globalId": 160,
+          "type": 65,
+          "amount": 1
+        },
+        {
+          "id": 4,
+          "globalId": 218,
+          "type": 12,
+          "amount": 7
+        },
+        {
+          "id": 5,
+          "globalId": 217,
+          "type": 11,
+          "amount": 15
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4,
+            12
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0,
+          "restricted": true
+        }
+      ]
+    },
+    "619": {
+      "linkedRoom": "119",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "id": 0,
+          "target": "10A",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 67,
+          "type": 64,
+          "amount": 0
+        },
+        {
+          "id": 4,
+          "globalId": 101,
+          "type": 14,
+          "amount": 6
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4,
+            12
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "61A": {
+      "items": [
+        {
+          "id": 3,
+          "globalId": 59,
+          "type": 77,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1,
+          "condition": "!23:0",
+          "player": 0
+        },
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1,
+          "player": 1
+        }
+      ]
+    },
+    "61B": {
+      "items": [
+        {
+          "id": 2,
+          "globalId": 34,
+          "type": 61,
+          "amount": 1
+        },
+        {
+          "id": 3,
+          "globalId": 35,
+          "type": 29,
+          "amount": 0
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1
+        }
+      ]
+    },
+    "700": {
+      "linkedRoom": "200",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "713",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "71C",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [],
+      "doorRando": [
+        {
+          "category": "exclude",
+          "cutscene": false
+        }
+      ]
+    },
+    "701": {
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1
+        }
+      ]
+    },
+    "702": {
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "703": {
+      "items": [],
+      "enemies": []
+    },
+    "704": {
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "705": {
+      "items": [
+        {
+          "id": 9,
+          "globalId": 36,
+          "type": 46,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            3,
+            4,
+            10
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1
+        }
+      ]
+    },
+    "706": {
+      "items": [
+        {
+          "id": 2,
+          "globalId": 247,
+          "type": 110,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1,
+          "player": 1
+        }
+      ],
+      "npcs": [
+        {
+          "includeTypes": [
+            44
+          ],
+          "player": 0,
+          "cutscene": 0
+        }
+      ]
+    },
+    "707": {
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "708": {
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            2,
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "709": {
+      "items": [
+        {
+          "id": 1,
+          "globalId": 37,
+          "type": 48,
+          "amount": 0
+        },
+        {
+          "id": 2,
+          "globalId": 38,
+          "type": 12,
+          "amount": 7
+        },
+        {
+          "id": 3,
+          "globalId": 211,
+          "type": 67,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "70A": {
+      "items": [
+        {
+          "id": 7,
+          "globalId": 15,
+          "type": 12,
+          "amount": 7
+        },
+        {
+          "id": 8,
+          "globalId": 16,
+          "type": 95,
+          "amount": 1
+        },
+        {
+          "id": 9,
+          "globalId": 184,
+          "type": 47,
+          "amount": 3
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "70B": {
+      "items": [
+        {
+          "id": 3,
+          "globalId": 162,
+          "type": 68,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "70C": {
+      "linkedRoom": "20C",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "id": 0,
+          "target": "20B",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "71A",
+          "lock": "unblock",
+          "noReturn": false,
+          "noUnlock": true,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 7,
+          "globalId": -1,
+          "type": 0,
+          "amount": 1
+        },
+        {
+          "id": 8,
+          "globalId": -1,
+          "type": 0,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "includeTypes": [
+            11,
+            12,
+            18
+          ],
+          "keepState": true,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": true
+        }
+      ],
+      "npcs": [
+        {
+          "player": 1,
+          "cutscene": 0,
+          "use": "20C;0x96BC"
+        }
+      ],
+      "doorRando": [
+        {
+          "category": "segment",
+          "cutscene": false
+        }
+      ]
+    },
+    "70D": {
+      "items": [
+        {
+          "id": 130,
+          "globalId": 40,
+          "type": 11,
+          "amount": 15
+        },
+        {
+          "id": 3,
+          "globalId": 197,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 4,
+          "globalId": 198,
+          "type": 68,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "70E": {
+      "items": [],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "70F": {
+      "items": [
+        {
+          "id": 3,
+          "globalId": 11,
+          "type": 11,
+          "amount": 15
+        },
+        {
+          "id": 4,
+          "globalId": 12,
+          "type": 12,
+          "amount": 7
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "710": {
+      "items": [
+        {
+          "id": 1,
+          "globalId": 129,
+          "type": 44,
+          "amount": 1
+        },
+        {
+          "id": 2,
+          "globalId": 130,
+          "type": 12,
+          "amount": 7
+        }
+      ],
+      "enemies": [
+        {
+          "includeTypes": [
+            12,
+            13
+          ],
+          "keepState": true,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "711": {
+      "items": [
+        {
+          "id": 5,
+          "globalId": 149,
+          "type": 61,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4,
+            12
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "712": {
+      "items": [
+        {
+          "id": 1,
+          "globalId": 6,
+          "type": 11,
+          "amount": 15
+        }
+      ],
+      "enemies": []
+    },
+    "713": {
+      "linkedRoom": "213",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "700",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "714",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "716",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "719",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 4,
+          "globalId": 161,
+          "type": 68,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "714": {
+      "linkedRoom": "214",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "id": 1,
+          "target": "201",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "player": 0
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "id": 5,
+          "target": "201",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false,
+          "player": 1
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "713",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 2,
+          "globalId": 169,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 3,
+          "globalId": 170,
+          "type": 69,
+          "amount": 1
+        },
+        {
+          "id": 4,
+          "globalId": 171,
+          "type": 68,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "715": {
+      "linkedRoom": "215",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "id": 0,
+          "target": "201",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 3,
+          "globalId": 29,
+          "type": 12,
+          "amount": 7
+        },
+        {
+          "id": 4,
+          "globalId": 116,
+          "type": 0,
+          "amount": 0
+        },
+        {
+          "id": 5,
+          "globalId": 30,
+          "type": 34,
+          "amount": 1
+        },
+        {
+          "id": 6,
+          "globalId": 200,
+          "type": 14,
+          "amount": 6
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "716": {
+      "linkedRoom": "216",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "713",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "717",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "718",
+          "lock": "unblock",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 3,
+          "globalId": 84,
+          "type": 102,
+          "amount": 1
+        },
+        {
+          "id": 4,
+          "globalId": 121,
+          "type": 14,
+          "amount": 6
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "717": {
+      "linkedRoom": "217",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "716",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 5,
+          "globalId": 77,
+          "type": 40,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "718": {
+      "linkedRoom": "218",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "716",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 2,
+          "globalId": 199,
+          "type": 11,
+          "amount": 15
+        },
+        {
+          "id": 3,
+          "globalId": 91,
+          "type": 47,
+          "amount": 3
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 1
+        }
+      ]
+    },
+    "719": {
+      "linkedRoom": "219",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "713",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 55,
+          "type": 12,
+          "amount": 7
+        },
+        {
+          "id": 2,
+          "globalId": 56,
+          "type": 12,
+          "amount": 7
+        },
+        {
+          "id": 3,
+          "globalId": 57,
+          "type": 39,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "maxDifficulty": 0
+        }
+      ]
+    },
+    "71A": {
+      "linkedRoom": "21A",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "70C",
+          "noReturn": false,
+          "noUnlock": true,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "71B",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 3,
+          "globalId": 219,
+          "type": 12,
+          "amount": 7
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "71B": {
+      "linkedRoom": "21B",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "71A",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "71C",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 2,
+          "globalId": 93,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 3,
+          "globalId": 213,
+          "type": 68,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false
+        }
+      ]
+    },
+    "71C": {
+      "linkedRoom": "21C",
+      "doors": [
+        {
+          "create": false,
+          "texture": 0,
+          "target": "700",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "610",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        },
+        {
+          "create": false,
+          "texture": 0,
+          "target": "71B",
+          "lock": "side",
+          "noReturn": false,
+          "noUnlock": false,
+          "isBridgeEdge": false
+        }
+      ],
+      "items": [
+        {
+          "id": 10,
+          "globalId": 228,
+          "type": 61,
+          "amount": 1
+        }
+      ],
+      "enemies": [
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": false,
+          "ignoreRatio": false,
+          "randomPlacements": false
+        },
+        {
+          "excludeTypes": [
+            4
+          ],
+          "keepState": false,
+          "keepAi": false,
+          "keepPositions": true,
+          "ignoreRatio": false,
+          "randomPlacements": true
+        }
+      ]
+    }
+  }
+}
