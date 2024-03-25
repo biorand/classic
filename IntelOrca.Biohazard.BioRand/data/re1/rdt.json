@@ -2367,6 +2367,26 @@
           "target": "405"
         }
       ],
+      "items": [
+        {
+          "id": 5,
+          "globalId": 157,
+          "type": 69,
+          "amount": 1
+        },
+        {
+          "id": 7,
+          "globalId": 209,
+          "type": 69,
+          "amount": 1
+        },
+        {
+          "id": 8,
+          "globalId": 210,
+          "type": 69,
+          "amount": 1
+        }
+      ],
       "enemies": [
         {
           "excludeTypes": [ 4 ],
@@ -2385,9 +2405,22 @@
       ],
       "items": [
         {
+          "id": 2,
+          "globalId": 99,
+          "type": 62,
+          "amount": 1
+        },
+        {
+          "id": 3,
+          "globalId": 100,
+          "type": 61,
+          "amount": 1
+        },
+        {
           "id": 4,
-          "requires": [ 61 ],
-          "player": 0
+          "globalId": 165,
+          "type": 12,
+          "requires": [ 61 ]
         }
       ],
       "enemies": [
@@ -2402,6 +2435,14 @@
       "doors": [
         {
           "target": "401"
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 156,
+          "type": 59,
+          "amount": 1
         }
       ],
       "enemies": [
@@ -2421,6 +2462,20 @@
       "doors": [
         {
           "target": "400"
+        }
+      ],
+      "items": [
+        {
+          "id": 3,
+          "globalId": 167,
+          "type": 16,
+          "amount": 6
+        },
+        {
+          "id": 4,
+          "globalId": 180,
+          "type": 65,
+          "amount": 1
         }
       ],
       "enemies": [
@@ -2443,6 +2498,20 @@
           "target": "400"
         }
       ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 127,
+          "type": 11,
+          "amount": 15
+        },
+        {
+          "id": 8,
+          "globalId": 182,
+          "type": 47,
+          "amount": 3
+        }
+      ],
       "enemies": [
         {
           "randomPlacements": true
@@ -2460,6 +2529,26 @@
         },
         {
           "target": "408"
+        }
+      ],
+      "items": [
+        {
+          "id": 3,
+          "globalId": 106,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 4,
+          "globalId": 107,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 5,
+          "globalId": 108,
+          "type": 68,
+          "amount": 1
         }
       ],
       "npcs": [
@@ -2499,12 +2588,16 @@
       "items": [
         {
           "id": 6,
-          "requires": [ 61 ],
-          "player": 0
+          "globalId": 25,
+          "type": 12,
+          "amount": 7,
+          "requires": [ 61 ]
         },
         {
-          "id": 8,
-          "type": 0
+          "id": 7,
+          "globalId": 134,
+          "type": 100,
+          "amount": 1
         }
       ],
       "enemies": [
@@ -2525,6 +2618,14 @@
       "doors": [
         {
           "target": "406"
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 109,
+          "type": 11,
+          "amount": 15
         }
       ],
       "enemies": [
@@ -2559,9 +2660,10 @@
       ],
       "items": [
         {
-          "id": 6,
-          "type": 0,
-          "player": 0
+          "id": 5,
+          "globalId": 72,
+          "type": 57,
+          "amount": 1
         }
       ],
       "npcs": [
@@ -2593,36 +2695,7 @@
           "target": "408"
         }
       ],
-      "items": [
-        {
-          "id": 1,
-          "type": 0
-        },
-        {
-          "id": 2,
-          "type": 0
-        },
-        {
-          "id": 3,
-          "type": 0
-        },
-        {
-          "id": 4,
-          "type": 0
-        },
-        {
-          "id": 5,
-          "type": 0
-        },
-        {
-          "id": 6,
-          "type": 0
-        },
-        {
-          "id": 7,
-          "type": 0
-        }
-      ],
+      "items": [],
       "enemies": [
         {
           "conditions": "!(1:61 && !0:0 && 1:58)",
@@ -2653,16 +2726,12 @@
       ],
       "items": [
         {
-          "id": 3,
-          "type": 0
-        },
-        {
-          "id": 4,
-          "type": 0
-        },
-        {
           "id": 8,
-          "requires": [ 61 ]
+          "globalId": 120,
+          "type": 47,
+          "amount": 3,
+          "requires": [ 61 ],
+          "player": 0
         }
       ],
       "enemies": [
@@ -2676,6 +2745,14 @@
       "doors": [
         {
           "target": "40A"
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 168,
+          "type": 11,
+          "amount": 15
         }
       ],
       "enemies": [
@@ -2700,20 +2777,7 @@
           "target": "408"
         }
       ],
-      "items": [
-        // Keep Helmet key here for Mansion 2 switch
-        // {
-        //   "id": 3,
-        //   "priority": "fixed",
-        //   "doorRando": false
-        // },
-        {
-          "id": 3,
-          "requiresRoom": [ "409", "40F" ],
-          "player": 1,
-          "doorRando": true
-        }
-      ],
+      "items": [],
       "npcs": [
         {
           "player": 0
@@ -2731,6 +2795,20 @@
         {
           "target": "40E",
           "lock": "unblock"
+        }
+      ],
+      "items": [
+        {
+          "id": 6,
+          "globalId": 158,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 7,
+          "globalId": 159,
+          "type": 68,
+          "amount": 1
         }
       ],
       "enemies": [
@@ -2766,8 +2844,10 @@
       "items": [
         {
           "id": 1,
-          "type": 0,
-          "player": 1
+          "globalId": 105,
+          "type": 61,
+          "amount": 1,
+          "player": 0
         }
       ],
       "enemies": [
@@ -2781,6 +2861,38 @@
       "doors": [
         {
           "target": "40E"
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 122,
+          "type": 12,
+          "amount": 7
+        },
+        {
+          "id": 2,
+          "globalId": 131,
+          "type": 12,
+          "amount": 7
+        },
+        {
+          "id": 131,
+          "globalId": 112,
+          "type": 11,
+          "amount": 15
+        },
+        {
+          "id": 132,
+          "globalId": 92,
+          "type": 11,
+          "amount": 15
+        },
+        {
+          "id": 5,
+          "globalId": 114,
+          "type": 58,
+          "amount": 1
         }
       ],
       "enemies": [
