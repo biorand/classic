@@ -321,8 +321,8 @@
         {
           "id": 6,
           "globalId": 14,
-          "type": 2,
-          "amount": 15,
+          "type": 17,
+          "amount": 6,
           "priority": "low",
           "player": 1
         }
@@ -1114,6 +1114,9 @@
       "items": [
         {
           "id": 8,
+          "globalId": 14,
+          "type": 17,
+          "amount": 6,
           "priority": "low",
           "player": 1
         }
@@ -1161,6 +1164,14 @@
           "target": "204"
         }
       ],
+      "items": [
+        {
+          "id": 9,
+          "globalId": 36,
+          "type": 46,
+          "amount": 1
+        }
+      ],
       "enemies": [
         {
           "excludeTypes": [ 2, 3, 4, 10 ],
@@ -1188,6 +1199,14 @@
             "cut": 3
           },
           "doorRando": true
+        }
+      ],
+      "items": [
+        {
+          "id": 2,
+          "globalId": 247,
+          "type": 110,
+          "amount": 1
         }
       ],
       "enemies": [
@@ -1253,6 +1272,34 @@
           "target": "208"
         }
       ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 37,
+          "type": 48,
+          "amount": 0
+        },
+        {
+          "id": 2,
+          "globalId": 38,
+          "type": 12,
+          "amount": 7,
+          "player": 0
+        },
+        {
+          "id": 2,
+          "globalId": 38,
+          "type": 11,
+          "amount": 15,
+          "player": 1
+        },
+        {
+          "id": 3,
+          "globalId": 211,
+          "type": 67,
+          "amount": 1
+        }
+      ],
       "enemies": [
         {
           "excludeTypes": [ 4 ],
@@ -1275,12 +1322,26 @@
       ],
       "items": [
         {
-          "id": 8,
-          "type": 0
+          "id": 7,
+          "globalId": 15,
+          "type": 12,
+          "amount": 7,
+          "player": 0
+        },
+        {
+          "id": 7,
+          "globalId": 15,
+          "type": 16,
+          "amount": 6,
+          "player": 1
         },
         {
           "id": 9,
-          "priority": "hidden"
+          "globalId": 184,
+          "type": 47,
+          "amount": 3,
+          "priority": "hidden",
+          "player": 0
         }
       ],
       "enemies": [
@@ -1306,6 +1367,14 @@
         {
           "target": "70C",
           "requires": [ 54 ]
+        }
+      ],
+      "items": [
+        {
+          "id": 3,
+          "globalId": 162,
+          "type": 68,
+          "amount": 1
         }
       ],
       "enemies": [
@@ -1346,8 +1415,16 @@
       ],
       "items": [
         {
-          "id": 2,
-          "priority": "low"
+          "id": 3,
+          "globalId": 197,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 5,
+          "globalId": 198,
+          "type": 68,
+          "amount": 1
         }
       ],
       "npcs": [
@@ -1395,7 +1472,16 @@
       ],
       "items": [
         {
+          "id": 3,
+          "globalId": 11,
+          "type": 11,
+          "amount": 15
+        },
+        {
           "id": 4,
+          "globalId": 12,
+          "type": 12,
+          "amount": 7,
           "requires": [ 48 ]
         }
       ],
@@ -1411,6 +1497,20 @@
       "doors": [
         {
           "target": "20E"
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 129,
+          "type": 44,
+          "amount": 1
+        },
+        {
+          "id": 2,
+          "globalId": 130,
+          "type": 12,
+          "amount": 7
         }
       ],
       "enemies": [
@@ -1434,8 +1534,10 @@
       "items": [
         {
           "id": 5,
-          "type": 0,
-          "player": 1
+          "globalId": 149,
+          "type": 61,
+          "amount": 1,
+          "player": 0
         }
       ],
       "enemies": [
@@ -1459,6 +1561,22 @@
           "target": "211"
         }
       ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 6,
+          "type": 11,
+          "amount": 15,
+          "player": 0
+        },
+        {
+          "id": 1,
+          "globalId": 6,
+          "type": 7,
+          "amount": 6,
+          "player": 1
+        }
+      ],
       "enemies": [],
       "npcs": [
         {
@@ -1469,6 +1587,14 @@
       ]
     },
     "213": {
+      "items": [
+        {
+          "id": 4,
+          "globalId": 161,
+          "type": 68,
+          "amount": 1
+        }
+      ],
       "enemies": [
         {
           "excludeTypes": [ 4 ]
@@ -1476,6 +1602,26 @@
       ]
     },
     "214": {
+      "items": [
+        {
+          "id": 2,
+          "globalId": 169,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 3,
+          "globalId": 170,
+          "type": 69,
+          "amount": 1
+        },
+        {
+          "id": 4,
+          "globalId": 171,
+          "type": 68,
+          "amount": 1
+        }
+      ],
       "enemies": [
         {
           "excludeTypes": [ 4 ]
@@ -1483,6 +1629,32 @@
       ]
     },
     "215": {
+      "items": [
+        {
+          "id": 3,
+          "globalId": 29,
+          "type": 12,
+          "amount": 7
+        },
+        {
+          "id": 4,
+          "globalId": 116,
+          "type": 98,
+          "amount": 0
+        },
+        {
+          "id": 5,
+          "globalId": 30,
+          "type": 34,
+          "amount": 1
+        },
+        {
+          "id": 6,
+          "globalId": 200,
+          "type": 14,
+          "amount": 6
+        }
+      ],
       "enemies": [
         {
           "excludeTypes": [ 4 ],
@@ -1491,6 +1663,20 @@
       ]
     },
     "216": {
+      "items": [
+        {
+          "id": 3,
+          "globalId": 84,
+          "type": 102,
+          "amount": 1
+        },
+        {
+          "id": 4,
+          "globalId": 121,
+          "type": 14,
+          "amount": 6
+        }
+      ],
       "enemies": [
         {
           "excludeTypes": [ 4 ]
@@ -1498,6 +1684,14 @@
       ]
     },
     "217": {
+      "items": [
+        {
+          "id": 5,
+          "globalId": 77,
+          "type": 40,
+          "amount": 1
+        }
+      ],
       "enemies": [
         {
           "excludeTypes": [ 4 ]
@@ -1505,6 +1699,21 @@
       ]
     },
     "218": {
+      "items": [
+        {
+          "id": 2,
+          "globalId": 199,
+          "type": 11,
+          "amount": 15
+        },
+        {
+          "id": 3,
+          "globalId": 91,
+          "type": 47,
+          "amount": 3,
+          "player": 0
+        }
+      ],
       "enemies": [
         {
           "excludeTypes": [ 4 ],
@@ -1513,6 +1722,26 @@
       ]
     },
     "219": {
+      "items": [
+        {
+          "id": 1,
+          "globalId": 55,
+          "type": 12,
+          "amount": 7
+        },
+        {
+          "id": 2,
+          "globalId": 56,
+          "type": 12,
+          "amount": 7
+        },
+        {
+          "id": 3,
+          "globalId": 57,
+          "type": 39,
+          "amount": 1
+        }
+      ],
       "enemies": [
         {
           "excludeTypes": [ 4 ],
@@ -1521,6 +1750,14 @@
       ]
     },
     "21A": {
+      "items": [
+        {
+          "id": 3,
+          "globalId": 219,
+          "type": 12,
+          "amount": 7
+        }
+      ],
       "enemies": [
         {
           "excludeTypes": [ 4 ]
@@ -1528,6 +1765,20 @@
       ]
     },
     "21B": {
+      "items": [
+        {
+          "id": 2,
+          "globalId": 93,
+          "type": 68,
+          "amount": 1
+        },
+        {
+          "id": 3,
+          "globalId": 213,
+          "type": 68,
+          "amount": 1
+        }
+      ],
       "enemies": [
         {
           "excludeTypes": [ 4 ]
@@ -1535,6 +1786,16 @@
       ]
     },
     "21C": {
+      "items": [
+        {
+          "id": 10,
+          "globalId": 228,
+          "type": 61,
+          "amount": 1,
+          "priority": "hidden",
+          "player": 0
+        }
+      ],
       "enemies": [
         {
           "excludeTypes": [ 4 ],
@@ -1544,12 +1805,6 @@
           "excludeTypes": [ 4 ],
           "keepPositions": true,
           "randomPlacements": true
-        }
-      ],
-      "items": [
-        {
-          "id": 10,
-          "priority": "hidden"
         }
       ]
     },
