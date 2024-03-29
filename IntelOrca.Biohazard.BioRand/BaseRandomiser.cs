@@ -337,6 +337,7 @@ namespace IntelOrca.Biohazard.BioRand
                         PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                         WriteIndented = true
                     });
+                    File.WriteAllText(@"M:\git\rer\IntelOrca.Biohazard.BioRand\data\re2\rdt.a1.corrected.json", sss);
                     try
                     {
                         using (progress.BeginTask(config.Player, "Randomizing items"))
