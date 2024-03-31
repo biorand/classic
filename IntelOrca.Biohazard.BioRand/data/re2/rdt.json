@@ -2843,6 +2843,15 @@
           "lock": "unblock"
         }
       ],
+      "items": [
+        {
+          "id": 4,
+          "globalId": 201,
+          "type": 26,
+          "amount": 6,
+          "player": 1
+        }
+      ],
       "enemies": [
         {
           "nop": [ 5302, 5344 ],
@@ -2890,7 +2899,37 @@
       "items": [
         {
           "id": 3,
-          "priority": "low"
+          "globalId": 44,
+          "type": 110,
+          "amount": 1,
+          "priority": "low",
+          "player": 0
+        },
+        {
+          "id": 5,
+          "globalId": 118,
+          "type": 75,
+          "amount": 1,
+          "player": 0
+        },
+        {
+          "id": 5,
+          "globalId": 118,
+          "type": 29,
+          "amount": 1,
+          "player": 1
+        },
+        {
+          "id": 6,
+          "globalId": 136,
+          "type": 40,
+          "amount": 1
+        },
+        {
+          "id": 7,
+          "globalId": 172,
+          "type": 38,
+          "amount": 1
         }
       ],
       "enemies": [
@@ -3021,6 +3060,14 @@
           "target": "305"
         }
       ],
+      "items": [
+        {
+          "id": 2,
+          "globalId": 119,
+          "type": 92,
+          "amount": 3
+        }
+      ],
       "enemies": [
         {
           "includeTypes": [ 31, 32, 33, 37, 41, 45 ],
@@ -3054,18 +3101,29 @@
       "items": [
         {
           "id": 3,
+          "globalId": 194,
+          "type": 21,
+          "amount": 7,
           "priority": "low",
-          "player": 0
+          "player": 0,
+          "doorRando": false
         },
         {
           "id": 3,
-          "link": "306:2",
-          "player": 1
+          "globalId": 119, // 124
+          "type": 92,
+          "amount": 3,
+          "player": 1,
+          "doorRando": false
         },
         {
           "id": 5,
-          "link": "30B:5",
-          "player": 1
+          "globalId": 193, // 194
+          "type": 24,
+          "amount": 6,
+          "priority": "low",
+          "player": 1,
+          "doorRando": false
         }
       ],
       "npcs": [
@@ -3262,16 +3320,24 @@
       "items": [
         {
           "id": 4,
-          "link": "306:2",
+          "globalId": 119, // 124
+          "type": 92,
+          "amount": 3,
           "player": 0
         },
         {
           "id": 5,
-          "link": "307:3",
+          "globalId": 194, // 193
+          "type": 21,
+          "amount": 7,
+          "priority": "low",
           "player": 0
         },
         {
           "id": 5,
+          "globalId": 193,
+          "type": 24,
+          "amount": 6,
           "priority": "low",
           "player": 1
         }
@@ -3318,9 +3384,17 @@
       ],
       "items": [
         {
+          "id": 1,
+          "globalId": 140,
+          "type": 30,
+          "amount": 3,
+          "player": 0
+        },
+        {
           "id": 3,
-          "priority": "low",
-          "doorRando": false
+          "globalId": 134,
+          "type": 40,
+          "amount": 1
         }
       ],
       "enemies": [
@@ -3345,6 +3419,15 @@
       "doors": [
         {
           "target": "307"
+        }
+      ],
+      "items": [
+        {
+          "id": 1,
+          "globalId": 140,
+          "type": 30,
+          "amount": 3,
+          "player": 1
         }
       ],
       "enemies": [
@@ -3380,6 +3463,20 @@
           "id": 2,
           "target": "401:1",
           "lock": "always"
+        }
+      ],
+      "items": [
+        {
+          "id": 5,
+          "globalId": 186,
+          "type": 40,
+          "amount": 1
+        },
+        {
+          "id": 6,
+          "globalId": 187,
+          "type": 40,
+          "amount": 1
         }
       ],
       "npcs": [
@@ -3430,86 +3527,102 @@
         }
       ],
       "items": [
+        // Leon
         {
           "id": 9,
-          "priority": "low",
-          "doorRando": false,
+          "globalId": 128,
+          "type": 30,
+          "amount": 3,
           "player": 0
         },
         {
           "id": 12,
-          "priority": "low",
-          "doorRando": false,
+          "globalId": 130,
+          "type": 20,
+          "amount": 15,
           "player": 0
         },
         {
           "id": 13,
+          "globalId": 131,
+          "type": 21,
+          "amount": 7,
           "requires": [ 31 ],
-          "priority": "low",
-          "doorRando": false,
           "player": 0
         },
         {
           "id": 14,
+          "globalId": 169,
+          "type": 22,
+          "amount": 8,
           "requires": [ 31 ],
-          "priority": "low",
-          "doorRando": false,
           "player": 0
         },
         {
           "id": 15,
-          "priority": "low",
-          "doorRando": false,
+          "globalId": 178,
+          "type": 38,
+          "amount": 1,
           "player": 0
         },
         {
           "id": 16,
-          "priority": "low",
-          "doorRando": false,
+          "globalId": 179,
+          "type": 38,
+          "amount": 1,
           "player": 0
         },
         {
           "id": 17,
-          "priority": "low",
-          "doorRando": false,
+          "globalId": 168,
+          "type": 38,
+          "amount": 1,
           "player": 0
         },
+
+        // Claire
         {
-          "id": 13,
-          "doorRando": true,
-          "priority": "low", // HACK to avoid small key requirement
-          "player": 0
-        },
-        {
-          "id": 14,
-          "doorRando": true,
-          "priority": "low", // HACK to avoid small key requirement
-          "player": 0
-        },
-        {
-          "id": 11,
-          "requires": [ 31 ],
-          "priority": "low",
-          "doorRando": false,
+          "id": 6,
+          "globalId": 128,
+          "type": 30,
+          "amount": 3,
           "player": 1
         },
         {
-          "id": 12,
-          "requires": [ 31 ],
-          "priority": "low",
-          "doorRando": false,
+          "id": 8,
+          "globalId": 129,
+          "type": 35,
+          "amount": 1,
+          "player": 1
+        },
+        {
+          "id": 9,
+          "globalId": 130,
+          "type": 20,
+          "amount": 30,
           "player": 1
         },
         {
           "id": 11,
-          "doorRando": true,
-          "priority": "low", // HACK to avoid small key requirement
+          "globalId": 131,
+          "type": 24,
+          "amount": 6,
+          "requires": [ 31 ],
           "player": 1
         },
         {
           "id": 12,
-          "doorRando": true,
-          "priority": "low", // HACK to avoid small key requirement
+          "globalId": 169,
+          "type": 29,
+          "amount": 36,
+          "requires": [ 31 ],
+          "player": 1
+        },
+        {
+          "id": 7,
+          "globalId": 132,
+          "type": 122,
+          "amount": 1,
           "player": 1
         }
       ],
@@ -3527,6 +3640,22 @@
         },
         {
           "target": "403"
+        }
+      ],
+      "items": [
+        {
+          "id": 3,
+          "globalId": 164,
+          "type": 40,
+          "amount": 1,
+          "player": 0
+        },
+        {
+          "id": 4,
+          "globalId": 165,
+          "type": 40,
+          "amount": 1,
+          "player": 0
         }
       ],
       "npcs": [
@@ -3557,77 +3686,96 @@
         }
       ],
       "items": [
-        // Claire non-door rando, items are optional
+        // Leon
         {
           "id": 3,
-          "priorty": "low",
-          "doorRando": false,
+          "globalId": 51,
+          "type": 30,
+          "amount": 3,
+          "player": 0
+        },
+        {
+          "id": 14,
+          "globalId": 52,
+          "type": 35,
+          "amount": 1,
+          "player": 0
+        },
+        {
+          "id": 16,
+          "globalId": 173,
+          "type": 20,
+          "amount": 30,
+          "player": 0
+        },
+        {
+          "id": 21,
+          "globalId": 192,
+          "type": 122,
+          "amount": 1,
+          "player": 0
+        },
+        {
+          "id": 19,
+          "globalId": 175,
+          "type": 21,
+          "amount": 7,
+          "requires": [ 47 ],
+          "player": 0
+        },
+        {
+          "id": 20,
+          "globalId": 176,
+          "type": 22,
+          "amount": 8,
+          "requires": [ 47 ],
+          "player": 0
+        },
+
+        // Claire
+        {
+          "id": 3,
+          "globalId": 53,
+          "type": 38,
+          "amount": 1,
           "player": 1
         },
         {
           "id": 14,
-          "priorty": "low",
-          "doorRando": false,
+          "globalId": 173,
+          "type": 38,
+          "amount": 1,
           "player": 1
         },
         {
           "id": 15,
-          "priorty": "low",
-          "doorRando": false,
+          "globalId": 174,
+          "type": 38,
+          "amount": 1,
+          "player": 1
+        },
+        {
+          "id": 20,
+          "globalId": 176,
+          "type": 20,
+          "amount": 15,
           "player": 1
         },
         {
           "id": 16,
-          "priorty": "low",
+          "globalId": 51,
+          "type": 25,
+          "amount": 6,
           "requires": [ 47 ],
-          "doorRando": false,
           "player": 1
         },
         {
           "id": 19,
-          "priorty": "low",
+          "globalId": 175,
+          "type": 24,
+          "amount": 6,
           "requires": [ 47 ],
-          "doorRando": false,
           "player": 1
-        },
-        {
-          "id": 20,
-          "priorty": "low",
-          "doorRando": false,
-          "player": 1
-        },
-
-        // Leon non-door rando
-        {
-          "id": 19,
-          "requires": [ 47 ],
-          "player": 0,
-          "doorRando": false
-        },
-        {
-          "id": 20,
-          "requires": [ 47 ],
-          "player": 0,
-          "doorRando": false
-        },
-
-        // Door rando
-        {
-          "id": 16,
-          "requires": [ 47 ],
-          "player": 1,
-          "doorRando": true
-        },
-        {
-          "id": 19,
-          "requires": [ 47 ],
-          "doorRando": true
-        },
-        {
-          "id": 20,
-          "requires": [ 47 ],
-          "player": 0,
-          "doorRando": true
         }
       ]
     },
@@ -3723,6 +3871,46 @@
           "lock": "always"
         }
       ],
+      "items": [
+        {
+          "id": 6,
+          "globalId": 190,
+          "type": 73,
+          "amount": 1,
+          "player": 0
+        },
+        {
+          "id": 6,
+          "globalId": 190,
+          "type": 73,
+          "amount": 1,
+          "player": 1,
+          "scenario": 0
+        },
+        {
+          "id": 7,
+          "globalId": 191,
+          "type": 21,
+          "amount": 7,
+          "player": 0,
+          "scenario": 0
+        },
+        {
+          "id": 7,
+          "globalId": 191,
+          "type": 31,
+          "amount": 1,
+          "player": 0,
+          "scenario": 1
+        },
+        {
+          "id": 7,
+          "globalId": 191,
+          "type": 25,
+          "amount": 6,
+          "player": 1
+        }
+      ],
       "enemies": [
         {
           "y": 0,
@@ -3806,19 +3994,39 @@
       "items": [
         {
           "id": 2,
-          "priority": "low"
+          "globalId": 214,
+          "type": 30,
+          "amount": 3
         },
         {
           "id": 7,
+          "globalId": 149,
+          "type": 38,
+          "amount": 1,
           "requires": [ 50 ]
         },
         {
           "id": 8,
+          "globalId": 150,
+          "type": 38,
+          "amount": 1,
           "requires": [ 50 ]
         },
         {
           "id": 9,
-          "requires": [ 50 ]
+          "globalId": 185,
+          "type": 21,
+          "amount": 7,
+          "requires": [ 50 ],
+          "player": 0
+        },
+        {
+          "id": 9,
+          "globalId": 185,
+          "type": 25,
+          "amount": 6,
+          "requires": [ 50 ],
+          "player": 1
         }
       ],
       "npcs": [
@@ -3849,6 +4057,20 @@
           "target": "40B",
           "requires": [ 50 ],
           "requiresRoom": [ "408" ]
+        }
+      ],
+      "items": [
+        {
+          "id": 10,
+          "globalId": 183,
+          "type": 121,
+          "amount": 1
+        },
+        {
+          "id": 11,
+          "globalId": 184,
+          "type": 72,
+          "amount": 1
         }
       ],
       "npcs": [
@@ -3934,6 +4156,14 @@
           "target": "40F"
         }
       ],
+      "items": [
+        {
+          "id": 3,
+          "globalId": 45,
+          "type": 73,
+          "amount": 1
+        }
+      ],
       "npcs": [
         {
           "playerActor": "sherry"
@@ -3981,11 +4211,39 @@
       "items": [
         {
           "id": 7,
-          "priority": "low"
+          "globalId": 202,
+          "type": 21,
+          "amount": 7,
+          "priority": "low",
+          "player": 0,
+          "scenario": 0
+        },
+        {
+          "id": 7,
+          "globalId": 202,
+          "type": 20,
+          "amount": 15,
+          "priority": "low",
+          "player": 1,
+          "scenario": 0
         },
         {
           "id": 8,
-          "priority": "low"
+          "globalId": 203,
+          "type": 20,
+          "amount": 15,
+          "priority": "low",
+          "player": 0,
+          "scenario": 0
+        },
+        {
+          "id": 8,
+          "globalId": 203,
+          "type": 25,
+          "amount": 6,
+          "priority": "low",
+          "player": 1,
+          "scenario": 0
         }
       ],
       "npcs": [
@@ -4030,21 +4288,19 @@
       ],
       "items": [
         {
-          "id": 4,
-          "priority": "low"
-        },
-        {
-          "id": 6,
-          "priority": "low"
-        },
-        {
           "id": 7,
-          "priority": "low"
+          "globalId": 181,
+          "type": 30,
+          "amount": 3,
+          "priority": "hidden"
         },
         {
           "id": 8,
-          "link": "40C:3",
-          "player": 1
+          "globalId": 45,
+          "type": 73,
+          "amount": 1,
+          "player": 1,
+          "scenario": 1
         }
       ],
       "npcs": [
