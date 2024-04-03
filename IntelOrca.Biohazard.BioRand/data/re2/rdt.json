@@ -4863,7 +4863,7 @@
       "items": [
         {
           "id": 0,
-          "globalId": 73,
+          "globalId": 1073,
           "type": 22,
           "amount": 8,
           "priority": "low",
@@ -4913,33 +4913,33 @@
       "items": [
         {
           "id": 13,
-          "globalId": 58,
+          "globalId": 1058,
           "type": 30,
           "amount": 3
         },
         {
           "id": 15,
-          "globalId": 57,
+          "globalId": 1057,
           "type": 38,
           "amount": 1
         },
         {
           "id": 17,
-          "globalId": 59,
+          "globalId": 1059,
           "type": 21,
           "amount": 7,
           "player": 0
         },
         {
           "id": 17,
-          "globalId": 59,
+          "globalId": 1059,
           "type": 25,
           "amount": 12,
           "player": 1
         },
         {
           "id": 18,
-          "globalId": 63,
+          "globalId": 1063,
           "type": 126,
           "amount": 1
         }
@@ -4973,7 +4973,7 @@
       "items": [
         {
           "id": 3,
-          "globalId": 20,
+          "globalId": 1020,
           "type": 98,
           "amount": 2,
           "priority": "fixed",
@@ -4982,7 +4982,7 @@
         },
         {
           "id": 3,
-          "globalId": 20,
+          "globalId": 1020,
           "type": 98,
           "amount": 2,
           "priority": "low",
@@ -5097,40 +5097,40 @@
       "items": [
         {
           "id": 3,
-          "globalId": 27,
+          "globalId": 1027,
           "type": 30,
           "amount": 3
         },
         {
           "id": 4,
-          "globalId": 52,
+          "globalId": 1052,
           "type": 38,
           "amount": 1
         },
         {
           "id": 5,
-          "globalId": 53,
+          "globalId": 1053,
           "type": 21,
           "amount": 7,
           "player": 0
         },
         {
           "id": 5,
-          "globalId": 53,
+          "globalId": 1053,
           "type": 20,
           "amount": 15,
           "player": 1
         },
         {
           "id": 6,
-          "globalId": 54,
+          "globalId": 1054,
           "type": 22,
           "amount": 8,
           "player": 0
         },
         {
           "id": 6,
-          "globalId": 54,
+          "globalId": 1054,
           "type": 25,
           "amount": 6,
           "player": 1
@@ -5205,7 +5205,7 @@
       "items": [
         {
           "id": 3,
-          "globalId": 29,
+          "globalId": 1029,
           "type": 98,
           "amount": 1,
           "priority": "fixed",
@@ -5214,7 +5214,7 @@
         },
         {
           "id": 3,
-          "globalId": 29,
+          "globalId": 1029,
           "type": 98,
           "amount": 1,
           "priority": "low",
@@ -5247,35 +5247,35 @@
       "items": [
         {
           "id": 7,
-          "globalId": 6,
+          "globalId": 1006,
           "type": 30,
           "amount": 3,
           "priority": "hidden"
         },
         {
           "id": 8,
-          "globalId": 37,
+          "globalId": 1037,
           "type": 21,
           "amount": 7,
           "player": 0
         },
         {
           "id": 8,
-          "globalId": 37,
+          "globalId": 1037,
           "type": 24,
           "amount": 6,
           "player": 1
         },
         {
           "id": 9,
-          "globalId": 38,
+          "globalId": 1038,
           "type": 21,
           "amount": 7,
           "player": 0
         },
         {
           "id": 9,
-          "globalId": 38,
+          "globalId": 1038,
           "type": 24,
           "amount": 6,
           "player": 1
@@ -5310,33 +5310,33 @@
       "items": [
         {
           "id": 9,
-          "globalId": 50,
+          "globalId": 1050,
           "type": 125,
           "amount": 1
         },
         {
           "id": 10,
-          "globalId": 62,
+          "globalId": 1062,
           "type": 114,
           "amount": 1
         },
         {
           "id": 11,
-          "globalId": 47,
+          "globalId": 1047,
           "type": 97,
           "amount": 2,
           "player": 1
         },
         {
           "id": 13,
-          "globalId": 51,
+          "globalId": 1051,
           "type": 16,
           "amount": 100,
           "player": 0
         },
         {
           "id": 13,
-          "globalId": 51,
+          "globalId": 1051,
           "type": 29,
           "amount": 36,
           "player": 1
@@ -5442,7 +5442,7 @@
       "items": [
         {
           "id": 7,
-          "globalId": 16,
+          "globalId": 1016,
           "type": 82,
           "amount": 1,
           "priority": "fixed",
@@ -5451,7 +5451,7 @@
         },
         {
           "id": 7,
-          "globalId": 16,
+          "globalId": 1016,
           "type": 82,
           "amount": 1,
           "priority": "low",
@@ -5481,20 +5481,20 @@
       "items": [
         {
           "id": 1,
-          "globalId": 24,
+          "globalId": 1024,
           "type": 76,
           "amount": 1,
           "requires": [ 77 ]
         },
         {
           "id": 2,
-          "globalId": 61,
+          "globalId": 1061,
           "type": 77,
           "amount": 1
         },
         {
           "id": 3,
-          "globalId": 69,
+          "globalId": 1069,
           "type": 35,
           "amount": 1
         }
@@ -5517,13 +5517,13 @@
       "items": [
         {
           "id": 4,
-          "globalId": 0,
+          "globalId": 1000,
           "type": 38,
           "amount": 1
         },
         {
           "id": 5,
-          "globalId": 1,
+          "globalId": 1001,
           "type": 38,
           "amount": 1
         }
@@ -5544,7 +5544,7 @@
       "items": [
         {
           "id": 2,
-          "globalId": 30,
+          "globalId": 1030,
           "type": 27,
           "amount": 100,
           "priority": "low",
@@ -5552,7 +5552,7 @@
         },
         {
           "id": 2,
-          "globalId": 30,
+          "globalId": 1030,
           "type": 27,
           "amount": 100,
           "doorRando": true
@@ -5569,7 +5569,7 @@
         // Leon
         {
           "id": 3,
-          "globalId": 45,
+          "globalId": 1045,
           "type": 22,
           "amount": 8,
           "player": 0,
@@ -5577,7 +5577,7 @@
         },
         {
           "id": 6,
-          "globalId": 14,
+          "globalId": 1014,
           "type": 96,
           "amount": 1,
           "player": 0,
@@ -5585,7 +5585,7 @@
         },
         {
           "id": 6,
-          "globalId": 45,
+          "globalId": 1045,
           "type": 22,
           "amount": 8,
           "player": 0,
@@ -5593,7 +5593,7 @@
         },
         {
           "id": 7,
-          "globalId": 12,
+          "globalId": 1012,
           "type": 35,
           "amount": 1,
           "player": 0,
@@ -5602,7 +5602,7 @@
         // Claire
         {
           "id": 3,
-          "globalId": 46,
+          "globalId": 1046,
           "type": 24,
           "amount": 6,
           "player": 1,
@@ -5610,7 +5610,7 @@
         },
         {
           "id": 4,
-          "globalId": 15,
+          "globalId": 1015,
           "type": 79,
           "amount": 1,
           "player": 1,
@@ -5618,7 +5618,7 @@
         },
         {
           "id": 5,
-          "globalId": 17,
+          "globalId": 1017,
           "type": 81,
           "amount": 1,
           "requires": [ 79 ],
@@ -5627,7 +5627,7 @@
         },
         {
           "id": 6,
-          "globalId": 14,
+          "globalId": 1014,
           "type": 96,
           "amount": 1,
           "player": 1,
@@ -5635,7 +5635,7 @@
         },
         {
           "id": 6,
-          "globalId": 46,
+          "globalId": 1046,
           "type": 24,
           "amount": 6,
           "player": 1,
@@ -5812,14 +5812,14 @@
       "items": [
         {
           "id": 5,
-          "globalId": 56,
+          "globalId": 1056,
           "type": 39,
           "amount": 1,
           "player": 0
         },
         {
           "id": 5,
-          "globalId": 33,
+          "globalId": 1033,
           "type": 124,
           "amount": 1,
           "priority": "low",
@@ -5828,7 +5828,7 @@
         },
         {
           "id": 6,
-          "globalId": 56,
+          "globalId": 1056,
           "type": 39,
           "amount": 1,
           "player": 1
@@ -5882,7 +5882,7 @@
         // Leon
         {
           "id": 5,
-          "globalId": 43,
+          "globalId": 1043,
           "type": 97,
           "amount": 2,
           "player": 0,
@@ -5890,7 +5890,7 @@
         },
         {
           "id": 5,
-          "globalId": 43,
+          "globalId": 1043,
           "type": 95,
           "amount": 1,
           "player": 0,
@@ -5898,7 +5898,7 @@
         },
         {
           "id": 7,
-          "globalId": 41,
+          "globalId": 1041,
           "type": 33,
           "amount": 1,
           "requires": [ 63 ],
@@ -5906,7 +5906,7 @@
         },
         {
           "id": 13,
-          "globalId": 55,
+          "globalId": 1055,
           "type": 35,
           "amount": 1,
           "player": 0,
@@ -5914,7 +5914,7 @@
         },
         {
           "id": 20,
-          "globalId": 82,
+          "globalId": 1082,
           "type": 30,
           "amount": 3,
           "priority": "hidden",
@@ -5924,7 +5924,7 @@
         // Claire
         {
           "id": 5,
-          "globalId": 43,
+          "globalId": 1043,
           "type": 97,
           "amount": 2,
           "player": 1,
@@ -5932,7 +5932,7 @@
         },
         {
           "id": 5,
-          "globalId": 43,
+          "globalId": 1043,
           "type": 95,
           "amount": 1,
           "player": 1,
@@ -5940,7 +5940,7 @@
         },
         {
           "id": 6,
-          "globalId": 44,
+          "globalId": 1044,
           "type": 78,
           "amount": 1,
           "requires": [ 81 ],
@@ -5951,7 +5951,7 @@
         },
         {
           "id": 6,
-          "globalId": 44,
+          "globalId": 1044,
           "type": 78,
           "amount": 1,
           "requires": [ 81 ],
@@ -5961,7 +5961,7 @@
         },
         {
           "id": 7,
-          "globalId": 41,
+          "globalId": 1041,
           "type": 24,
           "amount": 6,
           "requires": [ 63 ],
@@ -5969,7 +5969,7 @@
         },
         {
           "id": 8,
-          "globalId": 42,
+          "globalId": 1042,
           "type": 24,
           "amount": 6,
           "requires": [ 63 ],
@@ -5977,14 +5977,14 @@
         },
         {
           "id": 13,
-          "globalId": 55,
+          "globalId": 1055,
           "type": 35,
           "amount": 1,
           "player": 1
         },
         {
           "id": 20,
-          "globalId": 82,
+          "globalId": 1082,
           "type": 30,
           "amount": 3,
           "priority": "hidden",
@@ -6022,19 +6022,19 @@
       "items": [
         {
           "id": 4,
-          "globalId": 74,
+          "globalId": 1074,
           "type": 38,
           "amount": 1
         },
         {
           "id": 5,
-          "globalId": 75,
+          "globalId": 1075,
           "type": 38,
           "amount": 1
         },
         {
           "id": 6,
-          "globalId": 81,
+          "globalId": 1081,
           "type": 38,
           "amount": 1
         }
@@ -6157,14 +6157,14 @@
       "items": [
         {
           "id": 4,
-          "globalId": 34,
+          "globalId": 1034,
           "type": 84,
           "amount": 1,
           "scenario": 0
         },
         {
           "id": 4,
-          "globalId": 34,
+          "globalId": 1034,
           "type": 84,
           "amount": 1,
           "priority": "low",
@@ -6172,14 +6172,14 @@
         },
         {
           "id": 5,
-          "globalId": 39,
+          "globalId": 1039,
           "type": 85,
           "amount": 1,
           "scenario": 0
         },
         {
           "id": 5,
-          "globalId": 39,
+          "globalId": 1039,
           "type": 85,
           "amount": 1,
           "priority": "low",
@@ -6282,13 +6282,13 @@
       "items": [
         {
           "id": 2,
-          "globalId": 78,
+          "globalId": 1078,
           "type": 30,
           "amount": 3
         },
         {
           "id": 3,
-          "globalId": 79,
+          "globalId": 1079,
           "type": 99,
           "amount": 1
         }
