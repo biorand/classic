@@ -600,6 +600,13 @@ namespace IntelOrca.Biohazard.BioRand
                 if (!includeKeyItems && (ItemHelper.GetItemAttributes((byte)item.Type) & ItemAttribute.Key) != 0)
                     continue;
 
+                var requiredRooms = (item.Raw.RequiresRoom ?? new string[0])
+                    .Select(x => RdtId.Parse(x))
+                    .Select(x => _nodes.First(y => y.RdtId == x))
+                    .ToArray();
+                if (requiredRooms.Any(x => !_visitedRooms.Contains(x)))
+                    continue;
+
                 if (item.Type == type)
                     bestI = i;
                 else

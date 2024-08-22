@@ -897,19 +897,20 @@ namespace IntelOrca.Biohazard.BioRand
                 return node;
 
             var rdt = _gameData.GetRdt(rdtId)!;
-            var items = rdt.EnumerateOpcodes<IItemAotSetOpcode>(_config)
-                .DistinctBy(x => x.Id)
-                .Where(x => _config.IncludeDocuments || (_itemHelper.GetItemAttributes((byte)x.Type) & ItemAttribute.Document) == 0)
-                .Select(x => new ItemPoolEntry()
-                {
-                    RdtId = rdt.RdtId,
-                    Id = x.Id,
-                    Type = x.Type,
-                    Amount = x.Amount,
-                    GlobalId = x.GlobalId,
-                    AllowDocuments = true
-                })
-                .ToArray();
+            // var items = rdt.EnumerateOpcodes<IItemAotSetOpcode>(_config)
+            //     .DistinctBy(x => x.Id)
+            //     .Where(x => _config.IncludeDocuments || (_itemHelper.GetItemAttributes((byte)x.Type) & ItemAttribute.Document) == 0)
+            //     .Select(x => new ItemPoolEntry()
+            //     {
+            //         RdtId = rdt.RdtId,
+            //         Id = x.Id,
+            //         Type = x.Type,
+            //         Amount = x.Amount,
+            //         GlobalId = x.GlobalId,
+            //         AllowDocuments = true
+            //     })
+            //     .ToArray();
+            var items = new ItemPoolEntry[0];
 
             // RE1 Jill does not have ink ribbons
             if (rdt.Version == BioVersion.Biohazard1 && _config.Player == 1)

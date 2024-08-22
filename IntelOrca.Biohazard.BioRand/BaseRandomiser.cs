@@ -331,15 +331,6 @@ namespace IntelOrca.Biohazard.BioRand
                             doorRando.CreateOriginalGraph();
                     }
 
-#if DEBUG
-                    var sss = JsonSerializer.Serialize(map, new JsonSerializerOptions()
-                    {
-                        DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull,
-                        PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                        WriteIndented = true
-                    });
-                    File.WriteAllText(@"M:\git\rer\IntelOrca.Biohazard.BioRand\data\re3\rdt.corrected.json", sss);
-#endif
                     try
                     {
                         using (progress.BeginTask(config.Player, "Randomizing items"))
