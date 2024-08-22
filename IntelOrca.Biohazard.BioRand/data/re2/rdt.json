@@ -3996,7 +3996,8 @@
           "id": 2,
           "globalId": 214,
           "type": 30,
-          "amount": 3
+          "amount": 3,
+          "requires": [ 50 ]
         },
         {
           "id": 7,
