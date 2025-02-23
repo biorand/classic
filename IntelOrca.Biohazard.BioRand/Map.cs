@@ -1,12 +1,15 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace IntelOrca.Biohazard.BioRand
 {
     public class Map
     {
         public MapStartEnd[]? BeginEndRooms { get; set; }
+        public Dictionary<int, MapKey>? Keys { get; set; }
         public Dictionary<string, MapRoom>? Rooms { get; set; }
 
         internal MapRoom? GetRoom(RdtId id)
@@ -62,30 +65,61 @@ namespace IntelOrca.Biohazard.BioRand
             }
             return int.Parse(s);
         }
+
+        public Map For(MapFilter filter)
+        {
+            return new Map()
+            {
+                BeginEndRooms = BeginEndRooms
+                    .Where(x => x.IsIncludedInFilter(filter))
+                    .ToArray(),
+                Keys = Keys,
+                Rooms = Rooms
+                    .Where(x => x.Value.IsIncludedInFilter(filter))
+                    .ToDictionary(x => x.Key, x => x.Value.For(filter))
+            };
+        }
     }
 
-    public class MapStartEnd
+    public class MapStartEnd : MapFilterable
     {
         public string? Start { get; set; }
         public string? End { get; set; }
-
-        public bool? DoorRando { get; set; }
-        public int? Player { get; set; }
-        public int? Scenario { get; set; }
     }
 
-    public class MapRoom
+    public class MapKey
     {
+        public string? Name { get; set; }
+        public string? Kind { get; set; }
+    }
+
+    public class MapRoom : MapFilterable
+    {
+        public string? Name { get; set; }
         public string? LinkedRoom { get; set; }
+        public string[]? Rdts { get; set; }
         public int[]? Requires { get; set; }
         public MapRoomDoor[]? Doors { get; set; }
         public MapRoomItem[]? Items { get; set; }
         public MapRoomEnemies[]? Enemies { get; set; }
         public MapRoomNpcs[]? Npcs { get; set; }
-        public DoorRandoSpec[]? DoorRando { get; set; }
+        public new DoorRandoSpec[]? DoorRando { get; set; }
+
+        public MapRoom For(MapFilter filter)
+        {
+            return new MapRoom()
+            {
+                Name = Name,
+                Doors = Doors?.Where(x => x.IsIncludedInFilter(filter)).ToArray() ?? [],
+                Items = Items?.Where(x => x.IsIncludedInFilter(filter)).ToArray() ?? [],
+                DoorRando = DoorRando,
+                Enemies = Enemies,
+                Npcs = Npcs
+            };
+        }
     }
 
-    public class MapRoomDoor
+    public class MapRoomDoor : MapEdge
     {
         public string? Condition { get; set; }
         public bool Create { get; set; }
@@ -106,9 +140,6 @@ namespace IntelOrca.Biohazard.BioRand
         public bool IsBridgeEdge { get; set; }
         public int[]? Requires { get; set; }
         public string[]? RequiresRoom { get; set; }
-        public bool? DoorRando { get; set; }
-        public int? Player { get; set; }
-        public int? Scenario { get; set; }
     }
 
     public class MapRoomDoorEntrance
@@ -121,7 +152,7 @@ namespace IntelOrca.Biohazard.BioRand
         public int Cut { get; set; }
     }
 
-    public class MapRoomItem
+    public class MapRoomItem : MapEdge
     {
         public System.Text.Json.JsonElement[]? Nop { get; set; }
         public JsonElement[]? Offsets { get; set; }
@@ -135,12 +166,9 @@ namespace IntelOrca.Biohazard.BioRand
         public int[]? Requires { get; set; }
         public string[]? RequiresRoom { get; set; }
         public bool? AllowDocuments { get; set; }
-        public bool? DoorRando { get; set; }
-        public int? Player { get; set; }
-        public int? Scenario { get; set; }
     }
 
-    public class MapRoomEnemies
+    public class MapRoomEnemies : MapFilterable
     {
         public System.Text.Json.JsonElement[]? Nop { get; set; }
         public int[]? ExcludeOffsets { get; set; }
@@ -157,9 +185,6 @@ namespace IntelOrca.Biohazard.BioRand
 
         // Filters
         public bool? RandomPlacements { get; set; }
-        public bool? DoorRando { get; set; }
-        public int? Player { get; set; }
-        public int? Scenario { get; set; }
     }
 
     public class MapRoomNpcs
@@ -183,5 +208,86 @@ namespace IntelOrca.Biohazard.BioRand
         public bool Cutscene { get; set; }
         public int? Player { get; set; }
         public int? Scenario { get; set; }
+    }
+
+    public class MapEdge : MapFilterable
+    {
+        public string? Name { get; set; }
+        public string[]? Requires2 { get; set; }
+        public MapRequirement[] Requirements => Requires2?.Select(MapRequirement.Parse).ToArray() ?? new MapRequirement[0];
+    }
+
+    public readonly struct MapRequirement
+    {
+        public MapRequirementKind Kind { get; }
+        public string Value { get; }
+
+        public MapRequirement(MapRequirementKind kind, string value)
+        {
+            Kind = kind;
+            Value = value;
+        }
+
+        public static MapRequirement Parse(string input)
+        {
+            if (TryParse(input, out var result))
+                return result;
+            throw new ArgumentException("Invalid requirement syntax", nameof(input));
+        }
+
+        public static bool TryParse(string input, out MapRequirement result)
+        {
+            var m = Regex.Match(input, @"^([a-z]+)\(([^()]*)\)$");
+            if (m.Success)
+            {
+                if (Enum.TryParse<MapRequirementKind>(m.Groups[1].Value, true, out var kind))
+                {
+                    result = new MapRequirement(kind, m.Groups[2].Value);
+                    return true;
+                }
+            }
+            result = default;
+            return false;
+        }
+    }
+
+    public enum MapRequirementKind
+    {
+        None,
+        Flag,
+        Item,
+        Room,
+    }
+
+    public abstract class MapFilterable
+    {
+        public bool? DoorRando { get; set; }
+        public int? Player { get; set; }
+        public int? Scenario { get; set; }
+
+        public bool IsIncludedInFilter(MapFilter filter)
+        {
+            if (DoorRando != null && DoorRando != filter.DoorRando)
+                return false;
+            if (Player != null && Player != filter.Player)
+                return false;
+            if (Scenario != null && Scenario != filter.Scenario)
+                return false;
+            return true;
+        }
+    }
+
+    public readonly struct MapFilter
+    {
+        public bool DoorRando { get; }
+        public byte Player { get; }
+        public byte Scenario { get; }
+
+        public MapFilter(bool doorRando, byte player, byte scenario)
+        {
+            DoorRando = doorRando;
+            Player = player;
+            Scenario = scenario;
+        }
     }
 }

@@ -5,8 +5,75 @@
       "end": "501"
     }
   ],
+  "keys": {
+    "28": {
+      "name": "Broken Shotgun",
+      "kind": "consumable"
+    },
+    "31": {
+      "name": "Wood Emblem",
+      "kind": "consumable"
+    },
+    "32": {
+      "name": "Gold Emblem",
+      "kind": "consumable"
+    },
+    "33": {
+      "name": "Blue Jewel",
+      "kind": "consumable"
+    },
+    "34": {
+      "name": "Red Jewel",
+      "kind": "consumable"
+    },
+    "35": {
+      "name": "Music Notes",
+      "kind": "consumable"
+    },
+    "38": {
+      "name": "Chemical",
+      "kind": "consumable"
+    },
+    "41": {
+      "name": "Wind Crest",
+      "kind": "consumable"
+    },
+    "44": {
+      "name": "Moon Crest",
+      "kind": "consumable"
+    },
+    "45": {
+      "name": "Star Crest",
+      "kind": "consumable"
+    },
+    "46": {
+      "name": "Sun Crest",
+      "kind": "consumable"
+    },
+    "48": {
+      "name": "Lighter",
+      "kind": "reusuable"
+    },
+    "51": {
+      "name": "Sword Key",
+      "kind": "reusuable"
+    },
+    "52": {
+      "name": "Armor Key",
+      "kind": "reusuable"
+    },
+    "54": {
+      "name": "Helmet Key",
+      "kind": "reusuable"
+    },
+    "61": {
+      "name": "Small Key",
+      "kind": "consumable"
+    }
+  },
   "rooms": {
     "100": {
+      "name": "1F WEST SAVE",
       "linkedRoom": "600",
       "doorRando": [
         {
@@ -20,7 +87,9 @@
       ],
       "items": [
         {
+          "name": "BED SWORD KEY",
           "id": 4,
+          "globalId": 22,
           "type": 51,
           "amount": 1,
           "player": 0
@@ -37,6 +106,7 @@
       ]
     },
     "101": {
+      "name": "1F WEST STAIRS",
       "doorRando": [
         {
           "cutscene": true,
@@ -50,7 +120,9 @@
         },
         {
           "target": "102",
-          "requires": [ 52 ]
+          "requires2": [
+            "item(52)"
+          ]
         },
         {
           "target": "103"
@@ -66,6 +138,7 @@
       ]
     },
     "102": {
+      "name": "1F WEST STORAGE",
       "linkedRoom": "602",
       "doors": [
         {
@@ -74,19 +147,24 @@
       ],
       "items": [
         {
+          "name": "BROKEN SHOTGUN",
           "id": 1,
           "globalId": 48,
           "type": 28,
           "amount": 1
         },
         {
+          "name": "SHELLS IN DRAWER",
           "id": 2,
           "globalId": 49,
           "type": 12,
           "amount": 7,
-          "requires": [ 61 ]
+          "requires2": [
+            "item(61)"
+          ]
         },
         {
+          "name": "CLIP ON SHELF",
           "id": 3,
           "globalId": 50,
           "type": 11,
@@ -101,6 +179,7 @@
       ]
     },
     "103": {
+      "name": "1F WEST MIDDLE CORRIDOR",
       "linkedRoom": "603",
       "doors": [
         {
@@ -117,7 +196,9 @@
         },
         {
           "target": "10E",
-          "requires": [ 51 ]
+          "requires2": [
+            "item(51)"
+          ]
         }
       ],
       "enemies": [
@@ -127,6 +208,7 @@
       ]
     },
     "104": {
+      "name": "1F WEST TEA CORRIDOR",
       "linkedRoom": "604",
       "doors": [
         {
@@ -139,15 +221,18 @@
         },
         {
           "target": "10F",
-          "requires": [ 51 ]
+          "requires2": [
+            "item(51)"
+          ]
         },
         {
-          "target": "610",
+          "target": "110",
           "lock": "side"
         }
       ],
       "items": [
         {
+          "name": "KENNETH/1",
           "id": 5,
           "globalId": 41,
           "type": 11,
@@ -155,6 +240,7 @@
           "player": 0
         },
         {
+          "name": "KENNETH/2",
           "id": 9,
           "globalId": 47,
           "type": 11,
@@ -162,6 +248,7 @@
           "player": 0
         },
         {
+          "name": "KENNETH/1",
           "id": 8,
           "globalId": 41,
           "type": 11,
@@ -170,6 +257,7 @@
           "player": 1
         },
         {
+          "name": "KENNETH/2",
           "id": 9,
           "globalId": 47,
           "type": 11,
@@ -187,6 +275,7 @@
       "npcs": []
     },
     "105": {
+      "name": "1F DINING ROOM",
       "linkedRoom": "605",
       "doors": [
         {
@@ -200,14 +289,18 @@
       ],
       "items": [
         {
+          "name": "BEHIND CLOCK",
           "id": 3,
           "globalId": 33,
           "type": 53,
           "amount": 1,
-          "requires": [ 32 ],
+          "requires2": [
+            "item(32)"
+          ],
           "player": 0
         },
         {
+          "name": "WOOD EMBLEM",
           "id": 4,
           "globalId": 42,
           "type": 31,
@@ -215,24 +308,29 @@
           "player": 0
         },
         {
+          "name": "BROKEN STATUE",
           "id": 18,
           "globalId": 44,
           "type": 33,
           "amount": 1,
-          "requiresRoom": [ "202" ],
-          "priority": "low",
-          "doorRando": true,
+          "requires2": [
+            "room(202)"
+          ],
           "player": 0
         },
         {
+          "name": "BEHIND CLOCK",
           "id": 6,
           "globalId": 33,
           "type": 53,
           "amount": 1,
-          "requires": [ 32 ],
+          "requires2": [
+            "item(32)"
+          ],
           "player": 1
         },
         {
+          "name": "WOOD EMBLEM",
           "id": 7,
           "globalId": 42,
           "type": 31,
@@ -240,13 +338,14 @@
           "player": 1
         },
         {
+          "name": "BROKEN STATUE",
           "id": 23,
           "globalId": 44,
           "type": 33,
           "amount": 1,
-          "requiresRoom": [ "202" ],
-          "priority": "low",
-          "doorRando": true,
+          "requires2": [
+            "room(202)"
+          ],
           "player": 1
         }
       ],
@@ -269,6 +368,7 @@
       ]
     },
     "106": {
+      "name": "1F MAIN HALL",
       "linkedRoom": "606",
       "doors": [
         {
@@ -280,7 +380,9 @@
         },
         {
           "target": "111",
-          "requires": [ 52 ]
+          "requires2": [
+            "item(52)"
+          ]
         },
         {
           "target": "203",
@@ -305,6 +407,7 @@
       ],
       "items": [
         {
+          "name": "TYPEWRITER INK",
           "id": 5,
           "globalId": 52,
           "type": 47,
@@ -312,6 +415,7 @@
           "player": 0
         },
         {
+          "name": "GUN ON FLOOR",
           "id": 6,
           "globalId": 26,
           "type": 2,
@@ -319,6 +423,7 @@
           "player": 0
         },
         {
+          "name": "BARRY'S GIFT'",
           "id": 6,
           "globalId": 14,
           "type": 17,
@@ -373,6 +478,7 @@
       ]
     },
     "107": {
+      "name": "1F EAST GALLERY",
       "linkedRoom": "607",
       "doors": [
         {
@@ -380,11 +486,14 @@
         },
         {
           "target": "108",
-          "requires": [ 51 ]
+          "requires2": [
+            "item(51)"
+          ]
         }
       ],
       "items": [
         {
+          "name": "SHELF ROUND CORNER",
           "id": 131,
           "globalId": 39,
           "type": 47,
@@ -399,6 +508,7 @@
       ]
     },
     "108": {
+      "name": "1F EAST DOG CORRIDOR",
       "linkedRoom": "608",
       "doors": [
         {
@@ -410,6 +520,7 @@
       ],
       "items": [
         {
+          "name": "UNDER CABINET",
           "id": 3,
           "globalId": 19,
           "type": 11,
@@ -424,6 +535,7 @@
       ]
     },
     "109": {
+      "name": "1F EAST CORNER CORRIDOR",
       "linkedRoom": "609",
       "doors": [
         {
@@ -434,7 +546,9 @@
         },
         {
           "target": "114",
-          "requires": [ 52 ]
+          "requires2": [
+            "item(52)"
+          ]
         },
         {
           "target": "113"
@@ -445,6 +559,7 @@
       ],
       "items": [
         {
+          "name": "GREEN HERB IN CORNER",
           "id": 5,
           "globalId": 111,
           "type": 68,
@@ -466,6 +581,7 @@
       ]
     },
     "10A": {
+      "name": "1F EAST END CORRIDOR",
       "linkedRoom": "60A",
       "doors": [
         {
@@ -479,8 +595,10 @@
           "target": "117"
         },
         {
-          "target": "619",
-          "requires": [ 54 ]
+          "target": "119",
+          "requires2": [
+            "item(54)"
+          ]
         },
         {
           "target": "11A"
@@ -494,6 +612,7 @@
       ]
     },
     "10B": {
+      "name": "1F EAST STAIRS",
       "linkedRoom": "60B",
       "doors": [
         {
@@ -509,11 +628,11 @@
       ],
       "items": [
         {
+          "name": "GREEN HERB",
           "id": 4,
           "globalId": 110,
           "type": 68,
-          "amount": 1,
-          "priority": "low"
+          "amount": 1
         }
       ],
       "enemies": [
@@ -524,66 +643,83 @@
       ]
     },
     "10C": {
-      "linkedRoom": "60C",
+      "rdts": [ "10C", "60C" ],
+      "name": "1F WEST GREENHOUSE",
       "doors": [
         {
           "target": "103"
+        },
+        {
+          "target": "10C/BACK",
+          "requires2": [
+            "item(38)"
+          ]
+        }
+      ]
+    },
+    "10C/BACK": {
+      "rdts": [ "10C", "60C" ],
+      "name": "1F WEST GREENHOUSE",
+      "doors": [
+        {
+          "target": "10C"
         }
       ],
       "items": [
         {
+          "name": "CREST",
           "id": 4,
           "globalId": 27,
           "type": 52,
-          "amount": 6,
-          "requires": [ 38 ]
+          "amount": 6
         },
         {
+          "name": "RED HERB/1",
           "id": 5,
           "globalId": 103,
           "type": 67,
-          "amount": 1,
-          "requires": [ 38 ]
+          "amount": 1
         },
         {
+          "name": "RED HERB/2",
           "id": 6,
           "globalId": 243,
           "type": 67,
-          "amount": 1,
-          "requires": [ 38 ]
+          "amount": 1
         },
         {
+          "name": "GREEN HERB/1",
           "id": 7,
           "globalId": 132,
           "type": 68,
-          "amount": 1,
-          "requires": [ 38 ]
+          "amount": 1
         },
         {
+          "name": "GREEN HERB/2",
           "id": 8,
           "globalId": 242,
           "type": 68,
-          "amount": 1,
-          "requires": [ 38 ]
+          "amount": 1
         },
         {
+          "name": "GREEN HERB/3",
           "id": 9,
           "globalId": 244,
           "type": 68,
-          "amount": 1,
-          "requires": [ 38 ]
+          "amount": 1
         },
         {
+          "name": "GREEN HERB/4",
           "id": 10,
           "globalId": 245,
           "type": 68,
-          "amount": 1,
-          "requires": [ 38 ]
+          "amount": 1
         }
       ],
       "enemies": []
     },
     "10D": {
+      "name": "1F WEST TIGER",
       "linkedRoom": "60D",
       "doors": [
         {
@@ -592,18 +728,24 @@
       ],
       "items": [
         {
+          "name": "BLUE EYE",
           "id": 131,
           "globalId": 174,
           "type": 41,
           "amount": 1,
-          "requires": [ 33 ]
+          "requires2": [
+            "item(33)"
+          ]
         },
         {
+          "name": "RED EYE",
           "id": 4,
           "globalId": 175,
           "type": 5,
           "amount": 6,
-          "requires": [ 34 ]
+          "requires2": [
+            "item(34)"
+          ]
         }
       ],
       "enemies": [
@@ -614,6 +756,7 @@
       ]
     },
     "10E": {
+      "name": "1F WEST BEDROOM",
       "linkedRoom": "60E",
       "doors": [
         {
@@ -622,12 +765,14 @@
       ],
       "items": [
         {
+          "name": "CLIP ON BED",
           "id": 1,
           "globalId": 146,
           "type": 11,
           "amount": 15
         },
         {
+          "name": "SHELLS IN CLOSET",
           "id": 2,
           "globalId": 5,
           "type": 12,
@@ -642,6 +787,7 @@
       ]
     },
     "10F": {
+      "name": "1F WEST BAR",
       "linkedRoom": "60F",
       "doors": [
         {
@@ -650,30 +796,43 @@
       ],
       "items": [
         {
+          "name": "BEHIND SLIDING DOOR",
           "id": 4,
           "type": 32,
           "amount": 1,
-          "requires": [ 31, 35 ],
+          "requires2": [
+            "item(31)",
+            "item(35)"
+          ],
           "player": 0,
           "doorRando": false
         },
         {
+          "name": "BEHIND SLIDING DOOR",
           "id": 4,
           "type": 32,
           "amount": 1,
-          "requires": [ 31, 35 ],
+          "requires2": [
+            "item(31)",
+            "item(35)"
+          ],
           "player": 0,
           "doorRando": true,
           "priority": "low"
         },
         {
+          "name": "BEHIND SLIDING DOOR",
           "id": 4,
           "type": 32,
           "amount": 1,
-          "requires": [ 31, 35 ],
+          "requires2": [
+            "item(31)",
+            "item(35)"
+          ],
           "player": 1
         },
         {
+          "name": "BEHIND BOOKSHELF",
           "id": 5,
           "globalId": 7,
           "type": 35,
@@ -695,9 +854,11 @@
       ]
     },
     "110": {
+      "name": "1F WEST ELEVATOR STAIRS",
       "enemies": []
     },
     "111": {
+      "name": "1F EAST DRESSING",
       "linkedRoom": "611",
       "doors": [
         {
@@ -709,13 +870,17 @@
       ],
       "items": [
         {
+          "name": "IN LOCKED DRAWER",
           "id": 3,
           "globalId": 2,
           "type": 12,
           "amount": 7,
-          "requires": [ 61 ]
+          "requires2": [
+            "item(61)"
+          ]
         },
         {
+          "name": "CLIP ON TABLE",
           "id": 4,
           "globalId": 96,
           "type": 11,
@@ -730,6 +895,7 @@
       ]
     },
     "112": {
+      "name": "1F EAST BIG MIRROR",
       "doorRando": [
         {
           "nop": [ "0x17864-0x17866", "0x17884-0x17886" ]
@@ -748,18 +914,21 @@
       ],
       "items": [
         {
+          "name": "GREEN HERB/1",
           "id": 2,
           "globalId": 142,
           "type": 68,
           "amount": 1
         },
         {
+          "name": "GREEN HERB/2",
           "id": 3,
           "globalId": 143,
           "type": 68,
           "amount": 1
         },
         {
+          "name": "INK",
           "id": 4,
           "globalId": 212,
           "type": 47,
@@ -773,6 +942,7 @@
       ]
     },
     "113": {
+      "name": "1F EAST BATHROOM",
       "linkedRoom": "613",
       "doors": [
         {
@@ -781,6 +951,7 @@
       ],
       "items": [
         {
+          "name": "IN BATHTUB",
           "id": 1,
           "globalId": 3,
           "type": 61,
@@ -796,6 +967,7 @@
       ]
     },
     "114": {
+      "name": "1F EAST OUTSIDE BOILER",
       "linkedRoom": "614",
       "doors": [
         {
@@ -804,36 +976,42 @@
       ],
       "items": [
         {
+          "name": "GREEN HERB/1",
           "id": 1,
           "globalId": 10,
           "type": 68,
           "amount": 1
         },
         {
+          "name": "GREEN HERB/2",
           "id": 2,
           "globalId": 221,
           "type": 68,
           "amount": 1
         },
         {
+          "name": "GREEN HERB/3",
           "id": 3,
           "globalId": 222,
           "type": 68,
           "amount": 1
         },
         {
+          "name": "GREEN HERB/4",
           "id": 4,
           "globalId": 223,
           "type": 68,
           "amount": 1
         },
         {
+          "name": "GREEN HERB/5",
           "id": 5,
           "globalId": 224,
           "type": 68,
           "amount": 1
         },
         {
+          "name": "GREEN HERB/6",
           "id": 6,
           "globalId": 225,
           "type": 68,
@@ -843,6 +1021,7 @@
       "enemies": []
     },
     "115": {
+      "name": "1F EAST JILL SANDWICH",
       "linkedRoom": "615",
       "doors": [
         {
@@ -868,6 +1047,7 @@
       ]
     },
     "116": {
+      "name": "1F EAST LOUNGE",
       "linkedRoom": "616",
       "doors": [
         {
@@ -876,11 +1056,14 @@
       ],
       "items": [
         {
+          "name": "SHOTGUN FRAME",
           "id": 1,
           "globalId": 0,
           "type": 3,
           "amount": 7,
-          "requires": [ 28 ]
+          "requires2": [
+            "item(28)"
+          ]
         }
       ],
       "enemies": [
@@ -891,6 +1074,7 @@
       ]
     },
     "117": {
+      "name": "1F EAST PORTRAITS",
       "linkedRoom": "617",
       "doors": [
         {
@@ -899,6 +1083,7 @@
       ],
       "items": [
         {
+          "name": "BEHIND END PORTRAIT",
           "id": 9,
           "globalId": 31,
           "type": 45,
@@ -908,6 +1093,7 @@
       "enemies": []
     },
     "118": {
+      "name": "1F EAST SAVE",
       "linkedRoom": "618",
       "doorRando": [
         {
@@ -921,12 +1107,14 @@
       ],
       "items": [
         {
+          "name": "CHEMICAL",
           "id": 1,
           "globalId": 13,
           "type": 38,
           "amount": 1
         },
         {
+          "name": "WESKER'S GIFT/FAS",
           "id": 2,
           "globalId": 160,
           "type": 65,
@@ -934,6 +1122,7 @@
           "priority": "low"
         },
         {
+          "name": "WESKER'S GIFT/SHELLS",
           "id": 4,
           "globalId": 218,
           "type": 12,
@@ -941,6 +1130,7 @@
           "priority": "low"
         },
         {
+          "name": "WESKER'S GIFT/CLIP",
           "id": 5,
           "globalId": 217,
           "type": 11,
@@ -957,14 +1147,17 @@
       ]
     },
     "119": {
+      "name": "1F EAST STUDY",
       "items": [
         {
+          "name": "BOOK",
           "id": 1,
           "globalId": 67,
           "type": 64,
           "amount": 0
         },
         {
+          "name": "MAGNUM ROUNDS",
           "id": 4,
           "globalId": 101,
           "type": 14,
@@ -979,6 +1172,7 @@
       ]
     },
     "11A": {
+      "name": "1F EAST OUTSIDE CREST EXIT",
       "doorRando": [
         {
           "category": "bridge"
@@ -991,7 +1185,12 @@
         },
         {
           "target": "11B",
-          "requires": [ 41, 44, 45, 46 ],
+          "requires2": [
+            "item(41)",
+            "item(44)",
+            "item(45)",
+            "item(46)"
+          ],
           "noUnlock": true
         }
       ],
@@ -1003,6 +1202,7 @@
       ]
     },
     "11B": {
+      "name": "1F EAST STORE ROOM WITH STEPLADDER",
       "linkedRoom": "61B",
       "doors": [
         {
@@ -1014,13 +1214,16 @@
       ],
       "items": [
         {
+          "name": "SMALL KEY",
           "id": 2,
           "globalId": 34,
           "type": 61,
           "amount": 1,
+          "priority": "hidden",
           "player": 0
         },
         {
+          "name": "CRANK ON SHELF",
           "id": 3,
           "globalId": 35,
           "type": 29,
@@ -1035,6 +1238,7 @@
       ]
     },
     "11C": {
+      "name": "1F EAST WARDROBE",
       "doorRando": [
         {
           "category": "exclude"
@@ -1047,7 +1251,19 @@
         }
       ]
     },
+    "200": {
+      "name": "KITCHEN ELEVATOR (CUTSCENE)",
+      "doors": [
+        {
+          "target": "21B"
+        },
+        {
+          "target": "21C"
+        }
+      ]
+    },
     "201": {
+      "name": "2F WEST STAIRS",
       "linkedRoom": "701",
       "doors": [
         {
@@ -1057,11 +1273,11 @@
           "target": "202"
         },
         {
-          "target": "714",
+          "target": "214",
           "lock": "side"
         },
         {
-          "target": "715",
+          "target": "215",
           "requires": [ 54 ]
         }
       ],
@@ -1073,6 +1289,7 @@
       ]
     },
     "202": {
+      "name": "2F WEST DINING ROOM",
       "linkedRoom": "702",
       "doors": [
         {
@@ -1089,6 +1306,7 @@
       ]
     },
     "203": {
+      "name": "2F MAIN HALL",
       "linkedRoom": "703",
       "doorRando": [
         {
@@ -1113,6 +1331,7 @@
       ],
       "items": [
         {
+          "name": "BARRY'S GIFT",
           "id": 8,
           "globalId": 14,
           "type": 17,
@@ -1130,6 +1349,7 @@
       "enemies": []
     },
     "204": {
+      "name": "2F EAST C SHAPED CORRIDOR",
       "linkedRoom": "704",
       "doors": [
         {
@@ -1158,6 +1378,7 @@
       ]
     },
     "205": {
+      "name": "2F EAST ARMORY",
       "linkedRoom": "705",
       "doors": [
         {
@@ -1166,6 +1387,7 @@
       ],
       "items": [
         {
+          "name": "IN CABINET",
           "id": 9,
           "globalId": 36,
           "type": 46,
@@ -1180,6 +1402,7 @@
       ]
     },
     "206": {
+      "name": "2F EAST READING",
       "linkedRoom": "706",
       "doors": [
         {
@@ -1203,6 +1426,7 @@
       ],
       "items": [
         {
+          "name": "BOOK ON TABLE",
           "id": 2,
           "globalId": 247,
           "type": 110,
@@ -1216,6 +1440,7 @@
       ]
     },
     "207": {
+      "name": "2F EAST STAIRS",
       "linkedRoom": "707",
       "doors": [
         {
@@ -1246,6 +1471,7 @@
       ]
     },
     "208": {
+      "name": "2F EAST DEER CONNECTOR",
       "linkedRoom": "708",
       "doors": [
         {
@@ -1266,6 +1492,7 @@
       ]
     },
     "209": {
+      "name": "2F EAST BEDROOM",
       "linkedRoom": "709",
       "doors": [
         {
@@ -1274,19 +1501,23 @@
       ],
       "items": [
         {
+          "name": "LIGHTER ON DISPLAY CASE",
           "id": 1,
           "globalId": 37,
           "type": 48,
           "amount": 0
         },
         {
+          "name": "BEHIND BED",
           "id": 2,
           "globalId": 38,
           "type": 12,
           "amount": 7,
+          "priority": "hidden",
           "player": 0
         },
         {
+          "name": "BEHIND BED",
           "id": 2,
           "globalId": 38,
           "type": 11,
@@ -1294,6 +1525,7 @@
           "player": 1
         },
         {
+          "name": "RED HERB",
           "id": 3,
           "globalId": 211,
           "type": 67,
@@ -1308,6 +1540,7 @@
       ]
     },
     "20A": {
+      "name": "2F EAST FISH TANK",
       "linkedRoom": "70A",
       "doorRando": [
         {
@@ -1322,6 +1555,7 @@
       ],
       "items": [
         {
+          "name": "BEHIND BOOKCASE",
           "id": 7,
           "globalId": 15,
           "type": 12,
@@ -1329,6 +1563,7 @@
           "player": 0
         },
         {
+          "name": "BEHIND BOOKCASE",
           "id": 7,
           "globalId": 15,
           "type": 16,
@@ -1336,6 +1571,7 @@
           "player": 1
         },
         {
+          "name": "COAT POCKET",
           "id": 9,
           "globalId": 184,
           "type": 47,
@@ -1359,18 +1595,20 @@
       ]
     },
     "20B": {
+      "name": "2F EAST FIREPLACE",
       "linkedRoom": "70B",
       "doors": [
         {
           "target": "207"
         },
         {
-          "target": "70C",
+          "target": "20C",
           "requires": [ 54 ]
         }
       ],
       "items": [
         {
+          "name": "GREEN HERB",
           "id": 3,
           "globalId": 162,
           "type": 68,
@@ -1385,6 +1623,7 @@
       ]
     },
     "20C": {
+      "name": "PIANO LESSON",
       "enemies": [
         {
           "keepState": true,
@@ -1399,6 +1638,7 @@
       ]
     },
     "20D": {
+      "name": "2F EAST RICHARD",
       "doorRando": [
         {
           "category": "exclude"
@@ -1415,12 +1655,14 @@
       ],
       "items": [
         {
+          "name": "GREEN HERB/1",
           "id": 3,
           "globalId": 197,
           "type": 68,
           "amount": 1
         },
         {
+          "name": "GREEN HERB/2",
           "id": 5,
           "globalId": 198,
           "type": 68,
@@ -1442,6 +1684,7 @@
       "enemies": []
     },
     "20E": {
+      "name": "2F EAST ATTIC CONNECTOR",
       "linkedRoom": "70E",
       "doors": [
         {
@@ -1464,6 +1707,7 @@
       ]
     },
     "20F": {
+      "name": "2F EAST DINING ROOM",
       "linkedRoom": "70F",
       "doors": [
         {
@@ -1472,17 +1716,21 @@
       ],
       "items": [
         {
+          "name": "CLIP ON CABINET",
           "id": 3,
           "globalId": 11,
           "type": 11,
           "amount": 15
         },
         {
+          "name": "BOOKSHELF IN CUPBOARD",
           "id": 4,
           "globalId": 12,
           "type": 12,
           "amount": 7,
-          "requires": [ 48 ]
+          "requires2": [
+            "item(48)"
+          ]
         }
       ],
       "enemies": [
@@ -1493,6 +1741,7 @@
       ]
     },
     "210": {
+      "name": "2F EAST ATTIC",
       "linkedRoom": "710",
       "doors": [
         {
@@ -1501,12 +1750,14 @@
       ],
       "items": [
         {
+          "name": "CREST",
           "id": 1,
           "globalId": 129,
           "type": 44,
           "amount": 1
         },
         {
+          "name": "SHELLS",
           "id": 2,
           "globalId": 130,
           "type": 12,
@@ -1522,6 +1773,7 @@
       ]
     },
     "211": {
+      "name": "2F EAST BALCONY CONNECTOR",
       "linkedRoom": "711",
       "doors": [
         {
@@ -1533,6 +1785,7 @@
       ],
       "items": [
         {
+          "name": "SMALL KEY",
           "id": 5,
           "globalId": 149,
           "type": 61,
@@ -1548,6 +1801,7 @@
       ]
     },
     "212": {
+      "name": "2F EAST BALCONY",
       "linkedRoom": "712",
       "doorRando": [
         {
@@ -1563,6 +1817,7 @@
       ],
       "items": [
         {
+          "name": "FORREST'S WEAPON",
           "id": 1,
           "globalId": 6,
           "type": 11,
@@ -1570,6 +1825,7 @@
           "player": 0
         },
         {
+          "name": "FORREST'S WEAPON",
           "id": 1,
           "globalId": 6,
           "type": 7,
@@ -1587,8 +1843,10 @@
       ]
     },
     "213": {
+      "name": "2F WEST ELEVATOR",
       "items": [
         {
+          "name": "GREEN HERB",
           "id": 4,
           "globalId": 161,
           "type": 68,
@@ -1602,20 +1860,24 @@
       ]
     },
     "214": {
+      "name": "2F WEST BLUE CORRIDOR",
       "items": [
         {
+          "name": "GREEN HERB/1",
           "id": 2,
           "globalId": 169,
           "type": 68,
           "amount": 1
         },
         {
+          "name": "BLUE HERB",
           "id": 3,
           "globalId": 170,
           "type": 69,
           "amount": 1
         },
         {
+          "name": "GREEN HERB/2",
           "id": 4,
           "globalId": 171,
           "type": 68,
@@ -1629,20 +1891,24 @@
       ]
     },
     "215": {
+      "name": "2F WEST DEER ROOM",
       "items": [
         {
+          "name": "SHELLS",
           "id": 3,
           "globalId": 29,
           "type": 12,
           "amount": 7
         },
         {
+          "name": "DEER EYE",
           "id": 5,
           "globalId": 30,
           "type": 34,
           "amount": 1
         },
         {
+          "name": "MAGNUM ROUNDS",
           "id": 6,
           "globalId": 200,
           "type": 14,
@@ -1657,19 +1923,24 @@
       ]
     },
     "216": {
+      "name": "2F WEST LIBRARY",
       "items": [
         {
+          "name": "DOCUMENT ON STALL",
           "id": 3,
           "globalId": 84,
           "type": 102,
           "amount": 1
         },
         {
+          "name": "LOCKED DRAWER",
           "id": 4,
           "globalId": 121,
           "type": 14,
           "amount": 6,
-          "requires": [ 61 ]
+          "requires2": [
+            "item(61)"
+          ]
         }
       ],
       "enemies": [
@@ -1679,8 +1950,10 @@
       ]
     },
     "217": {
+      "name": "2F WEST LIBRARY PUZZLE",
       "items": [
         {
+          "name": "MO DISC",
           "id": 5,
           "globalId": 77,
           "type": 40,
@@ -1694,14 +1967,17 @@
       ]
     },
     "218": {
+      "name": "2F WEST HIDDEN LIBRARY",
       "items": [
         {
+          "name": "CLIP",
           "id": 2,
           "globalId": 199,
           "type": 11,
           "amount": 15
         },
         {
+          "name": "INK",
           "id": 3,
           "globalId": 91,
           "type": 47,
@@ -1717,20 +1993,24 @@
       ]
     },
     "219": {
+      "name": "2F WEST STORAGE",
       "items": [
         {
+          "name": "SHELLS/1",
           "id": 1,
           "globalId": 55,
           "type": 12,
           "amount": 7
         },
         {
+          "name": "SHELLS/2",
           "id": 2,
           "globalId": 56,
           "type": 12,
           "amount": 7
         },
         {
+          "name": "BATTERY",
           "id": 3,
           "globalId": 57,
           "type": 39,
@@ -1745,8 +2025,10 @@
       ]
     },
     "21A": {
+      "name": "B1 EAST",
       "items": [
         {
+          "name": "SHELLS",
           "id": 3,
           "globalId": 219,
           "type": 12,
@@ -1760,14 +2042,17 @@
       ]
     },
     "21B": {
+      "name": "B1 WEST",
       "items": [
         {
+          "name": "GREEN HERB/1",
           "id": 2,
           "globalId": 93,
           "type": 68,
           "amount": 1
         },
         {
+          "name": "GREEN HERB/2",
           "id": 3,
           "globalId": 213,
           "type": 68,
@@ -1781,8 +2066,22 @@
       ]
     },
     "21C": {
+      "name": "B1 KITCHEN",
+      "doors": [
+        {
+          "target": "200"
+        },
+        {
+          "target": "110"
+        },
+        {
+          "target": "21B",
+          "lock": "side"
+        }
+      ],
       "items": [
         {
+          "name": "INK NEAR SINK",
           "id": 10,
           "globalId": 228,
           "type": 61,
@@ -3569,1330 +3868,6 @@
         {
           "target": "514",
           "randomize": false
-        }
-      ]
-    },
-    "600": {
-      "items": [
-        {
-          "id": 4,
-          "type": 51,
-          "amount": 1,
-          "player": 0
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ],
-          "maxDifficulty": 0,
-          "restricted": true
-        }
-      ]
-    },
-    "601": {
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ],
-          "player": 1
-        }
-      ],
-      "npcs": [
-        {
-          "includeTypes": [ 44 ],
-          "player": 0
-        }
-      ]
-    },
-    "602": {
-      "items": [
-        {
-          "id": 1,
-          "globalId": 48,
-          "type": 28,
-          "amount": 1
-        },
-        {
-          "id": 2,
-          "globalId": 49,
-          "type": 12,
-          "amount": 7,
-          "requires": [ 61 ]
-        },
-        {
-          "id": 3,
-          "globalId": 50,
-          "type": 11,
-          "amount": 15
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ],
-          "maxDifficulty": 0
-        }
-      ]
-    },
-    "603": {
-      "enemies": []
-    },
-    "604": {
-      "items": [
-        {
-          "id": 5,
-          "globalId": 41,
-          "type": 11,
-          "amount": 15,
-          "player": 0
-        },
-        {
-          "id": 9,
-          "globalId": 47,
-          "type": 11,
-          "amount": 15,
-          "player": 0
-        },
-        {
-          "id": 8,
-          "globalId": 41,
-          "type": 11,
-          "amount": 15,
-          "priority": "low",
-          "player": 1
-        },
-        {
-          "id": 9,
-          "globalId": 47,
-          "type": 11,
-          "amount": 15,
-          "priority": "low",
-          "player": 1
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ]
-        }
-      ]
-    },
-    "605": {
-      "items": [
-        {
-          "id": 3,
-          "globalId": 33,
-          "type": 53,
-          "amount": 1,
-          "requires": [ 32 ],
-          "player": 0
-        },
-        {
-          "id": 4,
-          "globalId": 42,
-          "type": 31,
-          "amount": 1,
-          "player": 0
-        },
-        {
-          "id": 18,
-          "globalId": 44,
-          "type": 33,
-          "amount": 1,
-          "requiresRoom": [ "202" ],
-          "priority": "low",
-          "doorRando": true,
-          "player": 0
-        },
-        {
-          "id": 6,
-          "globalId": 33,
-          "type": 53,
-          "amount": 1,
-          "requires": [ 32 ],
-          "player": 1
-        },
-        {
-          "id": 7,
-          "globalId": 42,
-          "type": 31,
-          "amount": 1,
-          "player": 1
-        },
-        {
-          "id": 23,
-          "globalId": 44,
-          "type": 33,
-          "amount": 1,
-          "requiresRoom": [ "202" ],
-          "priority": "low",
-          "doorRando": true,
-          "player": 1
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ]
-        }
-      ]
-    },
-    "606": {
-      "items": [
-        {
-          "id": 5,
-          "globalId": 52,
-          "type": 47,
-          "amount": 3,
-          "player": 0
-        },
-        {
-          "id": 6,
-          "globalId": 26,
-          "type": 2,
-          "amount": 15,
-          "player": 0
-        },
-        {
-          "id": 6,
-          "globalId": 14,
-          "type": 17,
-          "amount": 6,
-          "priority": "low",
-          "player": 1
-        }
-      ]
-    },
-    "607": {
-      "items": [
-        {
-          "id": 131,
-          "globalId": 39,
-          "type": 47,
-          "amount": 3,
-          "player": 0
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ]
-        }
-      ]
-    },
-    "608": {
-      "items": [
-        {
-          "id": 3,
-          "globalId": 19,
-          "type": 11,
-          "amount": 15
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ]
-        }
-      ]
-    },
-    "609": {
-      "items": [
-        {
-          "id": 5,
-          "globalId": 111,
-          "type": 68,
-          "amount": 1
-        }
-      ],
-      "enemies": [
-        {
-          "nop": [ "0x1CB8E-0x1CBC0" ],
-          "excludeTypes": [ 4, 12 ],
-          "maxDifficulty": 0
-        },
-        {
-          "nop": [ "0x1CB52-0x1CB84" ],
-          "excludeTypes": [ 4, 12 ],
-          "maxDifficulty": 0
-        }
-      ]
-    },
-    "60A": {
-      "enemies": [
-        {
-          "excludeTypes": [ 3, 4, 7, 10 ],
-          "maxDifficulty": 1
-        }
-      ]
-    },
-    "60B": {
-      "items": [
-        {
-          "id": 4,
-          "globalId": 110,
-          "type": 68,
-          "amount": 1,
-          "priority": "low"
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ],
-          "maxDifficulty": 1
-        }
-      ]
-    },
-    "60C": {
-      "items": [
-        {
-          "id": 4,
-          "globalId": 27,
-          "type": 52,
-          "amount": 6,
-          "requires": [ 38 ]
-        },
-        {
-          "id": 5,
-          "globalId": 103,
-          "type": 67,
-          "amount": 1,
-          "requires": [ 38 ]
-        },
-        {
-          "id": 6,
-          "globalId": 243,
-          "type": 67,
-          "amount": 1,
-          "requires": [ 38 ]
-        },
-        {
-          "id": 7,
-          "globalId": 132,
-          "type": 68,
-          "amount": 1,
-          "requires": [ 38 ]
-        },
-        {
-          "id": 8,
-          "globalId": 242,
-          "type": 68,
-          "amount": 1,
-          "requires": [ 38 ]
-        },
-        {
-          "id": 9,
-          "globalId": 244,
-          "type": 68,
-          "amount": 1,
-          "requires": [ 38 ]
-        },
-        {
-          "id": 10,
-          "globalId": 245,
-          "type": 68,
-          "amount": 1,
-          "requires": [ 38 ]
-        }
-      ],
-      "enemies": []
-    },
-    "60D": {
-      "items": [
-        {
-          "id": 131,
-          "globalId": 174,
-          "type": 41,
-          "amount": 1,
-          "requires": [ 33 ]
-        },
-        {
-          "id": 4,
-          "globalId": 175,
-          "type": 5,
-          "amount": 6,
-          "requires": [ 34 ]
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4, 12 ],
-          "maxDifficulty": 0
-        }
-      ]
-    },
-    "60E": {
-      "items": [
-        {
-          "id": 1,
-          "globalId": 146,
-          "type": 11,
-          "amount": 15
-        },
-        {
-          "id": 2,
-          "globalId": 5,
-          "type": 12,
-          "amount": 7
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 2, 4 ],
-          "keepState": true
-        }
-      ]
-    },
-    "60F": {
-      "items": [
-        {
-          "id": 4,
-          "type": 32,
-          "amount": 1,
-          "requires": [ 31, 35 ],
-          "player": 0,
-          "doorRando": false
-        },
-        {
-          "id": 4,
-          "type": 32,
-          "amount": 1,
-          "requires": [ 31, 35 ],
-          "player": 0,
-          "doorRando": true,
-          "priority": "low"
-        },
-        {
-          "id": 4,
-          "type": 32,
-          "amount": 1,
-          "requires": [ 31, 35 ],
-          "player": 1
-        },
-        {
-          "id": 5,
-          "globalId": 7,
-          "type": 35,
-          "amount": 0
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 3, 4, 7, 10 ],
-          "maxDifficulty": 1,
-          "player": 1
-        }
-      ]
-    },
-    "610": {
-      "linkedRoom": "110",
-      "doors": [
-        {
-          "target": "104",
-          "id": 0
-        },
-        {
-          "target": "71C"
-        }
-      ],
-      "enemies": []
-    },
-    "611": {
-      "items": [
-        {
-          "id": 3,
-          "globalId": 2,
-          "type": 12,
-          "amount": 7,
-          "requires": [ 61 ]
-        },
-        {
-          "id": 4,
-          "globalId": 96,
-          "type": 11,
-          "amount": 15
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ],
-          "maxDifficulty": 1
-        }
-      ]
-    },
-    "612": {
-      "items": [
-        {
-          "id": 2,
-          "globalId": 142,
-          "type": 68,
-          "amount": 1
-        },
-        {
-          "id": 3,
-          "globalId": 143,
-          "type": 68,
-          "amount": 1
-        },
-        {
-          "id": 4,
-          "globalId": 212,
-          "type": 47,
-          "amount": 3
-        }
-      ]
-    },
-    "613": {
-      "items": [
-        {
-          "id": 1,
-          "globalId": 3,
-          "type": 61,
-          "amount": 1,
-          "player": 0
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ],
-          "maxDifficulty": 0
-        }
-      ]
-    },
-    "614": {
-      "items": [
-        {
-          "id": 1,
-          "globalId": 10,
-          "type": 68,
-          "amount": 1
-        },
-        {
-          "id": 2,
-          "globalId": 221,
-          "type": 68,
-          "amount": 1
-        },
-        {
-          "id": 3,
-          "globalId": 222,
-          "type": 68,
-          "amount": 1
-        },
-        {
-          "id": 4,
-          "globalId": 223,
-          "type": 68,
-          "amount": 1
-        },
-        {
-          "id": 5,
-          "globalId": 224,
-          "type": 68,
-          "amount": 1
-        },
-        {
-          "id": 6,
-          "globalId": 225,
-          "type": 68,
-          "amount": 1
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ]
-        }
-      ]
-    },
-    "615": {
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ],
-          "maxDifficulty": 0
-        }
-      ]
-    },
-    "616": {
-      "items": [
-        {
-          "id": 1,
-          "globalId": 0,
-          "type": 3,
-          "amount": 7,
-          "requires": [ 28 ]
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ],
-          "maxDifficulty": 1
-        }
-      ]
-    },
-    "617": {
-      "items": [
-        {
-          "id": 9,
-          "globalId": 31,
-          "type": 45,
-          "amount": 1
-        }
-      ],
-      "enemies": []
-    },
-    "618": {
-      "items": [
-        {
-          "id": 1,
-          "globalId": 13,
-          "type": 38,
-          "amount": 1
-        },
-        {
-          "id": 2,
-          "globalId": 160,
-          "type": 65,
-          "amount": 1,
-          "priority": "low"
-        },
-        {
-          "id": 4,
-          "globalId": 218,
-          "type": 12,
-          "amount": 7,
-          "priority": "low"
-        },
-        {
-          "id": 5,
-          "globalId": 217,
-          "type": 11,
-          "amount": 15,
-          "priority": "low"
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4, 12 ],
-          "maxDifficulty": 0,
-          "restricted": true
-        }
-      ]
-    },
-    "619": {
-      "linkedRoom": "119",
-      "doors": [
-        {
-          "target": "10A",
-          "id": 0
-        }
-      ],
-      "items": [
-        {
-          "id": 1,
-          "globalId": 67,
-          "type": 64,
-          "amount": 0
-        },
-        {
-          "id": 4,
-          "globalId": 101,
-          "type": 14,
-          "amount": 6
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4, 12 ],
-          "maxDifficulty": 0
-        }
-      ]
-    },
-    "61A": {
-      "enemies": [
-        {
-          "condition": "!23:0",
-          "excludeTypes": [ 4 ],
-          "maxDifficulty": 1,
-          "player": 0
-        },
-        {
-          "excludeTypes": [ 4 ],
-          "maxDifficulty": 1,
-          "player": 1
-        }
-      ]
-    },
-    "61B": {
-      "items": [
-        {
-          "id": 2,
-          "globalId": 34,
-          "type": 61,
-          "amount": 1,
-          "player": 0
-        },
-        {
-          "id": 3,
-          "globalId": 35,
-          "type": 29,
-          "amount": 0
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ],
-          "maxDifficulty": 1
-        }
-      ]
-    },
-    "700": {
-      "linkedRoom": "200",
-      "doorRando": [
-        {
-          "category": "exclude"
-        }
-      ],
-      "doors": [
-        {
-          "target": "713"
-        },
-        {
-          "target": "71C"
-        }
-      ]
-    },
-    "701": {
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ],
-          "maxDifficulty": 1
-        }
-      ]
-    },
-    "702": {
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ]
-        }
-      ]
-    },
-    "703": {
-      "items": [
-        {
-          "id": 8,
-          "globalId": 14,
-          "type": 17,
-          "amount": 6,
-          "priority": "low",
-          "player": 1
-        }
-      ],
-      "enemies": []
-    },
-    "704": {
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ]
-        }
-      ]
-    },
-    "705": {
-      "items": [
-        {
-          "id": 9,
-          "globalId": 36,
-          "type": 46,
-          "amount": 1
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 3, 4, 10 ],
-          "maxDifficulty": 1
-        }
-      ]
-    },
-    "706": {
-      "items": [
-        {
-          "id": 2,
-          "globalId": 247,
-          "type": 110,
-          "amount": 1
-        }
-      ],
-      "npcs": [
-        {
-          "includeTypes": [ 44 ],
-          "player": 0
-        }
-      ],
-      "enemies": [
-        {
-          "maxDifficulty": 1,
-          "player": 1
-        }
-      ]
-    },
-    "707": {
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ]
-        }
-      ]
-    },
-    "708": {
-      "enemies": [
-        {
-          "excludeTypes": [ 2, 4 ]
-        }
-      ]
-    },
-    "709": {
-      "items": [
-        {
-          "id": 1,
-          "globalId": 37,
-          "type": 48,
-          "amount": 0
-        },
-        {
-          "id": 2,
-          "globalId": 38,
-          "type": 12,
-          "amount": 7,
-          "player": 0
-        },
-        {
-          "id": 2,
-          "globalId": 38,
-          "type": 11,
-          "amount": 15,
-          "player": 1
-        },
-        {
-          "id": 3,
-          "globalId": 211,
-          "type": 67,
-          "amount": 1
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ],
-          "maxDifficulty": 0
-        }
-      ]
-    },
-    "70A": {
-      "items": [
-        {
-          "id": 7,
-          "globalId": 15,
-          "type": 12,
-          "amount": 7,
-          "player": 0
-        },
-        {
-          "id": 7,
-          "globalId": 15,
-          "type": 16,
-          "amount": 6,
-          "player": 1
-        },
-        {
-          "id": 9,
-          "globalId": 184,
-          "type": 47,
-          "amount": 3,
-          "priority": "hidden",
-          "player": 0
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ],
-          "maxDifficulty": 0
-        }
-      ]
-    },
-    "70B": {
-      "items": [
-        {
-          "id": 3,
-          "globalId": 162,
-          "type": 68,
-          "amount": 1
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ]
-        }
-      ]
-    },
-    "70C": {
-      "linkedRoom": "20C",
-      "doorRando": [
-        {
-          "category": "segment"
-        }
-      ],
-      "doors": [
-        {
-          "target": "20B",
-          "id": 0
-        },
-        {
-          "target": "71A",
-          "lock": "unblock",
-          "noUnlock": true
-        }
-      ],
-      "items": [
-        {
-          "id": 7,
-          "type": 0
-        },
-        {
-          "id": 8,
-          "type": 0
-        }
-      ],
-      "enemies": [
-        {
-          "keepState": true,
-          "includeTypes": [ 11, 12, 18 ],
-          "ignoreRatio": true
-        }
-      ],
-      "npcs": [
-        {
-          "use": "20C;0x96BC",
-          "player": 1
-        }
-      ]
-    },
-    "70D": {
-      "items": [
-        {
-          "id": 3,
-          "globalId": 197,
-          "type": 68,
-          "amount": 1
-        },
-        {
-          "id": 5,
-          "globalId": 198,
-          "type": 68,
-          "amount": 1
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ],
-          "maxDifficulty": 0
-        }
-      ]
-    },
-    "70E": {
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ],
-          "maxDifficulty": 0
-        }
-      ]
-    },
-    "70F": {
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ],
-          "maxDifficulty": 0
-        }
-      ],
-      "items": [
-        {
-          "id": 3,
-          "globalId": 11,
-          "type": 11,
-          "amount": 15
-        },
-        {
-          "id": 4,
-          "globalId": 12,
-          "type": 12,
-          "amount": 7,
-          "requires": [ 48 ]
-        }
-      ]
-    },
-    "710": {
-      "items": [
-        {
-          "id": 1,
-          "globalId": 129,
-          "type": 44,
-          "amount": 1
-        },
-        {
-          "id": 2,
-          "globalId": 130,
-          "type": 12,
-          "amount": 7
-        }
-      ],
-      "enemies": [
-        {
-          "keepState": true,
-          "includeTypes": [ 12, 13 ]
-        }
-      ]
-    },
-    "711": {
-      "items": [
-        {
-          "id": 5,
-          "globalId": 149,
-          "type": 61,
-          "amount": 1,
-          "player": 0
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4, 12 ],
-          "maxDifficulty": 0
-        }
-      ]
-    },
-    "712": {
-      "items": [
-        {
-          "id": 1,
-          "globalId": 6,
-          "type": 11,
-          "amount": 15,
-          "player": 0
-        },
-        {
-          "id": 1,
-          "globalId": 6,
-          "type": 7,
-          "amount": 6,
-          "player": 1
-        }
-      ],
-      "enemies": []
-    },
-    "713": {
-      "linkedRoom": "213",
-      "doors": [
-        {
-          "target": "700"
-        },
-        {
-          "target": "714"
-        },
-        {
-          "target": "716"
-        },
-        {
-          "target": "719"
-        }
-      ],
-      "items": [
-        {
-          "id": 4,
-          "globalId": 161,
-          "type": 68,
-          "amount": 1
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ]
-        }
-      ]
-    },
-    "714": {
-      "linkedRoom": "214",
-      "doors": [
-        {
-          "target": "201",
-          "id": 1,
-          "player": 0
-        },
-        {
-          "target": "201",
-          "id": 5,
-          "player": 1
-        },
-        {
-          "target": "713"
-        }
-      ],
-      "items": [
-        {
-          "id": 2,
-          "globalId": 169,
-          "type": 68,
-          "amount": 1
-        },
-        {
-          "id": 3,
-          "globalId": 170,
-          "type": 69,
-          "amount": 1
-        },
-        {
-          "id": 4,
-          "globalId": 171,
-          "type": 68,
-          "amount": 1
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ]
-        }
-      ]
-    },
-    "715": {
-      "linkedRoom": "215",
-      "doors": [
-        {
-          "target": "201",
-          "id": 0
-        }
-      ],
-      "items": [
-        {
-          "id": 3,
-          "globalId": 29,
-          "type": 12,
-          "amount": 7
-        },
-        {
-          "id": 5,
-          "globalId": 30,
-          "type": 34,
-          "amount": 1
-        },
-        {
-          "id": 6,
-          "globalId": 200,
-          "type": 14,
-          "amount": 6
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ],
-          "maxDifficulty": 0
-        }
-      ]
-    },
-    "716": {
-      "linkedRoom": "216",
-      "doors": [
-        {
-          "target": "713"
-        },
-        {
-          "target": "717"
-        },
-        {
-          "target": "718",
-          "lock": "unblock"
-        }
-      ],
-      "items": [
-        {
-          "id": 3,
-          "globalId": 84,
-          "type": 102,
-          "amount": 1
-        },
-        {
-          "id": 4,
-          "globalId": 121,
-          "type": 14,
-          "amount": 6,
-          "requires": [ 61 ]
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ]
-        }
-      ]
-    },
-    "717": {
-      "linkedRoom": "217",
-      "doors": [
-        {
-          "target": "716"
-        }
-      ],
-      "items": [
-        {
-          "id": 5,
-          "globalId": 77,
-          "type": 40,
-          "amount": 1
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ]
-        }
-      ]
-    },
-    "718": {
-      "linkedRoom": "218",
-      "doors": [
-        {
-          "target": "716"
-        }
-      ],
-      "items": [
-        {
-          "id": 2,
-          "globalId": 199,
-          "type": 11,
-          "amount": 15
-        },
-        {
-          "id": 3,
-          "globalId": 91,
-          "type": 47,
-          "amount": 3,
-          "player": 0
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ],
-          "maxDifficulty": 1
-        }
-      ]
-    },
-    "719": {
-      "linkedRoom": "219",
-      "doors": [
-        {
-          "target": "713"
-        }
-      ],
-      "items": [
-        {
-          "id": 1,
-          "globalId": 55,
-          "type": 12,
-          "amount": 7
-        },
-        {
-          "id": 2,
-          "globalId": 56,
-          "type": 12,
-          "amount": 7
-        },
-        {
-          "id": 3,
-          "globalId": 57,
-          "type": 39,
-          "amount": 1
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ],
-          "maxDifficulty": 0
-        }
-      ]
-    },
-    "71A": {
-      "linkedRoom": "21A",
-      "doors": [
-        {
-          "target": "70C",
-          "noUnlock": true
-        },
-        {
-          "target": "71B"
-        }
-      ],
-      "items": [
-        {
-          "id": 3,
-          "globalId": 219,
-          "type": 12,
-          "amount": 7
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ]
-        }
-      ]
-    },
-    "71B": {
-      "linkedRoom": "21B",
-      "doors": [
-        {
-          "target": "71A"
-        },
-        {
-          "target": "71C"
-        }
-      ],
-      "items": [
-        {
-          "id": 2,
-          "globalId": 93,
-          "type": 68,
-          "amount": 1
-        },
-        {
-          "id": 3,
-          "globalId": 213,
-          "type": 68,
-          "amount": 1
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ]
-        }
-      ]
-    },
-    "71C": {
-      "linkedRoom": "21C",
-      "doors": [
-        {
-          "target": "700"
-        },
-        {
-          "target": "610"
-        },
-        {
-          "target": "71B",
-          "lock": "side"
-        }
-      ],
-      "items": [
-        {
-          "id": 10,
-          "globalId": 228,
-          "type": 61,
-          "amount": 1,
-          "priority": "hidden",
-          "player": 0
-        }
-      ],
-      "enemies": [
-        {
-          "excludeTypes": [ 4 ],
-          "randomPlacements": false
-        },
-        {
-          "excludeTypes": [ 4 ],
-          "keepPositions": true,
-          "randomPlacements": true
         }
       ]
     }

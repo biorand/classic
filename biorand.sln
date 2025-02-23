@@ -18,6 +18,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntelOrca.Biohazard", "bioh
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Ps2IsoTools", "Ps2IsoTools\Ps2IsoTools\Ps2IsoTools.csproj", "{6E501365-ECF7-4B27-8058-9040FBBDD017}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "biorand-classic", "biorand-classic\biorand-classic.csproj", "{728C14F5-C66B-4A07-A721-DBB36E7BCE7B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -100,6 +102,18 @@ Global
 		{6E501365-ECF7-4B27-8058-9040FBBDD017}.Release|x64.Build.0 = Release|Any CPU
 		{6E501365-ECF7-4B27-8058-9040FBBDD017}.Release|x86.ActiveCfg = Release|Any CPU
 		{6E501365-ECF7-4B27-8058-9040FBBDD017}.Release|x86.Build.0 = Release|Any CPU
+		{728C14F5-C66B-4A07-A721-DBB36E7BCE7B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{728C14F5-C66B-4A07-A721-DBB36E7BCE7B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{728C14F5-C66B-4A07-A721-DBB36E7BCE7B}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{728C14F5-C66B-4A07-A721-DBB36E7BCE7B}.Debug|x64.Build.0 = Debug|Any CPU
+		{728C14F5-C66B-4A07-A721-DBB36E7BCE7B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{728C14F5-C66B-4A07-A721-DBB36E7BCE7B}.Debug|x86.Build.0 = Debug|Any CPU
+		{728C14F5-C66B-4A07-A721-DBB36E7BCE7B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{728C14F5-C66B-4A07-A721-DBB36E7BCE7B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{728C14F5-C66B-4A07-A721-DBB36E7BCE7B}.Release|x64.ActiveCfg = Release|Any CPU
+		{728C14F5-C66B-4A07-A721-DBB36E7BCE7B}.Release|x64.Build.0 = Release|Any CPU
+		{728C14F5-C66B-4A07-A721-DBB36E7BCE7B}.Release|x86.ActiveCfg = Release|Any CPU
+		{728C14F5-C66B-4A07-A721-DBB36E7BCE7B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

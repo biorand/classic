@@ -2,13 +2,14 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <LangVersion>8.0</LangVersion>
+    <LangVersion>12.0</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="System.Text.Json" Version="6.0.6" />
-    <PackageReference Include="OpenSoftware.DgmlBuilder" Version="2.0.0" />
+    <PackageReference Include="IntelOrca.Biohazard.BioRand.Common" Version="1.3.0" />
     <PackageReference Include="NVorbis" Version="0.10.5" />
+    <PackageReference Include="OpenSoftware.DgmlBuilder" Version="2.0.0" />
+    <PackageReference Include="System.Text.Json" Version="9.0.2" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\biohazard-utils\src\IntelOrca.Biohazard\IntelOrca.Biohazard.csproj" />

@@ -16,7 +16,7 @@
     <Content Include="biorand.ico" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Text.Json" Version="6.0.6" />
+    <PackageReference Include="System.Text.Json" Version="9.0.2" />
     <PackageReference Include="QRCoder" Version="1.4.3" />
   </ItemGroup>
   <ItemGroup>

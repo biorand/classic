@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text.Json;
 
 namespace IntelOrca.Biohazard.BioRand
 {
@@ -59,6 +60,17 @@ namespace IntelOrca.Biohazard.BioRand
         {
             var fullPath = GetPath(version, path);
             return File.ReadAllText(fullPath);
+        }
+
+        public T GetJson<T>(BioVersion version, string path)
+        {
+            var json = GetText(version, path);
+            var map = JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions()
+            {
+                ReadCommentHandling = JsonCommentHandling.Skip,
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+            })!;
+            return map;
         }
 
         public string[] GetDirectories(BioVersion version, string baseName) => GetDirectories(GetSubPath(version, baseName));
