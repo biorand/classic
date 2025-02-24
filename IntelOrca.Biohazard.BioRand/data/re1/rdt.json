@@ -349,7 +349,7 @@
   "rooms": {
     "100": {
       "name": "1F WEST SAVE",
-      "linkedRoom": "600",
+      "rdts": [ "100", "600" ],
       "doorRando": [
         {
           "category": "box"
@@ -357,7 +357,8 @@
       ],
       "doors": [
         {
-          "target": "101"
+          "id": 0,
+          "target": "101:0"
         }
       ],
       "items": [
@@ -383,28 +384,33 @@
     },
     "101": {
       "name": "1F WEST STAIRS",
+      "rdts": [ "101", "601" ],
       "doorRando": [
         {
           "cutscene": true,
           "player": 0
         }
       ],
-      "linkedRoom": "601",
       "doors": [
         {
-          "target": "100"
+          "id": 0,
+          "target": "100:0"
         },
         {
-          "target": "102",
+          "id": 1,
+          "target": "102:0",
+          "lockId": 202,
           "requires2": [
             "item(52)"
           ]
         },
         {
-          "target": "103"
+          "id": 2,
+          "target": "103:0"
         },
         {
-          "target": "201"
+          "id": 3,
+          "target": "201:3"
         }
       ],
       "enemies": [
@@ -415,10 +421,11 @@
     },
     "102": {
       "name": "1F WEST STORAGE",
-      "linkedRoom": "602",
+      "rdts": [ "102", "602" ],
       "doors": [
         {
-          "target": "101"
+          "id": 0,
+          "target": "101:2"
         }
       ],
       "items": [
@@ -462,6 +469,7 @@
       "linkedRoom": "603",
       "doors": [
         {
+          "id": 0,
           "target": "101"
         },
         {
@@ -1609,7 +1617,8 @@
       "linkedRoom": "701",
       "doors": [
         {
-          "target": "101"
+          "id": 3,
+          "target": "101:3"
         },
         {
           "target": "202"

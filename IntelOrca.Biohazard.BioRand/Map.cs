@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Text.RegularExpressions;
 
 namespace IntelOrca.Biohazard.BioRand
@@ -99,7 +100,7 @@ namespace IntelOrca.Biohazard.BioRand
     {
         public string? Name { get; set; }
         public string? LinkedRoom { get; set; }
-        public string[]? Rdts { get; set; }
+        public RdtId[]? Rdts { get; set; }
         public int[]? Requires { get; set; }
         public MapRoomDoor[]? Doors { get; set; }
         public MapRoomItem[]? Items { get; set; }
@@ -113,6 +114,7 @@ namespace IntelOrca.Biohazard.BioRand
             return new MapRoom()
             {
                 Name = Name,
+                Rdts = Rdts,
                 Doors = Doors?.Where(x => x.IsIncludedInFilter(filter)).ToArray() ?? [],
                 Items = Items?.Where(x => x.IsIncludedInFilter(filter)).ToArray() ?? [],
                 Flags = Flags?.Where(x => x.IsIncludedInFilter(filter)).ToArray() ?? [],
@@ -298,6 +300,19 @@ namespace IntelOrca.Biohazard.BioRand
             DoorRando = doorRando;
             Player = player;
             Scenario = scenario;
+        }
+    }
+
+    internal class RdtIdConverter : JsonConverter<RdtId>
+    {
+        public override RdtId Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            return RdtId.Parse(reader.GetString() ?? "");
+        }
+
+        public override void Write(Utf8JsonWriter writer, RdtId value, JsonSerializerOptions options)
+        {
+            writer.WriteStringValue(value.ToString());
         }
     }
 }

@@ -64,12 +64,16 @@ namespace IntelOrca.Biohazard.BioRand
 
         public T GetJson<T>(BioVersion version, string path)
         {
-            var json = GetText(version, path);
-            var map = JsonSerializer.Deserialize<T>(json, new JsonSerializerOptions()
+            var options = new JsonSerializerOptions()
             {
                 ReadCommentHandling = JsonCommentHandling.Skip,
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            })!;
+            };
+            options.Converters.Add(new RdtIdConverter());
+
+            // RdtIdConverter
+            var json = GetText(version, path);
+            var map = JsonSerializer.Deserialize<T>(json, options)!;
             return map;
         }
 

@@ -37,6 +37,10 @@ namespace IntelOrca.Biohazard.BioRand
             var map = GetMap(dataManager.GetJson<Map>(BioVersion.Biohazard1, "rdt.json"));
 
             var modBuilder = new ModBuilder();
+
+            var lockRandomizer = new LockRandomizer();
+            lockRandomizer.Randomise(input.Seed, map, modBuilder);
+
             var keyRandomizer = new KeyRandomizer();
             keyRandomizer.RandomiseItems(input.Seed, map, modBuilder);
 
@@ -49,7 +53,7 @@ namespace IntelOrca.Biohazard.BioRand
             foreach (var rdtId in rdts.Keys)
             {
                 var rdt = rdts[rdtId];
-                rdts[rdtId] = modBuilder.ApplyToRdt(rdt);
+                rdts[rdtId] = modBuilder.ApplyToRdt(rdtId, rdt);
             }
 
             using var tempFolder = new TempFolder();
@@ -253,6 +257,91 @@ namespace IntelOrca.Biohazard.BioRand
         }
     }
 
+    internal class LockRandomizer
+    {
+        public void Randomise(int seed, Map map, ModBuilder modBuilder)
+        {
+            // Collect doors
+            var doors = new Dictionary<string, DoorInfo>();
+            if (map.Rooms != null)
+            {
+                foreach (var kvp in map.Rooms)
+                {
+                    var roomKey = kvp.Key;
+                    var room = kvp.Value;
+                    if (room.Doors == null)
+                        continue;
+
+                    foreach (var door in room.Doors)
+                    {
+                        if (door.Id == null || door.Target == null)
+                            continue;
+
+                        var doorInfo = new DoorInfo(roomKey, room, door);
+                        doors.Add(doorInfo.Identity, doorInfo);
+                    }
+                }
+            }
+
+            var pairs = new List<DoorPair>();
+            while (doors.Count != 0)
+            {
+                var a = doors.First().Value;
+                doors.Remove(a.Identity);
+
+                var target = a.Door.Target ?? "";
+                if (doors.TryGetValue(target, out var b))
+                {
+                    doors.Remove(b.Identity);
+                    pairs.Add(new DoorPair(a, b));
+                }
+            }
+
+            var availableLocks = new Queue<byte>([200, 201, 205, 206]);
+
+            foreach (var pair in pairs)
+            {
+                var lockId = pair.A.Door.LockId ?? pair.B.Door.LockId;
+                if (lockId == null && availableLocks.Count != 0)
+                    lockId = availableLocks.Dequeue();
+                if (lockId == null)
+                    continue;
+
+                var doorLock = new DoorLock(lockId.Value, 51); // Sword Key
+                SetDoorLock(modBuilder, pair.A, doorLock);
+                SetDoorLock(modBuilder, pair.B, doorLock);
+            }
+        }
+
+        private void SetDoorLock(ModBuilder modBuilder, DoorInfo doorInfo, DoorLock doorLock)
+        {
+            var doorId = (byte)(doorInfo.Door.Id ?? 0);
+            foreach (var rdtId in doorInfo.Room.Rdts ?? [])
+            {
+                modBuilder.SetDoorLock(new RdtItemId(rdtId, doorId), doorLock);
+            }
+            doorInfo.Door.LockId = (byte)doorLock.Id;
+            doorInfo.Door.Requires2 = [$"item({doorLock.KeyItemId})"];
+        }
+
+        [DebuggerDisplay("({A}, {B})")]
+        private readonly struct DoorPair(DoorInfo a, DoorInfo b)
+        {
+            public DoorInfo A => a;
+            public DoorInfo B => b;
+        }
+
+        [DebuggerDisplay("{Identity}")]
+        private readonly struct DoorInfo(string roomKey, MapRoom room, MapRoomDoor door)
+        {
+            public string RoomKey => roomKey;
+            public MapRoom Room => room;
+            public MapRoomDoor Door => door;
+
+            public string Identity { get; } = $"{roomKey}:{door.Id}";
+        }
+    }
+
     internal class KeyRandomizer
     {
         public void RandomiseItems(int seed, Map map, ModBuilder modBuilder)
@@ -445,23 +534,44 @@ namespace IntelOrca.Biohazard.BioRand
 
     internal class ModBuilder
     {
-        private readonly Dictionary<int, Item> _itemMap = new Dictionary<int, Item>();
+        private readonly Dictionary<RdtItemId, DoorLock> _doorLock = new();
+        private readonly Dictionary<int, Item> _itemMap = new();
 
         public ImmutableArray<int> AssignedItemGlobalIds => [.. _itemMap.Keys];
+
+        public void SetDoorTarget(RdtItemId doorIdentity, RdtItemId target)
+        {
+        }
+
+        public void SetDoorLock(RdtItemId doorIdentity, DoorLock doorLock)
+        {
+            _doorLock.Add(doorIdentity, doorLock);
+        }
 
         public void SetItem(int globalId, Item item)
         {
             _itemMap.Add(globalId, item);
         }
 
-        public IRdt ApplyToRdt(IRdt rdt)
+        public IRdt ApplyToRdt(RdtId rdtId, IRdt rdt)
         {
             var opcodeBuilder = new OpcodeBuilder();
             rdt.ReadScript(opcodeBuilder);
             var opcodes = opcodeBuilder.ToArray();
+            var doorOpcodes = opcodes.OfType<IDoorAotSetOpcode>().ToArray();
             var itemOpcodes = opcodes.OfType<IItemAotSetOpcode>().ToArray();
 
             var edits = false;
+            foreach (var doorOpcode in doorOpcodes)
+            {
+                var doorIdentity = new RdtItemId(rdtId, doorOpcode.Id);
+                if (_doorLock.TryGetValue(doorIdentity, out var doorLock))
+                {
+                    doorOpcode.LockId = (byte)doorLock.Id;
+                    doorOpcode.LockType = (byte)doorLock.KeyItemId;
+                    edits = true;
+                }
+            }
             foreach (var itemOpcode in itemOpcodes)
             {
                 if (_itemMap.TryGetValue(itemOpcode.GlobalId, out var item))
@@ -559,5 +669,12 @@ namespace IntelOrca.Biohazard.BioRand
             Directory.CreateDirectory(newPath);
             return newPath;
         }
+    }
+
+    [DebuggerDisplay("Id = {Id} Key = {KeyItemId}")]
+    internal readonly struct DoorLock(int id, int keyItemId)
+    {
+        public int Id => id;
+        public int KeyItemId => keyItemId;
     }
 }
