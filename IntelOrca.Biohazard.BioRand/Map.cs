@@ -91,6 +91,7 @@ namespace IntelOrca.Biohazard.BioRand
     {
         public string? Name { get; set; }
         public string? Kind { get; set; }
+        public int Group { get; set; }
     }
 
     public class MapRoom : MapFilterable
@@ -101,6 +102,7 @@ namespace IntelOrca.Biohazard.BioRand
         public int[]? Requires { get; set; }
         public MapRoomDoor[]? Doors { get; set; }
         public MapRoomItem[]? Items { get; set; }
+        public MapEdge[]? Flags { get; set; }
         public MapRoomEnemies[]? Enemies { get; set; }
         public MapRoomNpcs[]? Npcs { get; set; }
         public new DoorRandoSpec[]? DoorRando { get; set; }
@@ -112,6 +114,7 @@ namespace IntelOrca.Biohazard.BioRand
                 Name = Name,
                 Doors = Doors?.Where(x => x.IsIncludedInFilter(filter)).ToArray() ?? [],
                 Items = Items?.Where(x => x.IsIncludedInFilter(filter)).ToArray() ?? [],
+                Flags = Flags?.Where(x => x.IsIncludedInFilter(filter)).ToArray() ?? [],
                 DoorRando = DoorRando,
                 Enemies = Enemies,
                 Npcs = Npcs
@@ -140,6 +143,7 @@ namespace IntelOrca.Biohazard.BioRand
         public bool IsBridgeEdge { get; set; }
         public int[]? Requires { get; set; }
         public string[]? RequiresRoom { get; set; }
+        public string? Kind { get; set; }
     }
 
     public class MapRoomDoorEntrance
@@ -166,6 +170,11 @@ namespace IntelOrca.Biohazard.BioRand
         public int[]? Requires { get; set; }
         public string[]? RequiresRoom { get; set; }
         public bool? AllowDocuments { get; set; }
+
+        public bool? AllowKey { get; set; }
+        public bool? Document { get; set; }
+        public bool? Hidden { get; set; }
+        public int Group { get; set; }
     }
 
     public class MapRoomEnemies : MapFilterable

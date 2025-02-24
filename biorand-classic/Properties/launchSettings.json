@@ -2,7 +2,7 @@
   "profiles": {
     "biorand-classic": {
       "commandName": "Project",
-      "commandLineArgs": "generate -o M:\\apps\\biorand\\re1hd\\mod_biorand_new --seed 35825"
+      "commandLineArgs": "generate -o M:\\apps\\biorand\\re1hd --seed 35825"
     }
   }
 }

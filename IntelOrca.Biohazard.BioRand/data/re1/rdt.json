@@ -8,67 +8,160 @@
   "keys": {
     "28": {
       "name": "Broken Shotgun",
-      "kind": "consumable"
+      "kind": "consumable",
+      "group": 1
+    },
+    "29": {
+      "name": "Square Crank",
+      "kind": "reusuable",
+      "group": 4
+    },
+    "30": {
+      "name": "Hex Crank",
+      "kind": "reusuable",
+      "group": 16
     },
     "31": {
       "name": "Wood Emblem",
-      "kind": "consumable"
+      "kind": "consumable",
+      "group": 1
     },
     "32": {
       "name": "Gold Emblem",
-      "kind": "consumable"
+      "kind": "consumable",
+      "group": 1
     },
     "33": {
       "name": "Blue Jewel",
-      "kind": "consumable"
+      "kind": "consumable",
+      "group": 1
     },
     "34": {
       "name": "Red Jewel",
-      "kind": "consumable"
+      "kind": "consumable",
+      "group": 1
     },
     "35": {
       "name": "Music Notes",
-      "kind": "consumable"
+      "kind": "consumable",
+      "group": 1
     },
     "38": {
       "name": "Chemical",
+      "kind": "consumable",
+      "group": 1
+    },
+    "39": {
+      "name": "Battery",
       "kind": "consumable"
+    },
+    "40": {
+      "name": "MO Disc",
+      "kind": "consumable",
+      "group": 32
     },
     "41": {
       "name": "Wind Crest",
+      "kind": "consumable",
+      "group": 1
+    },
+    "42": {
+      "name": "Flare",
       "kind": "consumable"
+    },
+    "43": {
+      "name": "Slides",
+      "kind": "consumable",
+      "group": 32
     },
     "44": {
       "name": "Moon Crest",
-      "kind": "consumable"
+      "kind": "consumable",
+      "group": 1
     },
     "45": {
       "name": "Star Crest",
-      "kind": "consumable"
+      "kind": "consumable",
+      "group": 1
     },
     "46": {
       "name": "Sun Crest",
-      "kind": "consumable"
+      "kind": "consumable",
+      "group": 1
     },
     "48": {
       "name": "Lighter",
-      "kind": "reusuable"
+      "kind": "reusuable",
+      "group": 1
     },
     "51": {
       "name": "Sword Key",
-      "kind": "reusuable"
+      "kind": "reusuable",
+      "group": 1
     },
     "52": {
       "name": "Armor Key",
-      "kind": "reusuable"
+      "kind": "reusuable",
+      "group": 1
+    },
+    "53": {
+      "name": "Shield Key",
+      "kind": "consumable",
+      "group": 1
     },
     "54": {
       "name": "Helmet Key",
-      "kind": "reusuable"
+      "kind": "reusuable",
+      "group": 8
+    },
+    "55": {
+      "name": "Master Key",
+      "kind": "consumable",
+      "group": 32
+    },
+    "56": {
+      "name": "Special Key",
+      "kind": "consumable",
+      "group": 1
+    },
+    "57": {
+      "name": "002 Key",
+      "kind": "consumable",
+      "group": 8
+    },
+    "58": {
+      "name": "003 Key",
+      "kind": "consumable",
+      "group": 8
+    },
+    "59": {
+      "name": "Control Key",
+      "kind": "consumable",
+      "group": 8
+    },
+    "60": {
+      "name": "Power Room Key",
+      "kind": "consumable"
     },
     "61": {
       "name": "Small Key",
-      "kind": "consumable"
+      "kind": "consumable",
+      "group": 128
+    },
+    "62": {
+      "name": "Red Book",
+      "kind": "consumable",
+      "group": 8
+    },
+    "63": {
+      "name": "Doom Book (Red)",
+      "kind": "consumable",
+      "group": 16
+    },
+    "64": {
+      "name": "Doom Book (Blue)",
+      "kind": "consumable",
+      "group": 16
     }
   },
   "rooms": {
@@ -92,6 +185,7 @@
           "globalId": 22,
           "type": 51,
           "amount": 1,
+          "group": 1,
           "player": 0
         }
       ],
@@ -151,7 +245,8 @@
           "id": 1,
           "globalId": 48,
           "type": 28,
-          "amount": 1
+          "amount": 1,
+          "group": 1
         },
         {
           "name": "SHELLS IN DRAWER",
@@ -161,14 +256,16 @@
           "amount": 7,
           "requires2": [
             "item(61)"
-          ]
+          ],
+          "group": 1
         },
         {
           "name": "CLIP ON SHELF",
           "id": 3,
           "globalId": 50,
           "type": 11,
-          "amount": 15
+          "amount": 15,
+          "group": 1
         }
       ],
       "enemies": [
@@ -186,7 +283,8 @@
           "target": "101"
         },
         {
-          "target": "104"
+          "target": "104",
+          "kind": "unlock"
         },
         {
           "target": "10C"
@@ -213,7 +311,7 @@
       "doors": [
         {
           "target": "103",
-          "lock": "side"
+          "kind": "locked"
         },
         {
           "target": "105",
@@ -227,7 +325,7 @@
         },
         {
           "target": "110",
-          "lock": "side"
+          "kind": "blocked"
         }
       ],
       "items": [
@@ -237,6 +335,7 @@
           "globalId": 41,
           "type": 11,
           "amount": 15,
+          "group": 1,
           "player": 0
         },
         {
@@ -245,6 +344,7 @@
           "globalId": 47,
           "type": 11,
           "amount": 15,
+          "group": 1,
           "player": 0
         },
         {
@@ -253,7 +353,8 @@
           "globalId": 41,
           "type": 11,
           "amount": 15,
-          "priority": "low",
+          "allowKey": false,
+          "group": 1,
           "player": 1
         },
         {
@@ -262,7 +363,8 @@
           "globalId": 47,
           "type": 11,
           "amount": 15,
-          "priority": "low",
+          "allowKey": false,
+          "group": 1,
           "player": 1
         }
       ],
@@ -297,6 +399,7 @@
           "requires2": [
             "item(32)"
           ],
+          "group": 1,
           "player": 0
         },
         {
@@ -305,6 +408,7 @@
           "globalId": 42,
           "type": 31,
           "amount": 1,
+          "group": 1,
           "player": 0
         },
         {
@@ -316,6 +420,7 @@
           "requires2": [
             "room(202)"
           ],
+          "group": 1,
           "player": 0
         },
         {
@@ -327,6 +432,7 @@
           "requires2": [
             "item(32)"
           ],
+          "group": 1,
           "player": 1
         },
         {
@@ -335,6 +441,7 @@
           "globalId": 42,
           "type": 31,
           "amount": 1,
+          "group": 1,
           "player": 1
         },
         {
@@ -346,6 +453,7 @@
           "requires2": [
             "room(202)"
           ],
+          "group": 1,
           "player": 1
         }
       ],
@@ -412,6 +520,7 @@
           "globalId": 52,
           "type": 47,
           "amount": 3,
+          "group": 1,
           "player": 0
         },
         {
@@ -420,6 +529,7 @@
           "globalId": 26,
           "type": 2,
           "amount": 15,
+          "group": 1,
           "player": 0
         },
         {
@@ -428,7 +538,8 @@
           "globalId": 14,
           "type": 17,
           "amount": 6,
-          "priority": "low",
+          "allowKey": false,
+          "group": 1,
           "player": 1
         }
       ],
@@ -498,6 +609,7 @@
           "globalId": 39,
           "type": 47,
           "amount": 3,
+          "group": 1,
           "player": 0
         }
       ],
@@ -524,7 +636,8 @@
           "id": 3,
           "globalId": 19,
           "type": 11,
-          "amount": 15
+          "amount": 15,
+          "group": 1
         }
       ],
       "enemies": [
@@ -563,7 +676,8 @@
           "id": 5,
           "globalId": 111,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 1
         }
       ],
       "enemies": [
@@ -589,7 +703,7 @@
         },
         {
           "target": "10B",
-          "lock": "side"
+          "kind": "unlock"
         },
         {
           "target": "117"
@@ -617,7 +731,7 @@
       "doors": [
         {
           "target": "10A",
-          "lock": "side"
+          "kind": "locked"
         },
         {
           "target": "118"
@@ -632,7 +746,8 @@
           "id": 4,
           "globalId": 110,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 1
         }
       ],
       "enemies": [
@@ -671,49 +786,56 @@
           "id": 4,
           "globalId": 27,
           "type": 52,
-          "amount": 6
+          "amount": 6,
+          "group": 1
         },
         {
           "name": "RED HERB/1",
           "id": 5,
           "globalId": 103,
           "type": 67,
-          "amount": 1
+          "amount": 1,
+          "group": 1
         },
         {
           "name": "RED HERB/2",
           "id": 6,
           "globalId": 243,
           "type": 67,
-          "amount": 1
+          "amount": 1,
+          "group": 1
         },
         {
           "name": "GREEN HERB/1",
           "id": 7,
           "globalId": 132,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 1
         },
         {
           "name": "GREEN HERB/2",
           "id": 8,
           "globalId": 242,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 1
         },
         {
           "name": "GREEN HERB/3",
           "id": 9,
           "globalId": 244,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 1
         },
         {
           "name": "GREEN HERB/4",
           "id": 10,
           "globalId": 245,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 1
         }
       ],
       "enemies": []
@@ -735,7 +857,8 @@
           "amount": 1,
           "requires2": [
             "item(33)"
-          ]
+          ],
+          "group": 1
         },
         {
           "name": "RED EYE",
@@ -745,7 +868,8 @@
           "amount": 6,
           "requires2": [
             "item(34)"
-          ]
+          ],
+          "group": 1
         }
       ],
       "enemies": [
@@ -769,14 +893,16 @@
           "id": 1,
           "globalId": 146,
           "type": 11,
-          "amount": 15
+          "amount": 15,
+          "group": 1
         },
         {
           "name": "SHELLS IN CLOSET",
           "id": 2,
           "globalId": 5,
           "type": 12,
-          "amount": 7
+          "amount": 7,
+          "group": 1
         }
       ],
       "enemies": [
@@ -804,6 +930,7 @@
             "item(31)",
             "item(35)"
           ],
+          "group": 1,
           "player": 0,
           "doorRando": false
         },
@@ -816,9 +943,10 @@
             "item(31)",
             "item(35)"
           ],
+          "group": 1,
           "player": 0,
           "doorRando": true,
-          "priority": "low"
+          "allowKey": false
         },
         {
           "name": "BEHIND SLIDING DOOR",
@@ -829,6 +957,7 @@
             "item(31)",
             "item(35)"
           ],
+          "group": 1,
           "player": 1
         },
         {
@@ -836,7 +965,8 @@
           "id": 5,
           "globalId": 7,
           "type": 35,
-          "amount": 0
+          "amount": 0,
+          "group": 1
         }
       ],
       "npcs": [
@@ -855,6 +985,12 @@
     },
     "110": {
       "name": "1F WEST ELEVATOR STAIRS",
+      "doors": [
+        {
+          "target": "104",
+          "kind": "unlock"
+        }
+      ],
       "enemies": []
     },
     "111": {
@@ -877,14 +1013,16 @@
           "amount": 7,
           "requires2": [
             "item(61)"
-          ]
+          ],
+          "group": 1
         },
         {
           "name": "CLIP ON TABLE",
           "id": 4,
           "globalId": 96,
           "type": 11,
-          "amount": 15
+          "amount": 15,
+          "group": 1
         }
       ],
       "enemies": [
@@ -908,8 +1046,9 @@
         },
         {
           "target": "11C",
-          "requires": [ 56 ],
-          "doorRando": true
+          "requires2": [
+            "item(56)"
+          ]
         }
       ],
       "items": [
@@ -918,21 +1057,24 @@
           "id": 2,
           "globalId": 142,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 1
         },
         {
           "name": "GREEN HERB/2",
           "id": 3,
           "globalId": 143,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 1
         },
         {
           "name": "INK",
           "id": 4,
           "globalId": 212,
           "type": 47,
-          "amount": 3
+          "amount": 3,
+          "group": 1
         }
       ],
       "enemies": [
@@ -956,6 +1098,7 @@
           "globalId": 3,
           "type": 61,
           "amount": 1,
+          "group": 1,
           "player": 0
         }
       ],
@@ -980,42 +1123,48 @@
           "id": 1,
           "globalId": 10,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 1
         },
         {
           "name": "GREEN HERB/2",
           "id": 2,
           "globalId": 221,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 1
         },
         {
           "name": "GREEN HERB/3",
           "id": 3,
           "globalId": 222,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 1
         },
         {
           "name": "GREEN HERB/4",
           "id": 4,
           "globalId": 223,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 1
         },
         {
           "name": "GREEN HERB/5",
           "id": 5,
           "globalId": 224,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 1
         },
         {
           "name": "GREEN HERB/6",
           "id": 6,
           "globalId": 225,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 1
         }
       ],
       "enemies": []
@@ -1063,7 +1212,8 @@
           "amount": 7,
           "requires2": [
             "item(28)"
-          ]
+          ],
+          "group": 1
         }
       ],
       "enemies": [
@@ -1087,7 +1237,8 @@
           "id": 9,
           "globalId": 31,
           "type": 45,
-          "amount": 1
+          "amount": 1,
+          "group": 1
         }
       ],
       "enemies": []
@@ -1111,7 +1262,8 @@
           "id": 1,
           "globalId": 13,
           "type": 38,
-          "amount": 1
+          "amount": 1,
+          "group": 1
         },
         {
           "name": "WESKER'S GIFT/FAS",
@@ -1119,7 +1271,8 @@
           "globalId": 160,
           "type": 65,
           "amount": 1,
-          "priority": "low"
+          "allowKey": false,
+          "group": 2
         },
         {
           "name": "WESKER'S GIFT/SHELLS",
@@ -1127,7 +1280,8 @@
           "globalId": 218,
           "type": 12,
           "amount": 7,
-          "priority": "low"
+          "allowKey": false,
+          "group": 2
         },
         {
           "name": "WESKER'S GIFT/CLIP",
@@ -1135,7 +1289,8 @@
           "globalId": 217,
           "type": 11,
           "amount": 15,
-          "priority": "low"
+          "allowKey": false,
+          "group": 2
         }
       ],
       "enemies": [
@@ -1154,14 +1309,16 @@
           "id": 1,
           "globalId": 67,
           "type": 64,
-          "amount": 0
+          "amount": 0,
+          "group": 2
         },
         {
           "name": "MAGNUM ROUNDS",
           "id": 4,
           "globalId": 101,
           "type": 14,
-          "amount": 6
+          "amount": 6,
+          "group": 2
         }
       ],
       "enemies": [
@@ -1219,7 +1376,9 @@
           "globalId": 34,
           "type": 61,
           "amount": 1,
-          "priority": "hidden",
+          "hidden": true,
+          "allowKey": false,
+          "group": 4,
           "player": 0
         },
         {
@@ -1227,7 +1386,8 @@
           "id": 3,
           "globalId": 35,
           "type": 29,
-          "amount": 0
+          "amount": 0,
+          "group": 4
         }
       ],
       "enemies": [
@@ -1255,7 +1415,7 @@
       "name": "KITCHEN ELEVATOR (CUTSCENE)",
       "doors": [
         {
-          "target": "21B"
+          "target": "213"
         },
         {
           "target": "21C"
@@ -1272,13 +1432,15 @@
         {
           "target": "202"
         },
-        {
-          "target": "214",
-          "lock": "side"
-        },
+        // {
+        //   "target": "214",
+        //   "kind": "unlock"
+        // },
         {
           "target": "215",
-          "requires": [ 54 ]
+          "requires2": [
+            "item(54)"
+          ]
         }
       ],
       "enemies": [
@@ -1336,7 +1498,8 @@
           "globalId": 14,
           "type": 17,
           "amount": 6,
-          "priority": "low",
+          "allowKey": false,
+          "group": 1,
           "player": 1
         }
       ],
@@ -1357,18 +1520,22 @@
         },
         {
           "target": "205",
-          "requires": [ 52 ]
+          "requires2": [
+            "item(52)"
+          ]
         },
         {
           "target": "206"
         },
         {
           "target": "207",
-          "lock": "side"
+          "kind": "locked"
         },
         {
           "target": "20D",
-          "requires": [ 52 ]
+          "requires2": [
+            "item(52)"
+          ]
         }
       ],
       "enemies": [
@@ -1391,7 +1558,8 @@
           "id": 9,
           "globalId": 36,
           "type": 46,
-          "amount": 1
+          "amount": 1,
+          "group": 1
         }
       ],
       "enemies": [
@@ -1410,6 +1578,7 @@
         },
         {
           "target": "207",
+          "kind": "oneway",
           "doorRando": false
         },
         {
@@ -1430,7 +1599,8 @@
           "id": 2,
           "globalId": 247,
           "type": 110,
-          "amount": 1
+          "amount": 1,
+          "group": 1
         }
       ],
       "enemies": [
@@ -1451,7 +1621,9 @@
         },
         {
           "target": "208",
-          "requires": [ 52 ]
+          "requires2": [
+            "item(52)"
+          ]
         },
         {
           "target": "20B"
@@ -1505,7 +1677,8 @@
           "id": 1,
           "globalId": 37,
           "type": 48,
-          "amount": 0
+          "amount": 0,
+          "group": 1
         },
         {
           "name": "BEHIND BED",
@@ -1513,7 +1686,8 @@
           "globalId": 38,
           "type": 12,
           "amount": 7,
-          "priority": "hidden",
+          "hidden": true,
+          "group": 1,
           "player": 0
         },
         {
@@ -1522,6 +1696,7 @@
           "globalId": 38,
           "type": 11,
           "amount": 15,
+          "group": 1,
           "player": 1
         },
         {
@@ -1529,7 +1704,8 @@
           "id": 3,
           "globalId": 211,
           "type": 67,
-          "amount": 1
+          "amount": 1,
+          "group": 1
         }
       ],
       "enemies": [
@@ -1560,6 +1736,7 @@
           "globalId": 15,
           "type": 12,
           "amount": 7,
+          "group": 1,
           "player": 0
         },
         {
@@ -1568,6 +1745,7 @@
           "globalId": 15,
           "type": 16,
           "amount": 6,
+          "group": 1,
           "player": 1
         },
         {
@@ -1576,7 +1754,8 @@
           "globalId": 184,
           "type": 47,
           "amount": 3,
-          "priority": "hidden",
+          "hidden": true,
+          "group": 1,
           "player": 0
         }
       ],
@@ -1603,7 +1782,9 @@
         },
         {
           "target": "20C",
-          "requires": [ 54 ]
+          "requires2": [
+            "item(54)"
+          ]
         }
       ],
       "items": [
@@ -1612,7 +1793,8 @@
           "id": 3,
           "globalId": 162,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 1
         }
       ],
       "enemies": [
@@ -1624,6 +1806,15 @@
     },
     "20C": {
       "name": "PIANO LESSON",
+      "doors": [
+        {
+          "target": "20B"
+        },
+        {
+          "target": "20C/GRAVE",
+          "kind": "oneway"
+        }
+      ],
       "enemies": [
         {
           "keepState": true,
@@ -1634,6 +1825,14 @@
       "npcs": [
         {
           "player": 1
+        }
+      ]
+    },
+    "20C/GRAVE": {
+      "name": "PIANO LESSON/GRAVE",
+      "doors": [
+        {
+          "target": "21A"
         }
       ]
     },
@@ -1659,14 +1858,16 @@
           "id": 3,
           "globalId": 197,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 1
         },
         {
           "name": "GREEN HERB/2",
           "id": 5,
           "globalId": 198,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 1
         }
       ],
       "npcs": [
@@ -1695,7 +1896,9 @@
         },
         {
           "target": "210",
-          "requires": [ 53 ]
+          "requires2": [
+            "item(53)"
+          ]
         }
       ],
       "enemies": [
@@ -1720,7 +1923,8 @@
           "id": 3,
           "globalId": 11,
           "type": 11,
-          "amount": 15
+          "amount": 15,
+          "group": 1
         },
         {
           "name": "BOOKSHELF IN CUPBOARD",
@@ -1730,7 +1934,8 @@
           "amount": 7,
           "requires2": [
             "item(48)"
-          ]
+          ],
+          "group": 1
         }
       ],
       "enemies": [
@@ -1754,14 +1959,16 @@
           "id": 1,
           "globalId": 129,
           "type": 44,
-          "amount": 1
+          "amount": 1,
+          "group": 1
         },
         {
           "name": "SHELLS",
           "id": 2,
           "globalId": 130,
           "type": 12,
-          "amount": 7
+          "amount": 7,
+          "group": 1
         }
       ],
       "enemies": [
@@ -1790,6 +1997,7 @@
           "globalId": 149,
           "type": 61,
           "amount": 1,
+          "group": 1,
           "player": 0
         }
       ],
@@ -1822,6 +2030,7 @@
           "globalId": 6,
           "type": 11,
           "amount": 15,
+          "group": 1,
           "player": 0
         },
         {
@@ -1830,6 +2039,7 @@
           "globalId": 6,
           "type": 7,
           "amount": 6,
+          "group": 1,
           "player": 1
         }
       ],
@@ -1844,13 +2054,25 @@
     },
     "213": {
       "name": "2F WEST ELEVATOR",
+      "doors": [
+        {
+          "target": "214"
+        },
+        {
+          "target": "216"
+        },
+        {
+          "target": "219"
+        }
+      ],
       "items": [
         {
           "name": "GREEN HERB",
           "id": 4,
           "globalId": 161,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 2
         }
       ],
       "enemies": [
@@ -1861,27 +2083,39 @@
     },
     "214": {
       "name": "2F WEST BLUE CORRIDOR",
+      "doors": [
+        // {
+        //   "target": "201",
+        //   "kind": "locked"
+        // },
+        {
+          "target": "213"
+        }
+      ],
       "items": [
         {
           "name": "GREEN HERB/1",
           "id": 2,
           "globalId": 169,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 2
         },
         {
           "name": "BLUE HERB",
           "id": 3,
           "globalId": 170,
           "type": 69,
-          "amount": 1
+          "amount": 1,
+          "group": 2
         },
         {
           "name": "GREEN HERB/2",
           "id": 4,
           "globalId": 171,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 2
         }
       ],
       "enemies": [
@@ -1898,21 +2132,24 @@
           "id": 3,
           "globalId": 29,
           "type": 12,
-          "amount": 7
+          "amount": 7,
+          "group": 2
         },
         {
           "name": "DEER EYE",
           "id": 5,
           "globalId": 30,
           "type": 34,
-          "amount": 1
+          "amount": 1,
+          "group": 2
         },
         {
           "name": "MAGNUM ROUNDS",
           "id": 6,
           "globalId": 200,
           "type": 14,
-          "amount": 6
+          "amount": 6,
+          "group": 2
         }
       ],
       "enemies": [
@@ -1924,13 +2161,27 @@
     },
     "216": {
       "name": "2F WEST LIBRARY",
+      "doors": [
+        {
+          "target": "213"
+        },
+        {
+          "target": "216",
+          "kind": "unblock"
+        },
+        {
+          "target": "217"
+        }
+      ],
       "items": [
         {
           "name": "DOCUMENT ON STALL",
           "id": 3,
           "globalId": 84,
           "type": 102,
-          "amount": 1
+          "amount": 1,
+          "document": true,
+          "group": 2
         },
         {
           "name": "LOCKED DRAWER",
@@ -1940,7 +2191,8 @@
           "amount": 6,
           "requires2": [
             "item(61)"
-          ]
+          ],
+          "group": 2
         }
       ],
       "enemies": [
@@ -1951,13 +2203,19 @@
     },
     "217": {
       "name": "2F WEST LIBRARY PUZZLE",
+      "doors": [
+        {
+          "target": "216"
+        }
+      ],
       "items": [
         {
           "name": "MO DISC",
           "id": 5,
           "globalId": 77,
           "type": 40,
-          "amount": 1
+          "amount": 1,
+          "group": 2
         }
       ],
       "enemies": [
@@ -1968,13 +2226,19 @@
     },
     "218": {
       "name": "2F WEST HIDDEN LIBRARY",
+      "doors": [
+        {
+          "target": "216"
+        }
+      ],
       "items": [
         {
           "name": "CLIP",
           "id": 2,
           "globalId": 199,
           "type": 11,
-          "amount": 15
+          "amount": 15,
+          "group": 2
         },
         {
           "name": "INK",
@@ -1982,6 +2246,7 @@
           "globalId": 91,
           "type": 47,
           "amount": 3,
+          "group": 2,
           "player": 0
         }
       ],
@@ -1994,27 +2259,35 @@
     },
     "219": {
       "name": "2F WEST STORAGE",
+      "doors": [
+        {
+          "target": "213"
+        }
+      ],
       "items": [
         {
           "name": "SHELLS/1",
           "id": 1,
           "globalId": 55,
           "type": 12,
-          "amount": 7
+          "amount": 7,
+          "group": 2
         },
         {
           "name": "SHELLS/2",
           "id": 2,
           "globalId": 56,
           "type": 12,
-          "amount": 7
+          "amount": 7,
+          "group": 2
         },
         {
           "name": "BATTERY",
           "id": 3,
           "globalId": 57,
           "type": 39,
-          "amount": 1
+          "amount": 1,
+          "group": 2
         }
       ],
       "enemies": [
@@ -2026,13 +2299,22 @@
     },
     "21A": {
       "name": "B1 EAST",
+      "doors": [
+        {
+          "target": "20C/GRAVE"
+        },
+        {
+          "target": "21B"
+        }
+      ],
       "items": [
         {
           "name": "SHELLS",
           "id": 3,
           "globalId": 219,
           "type": 12,
-          "amount": 7
+          "amount": 7,
+          "group": 2
         }
       ],
       "enemies": [
@@ -2043,20 +2325,31 @@
     },
     "21B": {
       "name": "B1 WEST",
+      "doors": [
+        {
+          "target": "21A"
+        },
+        {
+          "target": "21C",
+          "kind": "unlock"
+        }
+      ],
       "items": [
         {
           "name": "GREEN HERB/1",
           "id": 2,
           "globalId": 93,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 2
         },
         {
           "name": "GREEN HERB/2",
           "id": 3,
           "globalId": 213,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 2
         }
       ],
       "enemies": [
@@ -2076,7 +2369,7 @@
         },
         {
           "target": "21B",
-          "lock": "side"
+          "kind": "locked"
         }
       ],
       "items": [
@@ -2086,7 +2379,8 @@
           "globalId": 228,
           "type": 61,
           "amount": 1,
-          "priority": "hidden",
+          "hidden": true,
+          "group": 2,
           "player": 0
         }
       ],
@@ -2103,6 +2397,7 @@
       ]
     },
     "300": {
+      "name": "COURTYARD GARDEN",
       "doors": [
         {
           "target": "11B"
@@ -2112,56 +2407,71 @@
         },
         {
           "target": "302",
-          "randomize": false,
-          "lock": "gate"
+          "kind": "blocked",
+          "randomize": false
         }
       ],
       "items": [
         {
+          "name": "GREEN HERB/1",
           "id": 6,
           "globalId": 185,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 4
         },
         {
+          "name": "GREEN HERB/2",
           "id": 7,
           "globalId": 186,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 4
         },
         {
+          "name": "GREEN HERB/3",
           "id": 8,
           "globalId": 187,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 4
         },
         {
+          "name": "GREEN HERB/4",
           "id": 9,
           "globalId": 188,
           "type": 67,
-          "amount": 1
+          "amount": 1,
+          "group": 4
         },
         {
+          "name": "RED HERB/1",
           "id": 10,
           "globalId": 189,
           "type": 67,
-          "amount": 1
+          "amount": 1,
+          "group": 4
         },
         {
+          "name": "BLUE HERB/1",
           "id": 11,
           "globalId": 191,
           "type": 69,
-          "amount": 1
+          "amount": 1,
+          "group": 4
         },
         {
+          "name": "BLUE HERB/2",
           "id": 12,
           "globalId": 192,
           "type": 69,
-          "amount": 1
+          "amount": 1,
+          "group": 4
         }
       ]
     },
     "301": {
+      "name": "COURTYARD RESERVOIR",
       "doorRando": [
         {
           "category": "exclude"
@@ -2173,7 +2483,9 @@
         },
         {
           "target": "302",
-          "requires": [ 29 ]
+          "requires2": [
+            "item(29)"
+          ]
         }
       ],
       "enemies": [
@@ -2184,6 +2496,7 @@
       ]
     },
     "302": {
+      "name": "COURTYARD WATERFALL",
       "doorRando": [
         {
           "nop": [ "0x192C4", "0x192D0", "0x192DC", "0x1944A", "0x19450" ]
@@ -2193,8 +2506,10 @@
         {
           "target": "300",
           "randomize": false,
-          "requires": [ 39 ],
-          "lock": "unblock",
+          "requires2": [
+            "flag(COURTYARD_LIFT_POWER)"
+          ],
+          "kind": "unblock",
           "noUnlock": true
         },
         {
@@ -2204,14 +2519,25 @@
           "target": "304"
         },
         {
+          "name": "LADDER TO CAVES",
           "target": "307",
-          "requires": [ 39 ],
+          "requires2": [
+            "flag(COURTYARD_LIFT_POWER)"
+          ],
           "noUnlock": true
-          // "noReturn": true
+        }
+      ],
+      "flags": [
+        {
+          "name": "COURTYARD_LIFT_POWER",
+          "requires2": [
+            "item(39)"
+          ]
         }
       ]
     },
     "303": {
+      "name": "HELIPAD",
       "doorRando": [
         {
           "category": "exclude"
@@ -2220,12 +2546,13 @@
       "doors": [
         {
           "target": "500",
-          "lock": "always"
+          "kind": "blocked"
         }
       ],
       "enemies": []
     },
     "304": {
+      "name": "GUARDHOUSE GATE",
       "doors": [
         {
           "target": "302"
@@ -2236,28 +2563,36 @@
       ],
       "items": [
         {
+          "name": "GREEN HERB/1",
           "id": 3,
           "globalId": 193,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 4
         },
         {
+          "name": "GREEN HERB/2",
           "id": 4,
           "globalId": 194,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 4
         },
         {
+          "name": "BLUE HERB/1",
           "id": 5,
           "globalId": 195,
           "type": 69,
-          "amount": 1
+          "amount": 1,
+          "group": 4
         },
         {
+          "name": "BLUE HERB/2",
           "id": 6,
           "globalId": 196,
           "type": 69,
-          "amount": 1
+          "amount": 1,
+          "group": 4
         }
       ],
       "enemies": [
@@ -2267,6 +2602,7 @@
       ]
     },
     "305": {
+      "name": "FOUNTAIN",
       "doorRando": [
         {
           "category": "bridge",
@@ -2278,41 +2614,53 @@
           "target": "30F"
         },
         {
+          "name": "FOUNTAIN STAIRS",
           "target": "310",
-          "requires": [ 63, 64 ],
+          "requires2": [
+            "item(63)",
+            "item(64)"
+          ],
           "noUnlock": true,
-          "noReturn": true,
           "randomize": false
         }
       ],
       "items": [
         {
+          "name": "GREEN HERB/1",
           "id": 15,
           "globalId": 203,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 16
         },
         {
+          "name": "GREEN HERB/2",
           "id": 16,
           "globalId": 204,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 16
         },
         {
+          "name": "BLUE HERB/1",
           "id": 17,
           "globalId": 205,
           "type": 69,
-          "amount": 1
+          "amount": 1,
+          "group": 16
         },
         {
+          "name": "BLUE HERB/2",
           "id": 18,
           "globalId": 206,
           "type": 69,
-          "amount": 1
+          "amount": 1,
+          "group": 16
         }
       ]
     },
     "306": {
+      "name": "CAVES STATUE PUZZLE",
       "doors": [
         {
           "target": "30F"
@@ -2320,12 +2668,15 @@
       ],
       "items": [
         {
+          "name": "BEHIND PUZZLE DOOR",
           "id": 6,
           "globalId": 119,
           "type": 63,
           "amount": 1,
-          "requires": [ 30 ],
-          "allowDocuments": false
+          "requires2": [
+            "item(30)"
+          ],
+          "group": 16
         }
       ],
       "enemies": [
@@ -2336,6 +2687,7 @@
       ]
     },
     "307": {
+      "name": "CAVES ENTRANCE",
       "doors": [
         {
           "target": "302",
@@ -2346,15 +2698,19 @@
         },
         {
           "target": "30B",
-          "requires": [ 30 ]
+          "requires2": [
+            "item(30)"
+          ]
         }
       ],
       "items": [
         {
+          "name": "BARRY'S PHOTO",
           "id": 3,
           "type": 106,
           "amount": 0,
-          "priority": "low",
+          "allowKey": false,
+          "group": 16,
           "player": 1
         }
       ],
@@ -2377,6 +2733,7 @@
       ]
     },
     "308": {
+      "name": "CAVES BRANCH PASSAGE",
       "doorRando": [
         {
           "nop": [ "0x1AFD8-0x1B074" ],
@@ -2404,6 +2761,7 @@
       ]
     },
     "309": {
+      "name": "CAVES POWER GENERATOR",
       "doors": [
         {
           "id": 0,
@@ -2420,16 +2778,20 @@
       ],
       "items": [
         {
+          "name": "SHELLS",
           "id": 132,
           "globalId": 202,
           "type": 12,
-          "amount": 7
+          "amount": 7,
+          "group": 16
         },
         {
+          "name": "FIRST AID SPRAY",
           "id": 133,
           "globalId": 248,
           "type": 65,
-          "amount": 1
+          "amount": 1,
+          "group": 16
         }
       ],
       "npcs": [
@@ -2446,6 +2808,7 @@
       ]
     },
     "30A": {
+      "name": "CAVES ENRICO",
       "doors": [
         {
           "target": "309"
@@ -2453,16 +2816,20 @@
       ],
       "items": [
         {
+          "name": "CLIP ON ENRICO",
           "id": 1,
           "globalId": 252,
           "type": 11,
-          "amount": 15
+          "amount": 15,
+          "group": 16
         },
         {
+          "name": "CRANK AFTER ENRICO DEATH",
           "id": 137,
           "globalId": 46,
           "type": 30,
-          "amount": 0
+          "amount": 0,
+          "group": 16
         }
       ],
       "enemies": [],
@@ -2491,53 +2858,62 @@
       ]
     },
     "30B": {
+      "name": "CAVES FIRST BOULDER",
       "doors": [
         {
           "target": "307"
         },
         {
           "target": "30C",
-          "lock": "unblock"
+          "kind": "unblock"
         }
       ],
       "items": [
         {
+          "name": "MAGNUM ROUNDS BEHIND BOULDER",
           "id": 2,
           "globalId": 125,
           "type": 14,
           "amount": 6,
+          "group": 16,
           "player": 0
         },
         {
+          "name": "FLAME ROUNDS BEHIND BOULDER",
           "id": 2,
           "globalId": 125,
           "type": 18,
           "amount": 6,
+          "group": 16,
           "player": 1
         }
       ],
       "enemies": []
     },
     "30C": {
+      "name": "CAVES BLACK TIGER",
       "doors": [
         {
           "target": "30B"
         },
         {
           "target": "30D",
-          "lock": "unblock"
+          "kind": "unblock"
         }
       ],
       "items": [
         {
+          "name": "KNIFE IN CORNER",
           "id": 2,
           "globalId": 246,
           "type": 1,
-          "amount": 1
+          "amount": 1,
+          "group": 16
         }
       ]
     },
     "30D": {
+      "name": "CAVES BLACK TIGER EXIT",
       "doors": [
         {
           "target": "30C"
@@ -2546,13 +2922,7 @@
           "target": "30E"
         },
         {
-          "target": "30F",
-          "requires": [ 6 ],
-          "player": 0
-        },
-        {
-          "target": "30F",
-          "player": 1
+          "target": "30F"
         }
       ],
       "enemies": [
@@ -2563,6 +2933,7 @@
       ]
     },
     "30E": {
+      "name": "CAVES SAVE",
       "doorRando": [
         {
           "category": "box"
@@ -2575,22 +2946,28 @@
       ],
       "items": [
         {
+          "name": "BLUE HERB",
           "id": 3,
           "globalId": 236,
           "type": 69,
-          "amount": 1
+          "amount": 1,
+          "group": 16
         },
         {
+          "name": "FIRST AID SPRAY",
           "id": 4,
           "globalId": 239,
           "type": 65,
-          "amount": 1
+          "amount": 1,
+          "group": 16
         },
         {
+          "name": "INK",
           "id": 5,
           "globalId": 240,
           "type": 47,
           "amount": 3,
+          "group": 16,
           "player": 0
         }
       ],
@@ -2603,6 +2980,7 @@
       ]
     },
     "30F": {
+      "name": "CAVES SECOND BOULDER",
       "doors": [
         {
           "target": "305",
@@ -2610,7 +2988,9 @@
         },
         {
           "target": "306",
-          "requires": [ 30 ]
+          "requires2": [
+            "item(30)"
+          ]
         },
         {
           "target": "30D"
@@ -2618,10 +2998,12 @@
       ],
       "items": [
         {
+          "name": "MO DISK BEHIND BOULDER",
           "id": 5,
           "globalId": 251,
           "type": 40,
-          "amount": 1
+          "amount": 1,
+          "group": 16
         }
       ],
       "enemies": [
@@ -2631,17 +3013,19 @@
       ]
     },
     "310": {
+      "name": "FOUNTAIN STAIRS",
       "doors": [
-        {
-          "target": "305",
-          "randomize": false
-        },
+        // {
+        //   "target": "305",
+        //   "randomize": false
+        // },
         {
           "target": "500"
         }
       ]
     },
     "400": {
+      "name": "GUARDHOUSE ENTRANCE",
       "doors": [
         {
           "target": "304"
@@ -2661,22 +3045,28 @@
       ],
       "items": [
         {
+          "name": "BLUE HERB/1",
           "id": 5,
           "globalId": 157,
           "type": 69,
-          "amount": 1
+          "amount": 1,
+          "group": 8
         },
         {
+          "name": "BLUE HERB/2",
           "id": 7,
           "globalId": 209,
           "type": 69,
-          "amount": 1
+          "amount": 1,
+          "group": 8
         },
         {
+          "name": "BLUE HERB/3",
           "id": 8,
           "globalId": 210,
           "type": 69,
-          "amount": 1
+          "amount": 1,
+          "group": 8
         }
       ],
       "enemies": [
@@ -2687,6 +3077,7 @@
       ]
     },
     "401": {
+      "name": "GUARDHOUSE ROOM 001",
       "doors": [
         {
           "target": "400"
@@ -2697,22 +3088,30 @@
       ],
       "items": [
         {
+          "name": "RED BOOK ON BED",
           "id": 2,
           "globalId": 99,
           "type": 62,
-          "amount": 1
+          "amount": 1,
+          "group": 8
         },
         {
+          "name": "SMALL KEY IN CUP",
           "id": 3,
           "globalId": 100,
           "type": 61,
-          "amount": 1
+          "amount": 1,
+          "group": 8
         },
         {
+          "name": "LOCKED DRAWER",
           "id": 4,
           "globalId": 165,
           "type": 12,
-          "requires": [ 61 ]
+          "requires2": [
+            "item(61)"
+          ],
+          "group": 8
         }
       ],
       "enemies": [
@@ -2724,6 +3123,7 @@
       ]
     },
     "402": {
+      "name": "GUARDHOUSE ROOM 001 BATHROOM",
       "doors": [
         {
           "target": "401"
@@ -2731,10 +3131,12 @@
       ],
       "items": [
         {
+          "name": "IN BATHTUB",
           "id": 1,
           "globalId": 156,
           "type": 59,
-          "amount": 1
+          "amount": 1,
+          "group": 8
         }
       ],
       "enemies": [
@@ -2746,6 +3148,7 @@
       ]
     },
     "403": {
+      "name": "GUARDHOUSE SAVE",
       "doorRando": [
         {
           "category": "box"
@@ -2758,16 +3161,30 @@
       ],
       "items": [
         {
+          "name": "CLIP IN BOOKCASE",
+          "id": 3,
+          "globalId": 166,
+          "type": 16,
+          "amount": 6,
+          "group": 8,
+          "player": 0
+        },
+        {
+          "name": "GRENADE ROUNDS IN BOOKCASE",
           "id": 3,
           "globalId": 167,
           "type": 16,
-          "amount": 6
+          "amount": 6,
+          "group": 8,
+          "player": 1
         },
         {
+          "name": "FIRST AID SPRAY",
           "id": 4,
           "globalId": 180,
           "type": 65,
-          "amount": 1
+          "amount": 1,
+          "group": 8
         }
       ],
       "enemies": [
@@ -2779,12 +3196,7 @@
       ]
     },
     "404": {
-      "doorRando": [
-        {
-          "cutscene": true,
-          "player": 0
-        }
-      ],
+      "name": "GUARDHOUSE BAR",
       "doors": [
         {
           "target": "400"
@@ -2792,16 +3204,21 @@
       ],
       "items": [
         {
+          "name": "CLIP ON BARREL",
           "id": 1,
           "globalId": 127,
           "type": 11,
-          "amount": 15
+          "amount": 15,
+          "group": 8
         },
         {
+          "name": "INK ON TABLE",
           "id": 8,
           "globalId": 182,
           "type": 47,
-          "amount": 3
+          "amount": 3,
+          "group": 8,
+          "player": 0
         }
       ],
       "enemies": [
@@ -2811,13 +3228,16 @@
       ]
     },
     "405": {
+      "name": "GUARDHOUSE WESKER CORRIDOR",
       "doors": [
         {
           "target": "400"
         },
         {
           "target": "406",
-          "requires": [ 57 ]
+          "requires2": [
+            "item(57)"
+          ]
         },
         {
           "target": "408"
@@ -2825,22 +3245,28 @@
       ],
       "items": [
         {
+          "name": "GREEN HERB/1",
           "id": 3,
           "globalId": 106,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 8
         },
         {
+          "name": "GREEN HERB/2",
           "id": 4,
           "globalId": 107,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 8
         },
         {
+          "name": "GREEN HERB/3",
           "id": 5,
           "globalId": 108,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 8
         }
       ],
       "npcs": [
@@ -2864,6 +3290,7 @@
       ]
     },
     "406": {
+      "name": "GUARDHOUSE ROOM 002",
       "doors": [
         {
           "target": "405"
@@ -2873,23 +3300,30 @@
         },
         {
           "target": "40D",
-          "noUnlock": true,
-          "lock": "unblock"
+          "kind": "unblock",
+          "noUnlock": true
         }
       ],
       "items": [
         {
+          "name": "LOCKED DRAWER",
           "id": 6,
           "globalId": 25,
           "type": 12,
           "amount": 7,
-          "requires": [ 61 ]
+          "requires2": [
+            "item(61)"
+          ],
+          "group": 8
         },
         {
+          "name": "DOCUMENT ON BED",
           "id": 7,
           "globalId": 134,
           "type": 100,
-          "amount": 1
+          "amount": 1,
+          "document": true,
+          "group": 8
         }
       ],
       "enemies": [
@@ -2907,6 +3341,7 @@
       ]
     },
     "407": {
+      "name": "GUARDHOUSE ROOM 002 BATHROOM",
       "doors": [
         {
           "target": "406"
@@ -2914,10 +3349,12 @@
       ],
       "items": [
         {
+          "name": "CLIP IN SINK",
           "id": 1,
           "globalId": 109,
           "type": 11,
-          "amount": 15
+          "amount": 15,
+          "group": 8
         }
       ],
       "enemies": [
@@ -2928,6 +3365,7 @@
       ]
     },
     "408": {
+      "name": "GUARDHOUSE NEST",
       "doorRando": [
         {
           "nop": [ 199372, 199374, 199404, 199406 ]
@@ -2939,23 +3377,27 @@
         },
         {
           "target": "409",
-          "lock": "unblock"
+          "kind": "unblock"
         },
         {
           "target": "40A",
-          "requires": [ 58 ]
+          "requires2": [
+            "item(58)"
+          ]
         },
         {
           "target": "40C",
-          "lock": "always"
+          "kind": "locked"
         }
       ],
       "items": [
         {
+          "name": "KEY ON BODY",
           "id": 5,
           "globalId": 72,
           "type": 57,
-          "amount": 1
+          "amount": 1,
+          "group": 8
         }
       ],
       "npcs": [
@@ -2976,6 +3418,7 @@
       ]
     },
     "409": {
+      "name": "GUARDHOUSE DRUG STORAGE",
       "doorRando": [
         {
           "category": "exclude",
@@ -3002,6 +3445,7 @@
       ]
     },
     "40A": {
+      "name": "GUARDHOUSE ROOM 003",
       "doors": [
         {
           "target": "408"
@@ -3011,18 +3455,24 @@
         },
         {
           "target": "40C",
-          "requires": [ 62 ],
+          "kind": "oneway",
+          "requires2": [
+            "item(62)"
+          ],
           "doorRando": false
         }
       ],
       "items": [
         {
+          "name": "LOCKED DRAWER",
           "id": 8,
           "globalId": 120,
           "type": 47,
           "amount": 3,
-          "requires": [ 61 ],
-          "player": 0
+          "requires2": [
+            "item(61)"
+          ],
+          "group": 8
         }
       ],
       "enemies": [
@@ -3033,6 +3483,7 @@
       ]
     },
     "40B": {
+      "name": "GUARDHOUSE ROOM 003 BATHROOM",
       "doors": [
         {
           "target": "40A"
@@ -3040,10 +3491,12 @@
       ],
       "items": [
         {
+          "name": "CLIP ON FLOOR",
           "id": 1,
           "globalId": 168,
           "type": 11,
-          "amount": 15
+          "amount": 15,
+          "group": 8
         }
       ],
       "enemies": [
@@ -3054,6 +3507,7 @@
       ]
     },
     "40C": {
+      "name": "GUARDHOUSE PLANT 42",
       "doorRando": [
         {
           "category": "exclude"
@@ -3061,20 +3515,18 @@
       ],
       "doors": [
         {
-          "target": "40A",
-          "lock": "always"
-        },
-        {
-          "target": "408"
+          "target": "408",
+          "kind": "unlock"
         }
       ],
       "items": [
         {
+          "name": "KEY IN FIREPLACE",
           "id": 3,
           "globalId": 88,
           "type": 54,
           "amount": 3,
-          "priority": "fixed"
+          "group": 64
         }
       ],
       "npcs": [
@@ -3087,27 +3539,14 @@
       ]
     },
     "40D": {
+      "name": "GUARDHOUSE BOX PASSAGE",
       "doors": [
         {
           "target": "406"
         },
         {
-          "target": "40E",
-          "lock": "unblock"
-        }
-      ],
-      "items": [
-        {
-          "id": 6,
-          "globalId": 158,
-          "type": 68,
-          "amount": 1
-        },
-        {
-          "id": 7,
-          "globalId": 159,
-          "type": 68,
-          "amount": 1
+          "target": "40D/EXIT",
+          "kind": "unblock"
         }
       ],
       "enemies": [
@@ -3116,7 +3555,37 @@
         }
       ]
     },
+    "40D/EXIT": {
+      "doors": [
+        {
+          "target": "40D",
+          "kind": "blocked"
+        },
+        {
+          "target": "40E"
+        }
+      ],
+      "items": [
+        {
+          "name": "GREEN HERB/1",
+          "id": 6,
+          "globalId": 158,
+          "type": 68,
+          "amount": 1,
+          "group": 8
+        },
+        {
+          "name": "GREEN HERB/2",
+          "id": 7,
+          "globalId": 159,
+          "type": 68,
+          "amount": 1,
+          "group": 8
+        }
+      ]
+    },
     "40E": {
+      "name": "GUARDHOUSE WATER TANK",
       "doors": [
         {
           "target": "40D"
@@ -3130,11 +3599,14 @@
         },
         {
           "target": "411",
-          "requires": [ 59 ]
+          "requires2": [
+            "item(59)"
+          ]
         }
       ]
     },
     "40F": {
+      "name": "GUARDHOUSE PLANT 42 ROOTS",
       "doors": [
         {
           "target": "40E"
@@ -3142,10 +3614,12 @@
       ],
       "items": [
         {
+          "name": "SMALL KEY ON BOX",
           "id": 1,
           "globalId": 105,
           "type": 61,
           "amount": 1,
+          "group": 8,
           "player": 0
         }
       ],
@@ -3157,6 +3631,7 @@
       ]
     },
     "410": {
+      "name": "GUARDHOUSE WEAPON STORAGE",
       "doors": [
         {
           "target": "40E"
@@ -3164,34 +3639,44 @@
       ],
       "items": [
         {
+          "name": "SHELLS/1",
           "id": 1,
           "globalId": 122,
           "type": 12,
-          "amount": 7
+          "amount": 7,
+          "group": 8
         },
         {
+          "name": "SHELLS/2",
           "id": 2,
           "globalId": 131,
           "type": 12,
-          "amount": 7
+          "amount": 7,
+          "group": 8
         },
         {
+          "name": "CLIP/1",
           "id": 131,
           "globalId": 112,
           "type": 11,
-          "amount": 15
+          "amount": 15,
+          "group": 8
         },
         {
+          "name": "CLIP/2",
           "id": 132,
           "globalId": 92,
           "type": 11,
-          "amount": 15
+          "amount": 15,
+          "group": 8
         },
         {
+          "name": "KEY",
           "id": 5,
           "globalId": 114,
           "type": 58,
-          "amount": 1
+          "amount": 1,
+          "group": 8
         }
       ],
       "enemies": [
@@ -3202,6 +3687,7 @@
       ]
     },
     "411": {
+      "name": "GUARDHOUSE CONTROL",
       "doors": [
         {
           "target": "40E"
@@ -3215,6 +3701,7 @@
       ]
     },
     "500": {
+      "name": "LABORATORY B1 ENTRANCE",
       "doorRando": [
         {
           "nop": [ "0xCF1A-0xCF5E" ],
@@ -3231,7 +3718,9 @@
         },
         {
           "target": "501",
-          "requires": [ 55 ],
+          "requires2": [
+            "item(55)"
+          ],
           "requiresRoom": [ "505", "513" ]
         },
         {
@@ -3252,32 +3741,32 @@
       ]
     },
     "501": {
+      "name": "LABORATORY B1 ESCAPE",
       "doors": [
         {
           "target": "500"
         },
         {
           "target": "50D",
-          "requires": [ 39 ],
+          "requires2": [
+            "item(39)"
+          ],
           "randomize": false
         }
       ],
       "items": [
         {
+          "name": "BATTERY ON FLOOR",
           "id": 2,
           "globalId": 69,
           "type": 39,
-          "amount": 1
-        },
-        {
-          "id": 3,
-          "globalId": 70,
-          "type": 39,
-          "amount": 1
+          "amount": 1,
+          "group": 32
         }
       ]
     },
     "502": {
+      "name": "LABORATORY B2 BOX",
       "doorRando": [
         {
           "category": "box",
@@ -3303,7 +3792,7 @@
         },
         {
           "target": "500",
-          "lock": "unblock",
+          "kind": "unblock",
           "noUnlock": true,
           "player": 1,
           "doorRando": true
@@ -3341,6 +3830,7 @@
       ]
     },
     "503": {
+      "name": "LABORATORY B2 STAIRS",
       "doors": [
         {
           "target": "502"
@@ -3355,22 +3845,28 @@
       ],
       "items": [
         {
+          "name": "MO DISK ON TABLE",
           "id": 3,
           "globalId": 176,
           "type": 40,
-          "amount": 1
+          "amount": 1,
+          "group": 32
         },
         {
+          "name": "GREEN HERB/1",
           "id": 4,
           "globalId": 177,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 32
         },
         {
+          "name": "GREEN HERB/2",
           "id": 5,
           "globalId": 178,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 32
         }
       ],
       "enemies": [
@@ -3380,6 +3876,7 @@
       ]
     },
     "504": {
+      "name": "LABORATORY B2 CONFERENCE ROOM",
       "doors": [
         {
           "target": "503"
@@ -3387,17 +3884,22 @@
       ],
       "items": [
         {
+          "name": "KEY BEHIND VENT",
           "id": 1,
           "globalId": 137,
           "type": 60,
-          "amount": 1
+          "amount": 1,
+          "group": 32
         },
         {
+          "name": "DOCUMENT IN BOOKCASE",
           "id": 2,
           "globalId": 136,
           "type": 103,
           "amount": 0,
-          "priority": "hidden"
+          "document": true,
+          "hidden": true,
+          "group": 32
         }
       ],
       "enemies": [
@@ -3407,6 +3909,7 @@
       ]
     },
     "505": {
+      "name": "LABORATORY B3 RING CORRIDOR",
       "doors": [
         {
           "target": "503"
@@ -3415,15 +3918,17 @@
           "target": "506"
         },
         {
-          "target": "507",
-          "lock": "side"
+          "target": "507/STORE",
+          "kind": "locked"
         },
         {
           "target": "508"
         },
         {
           "target": "50C",
-          "requires": [ 60 ]
+          "requires2": [
+            "item(60)"
+          ]
         }
       ],
       "enemies": [
@@ -3433,6 +3938,7 @@
       ]
     },
     "506": {
+      "name": "LABORATORY B3 COMPUTER",
       "doors": [
         {
           "target": "505"
@@ -3440,10 +3946,12 @@
       ],
       "items": [
         {
+          "name": "SLIDES",
           "id": 2,
           "globalId": 179,
           "type": 43,
-          "amount": 1
+          "amount": 1,
+          "group": 32
         }
       ],
       "enemies": [
@@ -3453,40 +3961,63 @@
         }
       ]
     },
-    "507": {
+    "507/TABLE": {
+      "name": "LABORATORY B3 MORGUE (TABLE)",
       "doors": [
         {
-          "target": "505",
-          "doorRando": true
+          "target": "507/STORE",
+          "kind": "oneway"
         },
         {
           "target": "50C",
-          "doorRando": false
+          "kind": "unlock"
         }
       ],
       "items": [
         {
+          "name": "RED HERB",
           "id": 2,
           "globalId": 123,
           "type": 67,
           "amount": 1,
-          "doorRando": false
+          "group": 32
         },
         {
-          "id": 3,
-          "globalId": 148,
-          "type": 14,
-          "amount": 6
-        },
-        {
+          "name": "SHELLS",
           "id": 15,
           "globalId": 124,
           "type": 12,
           "amount": 7,
-          "doorRando": false
+          "group": 32
         }
       ],
-      "requires": [ 40 ],
+      "enemies": []
+    },
+    "507/STORE": {
+      "name": "LABORATORY B3 MORGUE (STORE)",
+      "doors": [
+        {
+          "target": "505"
+        }
+      ],
+      "items": [
+        {
+          "name": "MAGNUM ROUNDS ON SHELF",
+          "id": 3,
+          "globalId": 148,
+          "type": 14,
+          "amount": 6,
+          "group": 32
+        }
+      ],
+      "flags": [
+        {
+          "name": "MO_DISC_507",
+          "requires2": [
+            "item(40)"
+          ]
+        }
+      ],
       "enemies": [
         {
           "excludeTypes": [ 4 ]
@@ -3494,6 +4025,7 @@
       ]
     },
     "508": {
+      "name": "LABORATORY B3 WEST CORRIDOR",
       "doorRando": [
         {
           "nop": [ "0x442", "0x450", "0x480" ]
@@ -3512,7 +4044,11 @@
         },
         {
           "target": "50B",
-          "requires": [ 40 ],
+          "requires2": [
+            "flag(MO_DISC_507)",
+            "flag(MO_DISC_509)",
+            "flag(MO_DISC_510)"
+          ],
           "requiresRoom": [ "507", "509", "510" ]
         }
       ],
@@ -3536,6 +4072,7 @@
       ]
     },
     "509": {
+      "name": "LABORATORY B3 WEST MO DISC",
       "doors": [
         {
           "target": "508"
@@ -3543,13 +4080,22 @@
       ],
       "items": [
         {
+          "name": "DOCUMENT",
           "id": 2,
           "globalId": 83,
           "type": 101,
-          "amount": 1
+          "amount": 1,
+          "group": 32
         }
       ],
-      "requires": [ 40 ],
+      "flags": [
+        {
+          "name": "MO_DISC_509",
+          "requires2": [
+            "item(40)"
+          ]
+        }
+      ],
       "enemies": [
         {
           "excludeTypes": [ 4 ],
@@ -3558,6 +4104,7 @@
       ]
     },
     "50A": {
+      "name": "LABORATORY B3 WEST XRAY",
       "doors": [
         {
           "target": "508"
@@ -3565,34 +4112,44 @@
       ],
       "items": [
         {
+          "name": "DOCUMENT",
           "id": 1,
           "globalId": 81,
           "type": 104,
-          "amount": 1
+          "amount": 1,
+          "document": true,
+          "group": 32
         },
         {
+          "name": "CLIP IN BOX/1",
           "id": 6,
           "globalId": 163,
           "type": 11,
           "amount": 15,
-          "priority": "hidden"
+          "hidden": true,
+          "group": 32
         },
         {
+          "name": "CLIP IN BOX/2",
           "id": 7,
           "globalId": 229,
           "type": 11,
           "amount": 15,
-          "priority": "hidden"
+          "hidden": true,
+          "group": 32
         },
         {
+          "name": "GREEN HERB",
           "id": 8,
           "globalId": 164,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 32
         }
       ]
     },
     "50B": {
+      "name": "LABORATORY B3 CELL CORRIDOR",
       "doorRando": [
         {
           "cutscene": true
@@ -3603,13 +4160,13 @@
           "target": "508"
         },
         {
-          "target": "512",
-          "lock": "always"
+          "target": "512"
         }
       ],
       "enemies": []
     },
     "50C": {
+      "name": "LABORATORY B3 EAST CORRIDOR",
       "doorRando": [
         {
           "cutscene": true
@@ -3620,7 +4177,7 @@
           "target": "505"
         },
         {
-          "target": "507"
+          "target": "507/TABLE"
         },
         {
           "target": "50E"
@@ -3643,6 +4200,7 @@
       ]
     },
     "50D": {
+      "name": "LABORATORY B1 ESCAPE ELEVATOR (CUTSCENE)",
       "doorRando": [
         {
           "category": "exclude"
@@ -3655,12 +4213,13 @@
         },
         {
           "target": "303",
-          "randomize": false,
-          "noReturn": true
+          "kind": "noreturn",
+          "randomize": false
         }
       ]
     },
     "50E": {
+      "name": "LABORATORY B3 SAVE",
       "doorRando": [
         {
           "category": "box"
@@ -3673,29 +4232,37 @@
       ],
       "items": [
         {
+          "name": "GREEN HERB",
           "id": 2,
           "globalId": 232,
           "type": 68,
-          "amount": 1
+          "amount": 1,
+          "group": 32
         },
         {
+          "name": "BLUE HERB",
           "id": 3,
           "globalId": 233,
           "type": 69,
-          "amount": 1
+          "amount": 1,
+          "group": 32
         },
         {
+          "name": "MAGNUM ROUNDS",
           "id": 132,
           "globalId": 234,
           "type": 14,
-          "amount": 6
+          "amount": 6,
+          "group": 32
         },
         {
+          "name": "INK IN BOOKCASE",
           "id": 5,
           "globalId": 235,
           "type": 47,
           "amount": 3,
-          "priority": "hidden",
+          "hidden": true,
+          "group": 32,
           "player": 0
         }
       ],
@@ -3708,6 +4275,7 @@
       ]
     },
     "50F": {
+      "name": "LABORATORY B3 POWER SWITCH",
       "doors": [
         {
           "target": "50C"
@@ -3723,6 +4291,7 @@
       ]
     },
     "510": {
+      "name": "LABORATORY B3 POWER MO DISC",
       "doors": [
         {
           "target": "50F"
@@ -3731,7 +4300,14 @@
           "target": "511"
         }
       ],
-      "requires": [ 40 ],
+      "flags": [
+        {
+          "name": "MO_DISC_510",
+          "requires2": [
+            "item(40)"
+          ]
+        }
+      ],
       "enemies": [
         {
           "excludeTypes": [ 4 ]
@@ -3739,6 +4315,7 @@
       ]
     },
     "511": {
+      "name": "LABORATORY B3 ENGINE",
       "doors": [
         {
           "target": "510"
@@ -3757,6 +4334,7 @@
       ]
     },
     "512": {
+      "name": "LABORATORY B3 CELL",
       "doorRando": [
         {
           "cutscene": true
@@ -3769,6 +4347,7 @@
       ]
     },
     "513": {
+      "name": "LABORATORY B2 TYRANT",
       "doors": [
         {
           "target": "514",
@@ -3777,26 +4356,31 @@
       ],
       "items": [
         {
+          "name": "MASTER KEY",
           "id": 2,
           "globalId": 95,
           "type": 55,
           "amount": 2,
-          "priority": "fixed",
+          "group": 32,
           "doorRando": false
         },
         {
+          "name": "MASTER KEY",
           "id": 2,
           "globalId": 95,
           "type": 55,
           "amount": 2,
-          "priority": "low",
+          "allowKey": false,
+          "group": 32,
           "doorRando": true
         },
         {
+          "name": "CLIP NEAR DOOR",
           "id": 4,
           "globalId": 207,
           "type": 11,
-          "amount": 15
+          "amount": 15,
+          "group": 32
         }
       ],
       "enemies": [],
@@ -3818,6 +4402,7 @@
       ]
     },
     "514": {
+      "name": "LABORATORY B4 BETRAYAL CORRIDOR",
       "doors": [
         {
           "target": "513",
@@ -3860,6 +4445,7 @@
       ]
     },
     "515": {
+      "name": "LABORATORY B4 ELEVATOR (CUTSCENE)",
       "doors": [
         {
           "target": "50C",

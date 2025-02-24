@@ -1,8 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Text.RegularExpressions;
 using IntelOrca.Biohazard.BioRand.Routing;
+using IntelOrca.Biohazard.Extensions;
+using IntelOrca.Biohazard.Room;
+using IntelOrca.Biohazard.Script;
+using IntelOrca.Biohazard.Script.Opcodes;
 
 namespace IntelOrca.Biohazard.BioRand
 {
@@ -18,24 +25,230 @@ namespace IntelOrca.Biohazard.BioRand
             var dataManager = new DataManager(new[] {
                 @"M:\git\biorand-classic\IntelOrca.Biohazard.BioRand\data"
             });
-            var map = dataManager.GetJson<Map>(BioVersion.Biohazard1, "rdt.json")
-                .For(new MapFilter(false, 0, 0));
+            var map = GetMap(dataManager.GetJson<Map>(BioVersion.Biohazard1, "rdt.json"));
+
+            var modBuilder = new ModBuilder();
             var keyRandomizer = new KeyRandomizer();
-            keyRandomizer.RandomiseItems(input.Seed, map);
+            keyRandomizer.RandomiseItems(input.Seed, map, modBuilder);
+            SetRemainingItems(map, modBuilder);
+
+            var rdts = GetRdts(0);
+            foreach (var rdtId in rdts.Keys)
+            {
+                var rdt = rdts[rdtId];
+                rdts[rdtId] = modBuilder.ApplyToRdt(rdt);
+            }
+
+            using var tempFolder = new TempFolder();
+            foreach (var rdtId in rdts.Keys)
+            {
+                var rdt = rdts[rdtId];
+                var dir = tempFolder.GetOrCreateDirectory($"STAGE{rdtId.Stage + 1}");
+                var path = Path.Combine(dir, $"ROOM{rdtId}0.RDT");
+                rdt.Data.WriteToFile(path);
+            }
+            File.WriteAllText(
+                Path.Combine(tempFolder.BasePath, "manifest.txt"),
+                $"""
+                [MOD]
+                Name = BioRand | Orca's Profile | {input.Seed}
+                """.Replace("\r\n", "\n"));
+            var archiveFile = SevenZip(tempFolder.BasePath);
+            var modFileName = $"mod_biorand_{input.Seed}.7z";
             return new RandomizerOutput(
-                ImmutableArray<RandomizerOutputAsset>.Empty,
+                [new RandomizerOutputAsset("mod", "Classic Rebirth Mod", "Drop this in your RE 1 install folder.", modFileName, archiveFile)],
                 "",
                 new Dictionary<string, string>());
         }
+
+        private static byte[] SevenZip(string directory)
+        {
+            var tempFile = Path.GetTempFileName() + ".7z";
+            try
+            {
+                SevenZip(tempFile, directory);
+                return File.ReadAllBytes(tempFile);
+            }
+            finally
+            {
+                try
+                {
+                    File.Delete(tempFile);
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        private static void SevenZip(string outputPath, string directory)
+        {
+            var sevenZipPath = Find7z();
+            if (sevenZipPath == null)
+                throw new Exception("Unable to find 7z");
+
+            var psi = new ProcessStartInfo(sevenZipPath, $"a -r -mx9 \"{outputPath}\" *")
+            {
+                WorkingDirectory = directory
+            };
+            var process = Process.Start(psi);
+            process.WaitForExit();
+            if (process.ExitCode != 0)
+                throw new Exception("Failed to create 7z");
+        }
+
+        private static string Find7z()
+        {
+            var pathEnvironment = Environment.GetEnvironmentVariable("PATH");
+            var paths = pathEnvironment.Split(Path.PathSeparator);
+            foreach (var path in paths)
+            {
+                var full = Path.Combine(path, "7z.exe");
+                if (File.Exists(full))
+                {
+                    return full;
+                }
+            }
+
+            var programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+            var defaultPath = Path.Combine(programFiles, "7-Zip", "7z.exe");
+            if (File.Exists(defaultPath))
+            {
+                return defaultPath;
+            }
+            return null;
+        }
+
+        private void SetRemainingItems(Map map, ModBuilder modBuilder)
+        {
+            var assignedIds = modBuilder.AssignedItemGlobalIds.ToHashSet();
+            var allItems = map.Rooms!.Values.SelectMany(x => x.Items).ToArray();
+            foreach (var item in allItems)
+            {
+                if (item.GlobalId is short globalId)
+                {
+                    if (assignedIds.Add(globalId))
+                    {
+                        modBuilder.SetItem(globalId, new Item(19, 1));
+                    }
+                }
+            }
+        }
+
+        private static Dictionary<RdtId, IRdt> GetRdts(int player)
+        {
+            var result = new Dictionary<RdtId, IRdt>();
+            var installPath = @"M:\apps\biorand\re1hd\JPN";
+            for (var i = 1; i <= 7; i++)
+            {
+                var stagePath = Path.Combine(installPath, $"STAGE{i}");
+                var files = Directory.GetFiles(stagePath);
+                foreach (var path in files)
+                {
+                    var fileName = Path.GetFileName(path);
+                    var match = Regex.Match(fileName, @"^ROOM([0-9A-F]{3})(0|1).RDT$", RegexOptions.IgnoreCase);
+                    if (match.Success)
+                    {
+                        var rdtId = RdtId.Parse(match.Groups[1].Value);
+                        var rdtPlayer = int.Parse(match.Groups[2].Value);
+                        if (rdtPlayer == player)
+                        {
+                            var fileData = File.ReadAllBytes(path);
+                            if (fileData.Length < 16)
+                                continue;
+
+                            result[rdtId] = Rdt.FromData(BioVersion.Biohazard1, fileData);
+                        }
+                    }
+                }
+            }
+
+            foreach (var missingRoom in g_missingRooms)
+            {
+                var mansion2 = new RdtId(missingRoom.Stage + 5, missingRoom.Room);
+                result.Add(missingRoom, result[mansion2]);
+            }
+
+            return result;
+        }
+
+        private static RdtId[] g_missingRooms { get; } =
+        [
+            RdtId.Parse("110"),
+            RdtId.Parse("119"),
+            RdtId.Parse("200"),
+            RdtId.Parse("20C"),
+            RdtId.Parse("213"),
+            RdtId.Parse("214"),
+            RdtId.Parse("215"),
+            RdtId.Parse("216"),
+            RdtId.Parse("217"),
+            RdtId.Parse("218"),
+            RdtId.Parse("219"),
+            RdtId.Parse("21A"),
+            RdtId.Parse("21B"),
+            RdtId.Parse("21C")
+        ];
+
+        private Map GetMap(Map map)
+        {
+            // Apply player, scenario filter
+            map = map.For(new MapFilter(false, 0, 0));
+
+            var keys = map.Keys!.Values;
+            var items = map.Rooms!.Values.SelectMany(x => x.Items).ToArray();
+
+            var guardhouseKeys = keys.Where(x => x.Group == 8).ToArray();
+            var guardhouseItems = items.Where(x => x.Group == 8).ToArray();
+            var mansion2Items = items.Where(x => x.Group == 2).ToArray();
+            var labItems = items.Where(x => x.Group == 32).ToArray();
+
+            foreach (var item in items)
+                item.Group = -1;
+
+            // Only guardhouse can contain guardhouse keys
+            foreach (var item in items)
+                item.Group &= ~8;
+            foreach (var item in guardhouseItems)
+                item.Group = 8 | 128;
+
+            // Mansion 2
+            foreach (var item in items)
+                item.Group &= ~64;
+            var plant42item = map.Rooms!["40C"].Items.First(x => x.Name == "KEY IN FIREPLACE");
+            plant42item.Group = 64;
+            map.Keys[54].Group = 64;
+
+            // Cave segment
+            var caveDoor = map.Rooms!["302"].Doors.First(x => x.Name == "LADDER TO CAVES");
+            caveDoor.Kind = "noreturn";
+
+            // Lab segment
+            var labDoor = map.Rooms!["305"].Doors.First(x => x.Name == "FOUNTAIN STAIRS");
+            labDoor.Kind = "noreturn";
+
+            // Battery
+            foreach (var item in items)
+                item.Group &= ~256;
+            map.Keys[39].Group = 256;
+            foreach (var item in mansion2Items)
+                item.Group |= 256;
+            foreach (var item in labItems)
+                item.Group |= 256;
+
+            return map;
+        }
     }
 
-    public class KeyRandomizer
+    internal class KeyRandomizer
     {
-        public void RandomiseItems(int seed, Map map)
+        public void RandomiseItems(int seed, Map map, ModBuilder modBuilder)
         {
             var graphBuilder = new GraphBuilder();
-            var routingNodes = new Dictionary<string, Node>();
+            var roomNodes = new Dictionary<string, Node>();
+            var flagNodes = new Dictionary<string, Node>();
             var itemIdToKey = new Dictionary<int, Key>();
+            var keyToItemId = new Dictionary<Key, int>();
             var itemNodeToGlobalId = new Dictionary<Node, int>();
             var globalIdToName = new Dictionary<int, string>();
             if (map.Keys != null)
@@ -45,7 +258,10 @@ namespace IntelOrca.Biohazard.BioRand
                     var itemId = k.Key;
                     var label = k.Value.Name;
                     var kind = (KeyKind)Enum.Parse(typeof(KeyKind), k.Value.Kind, true);
-                    itemIdToKey[itemId] = graphBuilder.Key(label, 1, kind);
+                    var group = k.Value.Group;
+                    var keyNode = graphBuilder.Key(label, group, kind);
+                    itemIdToKey[itemId] = keyNode;
+                    keyToItemId[keyNode] = itemId;
                 }
             }
 
@@ -58,33 +274,47 @@ namespace IntelOrca.Biohazard.BioRand
                     var roomKey = kvp.Key;
                     var room = kvp.Value;
                     var label = room.Name != null ? $"{roomKey}|{room.Name}" : $"{roomKey}";
-                    routingNodes[roomKey] = graphBuilder.Room(label);
+                    roomNodes[roomKey] = graphBuilder.Room(label);
                 }
-                graphBuilder.Door(startNode, routingNodes[beginEnd.Start ?? ""]);
+                graphBuilder.Door(startNode, roomNodes[beginEnd.Start ?? ""]);
 
                 foreach (var kvp in map.Rooms)
                 {
                     var roomKey = kvp.Key;
                     var room = kvp.Value;
-                    var source = routingNodes[roomKey];
+                    var source = roomNodes[roomKey];
                     if (room.Doors != null)
                     {
                         foreach (var edge in room.Doors)
                         {
                             if (edge.Target == null)
-                                return;
+                                continue;
+                            if (edge.Kind == "blocked" || edge.Kind == "locked")
+                                continue;
 
                             var targetKeyId = edge.Target.Split(':');
-                            var target = routingNodes[targetKeyId[0]];
-                            graphBuilder.Door(source, target, GetRequirements(edge));
+                            var target = roomNodes[targetKeyId[0]];
+                            var requirements = GetRequirements(edge);
+                            _ = edge.Kind switch
+                            {
+                                "oneway" => graphBuilder.OneWay(source, target, requirements),
+                                "noreturn" => graphBuilder.NoReturn(source, target, requirements),
+                                "unblock" => graphBuilder.BlockedDoor(source, target, requirements),
+                                "unlock" => graphBuilder.BlockedDoor(source, target, requirements),
+                                _ => graphBuilder.Door(source, target, requirements)
+                            };
                         }
                     }
                     if (room.Items != null)
                     {
                         foreach (var item in room.Items)
                         {
+                            if (item.AllowKey == false)
+                                continue;
+
                             var label = item.Name != null ? $"{roomKey}|{room.Name}/{item.Name}" : $"{roomKey}";
-                            var itemNode = graphBuilder.Item(label, 1, source, GetRequirements(item));
+                            var group = item.Group;
+                            var itemNode = graphBuilder.Item(label, group, source, GetRequirements(item));
                             if (item.GlobalId is short globalId)
                             {
                                 itemNodeToGlobalId[itemNode] = globalId;
@@ -92,28 +322,139 @@ namespace IntelOrca.Biohazard.BioRand
                             }
                         }
                     }
+                    if (room.Flags != null)
+                    {
+                        foreach (var item in room.Flags)
+                        {
+                            var flagKey = item.Name ?? throw new Exception("Flag has no name");
+                            var flagNode = GetOrCreateFlag(flagKey);
+                            graphBuilder.Door(source, flagNode, GetRequirements(item));
+                        }
+                    }
                 }
             }
 
             var graph = graphBuilder.ToGraph();
-            var route = graph.GenerateRoute(seed, new RouteFinderOptions());
+            var route = graph.GenerateRoute(seed, new RouteFinderOptions()
+            {
+                DebugDeadendCallback = (o) =>
+                {
+                }
+            });
             var itemToKey = itemNodeToGlobalId
                 .Select(kvp => (kvp.Value, route.GetItemContents(kvp.Key)))
                 .Where(x => x.Item2 != null)
-                .ToDictionary(x => x.Item1, x => x.Item2);
+                .ToDictionary(x => x.Item1, x => x.Item2!.Value);
             var ggg = itemToKey.ToDictionary(x => globalIdToName[x.Key], x => x.Value);
             var s = route.Log;
+
+            foreach (var kvp in itemToKey)
+            {
+                var key = kvp.Value;
+                var itemType = (byte)keyToItemId[key];
+                modBuilder.SetItem(kvp.Key, new Item(itemType, 1));
+            }
 
             Requirement[] GetRequirements(MapEdge e)
             {
                 return e.Requirements.Select(r =>
                     r.Kind switch
                     {
+                        MapRequirementKind.Flag => new Requirement(GetOrCreateFlag(r.Value)),
                         MapRequirementKind.Item => new Requirement(itemIdToKey[int.Parse(r.Value)]),
-                        MapRequirementKind.Room => new Requirement(routingNodes[r.Value]),
+                        MapRequirementKind.Room => new Requirement(roomNodes[r.Value]),
                         _ => throw new NotImplementedException()
                     }).ToArray();
             }
+
+            Node GetOrCreateFlag(string name)
+            {
+                if (!flagNodes.TryGetValue(name, out var result))
+                {
+                    result = graphBuilder.Room(name);
+                    flagNodes[name] = result;
+                }
+                return result;
+            }
+        }
+    }
+
+    internal class ModBuilder
+    {
+        private readonly Dictionary<int, Item> _itemMap = new Dictionary<int, Item>();
+
+        public ImmutableArray<int> AssignedItemGlobalIds => [.. _itemMap.Keys];
+
+        public void SetItem(int globalId, Item item)
+        {
+            _itemMap.Add(globalId, item);
+        }
+
+        public IRdt ApplyToRdt(IRdt rdt)
+        {
+            var opcodeBuilder = new OpcodeBuilder();
+            rdt.ReadScript(opcodeBuilder);
+            var opcodes = opcodeBuilder.ToArray();
+            var itemOpcodes = opcodes.OfType<IItemAotSetOpcode>().ToArray();
+
+            var edits = false;
+            foreach (var itemOpcode in itemOpcodes)
+            {
+                if (_itemMap.TryGetValue(itemOpcode.GlobalId, out var item))
+                {
+                    itemOpcode.Type = item.Type;
+                    itemOpcode.Amount = item.Amount;
+                    edits = true;
+                }
+            }
+
+            if (!edits)
+                return rdt;
+
+            using (var ms = new MemoryStream(rdt.Data.ToArray()))
+            {
+                var bw = new BinaryWriter(ms);
+                foreach (var opcode in opcodes)
+                {
+                    ms.Position = opcode.Offset;
+                    opcode.Write(bw);
+                }
+                if (rdt.Version == BioVersion.Biohazard1)
+                    return new Rdt1(ms.ToArray());
+                else
+                    throw new NotImplementedException();
+            }
+        }
+    }
+
+    internal sealed class TempFolder : IDisposable
+    {
+        public string BasePath { get; }
+
+        public TempFolder()
+        {
+            BasePath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
+            Directory.CreateDirectory(BasePath);
+        }
+
+        ~TempFolder() => Dispose();
+
+        public void Dispose()
+        {
+            try
+            {
+                Directory.Delete(BasePath, true);
+            }
+            catch
+            {
+            }
+        }
+
+        public string GetOrCreateDirectory(string path)
+        {
+            var newPath = Path.Combine(BasePath, path);
+            Directory.CreateDirectory(newPath);
+            return newPath;
         }
     }
 }

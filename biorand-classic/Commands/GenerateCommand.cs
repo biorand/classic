@@ -47,6 +47,13 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
                 input.Configuration = RandomizerConfiguration.FromJson(configJson);
             }
             var output = randomizer.Randomize(input);
+
+            foreach (var asset in output.Assets)
+            {
+                var assetPath = Path.Combine(settings.OutputPath!, asset.FileName);
+                File.WriteAllBytes(assetPath, asset.Data);
+            }
+
             return Task.FromResult(0);
         }
 
