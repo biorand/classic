@@ -21,6 +21,95 @@ namespace IntelOrca.Biohazard.BioRand
 
         public string BuildVersion => throw new System.NotImplementedException();
 
+        private void CreateConfigDefinition()
+        {
+            var result = new RandomizerConfigurationDefinition();
+            var page = result.CreatePage("Player");
+            var group = page.CreateGroup("");
+
+            page = result.CreatePage("Doors");
+            group = page.CreateGroup("");
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "doors/random",
+                Label = "Randomize Doors",
+                Description = "Let BioRand randomize all the doors in the game.",
+                Type = "switch",
+                Default = true
+            });
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "doors/segments",
+                Label = "Number of Segments",
+                Description =
+                    "Choose the number the segments in the randomizer. " +
+                    "Each segment usually ends with a boss or multi-key door." +
+                    " Once a segment is complete, no key items are required from a previous segment.",
+                Type = "range",
+                Min = 1,
+                Max = 4,
+                Default = 3
+            });
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "doors/rooms",
+                Label = "Number of Rooms",
+                Description =
+                    "Choose the number of rooms to include in the randomizer. " +
+                    "The total number of rooms is spread roughly evenly between each segment.",
+                Type = "percent",
+                Min = 0,
+                Max = 1,
+                Step = 0.1,
+                Default = 0.4
+            });
+
+            group = page.CreateGroup("");
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "locks/random",
+                Label = "Randomize Locks",
+                Description =
+                    "Let BioRand randomize the door locks. " +
+                    "Doors originally without locks may need a key, others may required a different key.",
+                Type = "switch",
+                Default = false
+            });
+
+            page = result.CreatePage("Items");
+            group = page.CreateGroup("");
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "items/random",
+                Label = "Randomize Items",
+                Description = "Let BioRand randomize all the items in the game.",
+                Type = "switch",
+                Default = true
+            });
+
+            group = page.CreateGroup("Item Distribution");
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "items/distribution/health/g",
+                Label = "Herb (G)",
+                Min = 0,
+                Max = 1,
+                Step = 0.01,
+                Type = "range",
+                Default = 0.5,
+                Category = new RandomizerConfigurationDefinition.GroupItemCategory()
+                {
+                    Label = "Health",
+                    BackgroundColor = "Blue",
+                    TextColor = "White"
+                }
+            });
+
+            page = result.CreatePage("Enemies");
+            page = result.CreatePage("Cutscenes");
+            page = result.CreatePage("Music");
+        }
+
         public RandomizerOutput Randomize(RandomizerInput input)
         {
             input.Configuration["distribution/ammo/handgun"] = 0.7 / (3 / 7.0);
