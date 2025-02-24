@@ -9,7 +9,7 @@ namespace IntelOrca.Biohazard.BioRand
     public class Map
     {
         public MapStartEnd[]? BeginEndRooms { get; set; }
-        public Dictionary<int, MapKey>? Keys { get; set; }
+        public Dictionary<int, MapItemDefinition>? Items { get; set; }
         public Dictionary<string, MapRoom>? Rooms { get; set; }
 
         internal MapRoom? GetRoom(RdtId id)
@@ -73,7 +73,7 @@ namespace IntelOrca.Biohazard.BioRand
                 BeginEndRooms = BeginEndRooms
                     .Where(x => x.IsIncludedInFilter(filter))
                     .ToArray(),
-                Keys = Keys,
+                Items = Items,
                 Rooms = Rooms
                     .Where(x => x.Value.IsIncludedInFilter(filter))
                     .ToDictionary(x => x.Key, x => x.Value.For(filter))
@@ -87,10 +87,11 @@ namespace IntelOrca.Biohazard.BioRand
         public string? End { get; set; }
     }
 
-    public class MapKey
+    public class MapItemDefinition
     {
         public string? Name { get; set; }
         public string? Kind { get; set; }
+        public int Max { get; set; }
         public int Group { get; set; }
     }
 

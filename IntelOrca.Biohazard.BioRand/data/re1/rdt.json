@@ -5,163 +5,345 @@
       "end": "501"
     }
   ],
-  "keys": {
+  "items": {
+    "1": {
+      "name": "Combat Knife",
+      "kind": "weapon/knife"
+    },
+    "2": {
+      "name": "Beretta",
+      "kind": "weapon/handgun",
+      "capacity": 15,
+      "ammo": [
+        11
+      ]
+    },
+    "3": {
+      "name": "Shotgun",
+      "kind": "weapon/shotgun",
+      "capacity": 7,
+      "ammo": [
+        11
+      ]
+    },
+    "4": {
+      "name": "Colt Python (dumdum)",
+      "kind": "weapon/magnum",
+      "weaponGroup": "colt",
+      "capacity": 6,
+      "ammo": [
+        13
+      ]
+    },
+    "5": {
+      "name": "Colt Python (magnum)",
+      "kind": "weapon/magnum",
+      "weaponGroup": "colt",
+      "capacity": 6,
+      "ammo": [
+        14
+      ]
+    },
+    "6": {
+      "name": "Flamethrower",
+      "kind": "weapon/flamethrower",
+      "capacity": 240,
+      "ammo": [
+        15
+      ]
+    },
+    "7": {
+      "name": "Bazooka (acid)",
+      "kind": "weapon/grenadelauncher",
+      "weaponGroup": "bazooka",
+      "capacity": 6,
+      "ammo": [
+        16,
+        17,
+        18
+      ]
+    },
+    "8": {
+      "name": "Bazooka (explosive)",
+      "kind": "weapon/grenadelauncher",
+      "weaponGroup": "bazooka",
+      "capacity": 6,
+      "ammo": [
+        16,
+        17,
+        18
+      ]
+    },
+    "9": {
+      "name": "Bazooka (flame)",
+      "kind": "weapon/grenadelauncher",
+      "weaponGroup": "bazooka",
+      "capacity": 6,
+      "ammo": [
+        16,
+        17,
+        18
+      ]
+    },
+    "10": {
+      "name": "Rocket Launcher",
+      "kind": "weapon/rocketlauncher",
+      "capacity": 5
+    },
+    "11": {
+      "name": "Handgun Ammo",
+      "kind": "ammo/handgun",
+      "max": 60
+    },
+    "12": {
+      "name": "Shotgun Shells",
+      "kind": "ammo/shotgun",
+      "max": 30
+    },
+    "13": {
+      "name": "DumDum Rounds",
+      "kind": "ammo/magnum",
+      "max": 25
+    },
+    "14": {
+      "name": "Magnum Rounds",
+      "kind": "ammo/magnum",
+      "max": 10
+    },
+    "15": {
+      "name": "Flamethrower Fuel",
+      "kind": "ammo/flamethrower",
+      "max": 100
+    },
+    "16": {
+      "name": "Explosive Rounds",
+      "kind": "ammo/grenadelauncher",
+      "max": 10
+    },
+    "17": {
+      "name": "Acid Rounds",
+      "kind": "ammo/grenadelauncher",
+      "max": 10
+    },
+    "18": {
+      "name": "Flame Rounds",
+      "kind": "ammo/grenadelauncher",
+      "max": 10
+    },
     "28": {
       "name": "Broken Shotgun",
-      "kind": "consumable",
+      "kind": "key/consumable",
       "group": 1
     },
     "29": {
       "name": "Square Crank",
-      "kind": "reusuable",
+      "kind": "key/reusuable",
+      "amount": 0,
       "group": 4
     },
     "30": {
       "name": "Hex Crank",
-      "kind": "reusuable",
+      "kind": "key/reusuable",
+      "amount": 0,
       "group": 16
     },
     "31": {
       "name": "Wood Emblem",
-      "kind": "consumable",
+      "kind": "key/consumable",
       "group": 1
     },
     "32": {
       "name": "Gold Emblem",
-      "kind": "consumable",
+      "kind": "key/consumable",
       "group": 1
     },
     "33": {
       "name": "Blue Jewel",
-      "kind": "consumable",
+      "kind": "key/consumable",
       "group": 1
     },
     "34": {
       "name": "Red Jewel",
-      "kind": "consumable",
+      "kind": "key/consumable",
       "group": 1
     },
     "35": {
       "name": "Music Notes",
-      "kind": "consumable",
+      "kind": "key/consumable",
+      "amount": 0,
       "group": 1
     },
     "38": {
       "name": "Chemical",
-      "kind": "consumable",
+      "kind": "key/consumable",
       "group": 1
     },
     "39": {
       "name": "Battery",
-      "kind": "consumable"
+      "kind": "key/consumable"
     },
     "40": {
       "name": "MO Disc",
-      "kind": "consumable",
+      "kind": "key/consumable",
       "group": 32
     },
     "41": {
       "name": "Wind Crest",
-      "kind": "consumable",
+      "kind": "key/consumable",
       "group": 1
     },
     "42": {
       "name": "Flare",
-      "kind": "consumable"
+      "kind": "key/consumable"
     },
     "43": {
       "name": "Slides",
-      "kind": "consumable",
+      "kind": "key/consumable",
       "group": 32
     },
     "44": {
       "name": "Moon Crest",
-      "kind": "consumable",
+      "kind": "key/consumable",
       "group": 1
     },
     "45": {
       "name": "Star Crest",
-      "kind": "consumable",
+      "kind": "key/consumable",
       "group": 1
     },
     "46": {
       "name": "Sun Crest",
-      "kind": "consumable",
+      "kind": "key/consumable",
       "group": 1
+    },
+    "47": {
+      "name": "Ink Ribbon",
+      "kind": "ink",
+      "max": 3
     },
     "48": {
       "name": "Lighter",
-      "kind": "reusuable",
+      "kind": "key/reusuable",
       "group": 1
     },
     "51": {
       "name": "Sword Key",
-      "kind": "reusuable",
+      "kind": "key/reusuable",
+      "discard": true,
       "group": 1
     },
     "52": {
       "name": "Armor Key",
-      "kind": "reusuable",
+      "kind": "key/reusuable",
+      "discard": true,
       "group": 1
     },
     "53": {
       "name": "Shield Key",
-      "kind": "consumable",
+      "kind": "key/consumable",
+      "discard": true,
       "group": 1
     },
     "54": {
       "name": "Helmet Key",
-      "kind": "reusuable",
+      "kind": "key/reusuable",
+      "discard": true,
       "group": 8
     },
     "55": {
       "name": "Master Key",
-      "kind": "consumable",
+      "kind": "key/consumable",
+      "discard": true,
       "group": 32
     },
     "56": {
       "name": "Special Key",
-      "kind": "consumable",
+      "kind": "key/consumable",
+      "discard": true,
       "group": 1
     },
     "57": {
       "name": "002 Key",
-      "kind": "consumable",
+      "kind": "key/consumable",
+      "discard": true,
       "group": 8
     },
     "58": {
       "name": "003 Key",
-      "kind": "consumable",
+      "kind": "key/consumable",
+      "discard": true,
       "group": 8
     },
     "59": {
       "name": "Control Key",
-      "kind": "consumable",
+      "kind": "key/consumable",
+      "discard": true,
       "group": 8
     },
     "60": {
       "name": "Power Room Key",
-      "kind": "consumable"
+      "kind": "key/consumable",
+      "discard": true
     },
     "61": {
       "name": "Small Key",
-      "kind": "consumable",
+      "kind": "key/consumable",
       "group": 128
     },
     "62": {
       "name": "Red Book",
-      "kind": "consumable",
+      "kind": "key/consumable",
       "group": 8
     },
     "63": {
       "name": "Doom Book (Red)",
-      "kind": "consumable",
+      "kind": "key/consumable",
       "group": 16
     },
     "64": {
       "name": "Doom Book (Blue)",
-      "kind": "consumable",
+      "kind": "key/consumable",
       "group": 16
+    },
+    "65": {
+      "name": "First Aid Spray",
+      "kind": "health/fas"
+    },
+    "67": {
+      "name": "Herb (R)",
+      "kind": "health/r"
+    },
+    "68": {
+      "name": "Herb (G)",
+      "kind": "health/g"
+    },
+    "69": {
+      "name": "Herb (B)",
+      "kind": "health/b"
+    },
+    "70": {
+      "name": "Herb (GR)",
+      "kind": "health/gr"
+    },
+    "71": {
+      "name": "Herb (GG)",
+      "kind": "health/gg"
+    },
+    "72": {
+      "name": "Herb (GB)",
+      "kind": "health/gb"
+    },
+    "73": {
+      "name": "Herb (GRB)",
+      "kind": "health/grb"
+    },
+    "74": {
+      "name": "Herb (GGG)",
+      "kind": "health/ggg"
+    },
+    "75": {
+      "name": "Herb (GGB)",
+      "kind": "health/ggb"
     }
   },
   "rooms": {

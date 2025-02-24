@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
 using IntelOrca.Biohazard.BioRand.Routing;
 using IntelOrca.Biohazard.Extensions;
@@ -22,6 +23,14 @@ namespace IntelOrca.Biohazard.BioRand
 
         public RandomizerOutput Randomize(RandomizerInput input)
         {
+            input.Configuration["distribution/ammo/handgun"] = 0.7 / (3 / 7.0);
+            input.Configuration["distribution/ammo/shotgun"] = 0.3 / (3 / 7.0);
+            input.Configuration["distribution/health/g"] = 0.6 / (3 / 7.0);
+            input.Configuration["distribution/health/r"] = 0.2 / (3 / 7.0);
+            input.Configuration["distribution/health/b"] = 0.1 / (3 / 7.0);
+            input.Configuration["distribution/health/fas"] = 0.1 / (3 / 7.0);
+            input.Configuration["distribution/ink"] = 1.0 / (1 / 7.0);
+
             var dataManager = new DataManager(new[] {
                 @"M:\git\biorand-classic\IntelOrca.Biohazard.BioRand\data"
             });
@@ -30,7 +39,11 @@ namespace IntelOrca.Biohazard.BioRand
             var modBuilder = new ModBuilder();
             var keyRandomizer = new KeyRandomizer();
             keyRandomizer.RandomiseItems(input.Seed, map, modBuilder);
-            SetRemainingItems(map, modBuilder);
+
+            var itemRandomizer = new ItemRandomizer();
+            itemRandomizer.Randomize(input.Configuration, input.Seed, map, modBuilder);
+
+            var dump = modBuilder.GetDump(map);
 
             var rdts = GetRdts(0);
             foreach (var rdtId in rdts.Keys)
@@ -195,7 +208,7 @@ namespace IntelOrca.Biohazard.BioRand
             // Apply player, scenario filter
             map = map.For(new MapFilter(false, 0, 0));
 
-            var keys = map.Keys!.Values;
+            var keys = map.Items!.Values;
             var items = map.Rooms!.Values.SelectMany(x => x.Items).ToArray();
 
             var guardhouseKeys = keys.Where(x => x.Group == 8).ToArray();
@@ -217,7 +230,7 @@ namespace IntelOrca.Biohazard.BioRand
                 item.Group &= ~64;
             var plant42item = map.Rooms!["40C"].Items.First(x => x.Name == "KEY IN FIREPLACE");
             plant42item.Group = 64;
-            map.Keys[54].Group = 64;
+            map.Items[54].Group = 64;
 
             // Cave segment
             var caveDoor = map.Rooms!["302"].Doors.First(x => x.Name == "LADDER TO CAVES");
@@ -230,7 +243,7 @@ namespace IntelOrca.Biohazard.BioRand
             // Battery
             foreach (var item in items)
                 item.Group &= ~256;
-            map.Keys[39].Group = 256;
+            map.Items[39].Group = 256;
             foreach (var item in mansion2Items)
                 item.Group |= 256;
             foreach (var item in labItems)
@@ -251,15 +264,22 @@ namespace IntelOrca.Biohazard.BioRand
             var keyToItemId = new Dictionary<Key, int>();
             var itemNodeToGlobalId = new Dictionary<Node, int>();
             var globalIdToName = new Dictionary<int, string>();
-            if (map.Keys != null)
+            if (map.Items != null)
             {
-                foreach (var k in map.Keys)
+                foreach (var k in map.Items)
                 {
                     var itemId = k.Key;
                     var label = k.Value.Name;
-                    var kind = (KeyKind)Enum.Parse(typeof(KeyKind), k.Value.Kind, true);
+                    if (k.Value.Kind is not string kind)
+                        continue;
+
+                    var kindParts = kind.Split('/');
+                    if (kindParts.Length != 2 || kindParts[0] != "key")
+                        continue;
+
+                    var keyKind = (KeyKind)Enum.Parse(typeof(KeyKind), kindParts[1], true);
                     var group = k.Value.Group;
-                    var keyNode = graphBuilder.Key(label, group, kind);
+                    var keyNode = graphBuilder.Key(label, group, keyKind);
                     itemIdToKey[itemId] = keyNode;
                     keyToItemId[keyNode] = itemId;
                 }
@@ -379,6 +399,50 @@ namespace IntelOrca.Biohazard.BioRand
         }
     }
 
+    internal class ItemRandomizer
+    {
+        public void Randomize(RandomizerConfiguration config, int seed, Map map, ModBuilder modBuilder)
+        {
+            if (map.Rooms == null || map.Items == null)
+                return;
+
+            var rng = new Rng(seed);
+            var itemSlots = map.Rooms.Values
+                .SelectMany(x => x.Items)
+                .Where(x => x.GlobalId != null)
+                .Where(x => x.Document != false)
+                .Select(x => (int)x.GlobalId!.Value)
+                .Except(modBuilder.AssignedItemGlobalIds)
+                .Shuffle(rng)
+                .ToQueue();
+
+            var weights = map.Items
+                .Select(x => (x.Key, config.GetValueOrDefault($"distribution/{x.Value.Kind}", 0.0)))
+                .Where(x => x.Item2 != 0)
+                .ToArray();
+            var totalWeight = weights.Sum(x => x.Item2);
+            var totalItems = itemSlots.Count;
+            var itemCounts = weights
+                .Select(x => (x.Item1, (int)Math.Ceiling(x.Item2 / totalWeight * totalItems)))
+                .OrderBy(x => x.Item2)
+                .ToArray();
+
+            foreach (var (type, count) in itemCounts)
+            {
+                var itemDefinition = map.Items[type];
+                for (var i = 0; i < count; i++)
+                {
+                    if (itemSlots.Count == 0)
+                        break;
+
+                    var globalId = itemSlots.Dequeue();
+                    var amount = rng.Next(1, itemDefinition.Max + 1);
+                    modBuilder.SetItem(globalId, new Item((byte)type, (ushort)amount));
+                }
+            }
+        }
+    }
+
     internal class ModBuilder
     {
         private readonly Dictionary<int, Item> _itemMap = new Dictionary<int, Item>();
@@ -424,6 +488,45 @@ namespace IntelOrca.Biohazard.BioRand
                 else
                     throw new NotImplementedException();
             }
+        }
+
+        public string GetDump(Map map)
+        {
+            var sb = new StringBuilder();
+            foreach (var kvp in _itemMap.OrderBy(x => x.Key))
+            {
+                var globalId = kvp.Key;
+                var type = kvp.Value.Type;
+                var amount = kvp.Value.Amount;
+
+                var itemName = map.Items![type].Name;
+                var slotName = GetItemSlotName(map, globalId);
+                sb.AppendLine($"#{globalId}: {slotName} ======> {itemName} x{amount}");
+            }
+            return sb.ToString();
+        }
+
+        private static string? GetItemSlotName(Map map, int globalId)
+        {
+            if (map.Rooms == null)
+                return null;
+
+            foreach (var kvp in map.Rooms)
+            {
+                var room = kvp.Value;
+                if (room.Items == null)
+                    continue;
+
+                foreach (var item in room.Items)
+                {
+                    if (item.GlobalId == globalId)
+                    {
+                        return $"{room.Name}/{item.Name}";
+                    }
+                }
+            }
+
+            return null;
         }
     }
 
