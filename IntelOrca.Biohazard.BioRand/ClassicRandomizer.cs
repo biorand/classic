@@ -16,19 +16,102 @@ namespace IntelOrca.Biohazard.BioRand
 {
     public class ClassicRandomizer : IRandomizer
     {
-        public RandomizerConfigurationDefinition ConfigurationDefinition => throw new System.NotImplementedException();
-        public RandomizerConfiguration DefaultConfiguration => throw new System.NotImplementedException();
+        public RandomizerConfigurationDefinition ConfigurationDefinition => CreateConfigDefinition();
+        public RandomizerConfiguration DefaultConfiguration => ConfigurationDefinition.GetDefault();
 
         public string BuildVersion => throw new System.NotImplementedException();
 
-        private void CreateConfigDefinition()
+        private RandomizerConfigurationDefinition CreateConfigDefinition()
         {
+            var dataManager = new DataManager(new[] {
+                @"M:\git\biorand-classic\IntelOrca.Biohazard.BioRand\data"
+            });
+            var map = GetMap(dataManager.GetJson<Map>(BioVersion.Biohazard1, "rdt.json"));
+
+
             var result = new RandomizerConfigurationDefinition();
             var page = result.CreatePage("Player");
             var group = page.CreateGroup("");
 
             page = result.CreatePage("Doors");
-            group = page.CreateGroup("");
+            group = page.CreateGroup("Progression (non-door randomizer)");
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "progression/guardhouse",
+                Label = "Guardhouse",
+                Description = "Include the guardhouse in the randomizer. If disabled, the gates to the guardhouse will be locked.",
+                Type = "switch",
+                Default = true
+            });
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "progression/lab",
+                Label = "Lab",
+                Description = "Include the lab in the randomizer. If disabled, there will be no doom books, and you can go straight to the heliport when you reach the fountain.",
+                Type = "switch",
+                Default = true
+            });
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "progression/mansion/split",
+                Label = "Split Mansion",
+                Description =
+                    "Split the mansion into two segments, before and after plant 42. " +
+                    "The helmet key will be behind plant 42, and the battery will be in a mansion 2 room. " +
+                    "Only applicable if guardhouse is enabled.",
+                Type = "switch",
+                Default = false
+            });
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "progression/guardhouse/segmented",
+                Label = "Segmented Guardhouse",
+                Description = "Isolate the guardhouse in the randomizer. If enabled, the guardhouse will be a standalone segment.",
+                Type = "switch",
+                Default = false
+            });
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "progression/caves/segmented",
+                Label = "Segmented Caves",
+                Description = "Isolate the caves in the randomizer. If enabled, the caves will be a standalone segment.",
+                Type = "switch",
+                Default = true
+            });
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "progression/lab/segmented",
+                Label = "Segmented Lab",
+                Description = "Isolate the lab in the randomizer. If enabled, the lab will be a standalone segment.",
+                Type = "switch",
+                Default = true
+            });
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "progression/guardhouse/plant42",
+                Label = "Mandatory Plant 42",
+                Description = "Plant 42 must be defeated to complete the randomizer. If disabled, it may optional for some seeds.",
+                Type = "switch",
+                Default = false
+            });
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "progression/mansion/yawn2",
+                Label = "Mandatory Yawn",
+                Description = "Yawn must be defeated to complete the randomizer. If disabled, it may optional for some seeds.",
+                Type = "switch",
+                Default = false
+            });
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "progression/lab/tyrant",
+                Label = "Mandatory Tyrant 1",
+                Description = "Tyrant 1 must be defeated to complete the randomizer. If disabled, it may optional for some seeds.",
+                Type = "switch",
+                Default = false
+            });
+
+            group = page.CreateGroup("Door Randomizer");
             group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
             {
                 Id = "doors/random",
@@ -64,7 +147,7 @@ namespace IntelOrca.Biohazard.BioRand
                 Default = 0.4
             });
 
-            group = page.CreateGroup("");
+            group = page.CreateGroup("Door Locks");
             group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
             {
                 Id = "locks/random",
@@ -86,28 +169,194 @@ namespace IntelOrca.Biohazard.BioRand
                 Type = "switch",
                 Default = true
             });
-
-            group = page.CreateGroup("Item Distribution");
             group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
             {
-                Id = "items/distribution/health/g",
-                Label = "Herb (G)",
+                Id = "items/hidden/keys",
+                Label = "Hidden Key Items",
+                Description = "Hidden items can be keys or weapons.",
+                Type = "switch",
+                Default = true
+            });
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "items/documents",
+                Label = "Replace documents",
+                Description = "Documents will be replaced with items.",
+                Type = "switch",
+                Default = true
+            });
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "items/documents/keys",
+                Label = "Documents can be Keys",
+                Description = "Documents can be keys or weapons if replaced with items.",
+                Type = "switch",
+                Default = true
+            });
+
+            group = page.CreateGroup("Weapons");
+            foreach (var kvp in map.Items)
+            {
+                var itemDefinition = kvp.Value;
+                var kind = itemDefinition.Kind;
+                if (!kind.StartsWith("weapon/"))
+                    continue;
+
+                group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+                {
+                    Id = $"items/weapons/{itemDefinition.Kind}",
+                    Label = itemDefinition.Name,
+                    Type = "switch",
+                    Default = true
+                });
+            }
+
+            group = page.CreateGroup("Item Distribution");
+            foreach (var kvp in map.Items)
+            {
+                var itemDefinition = kvp.Value;
+                var kind = itemDefinition.Kind;
+                if (!kind.StartsWith("ammo/") && !kind.StartsWith("health/") && !kind.StartsWith("ink"))
+                    continue;
+
+                group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+                {
+                    Id = $"items/distribution/{itemDefinition.Kind}",
+                    Label = itemDefinition.Name,
+                    Min = 0,
+                    Max = 1,
+                    Step = 0.01,
+                    Type = "range",
+                    Default = 0.5,
+                    Category = GetCategory(kind)
+                });
+            }
+
+            page = result.CreatePage("Enemies");
+            group = page.CreateGroup("");
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "enemies/safe",
+                Label = "Enemies in safe rooms",
+                Description = "Allow enemies in safe rooms. i.e. rooms where safe music is playing.",
+                Type = "switch",
+                Default = false
+            });
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "enemies/save",
+                Label = "Enemies in save rooms",
+                Description = "Allow enemies in save rooms. i.e. rooms where there is a typewriter.",
+                Type = "switch",
+                Default = true
+            });
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "enemies/box",
+                Label = "Enemies in box rooms",
+                Description = "Allow enemies in box rooms. i.e. rooms where there is an item box.",
+                Type = "switch",
+                Default = true
+            });
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "enemies/rooms",
+                Label = "Number of rooms containing enemies.",
+                Description = "The number of rooms that contain one or more enemies.",
+                Type = "percent",
                 Min = 0,
                 Max = 1,
                 Step = 0.01,
-                Type = "range",
-                Default = 0.5,
-                Category = new RandomizerConfigurationDefinition.GroupItemCategory()
-                {
-                    Label = "Health",
-                    BackgroundColor = "Blue",
-                    TextColor = "White"
-                }
+                Default = 0.5
             });
 
-            page = result.CreatePage("Enemies");
+            group = page.CreateGroup("Room Distribution");
+            foreach (var enemyGroup in map.Enemies)
+            {
+                var category = new RandomizerConfigurationDefinition.GroupItemCategory()
+                {
+                    BackgroundColor = enemyGroup.Background,
+                    TextColor = enemyGroup.Foreground,
+                    Label = enemyGroup.Name
+                };
+                foreach (var entry in enemyGroup.Entries)
+                {
+                    group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+                    {
+                        Id = $"enemies/distribution/{entry.Key}",
+                        Label = entry.Name,
+                        Category = category,
+                        Type = "range",
+                        Min = 0,
+                        Max = 1,
+                        Step = 0.01,
+                        Default = 0.5
+                    });
+                }
+            }
+
+            group = page.CreateGroup("Maximum per Room");
+            foreach (var enemyGroup in map.Enemies)
+            {
+                foreach (var entry in enemyGroup.Entries)
+                {
+                    group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+                    {
+                        Id = $"enemies/max/{entry.Key}",
+                        Label = entry.Name,
+                        Type = "range",
+                        Min = 1,
+                        Max = 16,
+                        Step = 1,
+                        Default = 6
+                    });
+                }
+            }
+
             page = result.CreatePage("Cutscenes");
             page = result.CreatePage("Music");
+            return result;
+
+            static RandomizerConfigurationDefinition.GroupItemCategory GetCategory(string kind)
+            {
+                var topCategory = kind.Split('/').FirstOrDefault();
+                if (topCategory == "ammo")
+                {
+                    return new RandomizerConfigurationDefinition.GroupItemCategory()
+                    {
+                        BackgroundColor = "#66f",
+                        TextColor = "#fff",
+                        Label = "Ammo"
+                    };
+                }
+                else if (topCategory == "health")
+                {
+                    return new RandomizerConfigurationDefinition.GroupItemCategory()
+                    {
+                        BackgroundColor = "#696",
+                        TextColor = "#fff",
+                        Label = "Health"
+                    };
+                }
+                else if (topCategory == "ink")
+                {
+                    return new RandomizerConfigurationDefinition.GroupItemCategory()
+                    {
+                        BackgroundColor = "#000",
+                        TextColor = "#fff",
+                        Label = "Ink"
+                    };
+                }
+                else
+                {
+                    return new RandomizerConfigurationDefinition.GroupItemCategory()
+                    {
+                        BackgroundColor = "#333",
+                        TextColor = "#fff",
+                        Label = "None"
+                    };
+                }
+            }
         }
 
         public RandomizerOutput Randomize(RandomizerInput input)
@@ -244,7 +493,7 @@ namespace IntelOrca.Biohazard.BioRand
         private static Dictionary<RdtId, IRdt> GetRdts(int player)
         {
             var result = new Dictionary<RdtId, IRdt>();
-            var installPath = @"M:\apps\biorand\re1hd\JPN";
+            var installPath = @"F:\games\re1\JPN";
             for (var i = 1; i <= 7; i++)
             {
                 var stagePath = Path.Combine(installPath, $"STAGE{i}");
@@ -390,6 +639,9 @@ namespace IntelOrca.Biohazard.BioRand
 
             foreach (var pair in pairs)
             {
+                if (pair.A.Door.NoUnlock || pair.B.Door.NoUnlock)
+                    continue;
+
                 var lockId = pair.A.Door.LockId ?? pair.B.Door.LockId;
                 if (lockId == null && availableLocks.Count != 0)
                     lockId = availableLocks.Dequeue();

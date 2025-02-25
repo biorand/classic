@@ -28,8 +28,7 @@
     },
     "4": {
       "name": "Colt Python (dumdum)",
-      "kind": "weapon/magnum",
-      "weaponGroup": "colt",
+      "kind": "weapon/colt/dumdum",
       "capacity": 6,
       "ammo": [
         13
@@ -37,8 +36,7 @@
     },
     "5": {
       "name": "Colt Python (magnum)",
-      "kind": "weapon/magnum",
-      "weaponGroup": "colt",
+      "kind": "weapon/colt/magnum",
       "capacity": 6,
       "ammo": [
         14
@@ -54,8 +52,7 @@
     },
     "7": {
       "name": "Bazooka (acid)",
-      "kind": "weapon/grenadelauncher",
-      "weaponGroup": "bazooka",
+      "kind": "weapon/grenadelauncher/acid",
       "capacity": 6,
       "ammo": [
         16,
@@ -65,8 +62,7 @@
     },
     "8": {
       "name": "Bazooka (explosive)",
-      "kind": "weapon/grenadelauncher",
-      "weaponGroup": "bazooka",
+      "kind": "weapon/grenadelauncher/explosive",
       "capacity": 6,
       "ammo": [
         16,
@@ -76,8 +72,7 @@
     },
     "9": {
       "name": "Bazooka (flame)",
-      "kind": "weapon/grenadelauncher",
-      "weaponGroup": "bazooka",
+      "kind": "weapon/grenadelauncher/flame",
       "capacity": 6,
       "ammo": [
         16,
@@ -346,6 +341,133 @@
       "kind": "health/ggb"
     }
   },
+  "enemies": [
+    {
+      "name": "Zombie",
+      "background": "#66f",
+      "foreground": "#fff",
+      "entries": [
+        {
+          "key": "zombie",
+          "name": "Zombie",
+          "id": [ 0, 1, 17 ]
+        }
+      ]
+    },
+    {
+      "name": "Cerberus",
+      "background": "#000",
+      "foreground": "#fff",
+      "entries": [
+        {
+          "key": "cerberus",
+          "name": "Cerberus",
+          "id": [ 2 ]
+        }
+      ]
+    },
+    {
+      "name": "Spider",
+      "background": "#af6",
+      "foreground": "#333",
+      "entries": [
+        {
+          "key": "spider",
+          "name": "Web Spinner",
+          "id": [ 2 ]
+        },
+        {
+          "key": "blacktiger",
+          "name": "Black Tiger",
+          "id": [ 4 ]
+        }
+      ]
+    },
+    {
+      "name": "Crow",
+      "background": "#000",
+      "foreground": "#fff",
+      "entries": [
+        {
+          "key": "crow",
+          "name": "Crow",
+          "id": [ 5 ]
+        }
+      ]
+    },
+    {
+      "name": "Hunter",
+      "background": "#6f6",
+      "foreground": "#000",
+      "entries": [
+        {
+          "key": "hunter",
+          "name": "Hunter",
+          "id": [ 6 ]
+        }
+      ]
+    },
+    {
+      "name": "Wasp",
+      "background": "#ff3",
+      "foreground": "#000",
+      "entries": [
+        {
+          "key": "wasp",
+          "name": "Wasp",
+          "id": [ 7 ]
+        }
+      ]
+    },
+    {
+      "name": "Chimera",
+      "background": "#aaa",
+      "foreground": "#000",
+      "entries": [
+        {
+          "key": "chimera",
+          "name": "Chimera",
+          "id": [ 9 ]
+        }
+      ]
+    },
+    {
+      "name": "Snake",
+      "background": "#080",
+      "foreground": "#000",
+      "entries": [
+        {
+          "key": "snake",
+          "name": "Snake",
+          "id": [ 10 ]
+        }
+      ]
+    },
+    {
+      "name": "Neptune",
+      "background": "#888",
+      "foreground": "#000",
+      "entries": [
+        {
+          "key": "neptune",
+          "name": "Neptune",
+          "id": [ 11 ]
+        }
+      ]
+    },
+    {
+      "name": "Tyrant",
+      "background": "#ccc",
+      "foreground": "#000",
+      "entries": [
+        {
+          "key": "tyrant",
+          "name": "Tyrant",
+          "id": [ 12 ]
+        }
+      ]
+    }
+  ],
   "rooms": {
     "100": {
       "name": "1F WEST SAVE",
@@ -2937,11 +3059,13 @@
         },
         {
           "id": 1,
-          "target": "309:0"
+          "target": "309:0",
+          "noUnlock": true
         },
         {
           "id": 2,
-          "target": "309:1"
+          "target": "309:1",
+          "noUnlock": true
         }
       ],
       "enemies": [
@@ -2956,11 +3080,13 @@
       "doors": [
         {
           "id": 0,
-          "target": "308:1"
+          "target": "308:1",
+          "noUnlock": true
         },
         {
           "id": 1,
-          "target": "308:2"
+          "target": "308:2",
+          "noUnlock": true
         },
         {
           "id": 2,

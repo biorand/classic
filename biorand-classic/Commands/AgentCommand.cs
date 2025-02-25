@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using IntelOrca.Biohazard.BioRand.Common;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
@@ -25,11 +27,13 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
 
         public override async Task<int> ExecuteAsync(CommandContext context, Settings settings)
         {
+            var gameId = await GetGameIdAsync(settings.Host, "re1")
+                ?? throw new Exception("re1 game moniker not found.");
             var randomizer = new ClassicRandomizer();
             var agent = new RandomizerAgent(
                 settings.Host,
                 settings.ApiKey,
-                1,
+                gameId,
                 new RandomizerAgentHandler(settings.InputPath));
             var cts = new CancellationTokenSource();
             Console.CancelKeyPress += (sender, e) =>
@@ -45,6 +49,14 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
             {
             }
             return 0;
+        }
+
+        private static async Task<int?> GetGameIdAsync(string uri, string moniker)
+        {
+            var client = new RandomizerClient(uri);
+            var games = await client.GetGamesAsync();
+            var game = games.FirstOrDefault(x => x.Moniker == moniker);
+            return game?.Id;
         }
 
         private class RandomizerAgentHandler : IRandomizerAgentHandler

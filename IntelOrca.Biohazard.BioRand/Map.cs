@@ -10,7 +10,8 @@ namespace IntelOrca.Biohazard.BioRand
     public class Map
     {
         public MapStartEnd[]? BeginEndRooms { get; set; }
-        public Dictionary<int, MapItemDefinition>? Items { get; set; }
+        public Dictionary<int, MapItemDefinition> Items { get; set; } = [];
+        public MapEnemyGroup[] Enemies { get; set; } = [];
         public Dictionary<string, MapRoom>? Rooms { get; set; }
 
         internal MapRoom? GetRoom(RdtId id)
@@ -75,6 +76,7 @@ namespace IntelOrca.Biohazard.BioRand
                     .Where(x => x.IsIncludedInFilter(filter))
                     .ToArray(),
                 Items = Items,
+                Enemies = Enemies,
                 Rooms = Rooms
                     .Where(x => x.Value.IsIncludedInFilter(filter))
                     .ToDictionary(x => x.Key, x => x.Value.For(filter))
@@ -90,10 +92,25 @@ namespace IntelOrca.Biohazard.BioRand
 
     public class MapItemDefinition
     {
-        public string? Name { get; set; }
-        public string? Kind { get; set; }
+        public string Name { get; set; } = "";
+        public string Kind { get; set; } = "";
         public int Max { get; set; }
         public int Group { get; set; }
+    }
+
+    public class MapEnemyGroup
+    {
+        public string Name { get; set; } = "";
+        public string Background { get; set; } = "";
+        public string Foreground { get; set; } = "";
+        public MapEnemyGroupEntry[] Entries { get; set; } = [];
+    }
+
+    public class MapEnemyGroupEntry
+    {
+        public string Key { get; set; } = "";
+        public string Name { get; set; } = "";
+        public int[] Id { get; set; } = [];
     }
 
     public class MapRoom : MapFilterable
