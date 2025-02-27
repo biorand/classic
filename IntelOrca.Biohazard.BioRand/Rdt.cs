@@ -465,6 +465,39 @@ namespace IntelOrca.Biohazard.BioRand
             return null;
         }
 
+        public void Load()
+        {
+            Script = Decompile(RdtFile, false, false);
+            ScriptDisassembly = Decompile(RdtFile, true, false);
+            ScriptListing = Decompile(RdtFile, true, true);
+
+            var opcodeBuilder = new OpcodeBuilder();
+            RdtFile.ReadScript(opcodeBuilder);
+            Opcodes = opcodeBuilder.ToArray();
+
+            try
+            {
+                Ast = CreateAst(RdtFile);
+            }
+            catch
+            {
+            }
+
+            static string Decompile(IRdt rdtFile, bool assemblyFormat, bool listingFormat)
+            {
+                var scriptDecompiler = new ScriptDecompiler(assemblyFormat, listingFormat);
+                rdtFile.ReadScript(scriptDecompiler);
+                return scriptDecompiler.GetScript();
+            }
+
+            static ScriptAst CreateAst(IRdt rdtFile)
+            {
+                var builder = new ScriptAstBuilder();
+                rdtFile.ReadScript(builder);
+                return builder.Ast;
+            }
+        }
+
         public void Save()
         {
             using (var ms = new MemoryStream(RdtFile.Data.ToArray()))

@@ -155,8 +155,6 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
-        public static IEnumerable<T> EnumerateOpcodes<T>(this RandomizedRdt rdt, RandoConfig config) => AstEnumerator<T>.Enumerate(rdt.Ast!, config);
-
         public static short GetHeight(this ModelFile model)
         {
             return model.GetEmr(0).GetRelativePosition(0).y;

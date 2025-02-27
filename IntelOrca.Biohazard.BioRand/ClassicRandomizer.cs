@@ -9,9 +9,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using IntelOrca.Biohazard.BioRand.RE1;
 using IntelOrca.Biohazard.BioRand.Routing;
-using IntelOrca.Biohazard.Extensions;
 using IntelOrca.Biohazard.Room;
-using IntelOrca.Biohazard.Script;
 using IntelOrca.Biohazard.Script.Opcodes;
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -477,11 +475,10 @@ namespace IntelOrca.Biohazard.BioRand
 
             var dump = modBuilder.GetDump(map);
 
-            var rdts = GetRdts(0);
-            foreach (var rdtId in rdts.Keys)
+            var gameData = controller.GetGameData(context, 0);
+            foreach (var rrdt in gameData.Rdts)
             {
-                var rdt = rdts[rdtId];
-                rdts[rdtId] = modBuilder.ApplyToRdt(rdtId, rdt);
+                modBuilder.ApplyToRdt(rrdt);
             }
 
             var crModBuilder = new ClassicRebirthModBuilder($"BioRand | Orca's Profile | {input.Seed}");
@@ -489,10 +486,10 @@ namespace IntelOrca.Biohazard.BioRand
             crModBuilder.SetFile("biorand.dat", GetPatchFile(context));
             controller.WriteExtra(context, crModBuilder);
 
-            foreach (var rdtId in rdts.Keys)
+            foreach (var rrdt in gameData.Rdts)
             {
-                var rdt = rdts[rdtId];
-                crModBuilder.SetFile($"STAGE{rdtId.Stage + 1}/ROOM{rdtId}0.RDT", rdt.Data);
+                rrdt.Save();
+                crModBuilder.SetFile(rrdt.ModifiedPath!, rrdt.RdtFile.Data);
             }
             var archiveFile = crModBuilder.Create7z();
             var modFileName = $"mod_biorand_{input.Seed}.7z";
@@ -1075,50 +1072,24 @@ namespace IntelOrca.Biohazard.BioRand
             _itemMap.Add(globalId, item);
         }
 
-        public IRdt ApplyToRdt(RdtId rdtId, IRdt rdt)
+        public void ApplyToRdt(RandomizedRdt rrdt)
         {
-            var opcodeBuilder = new OpcodeBuilder();
-            rdt.ReadScript(opcodeBuilder);
-            var opcodes = opcodeBuilder.ToArray();
-            var doorOpcodes = opcodes.OfType<IDoorAotSetOpcode>().ToArray();
-            var itemOpcodes = opcodes.OfType<IItemAotSetOpcode>().ToArray();
-
-            var edits = false;
-            foreach (var doorOpcode in doorOpcodes)
+            foreach (var doorOpcode in rrdt.Doors)
             {
-                var doorIdentity = new RdtItemId(rdtId, doorOpcode.Id);
+                var doorIdentity = new RdtItemId(rrdt.RdtId, doorOpcode.Id);
                 if (_doorLock.TryGetValue(doorIdentity, out var doorLock))
                 {
                     doorOpcode.LockId = (byte)doorLock.Id;
                     doorOpcode.LockType = (byte)doorLock.KeyItemId;
-                    edits = true;
                 }
             }
-            foreach (var itemOpcode in itemOpcodes)
+            foreach (var itemOpcode in rrdt.Items)
             {
                 if (_itemMap.TryGetValue(itemOpcode.GlobalId, out var item))
                 {
                     itemOpcode.Type = item.Type;
                     itemOpcode.Amount = item.Amount;
-                    edits = true;
                 }
-            }
-
-            if (!edits)
-                return rdt;
-
-            using (var ms = new MemoryStream(rdt.Data.ToArray()))
-            {
-                var bw = new BinaryWriter(ms);
-                foreach (var opcode in opcodes)
-                {
-                    ms.Position = opcode.Offset;
-                    opcode.Write(bw);
-                }
-                if (rdt.Version == BioVersion.Biohazard1)
-                    return new Rdt1(ms.ToArray());
-                else
-                    throw new NotImplementedException();
             }
         }
 
@@ -1181,12 +1152,185 @@ namespace IntelOrca.Biohazard.BioRand
 
     internal interface IClassicRandomizerController
     {
+        public GameData GetGameData(IClassicRandomizerContext context, int player);
         void WritePatches(IClassicRandomizerContext context, PatchWriter pw);
         void WriteExtra(IClassicRandomizerContext context, ClassicRebirthModBuilder crModBuilder);
     }
 
     internal class Re1ClassicRandomizerController : IClassicRandomizerController
     {
+        public GameData GetGameData(IClassicRandomizerContext context, int player)
+        {
+            var result = new List<RandomizedRdt>();
+            var installPath = @"F:\games\re1\JPN";
+            for (var i = 1; i <= 7; i++)
+            {
+                var stagePath = Path.Combine(installPath, $"STAGE{i}");
+                var files = Directory.GetFiles(stagePath);
+                foreach (var path in files)
+                {
+                    var fileName = Path.GetFileName(path);
+                    var match = Regex.Match(fileName, @"^ROOM([0-9A-F]{3})(0|1).RDT$", RegexOptions.IgnoreCase);
+                    if (match.Success)
+                    {
+                        var rdtId = RdtId.Parse(match.Groups[1].Value);
+                        var rdtPlayer = int.Parse(match.Groups[2].Value);
+                        if (rdtPlayer == player)
+                        {
+                            var fileData = File.ReadAllBytes(path);
+                            if (fileData.Length < 16)
+                                continue;
+
+                            var rdt = Rdt.FromData(BioVersion.Biohazard1, fileData);
+                            var rrdt = new RandomizedRdt(rdt, rdtId);
+                            result.Add(rrdt);
+                        }
+                    }
+                }
+            }
+
+            foreach (var missingRoom in g_missingRooms)
+            {
+                var mansion2 = new RdtId(missingRoom.Stage + 5, missingRoom.Room);
+                var rrdt2 = result.FirstOrDefault(x => x.RdtId == mansion2);
+                result.Add(new RandomizedRdt(rrdt2.RdtFile, missingRoom));
+            }
+
+            foreach (var rrdt in result)
+            {
+                var rdtId = rrdt.RdtId;
+                rrdt.OriginalPath = $"STAGE{rdtId.Stage + 1}/ROOM{rdtId}0.RDT";
+                rrdt.ModifiedPath = rrdt.OriginalPath;
+                rrdt.Load();
+            }
+
+            var gd = new GameData([.. result]);
+            ApplyRdtPatches(context, gd, player);
+            return gd;
+        }
+
+        private void ApplyRdtPatches(IClassicRandomizerContext context, GameData gameData, int player)
+        {
+            const byte PassCodeDoorLockId = 209;
+            var randomDoors = context.Configuration.GetValueOrDefault("doors/random", false);
+            var randomItems = context.Configuration.GetValueOrDefault("items/random", false);
+
+            FixPassCodeDoor();
+            AllowRoughPassageDoorUnlock();
+            ShotgunOnWallFix();
+            DisableBarryEvesdrop();
+            AllowPartnerItemBoxes();
+
+            void FixPassCodeDoor()
+            {
+                for (var mansion = 0; mansion < 2; mansion++)
+                {
+                    var mansionOffset = mansion == 0 ? 0 : 5;
+                    var rdt = gameData.GetRdt(new RdtId(1 + mansionOffset, 0x01));
+                    if (rdt == null)
+                        return;
+
+                    var door = rdt.Doors.FirstOrDefault(x => x.Id == 1) as DoorAotSeOpcode;
+                    if (door == null)
+                        return;
+
+                    door.LockId = PassCodeDoorLockId;
+                    door.NextX = 11200;
+                    door.NextZ = 28000;
+                    door.LockType = 255;
+                    door.Free = 129;
+
+                    if (!randomDoors && player == 1)
+                    {
+                        rdt.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x01, new byte[] { 0x0A }));
+                        rdt.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x04, new byte[] { 0x01, 0x25, 0x00 }));
+                        rdt.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x05, new byte[] { 0x02, PassCodeDoorLockId - 192, 0 }));
+                        rdt.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x03, new byte[] { 0x00 }));
+                    }
+
+                    rdt.Nop(0x41A34);
+
+                    if (mansion == 1)
+                    {
+                        if (player == 0)
+                        {
+                            rdt.Nop(0x41A92);
+                        }
+                        else
+                        {
+                            rdt.Nop(0x41A5C, 0x41A68);
+                        }
+                    }
+                }
+            }
+
+            void AllowRoughPassageDoorUnlock()
+            {
+                for (var mansion = 0; mansion < 2; mansion++)
+                {
+                    var mansionOffset = mansion == 0 ? 0 : 5;
+                    var rdt = gameData.GetRdt(new RdtId(1 + mansionOffset, 0x14));
+                    if (rdt == null)
+                        return;
+
+                    var doorId = player == 0 ? 1 : 5;
+                    var door = (DoorAotSeOpcode)rdt.ConvertToDoor((byte)doorId, 0, 254, PassCodeDoorLockId);
+                    door.Special = 2;
+                    door.Re1UnkC = 1;
+                    door.Target = new RdtId(0xFF, 0x01);
+                    door.NextX = 15500;
+                    door.NextZ = 25400;
+                    door.NextD = 1024;
+
+                    if (player == 1)
+                    {
+                        rdt.Nop(0x19F3A);
+                        rdt.Nop(0x1A016);
+                        rdt.Nop(0x1A01C);
+                    }
+                }
+            }
+
+            void ShotgunOnWallFix()
+            {
+                if (!randomItems)
+                    return;
+
+                var rdt = gameData.GetRdt(new RdtId(0, 0x16));
+                if (rdt == null)
+                    return;
+
+                rdt.Nop(0x1FE16);
+            }
+
+            void DisableBarryEvesdrop()
+            {
+                if (player != 1)
+                    return;
+
+                var rdt = gameData.GetRdt(new RdtId(3, 0x05));
+                if (rdt == null)
+                    return;
+
+                rdt.Nop(0x194A2);
+            }
+
+            void AllowPartnerItemBoxes()
+            {
+                // Remove partner check for these two item boxes
+                // This is so Rebecca can use the item boxes
+                // Important for Chris 8-inventory because the inventory
+                // is now shared for both him and Rebecca and player
+                // might need to make space for more items e.g. (V-JOLT)
+                var room = gameData.GetRdt(new RdtId(0, 0x00));
+                room?.Nop(0x10C92);
+
+                room = gameData.GetRdt(new RdtId(3, 0x03));
+                room?.Nop(0x1F920);
+            }
+
+        }
+
         public void WritePatches(IClassicRandomizerContext context, PatchWriter pw)
         {
             var randomDoors = context.Configuration.GetValueOrDefault("doors/random", false);
@@ -1355,5 +1499,23 @@ namespace IntelOrca.Biohazard.BioRand
             });
             return ms.ToArray();
         }
+
+        private static readonly RdtId[] g_missingRooms =
+        [
+            RdtId.Parse("110"),
+            RdtId.Parse("119"),
+            RdtId.Parse("200"),
+            RdtId.Parse("20C"),
+            RdtId.Parse("213"),
+            RdtId.Parse("214"),
+            RdtId.Parse("215"),
+            RdtId.Parse("216"),
+            RdtId.Parse("217"),
+            RdtId.Parse("218"),
+            RdtId.Parse("219"),
+            RdtId.Parse("21A"),
+            RdtId.Parse("21B"),
+            RdtId.Parse("21C")
+        ];
     }
 }
