@@ -29,7 +29,7 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
         {
             var gameId = await GetGameIdAsync(settings.Host, "re1")
                 ?? throw new Exception("re1 game moniker not found.");
-            var randomizer = new ClassicRandomizer();
+            var randomizer = ClassicRandomizerFactory.Default.Create(BioVersion.Biohazard1);
             var agent = new RandomizerAgent(
                 settings.Host,
                 settings.ApiKey,
@@ -63,7 +63,7 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
         {
             private readonly string _gamePath;
 
-            public IRandomizer Randomizer { get; } = new ClassicRandomizer();
+            public IRandomizer Randomizer { get; } = ClassicRandomizerFactory.Default.Create(BioVersion.Biohazard1);
 
             public RandomizerAgentHandler(string gamePath)
             {

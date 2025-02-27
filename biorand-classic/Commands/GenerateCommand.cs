@@ -57,6 +57,6 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
             return Task.FromResult(0);
         }
 
-        private IRandomizer GetRandomizer() => new ClassicRandomizer();
+        private IRandomizer GetRandomizer() => ClassicRandomizerFactory.Default.Create(BioVersion.Biohazard1);
     }
 }

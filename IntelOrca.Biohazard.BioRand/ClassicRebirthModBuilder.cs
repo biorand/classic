@@ -1,0 +1,129 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Text;
+
+namespace IntelOrca.Biohazard.BioRand
+{
+    internal sealed class ClassicRebirthModBuilder(string name)
+    {
+        private readonly Dictionary<string, byte[]> _files = new(StringComparer.OrdinalIgnoreCase);
+
+        public string Name { get; set; } = name;
+        public string? Description { get; set; }
+        public Module? Module { get; set; }
+
+        private void CreateManifest()
+        {
+            var sb = new StringBuilder();
+            sb.Append("[MOD]\r\n");
+            sb.Append($"Name = {Name}\r\n");
+            if (Module is Module m)
+            {
+                sb.Append($"Module = {m.FileName}\r\n");
+            }
+
+            var data = Encoding.UTF8.GetBytes(sb.ToString());
+            SetFile("manifest.txt", data);
+        }
+
+        public void SetFile(string path, ReadOnlyMemory<byte> data) => _files[path] = data.ToArray();
+
+        private void AddSupplementaryFiles()
+        {
+            CreateManifest();
+            if (Module is Module m)
+            {
+                SetFile(m.FileName, m.Data);
+            }
+            if (Description is string d)
+            {
+                var processed = d
+                    .Replace("\r\n", "\n")
+                    .Replace("\r", "\n")
+                    .Replace("\n", "\r\n");
+                if (!processed.EndsWith("\r\n"))
+                    processed += "\r\n";
+                var data = Encoding.UTF8.GetBytes(processed);
+                SetFile("description.txt", data);
+            }
+        }
+
+        public byte[] Create7z()
+        {
+            AddSupplementaryFiles();
+
+            using var tempFolder = new TempFolder();
+            foreach (var kvp in _files)
+            {
+                var dir = Path.GetDirectoryName(kvp.Key);
+                if (dir != null)
+                {
+                    tempFolder.GetOrCreateDirectory(dir);
+                }
+                var fullPath = Path.Combine(tempFolder.BasePath, kvp.Key);
+                File.WriteAllBytes(fullPath, kvp.Value);
+            }
+            return SevenZip(tempFolder.BasePath);
+        }
+
+        private static byte[] SevenZip(string directory)
+        {
+            var tempFile = Path.GetTempFileName() + ".7z";
+            try
+            {
+                SevenZip(tempFile, directory);
+                return File.ReadAllBytes(tempFile);
+            }
+            finally
+            {
+                try
+                {
+                    File.Delete(tempFile);
+                }
+                catch
+                {
+                }
+            }
+        }
+
+        private static void SevenZip(string outputPath, string directory)
+        {
+            var sevenZipPath = Find7z();
+            if (sevenZipPath == null)
+                throw new Exception("Unable to find 7z");
+
+            var psi = new ProcessStartInfo(sevenZipPath, $"a -r -mx9 \"{outputPath}\" *")
+            {
+                WorkingDirectory = directory
+            };
+            var process = Process.Start(psi);
+            process.WaitForExit();
+            if (process.ExitCode != 0)
+                throw new Exception("Failed to create 7z");
+        }
+
+        private static string Find7z()
+        {
+            var pathEnvironment = Environment.GetEnvironmentVariable("PATH");
+            var paths = pathEnvironment.Split(Path.PathSeparator);
+            foreach (var path in paths)
+            {
+                var full = Path.Combine(path, "7z.exe");
+                if (File.Exists(full))
+                {
+                    return full;
+                }
+            }
+
+            var programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+            var defaultPath = Path.Combine(programFiles, "7-Zip", "7z.exe");
+            if (File.Exists(defaultPath))
+            {
+                return defaultPath;
+            }
+            return null;
+        }
+    }
+}

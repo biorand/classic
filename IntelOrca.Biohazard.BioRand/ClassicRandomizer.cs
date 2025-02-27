@@ -7,15 +7,27 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
+using IntelOrca.Biohazard.BioRand.RE1;
 using IntelOrca.Biohazard.BioRand.Routing;
 using IntelOrca.Biohazard.Extensions;
 using IntelOrca.Biohazard.Room;
 using IntelOrca.Biohazard.Script;
 using IntelOrca.Biohazard.Script.Opcodes;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace IntelOrca.Biohazard.BioRand
 {
-    public class ClassicRandomizer : IRandomizer
+    public sealed class ClassicRandomizerFactory
+    {
+        public static ClassicRandomizerFactory Default { get; } = new ClassicRandomizerFactory();
+
+        public IRandomizer Create(BioVersion version)
+        {
+            return new ClassicRandomizer(new Re1ClassicRandomizerController());
+        }
+    }
+
+    internal class ClassicRandomizer(IClassicRandomizerController controller) : IRandomizer
     {
         public RandomizerConfigurationDefinition ConfigurationDefinition => CreateConfigDefinition();
         public RandomizerConfiguration DefaultConfiguration => ConfigurationDefinition.GetDefault();
@@ -449,6 +461,7 @@ namespace IntelOrca.Biohazard.BioRand
             var dataManager = new DataManager(new[] {
                 @"M:\git\biorand-classic\IntelOrca.Biohazard.BioRand\data"
             });
+            var context = new Context(input.Configuration, dataManager);
             var map = GetMap(dataManager.GetJson<Map>(BioVersion.Biohazard1, "rdt.json"));
 
             var modBuilder = new ModBuilder();
@@ -471,21 +484,17 @@ namespace IntelOrca.Biohazard.BioRand
                 rdts[rdtId] = modBuilder.ApplyToRdt(rdtId, rdt);
             }
 
-            using var tempFolder = new TempFolder();
+            var crModBuilder = new ClassicRebirthModBuilder($"BioRand | Orca's Profile | {input.Seed}");
+            crModBuilder.Module = new Module("biorand.dll", dataManager.GetData("biorand.dll"));
+            crModBuilder.SetFile("biorand.dat", GetPatchFile(context));
+            controller.WriteExtra(context, crModBuilder);
+
             foreach (var rdtId in rdts.Keys)
             {
                 var rdt = rdts[rdtId];
-                var dir = tempFolder.GetOrCreateDirectory($"STAGE{rdtId.Stage + 1}");
-                var path = Path.Combine(dir, $"ROOM{rdtId}0.RDT");
-                rdt.Data.WriteToFile(path);
+                crModBuilder.SetFile($"STAGE{rdtId.Stage + 1}/ROOM{rdtId}0.RDT", rdt.Data);
             }
-            File.WriteAllText(
-                Path.Combine(tempFolder.BasePath, "manifest.txt"),
-                $"""
-                [MOD]
-                Name = BioRand | Orca's Profile | {input.Seed}
-                """.Replace("\r\n", "\n"));
-            var archiveFile = SevenZip(tempFolder.BasePath);
+            var archiveFile = crModBuilder.Create7z();
             var modFileName = $"mod_biorand_{input.Seed}.7z";
             return new RandomizerOutput(
                 [new RandomizerOutputAsset("mod", "Classic Rebirth Mod", "Drop this in your RE 1 install folder.", modFileName, archiveFile)],
@@ -493,62 +502,24 @@ namespace IntelOrca.Biohazard.BioRand
                 new Dictionary<string, string>());
         }
 
-        private static byte[] SevenZip(string directory)
+        private byte[] GetPatchFile(IClassicRandomizerContext context)
         {
-            var tempFile = Path.GetTempFileName() + ".7z";
-            try
-            {
-                SevenZip(tempFile, directory);
-                return File.ReadAllBytes(tempFile);
-            }
-            finally
-            {
-                try
-                {
-                    File.Delete(tempFile);
-                }
-                catch
-                {
-                }
-            }
+            using var ms = new MemoryStream();
+            var pw = new PatchWriter(ms);
+            controller.WritePatches(context, pw);
+            return ms.ToArray();
         }
 
-        private static void SevenZip(string outputPath, string directory)
+        private sealed class Context : IClassicRandomizerContext
         {
-            var sevenZipPath = Find7z();
-            if (sevenZipPath == null)
-                throw new Exception("Unable to find 7z");
+            public RandomizerConfiguration Configuration { get; }
+            public DataManager DataManager { get; }
 
-            var psi = new ProcessStartInfo(sevenZipPath, $"a -r -mx9 \"{outputPath}\" *")
+            public Context(RandomizerConfiguration configuration, DataManager dataManager)
             {
-                WorkingDirectory = directory
-            };
-            var process = Process.Start(psi);
-            process.WaitForExit();
-            if (process.ExitCode != 0)
-                throw new Exception("Failed to create 7z");
-        }
-
-        private static string Find7z()
-        {
-            var pathEnvironment = Environment.GetEnvironmentVariable("PATH");
-            var paths = pathEnvironment.Split(Path.PathSeparator);
-            foreach (var path in paths)
-            {
-                var full = Path.Combine(path, "7z.exe");
-                if (File.Exists(full))
-                {
-                    return full;
-                }
+                Configuration = configuration;
+                DataManager = dataManager;
             }
-
-            var programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-            var defaultPath = Path.Combine(programFiles, "7-Zip", "7z.exe");
-            if (File.Exists(defaultPath))
-            {
-                return defaultPath;
-            }
-            return null;
         }
 
         private void SetRemainingItems(Map map, ModBuilder modBuilder)
@@ -1077,6 +1048,12 @@ namespace IntelOrca.Biohazard.BioRand
         }
     }
 
+    internal readonly struct Module(string fileName, byte[] data)
+    {
+        public string FileName => fileName;
+        public byte[] Data => data;
+    }
+
     internal class ModBuilder
     {
         private readonly Dictionary<RdtItemId, DoorLock> _doorLock = new();
@@ -1185,40 +1162,8 @@ namespace IntelOrca.Biohazard.BioRand
 
             return null;
         }
-    }
 
-    internal sealed class TempFolder : IDisposable
-    {
-        public string BasePath { get; }
 
-        public TempFolder()
-        {
-            BasePath = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
-            Directory.CreateDirectory(BasePath);
-        }
-
-        ~TempFolder() => Dispose();
-
-        public void Dispose()
-        {
-            try
-            {
-                if (Directory.Exists(BasePath))
-                {
-                    Directory.Delete(BasePath, true);
-                }
-            }
-            catch
-            {
-            }
-        }
-
-        public string GetOrCreateDirectory(string path)
-        {
-            var newPath = Path.Combine(BasePath, path);
-            Directory.CreateDirectory(newPath);
-            return newPath;
-        }
     }
 
     [DebuggerDisplay("Id = {Id} Key = {KeyItemId}")]
@@ -1226,5 +1171,189 @@ namespace IntelOrca.Biohazard.BioRand
     {
         public int Id => id;
         public int KeyItemId => keyItemId;
+    }
+
+    internal interface IClassicRandomizerContext
+    {
+        public RandomizerConfiguration Configuration { get; }
+        public DataManager DataManager { get; }
+    }
+
+    internal interface IClassicRandomizerController
+    {
+        void WritePatches(IClassicRandomizerContext context, PatchWriter pw);
+        void WriteExtra(IClassicRandomizerContext context, ClassicRebirthModBuilder crModBuilder);
+    }
+
+    internal class Re1ClassicRandomizerController : IClassicRandomizerController
+    {
+        public void WritePatches(IClassicRandomizerContext context, PatchWriter pw)
+        {
+            var randomDoors = context.Configuration.GetValueOrDefault("doors/random", false);
+
+            DisableDemo(pw);
+            FixFlamethrowerCombine(pw);
+            FixWasteHeal(pw);
+            FixNeptuneDamage(pw);
+            FixChrisInventorySize(pw);
+            FixYawnPoison(pw, randomDoors);
+        }
+
+        private static void DisableDemo(PatchWriter pw)
+        {
+            pw.Begin(0x48E031);
+            pw.Write(0x90);
+            pw.Write(0x90);
+            pw.Write(0x90);
+            pw.Write(0x90);
+            pw.Write(0x90);
+            pw.Write(0x90);
+            pw.Write(0x90);
+            pw.End();
+        }
+
+        private static void FixFlamethrowerCombine(PatchWriter pw)
+        {
+            // and bx, 0x7F -> nop
+            pw.Begin(0x4483BD);
+            pw.Write(0x90);
+            pw.Write(0x90);
+            pw.Write(0x90);
+            pw.Write(0x90);
+            pw.End();
+
+            // and bx, 0x7F -> nop
+            pw.Begin(0x44842D);
+            pw.Write(0x90);
+            pw.Write(0x90);
+            pw.Write(0x90);
+            pw.Write(0x90);
+            pw.End();
+        }
+
+        private static void FixWasteHeal(PatchWriter pw)
+        {
+            // Allow using heal items when health is at max
+            // jge 0447AA2h -> nop
+            pw.Begin(0x447A39);
+            pw.Write(0x90);
+            pw.Write(0x90);
+            pw.End();
+        }
+
+        private static void FixNeptuneDamage(PatchWriter pw)
+        {
+            // Neptune has no death routine, so replace it with Cerberus's
+            // 0x4AA0EC -> 0x004596D0
+            pw.Begin(0x4AA0EC);
+            pw.Write32(0x004596D0);
+            pw.End();
+
+            // Give Neptune a damage value for each weapon
+            const int numWeapons = 10;
+            const int entrySize = 12;
+            var damageValues = new short[] { 16, 14, 32, 40, 130, 20, 100, 200, 100, 900 };
+            var enemyDataArrays = new uint[] { 0x4AF908U, 0x4B0268 };
+            foreach (var enemyData in enemyDataArrays)
+            {
+                var neptuneData = enemyData + (Re1EnemyIds.Neptune * (numWeapons * entrySize)) + 0x06;
+                for (var i = 0; i < numWeapons; i++)
+                {
+                    pw.Begin(neptuneData);
+                    pw.Write16(damageValues[i]);
+                    pw.End();
+                    neptuneData += entrySize;
+                }
+            }
+        }
+
+        private static void FixChrisInventorySize(PatchWriter pw)
+        {
+            // Inventory instructions
+            var addresses = new uint[]
+            {
+                0x40B461,
+                0x40B476,
+                0x40B483,
+                0x414103,
+                0x414022,
+                0x4142CC
+            };
+            foreach (var addr in addresses)
+            {
+                pw.Begin(addr);
+                pw.Write(0xB0);
+                pw.Write(0x01);
+                pw.Write(0x90);
+                pw.Write(0x90);
+                pw.Write(0x90);
+                pw.End();
+            }
+
+            // Partner swap
+            pw.Begin(0x0041B208);
+            pw.Write(0xC7);
+            pw.Write(0x05);
+            pw.Write32(0x00AA8E48);
+            pw.Write32(0x00C38814);
+            pw.End();
+
+            // Rebirth
+            pw.Begin(0x100505A3);
+            pw.Write(0xB8);
+            pw.Write(0x01);
+            pw.Write(0x00);
+            pw.Write(0x00);
+            pw.Write(0x00);
+            pw.Write(0x90);
+            pw.Write(0x90);
+            pw.End();
+
+            pw.Begin(0x1006F0C2 + 3);
+            pw.Write(0x8);
+            pw.End();
+        }
+
+        private static void FixYawnPoison(PatchWriter pw, bool doorRandomizer)
+        {
+            const byte ST_POISON = 0x02;
+            const byte ST_POISON_YAWN = 0x20;
+
+            pw.Begin(0x45B8C0 + 6); // 80 0D 90 52 C3 00 20
+            if (doorRandomizer)
+                pw.Write(ST_POISON);
+            else
+                pw.Write(ST_POISON_YAWN);
+            pw.End();
+        }
+
+        public void WriteExtra(IClassicRandomizerContext context, ClassicRebirthModBuilder crModBuilder)
+        {
+            var bgPng = context.DataManager.GetData(BioVersion.Biohazard1, "bg.png");
+            var bgPix = PngToPix(bgPng);
+            crModBuilder.SetFile("data/title.pix", bgPix);
+            crModBuilder.SetFile("type.png", bgPng);
+        }
+
+        private byte[] PngToPix(byte[] png)
+        {
+            using var img = SixLabors.ImageSharp.Image.Load<Rgba32>(png);
+            using var ms = new MemoryStream();
+            var bw = new BinaryWriter(ms);
+            img.ProcessPixelRows(accessor =>
+            {
+                for (var y = 0; y < accessor.Height; y++)
+                {
+                    var row = accessor.GetRowSpan(y);
+                    for (int i = 0; i < accessor.Width; i++)
+                    {
+                        var c = row[i];
+                        var c4 = (ushort)((c.R / 8) | ((c.G / 8) << 5) | ((c.B / 8) << 10));
+                        bw.Write(c4);
+                    }
+                }
+            });
+            return ms.ToArray();
+        }
     }
 }
