@@ -588,7 +588,7 @@
     },
     "103": {
       "name": "1F WEST MIDDLE CORRIDOR",
-      "linkedRoom": "603",
+      "rdts": [ "103", "603" ],
       "doors": [
         {
           "id": 0,
@@ -619,7 +619,7 @@
     },
     "104": {
       "name": "1F WEST TEA CORRIDOR",
-      "linkedRoom": "604",
+      "rdts": [ "604" ],
       "doors": [
         {
           "target": "103",
@@ -690,7 +690,7 @@
     },
     "105": {
       "name": "1F DINING ROOM",
-      "linkedRoom": "605",
+      "rdts": [ "105", "605" ],
       "doors": [
         {
           "target": "104",
@@ -789,7 +789,7 @@
     },
     "106": {
       "name": "1F MAIN HALL",
-      "linkedRoom": "606",
+      "rdts": [ "106", "606" ],
       "doors": [
         {
           "target": "105",
@@ -902,7 +902,7 @@
     },
     "107": {
       "name": "1F EAST GALLERY",
-      "linkedRoom": "607",
+      "rdts": [ "107", "607" ],
       "doors": [
         {
           "target": "106"
@@ -933,7 +933,7 @@
     },
     "108": {
       "name": "1F EAST DOG CORRIDOR",
-      "linkedRoom": "608",
+      "rdts": [ "108", "608" ],
       "doors": [
         {
           "target": "107"
@@ -961,7 +961,7 @@
     },
     "109": {
       "name": "1F EAST CORNER CORRIDOR",
-      "linkedRoom": "609",
+      "rdts": [ "109", "609" ],
       "doors": [
         {
           "target": "108"
@@ -1008,7 +1008,7 @@
     },
     "10A": {
       "name": "1F EAST END CORRIDOR",
-      "linkedRoom": "60A",
+      "rdts": [ "10A", "60A" ],
       "doors": [
         {
           "target": "109"
@@ -1039,7 +1039,7 @@
     },
     "10B": {
       "name": "1F EAST STAIRS",
-      "linkedRoom": "60B",
+      "rdts": [ "10B", "60B" ],
       "doors": [
         {
           "target": "10A",
@@ -1154,7 +1154,7 @@
     },
     "10D": {
       "name": "1F WEST TIGER",
-      "linkedRoom": "60D",
+      "rdts": [ "10D", "60D" ],
       "doors": [
         {
           "target": "103"
@@ -1193,7 +1193,7 @@
     },
     "10E": {
       "name": "1F WEST BEDROOM",
-      "linkedRoom": "60E",
+      "rdts": [ "10E", "60E" ],
       "doors": [
         {
           "target": "103"
@@ -1226,7 +1226,7 @@
     },
     "10F": {
       "name": "1F WEST BAR",
-      "linkedRoom": "60F",
+      "rdts": [ "10F", "60F" ],
       "doors": [
         {
           "target": "104"
@@ -1297,6 +1297,7 @@
     },
     "110": {
       "name": "1F WEST ELEVATOR STAIRS",
+      "rdts": [ "110", "610" ],
       "doors": [
         {
           "target": "104",
@@ -1307,7 +1308,7 @@
     },
     "111": {
       "name": "1F EAST DRESSING",
-      "linkedRoom": "611",
+      "rdts": [ "111", "611" ],
       "doors": [
         {
           "target": "106"
@@ -1351,7 +1352,7 @@
           "nop": [ "0x17864-0x17866", "0x17884-0x17886" ]
         }
       ],
-      "linkedRoom": "612",
+      "rdts": [ "112", "612" ],
       "doors": [
         {
           "target": "111"
@@ -1397,7 +1398,7 @@
     },
     "113": {
       "name": "1F EAST BATHROOM",
-      "linkedRoom": "613",
+      "rdts": [ "113", "613" ],
       "doors": [
         {
           "target": "109"
@@ -1423,7 +1424,7 @@
     },
     "114": {
       "name": "1F EAST OUTSIDE BOILER",
-      "linkedRoom": "614",
+      "rdts": [ "114", "614" ],
       "doors": [
         {
           "target": "109"
@@ -1483,7 +1484,7 @@
     },
     "115": {
       "name": "1F EAST JILL SANDWICH",
-      "linkedRoom": "615",
+      "rdts": [ "115", "615" ],
       "doors": [
         {
           "target": "109"
@@ -1509,7 +1510,7 @@
     },
     "116": {
       "name": "1F EAST LOUNGE",
-      "linkedRoom": "616",
+      "rdts": [ "116", "616" ],
       "doors": [
         {
           "target": "115"
@@ -1537,7 +1538,7 @@
     },
     "117": {
       "name": "1F EAST PORTRAITS",
-      "linkedRoom": "617",
+      "rdts": [ "117", "617" ],
       "doors": [
         {
           "target": "10A"
@@ -1557,7 +1558,7 @@
     },
     "118": {
       "name": "1F EAST SAVE",
-      "linkedRoom": "618",
+      "rdts": [ "118", "618" ],
       "doorRando": [
         {
           "category": "box"
@@ -1615,6 +1616,7 @@
     },
     "119": {
       "name": "1F EAST STUDY",
+      "rdts": [ "119", "619" ],
       "items": [
         {
           "name": "BOOK",
@@ -1642,12 +1644,12 @@
     },
     "11A": {
       "name": "1F EAST OUTSIDE CREST EXIT",
+      "rdts": [ "11A", "61A" ],
       "doorRando": [
         {
           "category": "bridge"
         }
       ],
-      "linkedRoom": "61A",
       "doors": [
         {
           "target": "10A"
@@ -1672,7 +1674,7 @@
     },
     "11B": {
       "name": "1F EAST STORE ROOM WITH STEPLADDER",
-      "linkedRoom": "61B",
+      "rdts": [ "11B", "61B" ],
       "doors": [
         {
           "target": "11A"
@@ -1711,12 +1713,12 @@
     },
     "11C": {
       "name": "1F EAST WARDROBE",
+      "rdts": [ "11C", "61C" ],
       "doorRando": [
         {
           "category": "exclude"
         }
       ],
-      "linkedRoom": "61C",
       "doors": [
         {
           "target": "112"
@@ -1725,6 +1727,7 @@
     },
     "200": {
       "name": "KITCHEN ELEVATOR (CUTSCENE)",
+      "rdts": [ "200", "700" ],
       "doors": [
         {
           "target": "213"
@@ -1736,7 +1739,7 @@
     },
     "201": {
       "name": "2F WEST STAIRS",
-      "linkedRoom": "701",
+      "rdts": [ "201", "701" ],
       "doors": [
         {
           "id": 3,
@@ -1765,7 +1768,7 @@
     },
     "202": {
       "name": "2F WEST DINING ROOM",
-      "linkedRoom": "702",
+      "rdts": [ "202", "702" ],
       "doors": [
         {
           "target": "201"
@@ -1782,7 +1785,7 @@
     },
     "203": {
       "name": "2F MAIN HALL",
-      "linkedRoom": "703",
+      "rdts": [ "203", "703" ],
       "doorRando": [
         {
           "nop": [ "0x23698-0x236EA" ],
@@ -1826,7 +1829,7 @@
     },
     "204": {
       "name": "2F EAST C SHAPED CORRIDOR",
-      "linkedRoom": "704",
+      "rdts": [ "204", "704" ],
       "doors": [
         {
           "target": "203"
@@ -1859,7 +1862,7 @@
     },
     "205": {
       "name": "2F EAST ARMORY",
-      "linkedRoom": "705",
+      "rdts": [ "205", "705" ],
       "doors": [
         {
           "target": "204"
@@ -1884,7 +1887,7 @@
     },
     "206": {
       "name": "2F EAST READING",
-      "linkedRoom": "706",
+      "rdts": [ "206", "706" ],
       "doors": [
         {
           "target": "204"
@@ -1924,7 +1927,7 @@
     },
     "207": {
       "name": "2F EAST STAIRS",
-      "linkedRoom": "707",
+      "rdts": [ "207", "707" ],
       "doors": [
         {
           "target": "10B"
@@ -1957,7 +1960,7 @@
     },
     "208": {
       "name": "2F EAST DEER CONNECTOR",
-      "linkedRoom": "708",
+      "rdts": [ "208", "708" ],
       "doors": [
         {
           "target": "207"
@@ -1978,7 +1981,7 @@
     },
     "209": {
       "name": "2F EAST BEDROOM",
-      "linkedRoom": "709",
+      "rdts": [ "209", "709" ],
       "doors": [
         {
           "target": "208"
@@ -2030,7 +2033,7 @@
     },
     "20A": {
       "name": "2F EAST FISH TANK",
-      "linkedRoom": "70A",
+      "rdts": [ "20A", "70A" ],
       "doorRando": [
         {
           "cutscene": true,
@@ -2088,7 +2091,7 @@
     },
     "20B": {
       "name": "2F EAST FIREPLACE",
-      "linkedRoom": "70B",
+      "rdts": [ "20B", "70B" ],
       "doors": [
         {
           "target": "207"
@@ -2119,6 +2122,7 @@
     },
     "20C": {
       "name": "PIANO LESSON",
+      "rdts": [ "20C", "70C" ],
       "doors": [
         {
           "target": "20B"
@@ -2143,6 +2147,7 @@
     },
     "20C/GRAVE": {
       "name": "PIANO LESSON/GRAVE",
+      "rdts": [ "20C", "70C" ],
       "doors": [
         {
           "target": "21A"
@@ -2151,12 +2156,12 @@
     },
     "20D": {
       "name": "2F EAST RICHARD",
+      "rdts": [ "20D", "70D" ],
       "doorRando": [
         {
           "category": "exclude"
         }
       ],
-      "linkedRoom": "70D",
       "doors": [
         {
           "target": "204"
@@ -2199,7 +2204,7 @@
     },
     "20E": {
       "name": "2F EAST ATTIC CONNECTOR",
-      "linkedRoom": "70E",
+      "rdts": [ "20E", "70E" ],
       "doors": [
         {
           "target": "20D"
@@ -2224,7 +2229,7 @@
     },
     "20F": {
       "name": "2F EAST DINING ROOM",
-      "linkedRoom": "70F",
+      "rdts": [ "20F", "70F" ],
       "doors": [
         {
           "target": "20E"
@@ -2260,7 +2265,7 @@
     },
     "210": {
       "name": "2F EAST ATTIC",
-      "linkedRoom": "710",
+      "rdts": [ "210", "710" ],
       "doors": [
         {
           "target": "20E"
@@ -2294,7 +2299,7 @@
     },
     "211": {
       "name": "2F EAST BALCONY CONNECTOR",
-      "linkedRoom": "711",
+      "rdts": [ "211", "711" ],
       "doors": [
         {
           "target": "203"
@@ -2323,7 +2328,7 @@
     },
     "212": {
       "name": "2F EAST BALCONY",
-      "linkedRoom": "712",
+      "rdts": [ "212", "712" ],
       "doorRando": [
         {
           "cutscene": true,
@@ -2367,6 +2372,7 @@
     },
     "213": {
       "name": "2F WEST ELEVATOR",
+      "rdts": [ "213", "713" ],
       "doors": [
         {
           "target": "214"
@@ -2396,6 +2402,7 @@
     },
     "214": {
       "name": "2F WEST BLUE CORRIDOR",
+      "rdts": [ "214", "714" ],
       "doors": [
         // {
         //   "target": "201",
@@ -2439,6 +2446,7 @@
     },
     "215": {
       "name": "2F WEST DEER ROOM",
+      "rdts": [ "215", "715" ],
       "items": [
         {
           "name": "SHELLS",
@@ -2474,6 +2482,7 @@
     },
     "216": {
       "name": "2F WEST LIBRARY",
+      "rdts": [ "216", "716" ],
       "doors": [
         {
           "target": "213"
@@ -2516,6 +2525,7 @@
     },
     "217": {
       "name": "2F WEST LIBRARY PUZZLE",
+      "rdts": [ "217", "717" ],
       "doors": [
         {
           "target": "216"
@@ -2539,6 +2549,7 @@
     },
     "218": {
       "name": "2F WEST HIDDEN LIBRARY",
+      "rdts": [ "218", "718" ],
       "doors": [
         {
           "target": "216"
@@ -2572,6 +2583,7 @@
     },
     "219": {
       "name": "2F WEST STORAGE",
+      "rdts": [ "219", "719" ],
       "doors": [
         {
           "target": "213"
@@ -2612,6 +2624,7 @@
     },
     "21A": {
       "name": "B1 EAST",
+      "rdts": [ "21A", "71A" ],
       "doors": [
         {
           "target": "20C/GRAVE"
@@ -2638,6 +2651,7 @@
     },
     "21B": {
       "name": "B1 WEST",
+      "rdts": [ "21B", "71B" ],
       "doors": [
         {
           "target": "21A"
@@ -2673,6 +2687,7 @@
     },
     "21C": {
       "name": "B1 KITCHEN",
+      "rdts": [ "21C", "71C" ],
       "doors": [
         {
           "target": "200"
@@ -2711,6 +2726,7 @@
     },
     "300": {
       "name": "COURTYARD GARDEN",
+      "rdts": [ "300" ],
       "doors": [
         {
           "target": "11B"
@@ -2785,6 +2801,7 @@
     },
     "301": {
       "name": "COURTYARD RESERVOIR",
+      "rdts": [ "301" ],
       "doorRando": [
         {
           "category": "exclude"
@@ -2810,6 +2827,7 @@
     },
     "302": {
       "name": "COURTYARD WATERFALL",
+      "rdts": [ "302" ],
       "doorRando": [
         {
           "nop": [ "0x192C4", "0x192D0", "0x192DC", "0x1944A", "0x19450" ]
@@ -2851,6 +2869,7 @@
     },
     "303": {
       "name": "HELIPAD",
+      "rdts": [ "303" ],
       "doorRando": [
         {
           "category": "exclude"
@@ -2866,6 +2885,7 @@
     },
     "304": {
       "name": "GUARDHOUSE GATE",
+      "rdts": [ "304" ],
       "doors": [
         {
           "target": "302"
@@ -2916,6 +2936,7 @@
     },
     "305": {
       "name": "FOUNTAIN",
+      "rdts": [ "305" ],
       "doorRando": [
         {
           "category": "bridge",
@@ -2974,6 +2995,7 @@
     },
     "306": {
       "name": "CAVES STATUE PUZZLE",
+      "rdts": [ "306" ],
       "doors": [
         {
           "target": "30F"
@@ -3001,6 +3023,7 @@
     },
     "307": {
       "name": "CAVES ENTRANCE",
+      "rdts": [ "307" ],
       "doors": [
         {
           "target": "302",
@@ -3047,6 +3070,7 @@
     },
     "308": {
       "name": "CAVES BRANCH PASSAGE",
+      "rdts": [ "308" ],
       "doorRando": [
         {
           "nop": [ "0x1AFD8-0x1B074" ],
@@ -3077,6 +3101,7 @@
     },
     "309": {
       "name": "CAVES POWER GENERATOR",
+      "rdts": [ "309" ],
       "doors": [
         {
           "id": 0,
@@ -3126,6 +3151,7 @@
     },
     "30A": {
       "name": "CAVES ENRICO",
+      "rdts": [ "30A" ],
       "doors": [
         {
           "target": "309"
@@ -3176,6 +3202,7 @@
     },
     "30B": {
       "name": "CAVES FIRST BOULDER",
+      "rdts": [ "30B" ],
       "doors": [
         {
           "target": "307"
@@ -3209,6 +3236,7 @@
     },
     "30C": {
       "name": "CAVES BLACK TIGER",
+      "rdts": [ "30C" ],
       "doors": [
         {
           "target": "30B"
@@ -3231,6 +3259,7 @@
     },
     "30D": {
       "name": "CAVES BLACK TIGER EXIT",
+      "rdts": [ "30D" ],
       "doors": [
         {
           "target": "30C"
@@ -3251,6 +3280,7 @@
     },
     "30E": {
       "name": "CAVES SAVE",
+      "rdts": [ "30E" ],
       "doorRando": [
         {
           "category": "box"
@@ -3298,6 +3328,7 @@
     },
     "30F": {
       "name": "CAVES SECOND BOULDER",
+      "rdts": [ "30F" ],
       "doors": [
         {
           "target": "305",
@@ -3331,6 +3362,7 @@
     },
     "310": {
       "name": "FOUNTAIN STAIRS",
+      "rdts": [ "310" ],
       "doors": [
         // {
         //   "target": "305",
@@ -3343,6 +3375,7 @@
     },
     "400": {
       "name": "GUARDHOUSE ENTRANCE",
+      "rdts": [ "400" ],
       "doors": [
         {
           "target": "304"
@@ -3395,6 +3428,7 @@
     },
     "401": {
       "name": "GUARDHOUSE ROOM 001",
+      "rdts": [ "401" ],
       "doors": [
         {
           "target": "400"
@@ -3441,6 +3475,7 @@
     },
     "402": {
       "name": "GUARDHOUSE ROOM 001 BATHROOM",
+      "rdts": [ "402" ],
       "doors": [
         {
           "target": "401"
@@ -3466,6 +3501,7 @@
     },
     "403": {
       "name": "GUARDHOUSE SAVE",
+      "rdts": [ "403" ],
       "doorRando": [
         {
           "category": "box"
@@ -3514,6 +3550,7 @@
     },
     "404": {
       "name": "GUARDHOUSE BAR",
+      "rdts": [ "404" ],
       "doors": [
         {
           "target": "400"
@@ -3546,6 +3583,7 @@
     },
     "405": {
       "name": "GUARDHOUSE WESKER CORRIDOR",
+      "rdts": [ "405" ],
       "doors": [
         {
           "target": "400"
@@ -3608,6 +3646,7 @@
     },
     "406": {
       "name": "GUARDHOUSE ROOM 002",
+      "rdts": [ "406" ],
       "doors": [
         {
           "target": "405"
@@ -3659,6 +3698,7 @@
     },
     "407": {
       "name": "GUARDHOUSE ROOM 002 BATHROOM",
+      "rdts": [ "407" ],
       "doors": [
         {
           "target": "406"
@@ -3683,6 +3723,7 @@
     },
     "408": {
       "name": "GUARDHOUSE NEST",
+      "rdts": [ "408" ],
       "doorRando": [
         {
           "nop": [ 199372, 199374, 199404, 199406 ]
@@ -3736,6 +3777,7 @@
     },
     "409": {
       "name": "GUARDHOUSE DRUG STORAGE",
+      "rdts": [ "409" ],
       "doorRando": [
         {
           "category": "exclude",
@@ -3763,6 +3805,7 @@
     },
     "40A": {
       "name": "GUARDHOUSE ROOM 003",
+      "rdts": [ "40A" ],
       "doors": [
         {
           "target": "408"
@@ -3801,6 +3844,7 @@
     },
     "40B": {
       "name": "GUARDHOUSE ROOM 003 BATHROOM",
+      "rdts": [ "40B" ],
       "doors": [
         {
           "target": "40A"
@@ -3825,6 +3869,7 @@
     },
     "40C": {
       "name": "GUARDHOUSE PLANT 42",
+      "rdts": [ "40C" ],
       "doorRando": [
         {
           "category": "exclude"
@@ -3857,6 +3902,7 @@
     },
     "40D": {
       "name": "GUARDHOUSE BOX PASSAGE",
+      "rdts": [ "40D" ],
       "doors": [
         {
           "target": "406"
@@ -3873,6 +3919,8 @@
       ]
     },
     "40D/EXIT": {
+      "name": "GUARDHOUSE BOX PASSAGE EXIT",
+      "rdts": [ "40D" ],
       "doors": [
         {
           "target": "40D",
@@ -3903,6 +3951,7 @@
     },
     "40E": {
       "name": "GUARDHOUSE WATER TANK",
+      "rdts": [ "40E" ],
       "doors": [
         {
           "target": "40D"
@@ -3924,6 +3973,7 @@
     },
     "40F": {
       "name": "GUARDHOUSE PLANT 42 ROOTS",
+      "rdts": [ "40F" ],
       "doors": [
         {
           "target": "40E"
@@ -3949,6 +3999,7 @@
     },
     "410": {
       "name": "GUARDHOUSE WEAPON STORAGE",
+      "rdts": [ "410" ],
       "doors": [
         {
           "target": "40E"
@@ -4005,6 +4056,7 @@
     },
     "411": {
       "name": "GUARDHOUSE CONTROL",
+      "rdts": [ "411" ],
       "doors": [
         {
           "target": "40E"
@@ -4019,6 +4071,7 @@
     },
     "500": {
       "name": "LABORATORY B1 ENTRANCE",
+      "rdts": [ "500" ],
       "doorRando": [
         {
           "nop": [ "0xCF1A-0xCF5E" ],
@@ -4059,6 +4112,7 @@
     },
     "501": {
       "name": "LABORATORY B1 ESCAPE",
+      "rdts": [ "501" ],
       "doors": [
         {
           "target": "500"
@@ -4084,6 +4138,7 @@
     },
     "502": {
       "name": "LABORATORY B2 BOX",
+      "rdts": [ "502" ],
       "doorRando": [
         {
           "category": "box",
@@ -4148,6 +4203,7 @@
     },
     "503": {
       "name": "LABORATORY B2 STAIRS",
+      "rdts": [ "503" ],
       "doors": [
         {
           "target": "502"
@@ -4194,6 +4250,7 @@
     },
     "504": {
       "name": "LABORATORY B2 CONFERENCE ROOM",
+      "rdts": [ "504" ],
       "doors": [
         {
           "target": "503"
@@ -4227,6 +4284,7 @@
     },
     "505": {
       "name": "LABORATORY B3 RING CORRIDOR",
+      "rdts": [ "505" ],
       "doors": [
         {
           "target": "503"
@@ -4256,6 +4314,7 @@
     },
     "506": {
       "name": "LABORATORY B3 COMPUTER",
+      "rdts": [ "506" ],
       "doors": [
         {
           "target": "505"
@@ -4280,6 +4339,7 @@
     },
     "507/TABLE": {
       "name": "LABORATORY B3 MORGUE (TABLE)",
+      "rdts": [ "507" ],
       "doors": [
         {
           "target": "507/STORE",
@@ -4312,6 +4372,7 @@
     },
     "507/STORE": {
       "name": "LABORATORY B3 MORGUE (STORE)",
+      "rdts": [ "507" ],
       "doors": [
         {
           "target": "505"
@@ -4343,6 +4404,7 @@
     },
     "508": {
       "name": "LABORATORY B3 WEST CORRIDOR",
+      "rdts": [ "508" ],
       "doorRando": [
         {
           "nop": [ "0x442", "0x450", "0x480" ]
@@ -4390,6 +4452,7 @@
     },
     "509": {
       "name": "LABORATORY B3 WEST MO DISC",
+      "rdts": [ "509" ],
       "doors": [
         {
           "target": "508"
@@ -4422,6 +4485,7 @@
     },
     "50A": {
       "name": "LABORATORY B3 WEST XRAY",
+      "rdts": [ "50A" ],
       "doors": [
         {
           "target": "508"
@@ -4467,6 +4531,7 @@
     },
     "50B": {
       "name": "LABORATORY B3 CELL CORRIDOR",
+      "rdts": [ "50B" ],
       "doorRando": [
         {
           "cutscene": true
@@ -4484,6 +4549,7 @@
     },
     "50C": {
       "name": "LABORATORY B3 EAST CORRIDOR",
+      "rdts": [ "50C" ],
       "doorRando": [
         {
           "cutscene": true
@@ -4518,6 +4584,7 @@
     },
     "50D": {
       "name": "LABORATORY B1 ESCAPE ELEVATOR (CUTSCENE)",
+      "rdts": [ "50D" ],
       "doorRando": [
         {
           "category": "exclude"
@@ -4537,6 +4604,7 @@
     },
     "50E": {
       "name": "LABORATORY B3 SAVE",
+      "rdts": [ "50E" ],
       "doorRando": [
         {
           "category": "box"
@@ -4593,6 +4661,7 @@
     },
     "50F": {
       "name": "LABORATORY B3 POWER SWITCH",
+      "rdts": [ "50F" ],
       "doors": [
         {
           "target": "50C"
@@ -4609,6 +4678,7 @@
     },
     "510": {
       "name": "LABORATORY B3 POWER MO DISC",
+      "rdts": [ "510" ],
       "doors": [
         {
           "target": "50F"
@@ -4633,6 +4703,7 @@
     },
     "511": {
       "name": "LABORATORY B3 ENGINE",
+      "rdts": [ "511" ],
       "doors": [
         {
           "target": "510"
@@ -4652,6 +4723,7 @@
     },
     "512": {
       "name": "LABORATORY B3 CELL",
+      "rdts": [ "512" ],
       "doorRando": [
         {
           "cutscene": true
@@ -4665,6 +4737,7 @@
     },
     "513": {
       "name": "LABORATORY B2 TYRANT",
+      "rdts": [ "513" ],
       "doors": [
         {
           "target": "514",
@@ -4720,6 +4793,7 @@
     },
     "514": {
       "name": "LABORATORY B4 BETRAYAL CORRIDOR",
+      "rdts": [ "514" ],
       "doors": [
         {
           "target": "513",
@@ -4763,6 +4837,7 @@
     },
     "515": {
       "name": "LABORATORY B4 ELEVATOR (CUTSCENE)",
+      "rdts": [ "515" ],
       "doors": [
         {
           "target": "50C",
