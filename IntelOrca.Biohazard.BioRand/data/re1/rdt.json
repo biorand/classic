@@ -23,7 +23,7 @@
       "kind": "weapon/shotgun",
       "capacity": 7,
       "ammo": [
-        11
+        12
       ]
     },
     "4": {
@@ -88,22 +88,22 @@
     "11": {
       "name": "Handgun Ammo",
       "kind": "ammo/handgun",
-      "max": 60
+      "max": 100
     },
     "12": {
       "name": "Shotgun Shells",
       "kind": "ammo/shotgun",
-      "max": 30
+      "max": 100
     },
     "13": {
       "name": "DumDum Rounds",
-      "kind": "ammo/magnum",
-      "max": 25
+      "kind": "ammo/colt/dumdum",
+      "max": 100
     },
     "14": {
       "name": "Magnum Rounds",
-      "kind": "ammo/magnum",
-      "max": 10
+      "kind": "ammo/colt/magnum",
+      "max": 100
     },
     "15": {
       "name": "Flamethrower Fuel",
@@ -112,18 +112,18 @@
     },
     "16": {
       "name": "Explosive Rounds",
-      "kind": "ammo/grenadelauncher",
-      "max": 10
+      "kind": "ammo/grenadelauncher/explosive",
+      "max": 100
     },
     "17": {
       "name": "Acid Rounds",
-      "kind": "ammo/grenadelauncher",
-      "max": 10
+      "kind": "ammo/grenadelauncher/acid",
+      "max": 100
     },
     "18": {
       "name": "Flame Rounds",
-      "kind": "ammo/grenadelauncher",
-      "max": 10
+      "kind": "ammo/grenadelauncher/flame",
+      "max": 100
     },
     "28": {
       "name": "Broken Shotgun",
@@ -214,7 +214,7 @@
     "47": {
       "name": "Ink Ribbon",
       "kind": "ink",
-      "max": 3
+      "max": 100
     },
     "48": {
       "name": "Lighter",
@@ -665,7 +665,7 @@
           "globalId": 41,
           "type": 11,
           "amount": 15,
-          "allowKey": false,
+          "optional": true,
           "group": 1,
           "player": 1
         },
@@ -675,7 +675,7 @@
           "globalId": 47,
           "type": 11,
           "amount": 15,
-          "allowKey": false,
+          "optional": true,
           "group": 1,
           "player": 1
         }
@@ -850,7 +850,7 @@
           "globalId": 14,
           "type": 17,
           "amount": 6,
-          "allowKey": false,
+          "optional": true,
           "group": 1,
           "player": 1
         }
@@ -1258,7 +1258,7 @@
           "group": 1,
           "player": 0,
           "doorRando": true,
-          "allowKey": false
+          "optional": true
         },
         {
           "name": "BEHIND SLIDING DOOR",
@@ -1583,7 +1583,7 @@
           "globalId": 160,
           "type": 65,
           "amount": 1,
-          "allowKey": false,
+          "optional": true,
           "group": 2
         },
         {
@@ -1592,7 +1592,7 @@
           "globalId": 218,
           "type": 12,
           "amount": 7,
-          "allowKey": false,
+          "optional": true,
           "group": 2
         },
         {
@@ -1601,7 +1601,7 @@
           "globalId": 217,
           "type": 11,
           "amount": 15,
-          "allowKey": false,
+          "optional": true,
           "group": 2
         }
       ],
@@ -1689,7 +1689,7 @@
           "type": 61,
           "amount": 1,
           "hidden": true,
-          "allowKey": false,
+          "optional": true,
           "group": 4,
           "player": 0
         },
@@ -1811,7 +1811,7 @@
           "globalId": 14,
           "type": 17,
           "amount": 6,
-          "allowKey": false,
+          "optional": true,
           "group": 1,
           "player": 1
         }
@@ -3022,7 +3022,7 @@
           "id": 3,
           "type": 106,
           "amount": 0,
-          "allowKey": false,
+          "optional": true,
           "group": 16,
           "player": 1
         }
@@ -4687,7 +4687,7 @@
           "globalId": 95,
           "type": 55,
           "amount": 2,
-          "allowKey": false,
+          "optional": true,
           "group": 32,
           "doorRando": true
         },

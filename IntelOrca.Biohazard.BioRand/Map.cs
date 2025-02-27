@@ -12,7 +12,7 @@ namespace IntelOrca.Biohazard.BioRand
         public MapStartEnd[]? BeginEndRooms { get; set; }
         public Dictionary<int, MapItemDefinition> Items { get; set; } = [];
         public MapEnemyGroup[] Enemies { get; set; } = [];
-        public Dictionary<string, MapRoom>? Rooms { get; set; }
+        public Dictionary<string, MapRoom> Rooms { get; set; } = [];
 
         internal MapRoom? GetRoom(RdtId id)
         {
@@ -94,6 +94,8 @@ namespace IntelOrca.Biohazard.BioRand
     {
         public string Name { get; set; } = "";
         public string Kind { get; set; } = "";
+        public int Capacity { get; set; }
+        public int[]? Ammo { get; set; }
         public int Max { get; set; }
         public int Group { get; set; }
     }
@@ -191,9 +193,9 @@ namespace IntelOrca.Biohazard.BioRand
         public string[]? RequiresRoom { get; set; }
         public bool? AllowDocuments { get; set; }
 
-        public bool? AllowKey { get; set; }
         public bool? Document { get; set; }
         public bool? Hidden { get; set; }
+        public bool? Optional { get; set; }
         public int Group { get; set; }
     }
 

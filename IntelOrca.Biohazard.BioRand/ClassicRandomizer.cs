@@ -226,10 +226,73 @@ namespace IntelOrca.Biohazard.BioRand
 
                 group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
                 {
-                    Id = $"items/weapons/{itemDefinition.Kind}",
+                    Id = $"items/weapon/enabled/{itemDefinition.Kind}",
                     Label = itemDefinition.Name,
                     Type = "switch",
                     Default = true
+                });
+            }
+
+            group = page.CreateGroup("Weapons (Initial Ammo)");
+            foreach (var kvp in map.Items)
+            {
+                var itemDefinition = kvp.Value;
+                var kind = itemDefinition.Kind;
+                if (!kind.StartsWith("weapon/"))
+                    continue;
+
+                if (itemDefinition.Capacity == 0)
+                    continue;
+
+                group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+                {
+                    Id = $"items/weapon/initial/min/{itemDefinition.Kind}",
+                    Label = $"Min. {itemDefinition.Name}",
+                    Min = 0,
+                    Max = itemDefinition.Capacity,
+                    Step = 1,
+                    Type = "range",
+                    Default = 0
+                });
+                group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+                {
+                    Id = $"items/weapon/initial/max/{itemDefinition.Kind}",
+                    Label = $"Max. {itemDefinition.Name}",
+                    Min = 0,
+                    Max = itemDefinition.Capacity,
+                    Step = 1,
+                    Type = "range",
+                    Default = itemDefinition.Capacity,
+                });
+            }
+
+            group = page.CreateGroup("Stack");
+            foreach (var kvp in map.Items)
+            {
+                var itemDefinition = kvp.Value;
+                var kind = itemDefinition.Kind;
+                if (!kind.StartsWith("ammo/") && kind != "ink")
+                    continue;
+
+                group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+                {
+                    Id = $"items/stack/min/{itemDefinition.Kind}",
+                    Label = $"Min. {itemDefinition.Name}",
+                    Min = 1,
+                    Max = itemDefinition.Max,
+                    Step = 1,
+                    Type = "range",
+                    Default = 1
+                });
+                group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+                {
+                    Id = $"items/stack/max/{itemDefinition.Kind}",
+                    Label = $"Max. {itemDefinition.Name}",
+                    Min = 1,
+                    Max = itemDefinition.Max,
+                    Step = 1,
+                    Type = "range",
+                    Default = 15
                 });
             }
 
@@ -238,7 +301,7 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 var itemDefinition = kvp.Value;
                 var kind = itemDefinition.Kind;
-                if (!kind.StartsWith("ammo/") && !kind.StartsWith("health/") && !kind.StartsWith("ink"))
+                if (!kind.StartsWith("ammo/") && !kind.StartsWith("health/") && kind != "ink")
                     continue;
 
                 group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
@@ -383,14 +446,6 @@ namespace IntelOrca.Biohazard.BioRand
 
         public RandomizerOutput Randomize(RandomizerInput input)
         {
-            input.Configuration["distribution/ammo/handgun"] = 0.7 / (3 / 7.0);
-            input.Configuration["distribution/ammo/shotgun"] = 0.3 / (3 / 7.0);
-            input.Configuration["distribution/health/g"] = 0.6 / (3 / 7.0);
-            input.Configuration["distribution/health/r"] = 0.2 / (3 / 7.0);
-            input.Configuration["distribution/health/b"] = 0.1 / (3 / 7.0);
-            input.Configuration["distribution/health/fas"] = 0.1 / (3 / 7.0);
-            input.Configuration["distribution/ink"] = 1.0 / (1 / 7.0);
-
             var dataManager = new DataManager(new[] {
                 @"M:\git\biorand-classic\IntelOrca.Biohazard.BioRand\data"
             });
@@ -781,7 +836,7 @@ namespace IntelOrca.Biohazard.BioRand
                     {
                         foreach (var item in room.Items)
                         {
-                            if (item.AllowKey == false)
+                            if (item.Optional == false)
                                 continue;
 
                             var label = item.Name != null ? $"{roomKey}|{room.Name}/{item.Name}" : $"{roomKey}";
@@ -855,43 +910,170 @@ namespace IntelOrca.Biohazard.BioRand
     {
         public void Randomize(RandomizerConfiguration config, int seed, Map map, ModBuilder modBuilder)
         {
-            if (map.Rooms == null || map.Items == null)
-                return;
-
             var rng = new Rng(seed);
-            var itemSlots = map.Rooms.Values
-                .SelectMany(x => x.Items)
-                .Where(x => x.GlobalId != null)
-                .Where(x => x.Document != false)
-                .Select(x => (int)x.GlobalId!.Value)
-                .Except(modBuilder.AssignedItemGlobalIds)
-                .Shuffle(rng)
-                .ToQueue();
 
+            var documentPriority = config.GetValueOrDefault("items/documents", false)
+                ? config.GetValueOrDefault("items/documents/keys", false)
+                    ? ItemPriority.Normal
+                    : ItemPriority.Low
+                : ItemPriority.Disabled;
+            var hiddenPriority = config.GetValueOrDefault("items/hidden/keys", false)
+                ? ItemPriority.Normal
+                : ItemPriority.Low;
+
+            var itemSlots = new ItemSlotCollection(modBuilder, map, documentPriority, hiddenPriority, rng);
+
+            // Weapons
+            var weapons = map.Items
+                .Where(x => x.Value.Kind.StartsWith("weapon/"))
+                .Select(x => new WeaponInfo(x.Key, x.Value, config))
+                .Shuffle(rng);
+            var wpgroup = new HashSet<string>();
+            var wpplaced = new List<WeaponInfo>();
+            foreach (var wp in weapons)
+            {
+                if (!wp.Enabled)
+                    continue;
+
+                // Do not place weapons of the same group
+                if (!wpgroup.Add(wp.Group))
+                    continue;
+
+                if (itemSlots.DequeueNormalFirst() is not int globalId)
+                    break;
+
+                var amount = rng.Next(wp.MinInitial, wp.MaxInitial + 1);
+                modBuilder.SetItem(globalId, new Item((byte)wp.Type, (ushort)amount));
+                wpplaced.Add(wp);
+            }
+
+            // Everything else
             var weights = map.Items
-                .Select(x => (x.Key, config.GetValueOrDefault($"distribution/{x.Value.Kind}", 0.0)))
-                .Where(x => x.Item2 != 0)
+                .Select(x => (x.Key, x.Value, config.GetValueOrDefault($"items/distribution/{x.Value.Kind}", 0.0)))
+                .Where(x => x.Item3 != 0)
                 .ToArray();
-            var totalWeight = weights.Sum(x => x.Item2);
+
+            // Disable ammo that can't be used
+            for (var i = 0; i < weights.Length; i++)
+            {
+                var itemType = weights[i].Item1;
+                var definition = weights[i].Item2;
+                if (definition.Kind.StartsWith("ammo/"))
+                {
+                    if (!wpplaced.Any(x => x.Enabled && x.SupportsAmmo(itemType)))
+                    {
+                        weights[i].Item3 = 0;
+                    }
+                }
+            }
+
+            var totalWeight = weights.Sum(x => x.Item3);
             var totalItems = itemSlots.Count;
             var itemCounts = weights
-                .Select(x => (x.Item1, (int)Math.Ceiling(x.Item2 / totalWeight * totalItems)))
-                .OrderBy(x => x.Item2)
+                .Select(x => (x.Item1, x.Item2, (int)Math.Ceiling(x.Item3 / totalWeight * totalItems)))
+                .OrderBy(x => x.Item3)
                 .ToArray();
 
-            foreach (var (type, count) in itemCounts)
+            foreach (var (type, definition, count) in itemCounts)
             {
-                var itemDefinition = map.Items[type];
+                var minStack = Math.Max(1, config.GetValueOrDefault($"items/stack/min/{definition.Kind}", 1));
+                var maxStack = Math.Min(definition.Max, config.GetValueOrDefault($"items/stack/max/{definition.Kind}", definition.Max));
                 for (var i = 0; i < count; i++)
                 {
-                    if (itemSlots.Count == 0)
+                    if (itemSlots.DequeueAny() is not int globalId)
                         break;
 
-                    var globalId = itemSlots.Dequeue();
-                    var amount = rng.Next(1, itemDefinition.Max + 1);
+                    var amount = rng.Next(minStack, maxStack + 1);
                     modBuilder.SetItem(globalId, new Item((byte)type, (ushort)amount));
                 }
             }
+
+            // Set all remaining items to empty
+            while (itemSlots.DequeueAny() is int globalId)
+            {
+                modBuilder.SetItem(globalId, new Item(0, 0));
+            }
+        }
+
+        public class ItemSlotCollection
+        {
+            private readonly Rng _rng;
+            private readonly Queue<MapRoomItem> _normalPriority = [];
+            private readonly Queue<MapRoomItem> _lowPriority = [];
+
+            public int Count => _normalPriority.Count + _lowPriority.Count;
+
+            public ItemSlotCollection(ModBuilder modBuilder, Map map, ItemPriority documents, ItemPriority hidden, Rng rng)
+            {
+                _rng = rng;
+
+                var assigned = modBuilder.AssignedItemGlobalIds.ToHashSet();
+                var allItems = map.Rooms.Values
+                    .SelectMany(x => x.Items)
+                    .Where(x => x.GlobalId != null)
+                    .Shuffle(rng);
+
+                foreach (var item in allItems)
+                {
+                    if (assigned.Contains(item.GlobalId ?? 0))
+                        continue;
+
+                    if (item.Document == true && documents == ItemPriority.Disabled)
+                        continue;
+                    if (item.Hidden == true && hidden == ItemPriority.Disabled)
+                        continue;
+
+                    if (item.Optional == true)
+                        _lowPriority.Enqueue(item);
+                    else if (item.Document == true && documents == ItemPriority.Low)
+                        _lowPriority.Enqueue(item);
+                    else if (item.Hidden == true && hidden == ItemPriority.Low)
+                        _lowPriority.Enqueue(item);
+                    else
+                        _normalPriority.Enqueue(item);
+                }
+            }
+
+            public int? DequeueNormalFirst()
+            {
+                if (_normalPriority.Count != 0)
+                    return _normalPriority.Dequeue().GlobalId;
+                else if (_lowPriority.Count != 0)
+                    return _lowPriority.Dequeue().GlobalId;
+                else
+                    return null;
+            }
+
+            public int? DequeueAny()
+            {
+                var count = Count;
+                if (count == 0)
+                    return null;
+
+                var index = _rng.Next(0, count);
+                if (index >= _normalPriority.Count)
+                    return _lowPriority.Dequeue().GlobalId;
+                else
+                    return _normalPriority.Dequeue().GlobalId;
+            }
+        }
+
+        public enum ItemPriority
+        {
+            Disabled,
+            Low,
+            Normal
+        }
+
+        public sealed class WeaponInfo(int type, MapItemDefinition definition, RandomizerConfiguration config)
+        {
+            public int Type => type;
+            public MapItemDefinition Definition => definition;
+            public string Group { get; } = definition.Kind.Split('/').Skip(1).First();
+            public bool Enabled { get; } = config.GetValueOrDefault($"items/weapon/enabled/{definition.Kind}", false);
+            public int MinInitial { get; } = config.GetValueOrDefault($"items/weapon/initial/min/{definition.Kind}", 0);
+            public int MaxInitial { get; } = config.GetValueOrDefault($"items/weapon/initial/max/{definition.Kind}", 0);
+            public bool SupportsAmmo(int itemId) => definition.Ammo != null && definition.Ammo.Contains(itemId);
         }
     }
 
@@ -966,7 +1148,9 @@ namespace IntelOrca.Biohazard.BioRand
         public string GetDump(Map map)
         {
             var sb = new StringBuilder();
-            foreach (var kvp in _itemMap.OrderBy(x => x.Key))
+            foreach (var kvp in _itemMap
+                .OrderBy(x => x.Value.Type)
+                .ThenBy(x => x.Key))
             {
                 var globalId = kvp.Key;
                 var type = kvp.Value.Type;
@@ -1019,7 +1203,10 @@ namespace IntelOrca.Biohazard.BioRand
         {
             try
             {
-                Directory.Delete(BasePath, true);
+                if (Directory.Exists(BasePath))
+                {
+                    Directory.Delete(BasePath, true);
+                }
             }
             catch
             {
