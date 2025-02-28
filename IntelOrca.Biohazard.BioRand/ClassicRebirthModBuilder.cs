@@ -12,14 +12,14 @@ namespace IntelOrca.Biohazard.BioRand
 
         public string Name { get; set; } = name;
         public string? Description { get; set; }
-        public Module? Module { get; set; }
+        public ClassicRebirthModule? Module { get; set; }
 
         private void CreateManifest()
         {
             var sb = new StringBuilder();
             sb.Append("[MOD]\r\n");
             sb.Append($"Name = {Name}\r\n");
-            if (Module is Module m)
+            if (Module is ClassicRebirthModule m)
             {
                 sb.Append($"Module = {m.FileName}\r\n");
             }
@@ -33,7 +33,7 @@ namespace IntelOrca.Biohazard.BioRand
         private void AddSupplementaryFiles()
         {
             CreateManifest();
-            if (Module is Module m)
+            if (Module is ClassicRebirthModule m)
             {
                 SetFile(m.FileName, m.Data);
             }
@@ -90,10 +90,7 @@ namespace IntelOrca.Biohazard.BioRand
 
         private static void SevenZip(string outputPath, string directory)
         {
-            var sevenZipPath = Find7z();
-            if (sevenZipPath == null)
-                throw new Exception("Unable to find 7z");
-
+            var sevenZipPath = Find7z() ?? throw new Exception("Unable to find 7z");
             var psi = new ProcessStartInfo(sevenZipPath, $"a -r -mx9 \"{outputPath}\" *")
             {
                 WorkingDirectory = directory
@@ -104,7 +101,7 @@ namespace IntelOrca.Biohazard.BioRand
                 throw new Exception("Failed to create 7z");
         }
 
-        private static string Find7z()
+        private static string? Find7z()
         {
             var pathEnvironment = Environment.GetEnvironmentVariable("PATH");
             var paths = pathEnvironment.Split(Path.PathSeparator);
