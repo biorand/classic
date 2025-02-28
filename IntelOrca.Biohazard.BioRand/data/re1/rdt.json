@@ -2186,6 +2186,15 @@
           "type": 68,
           "amount": 1,
           "group": 1
+        },
+        {
+          "name": "CLIP ON RICHARD",
+          "id": 2,
+          "globalId": 40,
+          "type": 11,
+          "amount": 15,
+          "group": 1,
+          "optional": true
         }
       ],
       "npcs": [

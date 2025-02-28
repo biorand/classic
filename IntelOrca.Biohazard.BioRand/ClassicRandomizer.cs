@@ -409,6 +409,16 @@ namespace IntelOrca.Biohazard.BioRand
             }
 
             page = result.CreatePage("Cutscenes");
+            group = page.CreateGroup("");
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "cutscenes/disable",
+                Label = "Disable All Cutscenes",
+                Description = "Disable all cutscenes in the game.",
+                Type = "switch",
+                Default = false
+            });
+
             page = result.CreatePage("Music");
             return result;
 
@@ -482,6 +492,7 @@ namespace IntelOrca.Biohazard.BioRand
             }
 
             var crModBuilder = new ClassicRebirthModBuilder($"BioRand | Orca's Profile | {input.Seed}");
+            crModBuilder.SetFile("config.json", Encoding.UTF8.GetBytes(input.Configuration.ToJson(true)));
             crModBuilder.Module = new Module("biorand.dll", dataManager.GetData("biorand.dll"));
             crModBuilder.SetFile("biorand.dat", GetPatchFile(context));
             controller.WriteExtra(context, crModBuilder);
@@ -489,7 +500,7 @@ namespace IntelOrca.Biohazard.BioRand
             foreach (var rrdt in gameData.Rdts)
             {
                 rrdt.Save();
-                crModBuilder.SetFile(rrdt.ModifiedPath!, rrdt.RdtFile.Data);
+                crModBuilder.SetFile(rrdt.OriginalPath!, rrdt.RdtFile.Data);
             }
             var archiveFile = crModBuilder.Create7z();
             var modFileName = $"mod_biorand_{input.Seed}.7z";
@@ -1200,12 +1211,15 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 var rdtId = rrdt.RdtId;
                 rrdt.OriginalPath = $"STAGE{rdtId.Stage + 1}/ROOM{rdtId}0.RDT";
-                rrdt.ModifiedPath = rrdt.OriginalPath;
                 rrdt.Load();
             }
 
             var gd = new GameData([.. result]);
             ApplyRdtPatches(context, gd, player);
+            if (context.Configuration.GetValueOrDefault("cutscenes/disable", false))
+            {
+                DisableCutscenes(context, gd, player);
+            }
             return gd;
         }
 
@@ -1329,6 +1343,24 @@ namespace IntelOrca.Biohazard.BioRand
                 room?.Nop(0x1F920);
             }
 
+        }
+
+        private void DisableCutscenes(IClassicRandomizerContext context, GameData gameData, int player)
+        {
+            if (player == 0)
+            {
+                Set("106", 1, 0, 0); // First cutscene
+                Set("106", 1, 2, 0); // First zombie found
+                Set("106", 1, 3, 0); // Second cutscene (Jill? Wesker?)
+                Set("106", 1, 36, 0); // First Rebecca save room cutscene
+                Set("106", 1, 167, 0); // Init. dining room emblem state
+            }
+
+            void Set(string rdtId, byte group, byte index, byte value)
+            {
+                var rdt = gameData.GetRdt(RdtId.Parse(rdtId))!;
+                rdt?.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x05, [group, index, value]));
+            }
         }
 
         public void WritePatches(IClassicRandomizerContext context, PatchWriter pw)
