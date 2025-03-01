@@ -48,11 +48,8 @@ namespace IntelOrca.Biohazard.BioRand
 
 
             var result = new RandomizerConfigurationDefinition();
-            var page = result.CreatePage("Player");
-            var group = page.CreateGroup("");
-
-            page = result.CreatePage("Doors");
-            group = page.CreateGroup("Progression (non-door randomizer)");
+            var page = result.CreatePage("General");
+            var group = page.CreateGroup("Progression (non-door randomizer)");
             group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
             {
                 Id = "progression/guardhouse",
@@ -175,6 +172,140 @@ namespace IntelOrca.Biohazard.BioRand
                     "Doors originally without locks may need a key, others may required a different key.",
                 Type = "switch",
                 Default = false
+            });
+
+            page = result.CreatePage("Inventory");
+            group = page.CreateGroup("Main");
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "inventory/weapon/knife",
+                Label = "Knife",
+                Description = "Include the knife in starting inventory.",
+                Type = "dropdown",
+                Options = ["Never", "Random", "Always"],
+                Default = "Random"
+            });
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "inventory/special/lockpick",
+                Label = "Lockpick",
+                Description = "Allows you to open locked drawers and sword key doors.",
+                Type = "dropdown",
+                Options = ["Never", "Random", "Always"],
+                Default = "Random"
+            });
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "inventory/size",
+                Label = "Size",
+                Description = "Control how many inventory slots you have. Default will leave Chris with 6 slots, Jill with 8.",
+                Type = "dropdown",
+                Options = ["Default", "Random", "6", "8"],
+                Default = "Default"
+            });
+            foreach (var s in new string[] { "Primary", "Secondary" })
+            {
+                group = page.CreateGroup($"{s} Weapon");
+                group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+                {
+                    Id = $"inventory/{s.ToLowerInvariant()}/none",
+                    Label = "None",
+                    Type = "switch",
+                    Default = true
+                });
+                foreach (var kvp in map.Items)
+                {
+                    var itemDefinition = kvp.Value;
+                    var kind = itemDefinition.Kind;
+                    if (!kind.StartsWith("weapon/") || kind == "weapon/knife")
+                        continue;
+
+                    group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+                    {
+                        Id = $"inventory/{s.ToLowerInvariant()}/{itemDefinition.Kind}",
+                        Label = itemDefinition.Name,
+                        Type = "switch",
+                        Default = true
+                    });
+                }
+            }
+
+            group = page.CreateGroup("Extras");
+            group.Warning = "A random selection is chosen until inventory is full.";
+            foreach (var s in new string[] { "Primary", "Secondary" })
+            {
+                group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+                {
+                    Id = $"inventory/{s.ToLowerInvariant()}/ammo/min",
+                    Label = $"Min. Ammo for {s} Weapon",
+                    Description = $"Minimum ammo for the {s.ToLowerInvariant()} weapon. Percentage of weapon capacity. 100% would be fully loaded, no extra ammo.",
+                    Type = "percent",
+                    Min = 0,
+                    Max = 8,
+                    Step = 0.1,
+                    Default = 1
+                });
+                group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+                {
+                    Id = $"inventory/{s.ToLowerInvariant()}/ammo/max",
+                    Label = $"Max. Ammo for {s} Weapon",
+                    Description = $"Maximum ammo for the {s.ToLowerInvariant()} weapon. Percentage of weapon capacity. 100% would be fully loaded, no extra ammo.",
+                    Type = "percent",
+                    Min = 0,
+                    Max = 8,
+                    Step = 0.1,
+                    Default = 2
+                });
+            }
+            foreach (var kvp in map.Items)
+            {
+                var itemDefinition = kvp.Value;
+                var kind = itemDefinition.Kind;
+                if (!kind.StartsWith("health/"))
+                    continue;
+
+                group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+                {
+                    Id = $"inventory/{itemDefinition.Kind}/min",
+                    Label = $"Min. {itemDefinition.Name}",
+                    Min = 0,
+                    Max = 10,
+                    Step = 1,
+                    Type = "range",
+                    Default = 0
+                });
+                group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+                {
+                    Id = $"inventory/{itemDefinition.Kind}/max",
+                    Label = $"Max. {itemDefinition.Name}",
+                    Min = 0,
+                    Max = 10,
+                    Step = 1,
+                    Type = "range",
+                    Default = 2
+                });
+            }
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "inventory/ink/min",
+                Label = "Min. Ink Ribbons",
+                Description = "Minimum number of ink ribbons.",
+                Type = "range",
+                Min = 0,
+                Max = 32,
+                Step = 1,
+                Default = 0
+            });
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "inventory/ink/max",
+                Label = "Max. Ink Ribbons",
+                Description = "Maximum number of ink ribbons.",
+                Type = "range",
+                Min = 0,
+                Max = 32,
+                Step = 1,
+                Default = 3
             });
 
             page = result.CreatePage("Items");
@@ -572,6 +703,100 @@ namespace IntelOrca.Biohazard.BioRand
                 Configuration = configuration;
                 DataManager = dataManager;
             }
+        }
+    }
+
+    internal class InventoryRandomizer
+    {
+        private void RandomizeInventory(IClassicRandomizerContext context, Map map)
+        {
+            var config = context.Configuration;
+            var rng = context.Rng;
+
+            var knife = GetRandomEnabled("inventory/weapon/knife");
+            var primary = GetRandomWeapon(context, "inventory/primary");
+            var secondary = GetRandomWeapon(context, "inventory/secondary", exclude: primary);
+
+            var entries = new List<RandomInventory.Entry>();
+            if (primary != 0)
+            {
+                entries.Add(new RandomInventory.Entry((byte)primary, (byte)primaryAmmoAmount));
+            }
+            if (secondary != 0)
+            {
+                entries.Add(new RandomInventory.Entry((byte)secondary, (byte)secondaryAmmoAmount));
+            }
+
+            foreach (var kvp in map.Items)
+            {
+                var definition = kvp.Value;
+                if (!definition.Kind.StartsWith("health/") && definition.Kind != "ink")
+                    continue;
+
+                var min = config.GetValueOrDefault($"inventory/{definition.Kind}/min", 0);
+                var max = config.GetValueOrDefault($"inventory/{definition.Kind}/max", 0);
+
+            }
+
+            bool GetRandomEnabled(string configKey)
+            {
+                var configValue = config.GetValueOrDefault(configKey, "Always");
+                if (configValue == "Always")
+                    return true;
+                if (configValue == "Never")
+                    return false;
+                return rng.NextOf(false, true);
+            }
+        }
+
+        private WeaponSwag? GetRandomWeapon(IClassicRandomizerContext context, string prefix, WeaponSwag? exclude = null)
+        {
+            var config = context.Configuration;
+            var rng = context.Rng;
+            var pool = new List<WeaponSwag?>();
+            if (config.GetValueOrDefault($"{prefix}/none", false))
+            {
+                pool.Add(null);
+            }
+            foreach (var kvp in context.Map.Items)
+            {
+                var definition = kvp.Value;
+                if (!definition.Kind.StartsWith("weapon/"))
+                    continue;
+
+                var swag = new WeaponSwag(kvp.Key, kvp.Value);
+                if (swag.Group == exclude?.Group)
+                    continue;
+
+                var isEnabled = config.GetValueOrDefault($"{prefix}/{definition.Kind}", false);
+                if (isEnabled)
+                {
+                    pool.Add(swag);
+                }
+            }
+
+            var chosen = pool.Shuffle(rng).FirstOrDefault();
+            if (chosen != null)
+            {
+                var ammoMin = config.GetValueOrDefault($"{prefix}/ammo/min", 0);
+                var ammoMax = config.GetValueOrDefault($"{prefix}/ammo/max", 0);
+                var ammoTotal = rng.Next(ammoMin, ammoMax + 1);
+                chosen.WeaponAmount = Math.Min(ammoTotal, chosen.Definition.Max);
+                chosen.ExtraAmount = ammoTotal - chosen.WeaponAmount;
+            }
+            return chosen;
+        }
+
+        private class WeaponSwag(int itemId, MapItemDefinition definition)
+        {
+            public MapItemDefinition Definition => definition;
+            public int WeaponType => itemId;
+            public int WeaponAmount { get; set; }
+            public int ExtraType { get; set; }
+            public int ExtraAmount { get; set; }
+            public int ExtraMaxStack { get; set; }
+
+            public string Group => definition.Kind.Split('/').Skip(1).First();
         }
     }
 
@@ -985,6 +1210,7 @@ namespace IntelOrca.Biohazard.BioRand
         private readonly Dictionary<RdtItemId, DoorLock> _doorLock = new();
         private readonly Dictionary<int, Item> _itemMap = new();
 
+        public ImmutableArray<RandomInventory> Inventory { get; set; }
         public ImmutableArray<int> AssignedItemGlobalIds => [.. _itemMap.Keys];
 
         public void SetDoorTarget(RdtItemId doorIdentity, RdtItemId target)
