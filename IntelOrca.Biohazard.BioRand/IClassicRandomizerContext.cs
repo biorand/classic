@@ -2,9 +2,11 @@
 {
     internal interface IClassicRandomizerContext
     {
-        public RandomizerConfiguration Configuration { get; }
-        public DataManager DataManager { get; }
-        public Map Map { get; }
-        public Rng Rng { get; }
+        RandomizerConfiguration Configuration { get; }
+        DataManager DataManager { get; }
+        Map Map { get; }
+        Rng Rng { get; }
+        ModBuilder ModBuilder { get; }
+        ClassicRebirthModBuilder CrModBuilder { get; }
     }
 }

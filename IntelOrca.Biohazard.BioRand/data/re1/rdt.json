@@ -13,7 +13,7 @@
     "2": {
       "name": "Beretta",
       "kind": "weapon/handgun",
-      "capacity": 15,
+      "max": 15,
       "ammo": [
         11
       ]
@@ -21,7 +21,7 @@
     "3": {
       "name": "Shotgun",
       "kind": "weapon/shotgun",
-      "capacity": 7,
+      "max": 7,
       "ammo": [
         12
       ]
@@ -29,7 +29,7 @@
     "4": {
       "name": "Colt Python (dumdum)",
       "kind": "weapon/colt/dumdum",
-      "capacity": 6,
+      "max": 6,
       "ammo": [
         13
       ]
@@ -37,7 +37,7 @@
     "5": {
       "name": "Colt Python (magnum)",
       "kind": "weapon/colt/magnum",
-      "capacity": 6,
+      "max": 6,
       "ammo": [
         14
       ]
@@ -45,7 +45,7 @@
     "6": {
       "name": "Flamethrower",
       "kind": "weapon/flamethrower",
-      "capacity": 240,
+      "max": 240,
       "ammo": [
         15
       ]
@@ -53,7 +53,7 @@
     "7": {
       "name": "Bazooka (acid)",
       "kind": "weapon/grenadelauncher/acid",
-      "capacity": 6,
+      "max": 6,
       "ammo": [
         16,
         17,
@@ -63,7 +63,7 @@
     "8": {
       "name": "Bazooka (explosive)",
       "kind": "weapon/grenadelauncher/explosive",
-      "capacity": 6,
+      "max": 6,
       "ammo": [
         16,
         17,
@@ -73,7 +73,7 @@
     "9": {
       "name": "Bazooka (flame)",
       "kind": "weapon/grenadelauncher/flame",
-      "capacity": 6,
+      "max": 6,
       "ammo": [
         16,
         17,
@@ -83,7 +83,7 @@
     "10": {
       "name": "Rocket Launcher",
       "kind": "weapon/rocketlauncher",
-      "capacity": 5
+      "max": 5
     },
     "11": {
       "name": "Handgun Ammo",
@@ -302,43 +302,53 @@
     },
     "65": {
       "name": "First Aid Spray",
-      "kind": "health/fas"
+      "kind": "health/fas",
+      "max": 1
     },
     "67": {
       "name": "Herb (R)",
-      "kind": "health/r"
+      "kind": "health/r",
+      "max": 1
     },
     "68": {
       "name": "Herb (G)",
-      "kind": "health/g"
+      "kind": "health/g",
+      "max": 1
     },
     "69": {
       "name": "Herb (B)",
-      "kind": "health/b"
+      "kind": "health/b",
+      "max": 1
     },
     "70": {
       "name": "Herb (GR)",
-      "kind": "health/gr"
+      "kind": "health/gr",
+      "max": 1
     },
     "71": {
       "name": "Herb (GG)",
-      "kind": "health/gg"
+      "kind": "health/gg",
+      "max": 1
     },
     "72": {
       "name": "Herb (GB)",
-      "kind": "health/gb"
+      "kind": "health/gb",
+      "max": 1
     },
     "73": {
       "name": "Herb (GRB)",
-      "kind": "health/grb"
+      "kind": "health/grb",
+      "max": 1
     },
     "74": {
       "name": "Herb (GGG)",
-      "kind": "health/ggg"
+      "kind": "health/ggg",
+      "max": 1
     },
     "75": {
       "name": "Herb (GGB)",
-      "kind": "health/ggb"
+      "kind": "health/ggb",
+      "max": 1
     }
   },
   "enemies": [

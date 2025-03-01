@@ -14,6 +14,12 @@ namespace IntelOrca.Biohazard.BioRand
         public MapEnemyGroup[] Enemies { get; set; } = [];
         public Dictionary<string, MapRoom> Rooms { get; set; } = [];
 
+        internal MapItemDefinition? GetItem(int type)
+        {
+            Items.TryGetValue(type, out var result);
+            return result;
+        }
+
         internal MapRoom? GetRoom(RdtId id)
         {
             if (Rooms == null)
@@ -94,7 +100,6 @@ namespace IntelOrca.Biohazard.BioRand
     {
         public string Name { get; set; } = "";
         public string Kind { get; set; } = "";
-        public int Capacity { get; set; }
         public int[]? Ammo { get; set; }
         public int Max { get; set; }
         public int Group { get; set; }

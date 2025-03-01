@@ -368,7 +368,7 @@ namespace IntelOrca.Biohazard.BioRand
                 if (!kind.StartsWith("weapon/"))
                     continue;
 
-                if (itemDefinition.Capacity == 0)
+                if (itemDefinition.Max == 0)
                     continue;
 
                 group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
@@ -376,7 +376,7 @@ namespace IntelOrca.Biohazard.BioRand
                     Id = $"items/weapon/initial/min/{itemDefinition.Kind}",
                     Label = $"Min. {itemDefinition.Name}",
                     Min = 0,
-                    Max = itemDefinition.Capacity,
+                    Max = itemDefinition.Max,
                     Step = 1,
                     Type = "range",
                     Default = 0
@@ -386,10 +386,10 @@ namespace IntelOrca.Biohazard.BioRand
                     Id = $"items/weapon/initial/max/{itemDefinition.Kind}",
                     Label = $"Max. {itemDefinition.Name}",
                     Min = 0,
-                    Max = itemDefinition.Capacity,
+                    Max = itemDefinition.Max,
                     Step = 1,
                     Type = "range",
-                    Default = itemDefinition.Capacity,
+                    Default = itemDefinition.Max,
                 });
             }
 
@@ -586,16 +586,21 @@ namespace IntelOrca.Biohazard.BioRand
             var dataManager = new DataManager(new[] {
                 @"M:\git\biorand-classic\IntelOrca.Biohazard.BioRand\data"
             });
-            var context = new Context(input.Configuration, dataManager);
             var map = GetMap(dataManager.GetJson<Map>(BioVersion.Biohazard1, "rdt.json"));
-
+            var rng = new Rng(input.Seed);
             var modBuilder = new ModBuilder();
+            var crModBuilder = new ClassicRebirthModBuilder($"BioRand | {input.ProfileName} | {input.Seed}");
+            var context = new Context(input.Configuration, dataManager, map, rng, modBuilder, crModBuilder);
+
 
             var lockRandomizer = new LockRandomizer();
             lockRandomizer.Randomise(input.Seed, map, modBuilder);
 
             var keyRandomizer = new KeyRandomizer();
             keyRandomizer.RandomiseItems(input.Seed, map, modBuilder);
+
+            var inventoryRandomizer = new InventoryRandomizer();
+            inventoryRandomizer.Randomize(context);
 
             var itemRandomizer = new ItemRandomizer();
             itemRandomizer.Randomize(input.Configuration, input.Seed, map, modBuilder);
@@ -608,7 +613,6 @@ namespace IntelOrca.Biohazard.BioRand
                 modBuilder.ApplyToRdt(rrdt);
             }
 
-            var crModBuilder = new ClassicRebirthModBuilder($"BioRand | {input.ProfileName} | {input.Seed}");
             crModBuilder.Description =
                 $"""
                 BioRand 4.0 ({BuildVersion})
@@ -620,7 +624,7 @@ namespace IntelOrca.Biohazard.BioRand
             crModBuilder.SetFile("config.json", Encoding.UTF8.GetBytes(input.Configuration.ToJson(true)));
             crModBuilder.Module = new ClassicRebirthModule("biorand.dll", dataManager.GetData("biorand.dll"));
             crModBuilder.SetFile("biorand.dat", GetPatchFile(context));
-            controller.WriteExtra(context, crModBuilder);
+            controller.WriteExtra(context);
             crModBuilder.SetFile("log_chris.md", Encoding.UTF8.GetBytes(dump));
 
             foreach (var rrdt in gameData.Rdts)
@@ -693,50 +697,63 @@ namespace IntelOrca.Biohazard.BioRand
             return map;
         }
 
-        private sealed class Context : IClassicRandomizerContext
+        private sealed class Context(
+            RandomizerConfiguration configuration,
+            DataManager dataManager,
+            Map map,
+            Rng rng,
+            ModBuilder modBuilder,
+            ClassicRebirthModBuilder crModBuilder) : IClassicRandomizerContext
         {
-            public RandomizerConfiguration Configuration { get; }
-            public DataManager DataManager { get; }
-
-            public Context(RandomizerConfiguration configuration, DataManager dataManager)
-            {
-                Configuration = configuration;
-                DataManager = dataManager;
-            }
+            public RandomizerConfiguration Configuration => configuration;
+            public DataManager DataManager => dataManager;
+            public Map Map => map;
+            public Rng Rng => rng;
+            public ModBuilder ModBuilder => modBuilder;
+            public ClassicRebirthModBuilder CrModBuilder => crModBuilder;
         }
     }
 
     internal class InventoryRandomizer
     {
-        private void RandomizeInventory(IClassicRandomizerContext context, Map map)
+        public void Randomize(IClassicRandomizerContext context)
         {
             var config = context.Configuration;
             var rng = context.Rng;
 
+            var inventoryState = new InventoryBuilder(6);
+
             var knife = GetRandomEnabled("inventory/weapon/knife");
+            if (knife)
+            {
+                var kvp = context.Map.Items.FirstOrDefault(x => x.Value.Kind == "weapon/knife");
+                if (kvp.Key != 0)
+                {
+                    inventoryState.Add(new Item((byte)kvp.Key, 0));
+                }
+            }
+
             var primary = GetRandomWeapon(context, "inventory/primary");
+            if (primary != null)
+            {
+                inventoryState.Add(primary);
+            }
+
             var secondary = GetRandomWeapon(context, "inventory/secondary", exclude: primary);
-
-            var entries = new List<RandomInventory.Entry>();
-            if (primary != 0)
+            if (secondary != null)
             {
-                entries.Add(new RandomInventory.Entry((byte)primary, (byte)primaryAmmoAmount));
-            }
-            if (secondary != 0)
-            {
-                entries.Add(new RandomInventory.Entry((byte)secondary, (byte)secondaryAmmoAmount));
+                inventoryState.Add(secondary);
             }
 
-            foreach (var kvp in map.Items)
+            var itemPool = new ItemPool();
+            itemPool.AddGroup(context, "health/");
+            itemPool.AddGroup(context, "ink");
+            while (!inventoryState.Full && itemPool.TakeStack(context) is Item stack)
             {
-                var definition = kvp.Value;
-                if (!definition.Kind.StartsWith("health/") && definition.Kind != "ink")
-                    continue;
-
-                var min = config.GetValueOrDefault($"inventory/{definition.Kind}/min", 0);
-                var max = config.GetValueOrDefault($"inventory/{definition.Kind}/max", 0);
-
+                inventoryState.Add(stack);
             }
+
+            context.ModBuilder.Inventory = [inventoryState.Build()];
 
             bool GetRandomEnabled(string configKey)
             {
@@ -782,9 +799,51 @@ namespace IntelOrca.Biohazard.BioRand
                 var ammoMax = config.GetValueOrDefault($"{prefix}/ammo/max", 0);
                 var ammoTotal = rng.Next(ammoMin, ammoMax + 1);
                 chosen.WeaponAmount = Math.Min(ammoTotal, chosen.Definition.Max);
-                chosen.ExtraAmount = ammoTotal - chosen.WeaponAmount;
+                if (chosen.Definition.Ammo is int[] ammo && ammo.Length != 0)
+                {
+                    chosen.ExtraAmount = ammoTotal - chosen.WeaponAmount;
+                    chosen.ExtraType = rng.NextOf(ammo);
+                    chosen.ExtraMaxStack = context.Map.Items[chosen.ExtraType].Max;
+                }
             }
             return chosen;
+        }
+
+
+        private class InventoryBuilder
+        {
+            private List<RandomInventory.Entry> _entries = [];
+
+            public int Capacity { get; }
+            public bool Full => _entries.Count >= Capacity;
+
+            public InventoryBuilder(int capacity)
+            {
+                Capacity = capacity;
+            }
+
+            public RandomInventory Build()
+            {
+                return new RandomInventory([.. _entries], null);
+            }
+
+            public void Add(Item item)
+            {
+                _entries.Add(new RandomInventory.Entry(item.Type, (byte)item.Amount));
+            }
+
+            public void Add(WeaponSwag swag)
+            {
+                Add(new Item((byte)swag.WeaponType, (ushort)swag.WeaponAmount));
+
+                var extra = swag.ExtraAmount;
+                while (extra > 0)
+                {
+                    var take = Math.Min(extra, swag.ExtraMaxStack);
+                    Add(new Item((byte)swag.ExtraType, (ushort)take));
+                    extra -= take;
+                }
+            }
         }
 
         private class WeaponSwag(int itemId, MapItemDefinition definition)
@@ -798,6 +857,72 @@ namespace IntelOrca.Biohazard.BioRand
 
             public string Group => definition.Kind.Split('/').Skip(1).First();
         }
+
+        private class ItemPool
+        {
+            private List<List<Item>> _groups = [];
+            private int _next = -1;
+
+            public void AddGroup(IClassicRandomizerContext context, string prefix)
+            {
+                _groups.Add(GetRandomItems(context, prefix));
+            }
+
+            public Item? TakeStack(IClassicRandomizerContext context)
+            {
+                var rng = context.Rng;
+                if (_next == -1 || _next >= _groups.Count)
+                {
+                    _groups = [.. _groups.Shuffle(rng)];
+                    _next = 0;
+                }
+
+                var group = _groups[_next];
+                var itemIndex = rng.Next(0, group.Count);
+                var item = group[itemIndex];
+                var definition = context.Map.Items[item.Type];
+                var take = Math.Min(item.Amount, definition.Max);
+                var remaining = item.Amount - take;
+                if (remaining > 0)
+                {
+                    group[itemIndex] = new Item(item.Type, (ushort)(item.Amount - take));
+                }
+                else
+                {
+                    group.RemoveAt(itemIndex);
+                    if (group.Count == 0)
+                    {
+                        _groups.RemoveAt(_next);
+                    }
+                }
+                _next++;
+                return new Item(item.Type, (ushort)take);
+            }
+
+            private List<Item> GetRandomItems(IClassicRandomizerContext context, string prefix)
+            {
+                var items = new List<Item>();
+                var config = context.Configuration;
+                var rng = context.Rng;
+                foreach (var kvp in context.Map.Items)
+                {
+                    var itemId = kvp.Key;
+                    var definition = kvp.Value;
+                    if (!definition.Kind.StartsWith(prefix))
+                        continue;
+
+                    var min = config.GetValueOrDefault($"inventory/{definition.Kind}/min", 0);
+                    var max = config.GetValueOrDefault($"inventory/{definition.Kind}/max", 0);
+                    var amount = rng.Next(min, max + 1);
+                    if (amount > 0)
+                    {
+                        items.Add(new Item((byte)itemId, (ushort)amount));
+                    }
+                }
+                return items;
+            }
+        }
+
     }
 
     internal class LockRandomizer
@@ -1210,7 +1335,7 @@ namespace IntelOrca.Biohazard.BioRand
         private readonly Dictionary<RdtItemId, DoorLock> _doorLock = new();
         private readonly Dictionary<int, Item> _itemMap = new();
 
-        public ImmutableArray<RandomInventory> Inventory { get; set; }
+        public ImmutableArray<RandomInventory> Inventory { get; set; } = [];
         public ImmutableArray<int> AssignedItemGlobalIds => [.. _itemMap.Keys];
 
         public void SetDoorTarget(RdtItemId doorIdentity, RdtItemId target)
@@ -1251,10 +1376,14 @@ namespace IntelOrca.Biohazard.BioRand
         public string GetDump(Map map)
         {
             var sb = new StringBuilder();
+
+            sb.AppendLine($"# Inventory");
+            DumpInventory("Chris", Inventory[0]);
+
             sb.AppendLine($"# Items");
 
             var placedItems = _itemMap
-                .Select(x => new PlacedItem(x.Key, x.Value, map.Items![x.Value.Type]))
+                .Select(x => new PlacedItem(x.Key, x.Value, map.GetItem(x.Value.Type)))
                 .GroupBy(x => x.Group);
 
             DumpGroup("key", "Keys");
@@ -1264,9 +1393,28 @@ namespace IntelOrca.Biohazard.BioRand
             DumpGroup("ink", "Ink");
             return sb.ToString();
 
+            void DumpInventory(string playerName, RandomInventory inventory)
+            {
+                sb.AppendLine($"## {playerName}");
+                sb.AppendLine("| Item | Amount |");
+                sb.AppendLine("|------|--------|");
+                foreach (var entry in inventory.Entries)
+                {
+                    if (entry.Part != 0)
+                        continue;
+
+                    var itemName = map.GetItem(entry.Type)?.Name ?? $"{entry.Type}";
+                    sb.AppendLine($"| {itemName} | {entry.Count} |");
+                }
+            }
+
             void DumpGroup(string group, string heading)
             {
-                var filtered = placedItems.FirstOrDefault(x => x.Key == group)
+                var g = placedItems.FirstOrDefault(x => x.Key == group);
+                if (g == null)
+                    return;
+
+                var filtered = g
                     .Select(x => x)
                     .OrderBy(x => x.Item.Type)
                     .ThenBy(x => x.GlobalId)
@@ -1304,12 +1452,12 @@ namespace IntelOrca.Biohazard.BioRand
             return (default, "", "");
         }
 
-        private readonly struct PlacedItem(int globalId, Item item, MapItemDefinition definition)
+        private readonly struct PlacedItem(int globalId, Item item, MapItemDefinition? definition)
         {
             public int GlobalId => globalId;
             public Item Item => item;
-            public MapItemDefinition Definition => definition;
-            public string Group => definition.Kind.Split('/').First();
+            public MapItemDefinition? Definition => definition;
+            public string Group => definition?.Kind.Split('/').First() ?? "";
         }
     }
 

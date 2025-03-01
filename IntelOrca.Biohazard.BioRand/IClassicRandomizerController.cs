@@ -4,6 +4,6 @@
     {
         public GameData GetGameData(IClassicRandomizerContext context, int player);
         void WritePatches(IClassicRandomizerContext context, PatchWriter pw);
-        void WriteExtra(IClassicRandomizerContext context, ClassicRebirthModBuilder crModBuilder);
+        void WriteExtra(IClassicRandomizerContext context);
     }
 }

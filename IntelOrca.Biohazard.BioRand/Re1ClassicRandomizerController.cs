@@ -2,6 +2,7 @@
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Xml;
 using IntelOrca.Biohazard.BioRand.RE1;
 using IntelOrca.Biohazard.Room;
 using IntelOrca.Biohazard.Script.Opcodes;
@@ -14,7 +15,7 @@ namespace IntelOrca.Biohazard.BioRand
         public GameData GetGameData(IClassicRandomizerContext context, int player)
         {
             var result = new List<RandomizedRdt>();
-            var installPath = @"F:\games\re1\JPN";
+            var installPath = @"M:\apps\biorand\re1hd\JPN";
             for (var i = 1; i <= 7; i++)
             {
                 var stagePath = Path.Combine(installPath, $"STAGE{i}");
@@ -344,12 +345,48 @@ namespace IntelOrca.Biohazard.BioRand
             pw.End();
         }
 
-        public void WriteExtra(IClassicRandomizerContext context, ClassicRebirthModBuilder crModBuilder)
+        public void WriteExtra(IClassicRandomizerContext context)
+        {
+            AddInventoryXml(context);
+            AddBackgroundTextures(context);
+        }
+
+        private void AddInventoryXml(IClassicRandomizerContext context)
+        {
+            using var ms = new MemoryStream();
+            var doc = new XmlDocument();
+            var root = doc.CreateElement("Init");
+            var player = 1;
+            foreach (var inventory in context.ModBuilder.Inventory.Reverse<RandomInventory?>())
+            {
+                var playerNode = doc.CreateElement("Player");
+                if (inventory != null)
+                {
+                    var maxItems = player == 0 ? 6 + 6 : 8;
+                    var entries = inventory.Entries;
+                    for (int i = 0; i < maxItems; i++)
+                    {
+                        var entry = entries.Length > i ? entries[i] : new RandomInventory.Entry();
+                        var entryNode = doc.CreateElement("Entry");
+                        entryNode.SetAttribute("id", entry.Type.ToString());
+                        entryNode.SetAttribute("count", entry.Count.ToString());
+                        playerNode.AppendChild(entryNode);
+                    }
+                }
+                root.AppendChild(playerNode);
+                player--;
+            }
+            doc.AppendChild(root);
+            doc.Save(ms);
+            context.CrModBuilder.SetFile("init.xml", ms.ToArray());
+        }
+
+        private void AddBackgroundTextures(IClassicRandomizerContext context)
         {
             var bgPng = context.DataManager.GetData(BioVersion.Biohazard1, "bg.png");
             var bgPix = PngToPix(bgPng);
-            crModBuilder.SetFile("data/title.pix", bgPix);
-            crModBuilder.SetFile("type.png", bgPng);
+            context.CrModBuilder.SetFile("data/title.pix", bgPix);
+            context.CrModBuilder.SetFile("type.png", bgPng);
         }
 
         private byte[] PngToPix(byte[] png)
