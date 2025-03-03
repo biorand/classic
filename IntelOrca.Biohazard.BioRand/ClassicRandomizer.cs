@@ -182,17 +182,17 @@ namespace IntelOrca.Biohazard.BioRand
                 Label = "Knife",
                 Description = "Include the knife in starting inventory.",
                 Type = "dropdown",
-                Options = ["Never", "Random", "Always"],
-                Default = "Random"
+                Options = ["Random", "Never", "Always"],
+                Default = "Always"
             });
             group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
             {
                 Id = "inventory/special/lockpick",
                 Label = "Lockpick",
-                Description = "Allows you to open locked drawers and sword key doors.",
+                Description = "Allows you to open locked drawers and sword key doors. Default will leave Jill with lockpick, Chris without.",
                 Type = "dropdown",
-                Options = ["Never", "Random", "Always"],
-                Default = "Random"
+                Options = ["Default", "Random", "Never", "Always"],
+                Default = "Default"
             });
             group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
             {
@@ -729,7 +729,7 @@ namespace IntelOrca.Biohazard.BioRand
                 var kvp = context.Map.Items.FirstOrDefault(x => x.Value.Kind == "weapon/knife");
                 if (kvp.Key != 0)
                 {
-                    inventoryState.Add(new Item((byte)kvp.Key, 0));
+                    inventoryState.Add(new Item((byte)kvp.Key, (byte)kvp.Value.Max));
                 }
             }
 

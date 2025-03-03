@@ -356,29 +356,45 @@ namespace IntelOrca.Biohazard.BioRand
             using var ms = new MemoryStream();
             var doc = new XmlDocument();
             var root = doc.CreateElement("Init");
-            var player = 1;
-            foreach (var inventory in context.ModBuilder.Inventory.Reverse<RandomInventory?>())
-            {
-                var playerNode = doc.CreateElement("Player");
-                if (inventory != null)
-                {
-                    var maxItems = player == 0 ? 6 + 6 : 8;
-                    var entries = inventory.Entries;
-                    for (int i = 0; i < maxItems; i++)
-                    {
-                        var entry = entries.Length > i ? entries[i] : new RandomInventory.Entry();
-                        var entryNode = doc.CreateElement("Entry");
-                        entryNode.SetAttribute("id", entry.Type.ToString());
-                        entryNode.SetAttribute("count", entry.Count.ToString());
-                        playerNode.AppendChild(entryNode);
-                    }
-                }
-                root.AppendChild(playerNode);
-                player--;
-            }
+
+            var inventories = context.ModBuilder.Inventory;
+            var chris = inventories.Length > 0 ? inventories[0] : CreateEmptyInventory(6);
+            var jill = inventories.Length > 1 ? inventories[1] : CreateEmptyInventory(8);
+            var rebecca = inventories.Length > 2 ? inventories[2] : CreateEmptyInventory(6);
+
+            root.AppendChild(CreatePlayerNode(doc, jill, new RandomInventory()));
+            root.AppendChild(CreatePlayerNode(doc, chris, rebecca));
+
             doc.AppendChild(root);
             doc.Save(ms);
             context.CrModBuilder.SetFile("init.xml", ms.ToArray());
+        }
+
+        private static RandomInventory CreateEmptyInventory(int size)
+        {
+            var entries = new List<RandomInventory.Entry>();
+            for (var i = 0; i < size; i++)
+            {
+                entries.Add(new RandomInventory.Entry());
+            }
+            entries[0] = new RandomInventory.Entry(Re1ItemIds.CombatKnife, 1);
+            return new RandomInventory([.. entries], null);
+        }
+
+        private static XmlElement CreatePlayerNode(XmlDocument doc, RandomInventory main, RandomInventory partner)
+        {
+            var playerNode = doc.CreateElement("Player");
+            foreach (var inv in new[] { main, partner })
+            {
+                foreach (var entry in inv.Entries)
+                {
+                    var entryNode = doc.CreateElement("Entry");
+                    entryNode.SetAttribute("id", entry.Type.ToString());
+                    entryNode.SetAttribute("count", entry.Count.ToString());
+                    playerNode.AppendChild(entryNode);
+                }
+            }
+            return playerNode;
         }
 
         private void AddBackgroundTextures(IClassicRandomizerContext context)

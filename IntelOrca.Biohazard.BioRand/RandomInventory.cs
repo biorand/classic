@@ -2,8 +2,12 @@
 {
     internal class RandomInventory
     {
-        public Entry[] Entries { get; }
-        public Entry? Special { get; }
+        public Entry[] Entries { get; } = [];
+        public Entry? Special { get; } = null;
+
+        public RandomInventory()
+        {
+        }
 
         public RandomInventory(Entry[] entries, Entry? special)
         {

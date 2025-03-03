@@ -8,7 +8,8 @@
   "items": {
     "1": {
       "name": "Combat Knife",
-      "kind": "weapon/knife"
+      "kind": "weapon/knife",
+      "max": 1
     },
     "2": {
       "name": "Beretta",
