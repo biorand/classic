@@ -50,7 +50,7 @@ namespace IntelOrca.Biohazard.BioRand
             foreach (var rrdt in result)
             {
                 var rdtId = rrdt.RdtId;
-                rrdt.OriginalPath = $"JPN/STAGE{rdtId.Stage + 1}/ROOM{rdtId}0.RDT";
+                rrdt.OriginalPath = $"STAGE{rdtId.Stage + 1}/ROOM{rdtId}0.RDT";
                 rrdt.Load();
             }
 
