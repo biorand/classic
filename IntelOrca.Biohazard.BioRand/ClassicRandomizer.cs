@@ -7,6 +7,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using IntelOrca.Biohazard.BioRand.Routing;
+using SixLabors.ImageSharp;
 
 namespace IntelOrca.Biohazard.BioRand
 {
@@ -609,32 +610,10 @@ namespace IntelOrca.Biohazard.BioRand
         {
             var dataManager = GetDataManager();
             var gameDataManager = GetGameDataManager();
-            var map = GetMap(dataManager.GetJson<Map>(BioVersion.Biohazard1, "rdt.json"));
             var rng = new Rng(input.Seed);
-            var modBuilder = new ModBuilder();
+            var map = GetMap(dataManager.GetJson<Map>(BioVersion.Biohazard1, "rdt.json"));
+
             var crModBuilder = new ClassicRebirthModBuilder($"BioRand | {input.ProfileName} | {input.Seed}");
-            var context = new Context(input.Configuration, dataManager, gameDataManager, map, rng, modBuilder, crModBuilder);
-
-            var lockRandomizer = new LockRandomizer();
-            lockRandomizer.Randomise(input.Seed, map, modBuilder);
-
-            var keyRandomizer = new KeyRandomizer();
-            keyRandomizer.RandomiseItems(input.Seed, map, modBuilder);
-
-            var inventoryRandomizer = new InventoryRandomizer();
-            inventoryRandomizer.Randomize(context);
-
-            var itemRandomizer = new ItemRandomizer();
-            itemRandomizer.Randomize(input.Configuration, input.Seed, map, modBuilder);
-
-            var dump = modBuilder.GetDump(map);
-
-            var gameData = controller.GetGameData(context, 0);
-            foreach (var rrdt in gameData.Rdts)
-            {
-                modBuilder.ApplyToRdt(rrdt);
-            }
-
             crModBuilder.Description =
                 $"""
                 BioRand 4.0 ({BuildVersion})
@@ -645,15 +624,26 @@ namespace IntelOrca.Biohazard.BioRand
                 """;
             crModBuilder.SetFile("config.json", Encoding.UTF8.GetBytes(input.Configuration.ToJson(true)));
             crModBuilder.Module = new ClassicRebirthModule("biorand.dll", dataManager.GetData("biorand.dll"));
-            crModBuilder.SetFile("biorand.dat", GetPatchFile(context));
-            controller.WriteExtra(context);
-            crModBuilder.SetFile("log_chris.md", Encoding.UTF8.GetBytes(dump));
 
-            foreach (var rrdt in gameData.Rdts)
+            var context = new Context(input.Configuration, dataManager, gameDataManager, rng, crModBuilder);
+            var players = controller.Players;
+            for (var playerIndex = 0; playerIndex < players.Length; playerIndex++)
             {
-                rrdt.Save();
-                crModBuilder.SetFile(rrdt.OriginalPath!, rrdt.RdtFile.Data);
+                var playerName = players[playerIndex];
+                var filteredMap = map.For(new MapFilter(false, (byte)playerIndex, 0));
+                var modBuilder = new ModBuilder();
+                var playerContext = new PlayerContext(context, playerIndex, playerName, filteredMap, modBuilder);
+
+                Randomize(playerContext);
+
+                var dump = modBuilder.GetDump(playerContext);
+                crModBuilder.SetFile($"log_{playerName.ToLowerInvariant()}.md", Encoding.UTF8.GetBytes(dump));
+
+                context.Variations = context.Variations.Add(modBuilder);
             }
+
+            controller.Write(context);
+
             var archiveFile = crModBuilder.Create7z();
             var modFileName = $"mod_biorand_{input.Seed}.7z";
             return new RandomizerOutput(
@@ -662,12 +652,16 @@ namespace IntelOrca.Biohazard.BioRand
                 new Dictionary<string, string>());
         }
 
-        private byte[] GetPatchFile(IClassicRandomizerContext context)
+        private void Randomize(IClassicRandomizerPlayerContext context)
         {
-            using var ms = new MemoryStream();
-            var pw = new PatchWriter(ms);
-            controller.WritePatches(context, pw);
-            return ms.ToArray();
+            var lockRandomizer = new LockRandomizer();
+            lockRandomizer.Randomise(context);
+            var keyRandomizer = new KeyRandomizer();
+            keyRandomizer.RandomiseItems(context);
+            var inventoryRandomizer = new InventoryRandomizer();
+            inventoryRandomizer.Randomize(context);
+            var itemRandomizer = new ItemRandomizer();
+            itemRandomizer.Randomize(context);
         }
 
         private Map GetMap(Map map)
@@ -723,29 +717,46 @@ namespace IntelOrca.Biohazard.BioRand
             RandomizerConfiguration configuration,
             DataManager dataManager,
             DataManager gameDataManager,
-            Map map,
             Rng rng,
-            ModBuilder modBuilder,
             ClassicRebirthModBuilder crModBuilder) : IClassicRandomizerContext
         {
             public RandomizerConfiguration Configuration => configuration;
             public DataManager DataManager => dataManager;
             public DataManager GameDataManager => gameDataManager;
-            public Map Map => map;
             public Rng Rng => rng;
-            public ModBuilder ModBuilder => modBuilder;
             public ClassicRebirthModBuilder CrModBuilder => crModBuilder;
+            public ImmutableArray<ModBuilder> Variations { get; set; } = [];
+        }
+
+        private sealed class PlayerContext(
+            Context context,
+            int playerIndex,
+            string playerName,
+            Map map,
+            ModBuilder modBuilder) : IClassicRandomizerPlayerContext
+        {
+            public RandomizerConfiguration Configuration => context.Configuration;
+            public DataManager DataManager => context.DataManager;
+            public DataManager GameDataManager => context.GameDataManager;
+            public Rng Rng => context.Rng;
+            public ClassicRebirthModBuilder CrModBuilder => context.CrModBuilder;
+
+            public int PlayerIndex => playerIndex;
+            public string PlayerName => playerName;
+            public Map Map => map;
+            public ModBuilder ModBuilder => modBuilder;
         }
     }
 
     internal class InventoryRandomizer
     {
-        public void Randomize(IClassicRandomizerContext context)
+        public void Randomize(IClassicRandomizerPlayerContext context)
         {
             var config = context.Configuration;
             var rng = context.Rng;
 
-            var inventoryState = new InventoryBuilder(6);
+            var inventorySize = context.PlayerIndex == 0 ? 6 : 8;
+            var inventoryState = new InventoryBuilder(inventorySize);
 
             var knife = GetRandomEnabled("inventory/weapon/knife");
             if (knife)
@@ -790,7 +801,7 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
-        private WeaponSwag? GetRandomWeapon(IClassicRandomizerContext context, string prefix, WeaponSwag? exclude = null)
+        private WeaponSwag? GetRandomWeapon(IClassicRandomizerPlayerContext context, string prefix, WeaponSwag? exclude = null)
         {
             var config = context.Configuration;
             var rng = context.Rng;
@@ -887,12 +898,14 @@ namespace IntelOrca.Biohazard.BioRand
             private List<List<Item>> _groups = [];
             private int _next = -1;
 
-            public void AddGroup(IClassicRandomizerContext context, string prefix)
+            public void AddGroup(IClassicRandomizerPlayerContext context, string prefix)
             {
-                _groups.Add(GetRandomItems(context, prefix));
+                var g = GetRandomItems(context, prefix);
+                if (g.Count != 0)
+                    _groups.Add(g);
             }
 
-            public Item? TakeStack(IClassicRandomizerContext context)
+            public Item? TakeStack(IClassicRandomizerPlayerContext context)
             {
                 var rng = context.Rng;
                 if (_next == -1 || _next >= _groups.Count)
@@ -923,7 +936,7 @@ namespace IntelOrca.Biohazard.BioRand
                 return new Item(item.Type, (ushort)take);
             }
 
-            private List<Item> GetRandomItems(IClassicRandomizerContext context, string prefix)
+            private List<Item> GetRandomItems(IClassicRandomizerPlayerContext context, string prefix)
             {
                 var items = new List<Item>();
                 var config = context.Configuration;
@@ -951,8 +964,11 @@ namespace IntelOrca.Biohazard.BioRand
 
     internal class LockRandomizer
     {
-        public void Randomise(int seed, Map map, ModBuilder modBuilder)
+        public void Randomise(IClassicRandomizerPlayerContext context)
         {
+            var map = context.Map;
+            var modBuilder = context.ModBuilder;
+
             // Collect doors
             var doors = new Dictionary<string, DoorInfo>();
             if (map.Rooms != null)
@@ -1039,8 +1055,12 @@ namespace IntelOrca.Biohazard.BioRand
 
     internal class KeyRandomizer
     {
-        public void RandomiseItems(int seed, Map map, ModBuilder modBuilder)
+        public void RandomiseItems(IClassicRandomizerPlayerContext context)
         {
+            var map = context.Map;
+            var seed = context.Rng.Next(0, int.MaxValue);
+            var modBuilder = context.ModBuilder;
+
             var graphBuilder = new GraphBuilder();
             var roomNodes = new Dictionary<string, Node>();
             var flagNodes = new Dictionary<string, Node>();
@@ -1185,9 +1205,12 @@ namespace IntelOrca.Biohazard.BioRand
 
     internal class ItemRandomizer
     {
-        public void Randomize(RandomizerConfiguration config, int seed, Map map, ModBuilder modBuilder)
+        public void Randomize(IClassicRandomizerPlayerContext context)
         {
-            var rng = new Rng(seed);
+            var config = context.Configuration;
+            var map = context.Map;
+            var rng = context.Rng;
+            var modBuilder = context.ModBuilder;
 
             var documentPriority = config.GetValueOrDefault("items/documents", false)
                 ? config.GetValueOrDefault("items/documents/keys", false)
@@ -1397,12 +1420,13 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
-        public string GetDump(Map map)
+        public string GetDump(IClassicRandomizerPlayerContext context)
         {
+            var map = context.Map;
             var sb = new StringBuilder();
 
             sb.AppendLine($"# Inventory");
-            DumpInventory("Chris", Inventory[0]);
+            DumpInventory(context.PlayerName, Inventory[0]);
 
             sb.AppendLine($"# Items");
 

@@ -24,7 +24,7 @@ namespace IntelOrca.Biohazard.BioRand
         public string? ScriptDisassembly { get; set; }
         public string? ScriptListing { get; set; }
         public OpcodeBase[] Opcodes { get; set; } = new OpcodeBase[0];
-        public ScriptAst? Ast { get; set; }
+        // public ScriptAst? Ast { get; set; }
         public List<KeyValuePair<int, byte>> Patches { get; } = new List<KeyValuePair<int, byte>>();
         public List<OpcodeBase> AdditionalOpcodes { get; } = new List<OpcodeBase>();
         public List<OpcodeBase> AdditionalFrameOpcodes { get; } = new List<OpcodeBase>();
@@ -467,35 +467,35 @@ namespace IntelOrca.Biohazard.BioRand
 
         public void Load()
         {
-            Script = Decompile(RdtFile, false, false);
-            ScriptDisassembly = Decompile(RdtFile, true, false);
-            ScriptListing = Decompile(RdtFile, true, true);
+            // Script = Decompile(RdtFile, false, false);
+            // ScriptDisassembly = Decompile(RdtFile, true, false);
+            // ScriptListing = Decompile(RdtFile, true, true);
 
             var opcodeBuilder = new OpcodeBuilder();
             RdtFile.ReadScript(opcodeBuilder);
             Opcodes = opcodeBuilder.ToArray();
 
-            try
-            {
-                Ast = CreateAst(RdtFile);
-            }
-            catch
-            {
-            }
+            // try
+            // {
+            //     Ast = CreateAst(RdtFile);
+            // }
+            // catch
+            // {
+            // }
 
-            static string Decompile(IRdt rdtFile, bool assemblyFormat, bool listingFormat)
-            {
-                var scriptDecompiler = new ScriptDecompiler(assemblyFormat, listingFormat);
-                rdtFile.ReadScript(scriptDecompiler);
-                return scriptDecompiler.GetScript();
-            }
+            // static string Decompile(IRdt rdtFile, bool assemblyFormat, bool listingFormat)
+            // {
+            //     var scriptDecompiler = new ScriptDecompiler(assemblyFormat, listingFormat);
+            //     rdtFile.ReadScript(scriptDecompiler);
+            //     return scriptDecompiler.GetScript();
+            // }
 
-            static ScriptAst CreateAst(IRdt rdtFile)
-            {
-                var builder = new ScriptAstBuilder();
-                rdtFile.ReadScript(builder);
-                return builder.Ast;
-            }
+            // static ScriptAst CreateAst(IRdt rdtFile)
+            // {
+            //     var builder = new ScriptAstBuilder();
+            //     rdtFile.ReadScript(builder);
+            //     return builder.Ast;
+            // }
         }
 
         public void Save()

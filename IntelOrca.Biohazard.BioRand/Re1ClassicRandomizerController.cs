@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -12,6 +13,8 @@ namespace IntelOrca.Biohazard.BioRand
 {
     internal class Re1ClassicRandomizerController : IClassicRandomizerController
     {
+        public ImmutableArray<string> Players => ["Chris", "Jill"];
+
         public GameData GetGameData(IClassicRandomizerContext context, int player)
         {
             var result = new List<RandomizedRdt>();
@@ -50,7 +53,7 @@ namespace IntelOrca.Biohazard.BioRand
             foreach (var rrdt in result)
             {
                 var rdtId = rrdt.RdtId;
-                rrdt.OriginalPath = $"STAGE{rdtId.Stage + 1}/ROOM{rdtId}0.RDT";
+                rrdt.OriginalPath = $"STAGE{rdtId.Stage + 1}/ROOM{rdtId}{player}.RDT";
                 rrdt.Load();
             }
 
@@ -203,7 +206,17 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
-        public void WritePatches(IClassicRandomizerContext context, PatchWriter pw)
+        private void WritePatchFile(IClassicRandomizerContext context)
+        {
+            using var ms = new MemoryStream();
+            var pw = new PatchWriter(ms);
+            WritePatches(context, pw);
+            var data = ms.ToArray();
+
+            context.CrModBuilder.SetFile("biorand.dat", data);
+        }
+
+        private void WritePatches(IClassicRandomizerContext context, PatchWriter pw)
         {
             var randomDoors = context.Configuration.GetValueOrDefault("doors/random", false);
 
@@ -343,19 +356,42 @@ namespace IntelOrca.Biohazard.BioRand
             pw.End();
         }
 
-        public void WriteExtra(IClassicRandomizerContext context)
+        public void Write(IClassicRandomizerContext context)
         {
+            WriteRdts(context);
             AddInventoryXml(context);
             AddBackgroundTextures(context);
+            WritePatchFile(context);
+        }
+
+        private void WriteRdts(IClassicRandomizerContext context)
+        {
+            for (var p = 0; p < 2; p++)
+            {
+                var variation = context.Variations[p];
+                var gameData = GetGameData(context, p);
+                foreach (var rrdt in gameData.Rdts)
+                {
+                    variation.ApplyToRdt(rrdt);
+                }
+                foreach (var rrdt in gameData.Rdts)
+                {
+                    rrdt.Save();
+                    context.CrModBuilder.SetFile(rrdt.OriginalPath!, rrdt.RdtFile.Data);
+                }
+            }
         }
 
         private void AddInventoryXml(IClassicRandomizerContext context)
         {
+            var inventories = context.Variations
+                .SelectMany(x => x.Inventory)
+                .ToArray();
+
             using var ms = new MemoryStream();
             var doc = new XmlDocument();
             var root = doc.CreateElement("Init");
 
-            var inventories = context.ModBuilder.Inventory;
             var chris = inventories.Length > 0 ? inventories[0] : CreateEmptyInventory(6);
             var jill = inventories.Length > 1 ? inventories[1] : CreateEmptyInventory(8);
             var rebecca = inventories.Length > 2 ? inventories[2] : CreateEmptyInventory(6);

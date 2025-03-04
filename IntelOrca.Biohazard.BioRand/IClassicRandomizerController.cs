@@ -1,9 +1,11 @@
-﻿namespace IntelOrca.Biohazard.BioRand
+﻿using System.Collections.Immutable;
+
+namespace IntelOrca.Biohazard.BioRand
 {
     internal interface IClassicRandomizerController
     {
-        public GameData GetGameData(IClassicRandomizerContext context, int player);
-        void WritePatches(IClassicRandomizerContext context, PatchWriter pw);
-        void WriteExtra(IClassicRandomizerContext context);
+        ImmutableArray<string> Players { get; }
+
+        void Write(IClassicRandomizerContext context);
     }
 }

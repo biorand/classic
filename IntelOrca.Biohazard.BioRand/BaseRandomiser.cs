@@ -579,17 +579,6 @@ namespace IntelOrca.Biohazard.BioRand
 
         internal abstract string BGMPath { get; }
 
-        private void DumpRdtList(GameData gameData, string path)
-        {
-            var sb = new StringBuilder();
-            foreach (var rdt in gameData.Rdts)
-            {
-                sb.AppendLine($"{rdt.RdtId} ():");
-                Script.AstPrinter.Print(sb, rdt.Ast!);
-            }
-            File.WriteAllText(path, sb.ToString());
-        }
-
         private void DumpRdt(StringBuilder sb, RandomizedRdt rdt)
         {
             foreach (var door in rdt.Doors)
