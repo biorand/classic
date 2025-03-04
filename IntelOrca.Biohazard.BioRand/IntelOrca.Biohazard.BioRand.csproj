@@ -4,6 +4,7 @@
     <Nullable>enable</Nullable>
     <LangVersion>12.0</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <IsLinux>$([MSBuild]::IsOSPlatform('Linux'))</IsLinux>
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="IntelOrca.Biohazard.BioRand.Common" Version="1.3.0" />
@@ -37,7 +38,7 @@
   <ItemGroup>
     <Folder Include="data\title\" />
   </ItemGroup>
-  <Target Name="CopyDllModuleToData" BeforeTargets="Compile">
+  <Target Name="CopyDllModuleToData" BeforeTargets="Compile" Condition="'$(IsLinux)'!='true'">
     <Copy SourceFiles="..\biorandmod\bin\biorand.dll" DestinationFolder="data" />
   </Target>
   <Target Name="SetSourceRevisionId" BeforeTargets="InitializeSourceControlInformation">

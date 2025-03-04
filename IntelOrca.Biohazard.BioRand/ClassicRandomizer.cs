@@ -1450,7 +1450,7 @@ namespace IntelOrca.Biohazard.BioRand
                 foreach (var i in filtered)
                 {
                     var (rdtId, room, location) = GetItemSlotName(map, i.GlobalId);
-                    sb.AppendLine($"| {i.GlobalId} | {i.Definition.Name} | {i.Item.Amount} | {rdtId} | {room} | {location} |");
+                    sb.AppendLine($"| {i.GlobalId} | {i.Definition?.Name} | {i.Item.Amount} | {rdtId} | {room} | {location} |");
                 }
                 sb.AppendLine();
             }
