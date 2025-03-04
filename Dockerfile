@@ -4,7 +4,7 @@ COPY . /w
 RUN dotnet publish biorand-classic -c release -o /out -p:PublishSingleFile=true
 
 FROM alpine
-RUN apk add --no-cache libstdc++
+RUN apk add --no-cache libstdc++ 7zip
 ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=true
 COPY --from=build /out/biorand-classic /usr/bin/biorand-classic
 RUN biorand-classic --version

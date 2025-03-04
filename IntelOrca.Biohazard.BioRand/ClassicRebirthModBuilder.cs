@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace IntelOrca.Biohazard.BioRand
@@ -103,22 +104,26 @@ namespace IntelOrca.Biohazard.BioRand
 
         private static string? Find7z()
         {
+            var fileName = RuntimeInformation.IsOSPlatform(OSPlatform.Windows) ? "7z.exe" : "7z";
             var pathEnvironment = Environment.GetEnvironmentVariable("PATH");
             var paths = pathEnvironment.Split(Path.PathSeparator);
             foreach (var path in paths)
             {
-                var full = Path.Combine(path, "7z.exe");
+                var full = Path.Combine(path, fileName);
                 if (File.Exists(full))
                 {
                     return full;
                 }
             }
 
-            var programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
-            var defaultPath = Path.Combine(programFiles, "7-Zip", "7z.exe");
-            if (File.Exists(defaultPath))
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
             {
-                return defaultPath;
+                var programFiles = Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles);
+                var defaultPath = Path.Combine(programFiles, "7-Zip", "7z.exe");
+                if (File.Exists(defaultPath))
+                {
+                    return defaultPath;
+                }
             }
             return null;
         }
