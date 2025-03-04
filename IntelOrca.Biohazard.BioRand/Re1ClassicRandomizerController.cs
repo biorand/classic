@@ -15,11 +15,9 @@ namespace IntelOrca.Biohazard.BioRand
         public GameData GetGameData(IClassicRandomizerContext context, int player)
         {
             var result = new List<RandomizedRdt>();
-            var installPath = @"M:\apps\biorand\re1hd\JPN";
             for (var i = 1; i <= 7; i++)
             {
-                var stagePath = Path.Combine(installPath, $"STAGE{i}");
-                var files = Directory.GetFiles(stagePath);
+                var files = context.GameDataManager.GetFiles($"JPN/STAGE{i}");
                 foreach (var path in files)
                 {
                     var fileName = Path.GetFileName(path);
@@ -30,7 +28,7 @@ namespace IntelOrca.Biohazard.BioRand
                         var rdtPlayer = int.Parse(match.Groups[2].Value);
                         if (rdtPlayer == player)
                         {
-                            var fileData = File.ReadAllBytes(path);
+                            var fileData = context.GameDataManager.GetData(path);
                             if (fileData.Length < 16)
                                 continue;
 
@@ -52,7 +50,7 @@ namespace IntelOrca.Biohazard.BioRand
             foreach (var rrdt in result)
             {
                 var rdtId = rrdt.RdtId;
-                rrdt.OriginalPath = $"STAGE{rdtId.Stage + 1}/ROOM{rdtId}0.RDT";
+                rrdt.OriginalPath = $"JPN/STAGE{rdtId.Stage + 1}/ROOM{rdtId}0.RDT";
                 rrdt.Load();
             }
 

@@ -9,7 +9,7 @@ namespace IntelOrca.Biohazard.BioRand
     {
         public string[] BasePaths { get; }
 
-        public DataManager(string[] basePaths)
+        public DataManager(params string[] basePaths)
         {
             BasePaths = basePaths;
         }

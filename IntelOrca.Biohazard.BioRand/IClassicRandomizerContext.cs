@@ -4,6 +4,7 @@
     {
         RandomizerConfiguration Configuration { get; }
         DataManager DataManager { get; }
+        DataManager GameDataManager { get; }
         Map Map { get; }
         Rng Rng { get; }
         ModBuilder ModBuilder { get; }

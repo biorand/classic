@@ -39,13 +39,37 @@ namespace IntelOrca.Biohazard.BioRand
             return rev;
         }
 
+        private DataManager GetDataManager()
+        {
+            var biorandDataPath = Environment.GetEnvironmentVariable("BIORAND_DATA");
+            if (biorandDataPath == null)
+            {
+                throw new Exception("$BIORAND_DATA not set");
+            }
+
+            var paths = biorandDataPath
+                .Split(Path.PathSeparator)
+                .Select(x => Path.GetFullPath(x))
+                .ToArray();
+            var dataManager = new DataManager(paths);
+            return dataManager;
+        }
+
+        private DataManager GetGameDataManager()
+        {
+            var gameDataPath = Environment.GetEnvironmentVariable("BIORAND_GAMEDATA_1");
+            if (gameDataPath == null)
+            {
+                throw new Exception("$BIORAND_GAMEDATA_1 not set");
+            }
+
+            return new DataManager(gameDataPath);
+        }
+
         private RandomizerConfigurationDefinition CreateConfigDefinition()
         {
-            var dataManager = new DataManager(new[] {
-                @"M:\git\biorand-classic\IntelOrca.Biohazard.BioRand\data"
-            });
+            var dataManager = GetDataManager();
             var map = GetMap(dataManager.GetJson<Map>(BioVersion.Biohazard1, "rdt.json"));
-
 
             var result = new RandomizerConfigurationDefinition();
             var page = result.CreatePage("General");
@@ -583,15 +607,13 @@ namespace IntelOrca.Biohazard.BioRand
 
         public RandomizerOutput Randomize(RandomizerInput input)
         {
-            var dataManager = new DataManager(new[] {
-                @"M:\git\biorand-classic\IntelOrca.Biohazard.BioRand\data"
-            });
+            var dataManager = GetDataManager();
+            var gameDataManager = GetGameDataManager();
             var map = GetMap(dataManager.GetJson<Map>(BioVersion.Biohazard1, "rdt.json"));
             var rng = new Rng(input.Seed);
             var modBuilder = new ModBuilder();
             var crModBuilder = new ClassicRebirthModBuilder($"BioRand | {input.ProfileName} | {input.Seed}");
-            var context = new Context(input.Configuration, dataManager, map, rng, modBuilder, crModBuilder);
-
+            var context = new Context(input.Configuration, dataManager, gameDataManager, map, rng, modBuilder, crModBuilder);
 
             var lockRandomizer = new LockRandomizer();
             lockRandomizer.Randomise(input.Seed, map, modBuilder);
@@ -700,6 +722,7 @@ namespace IntelOrca.Biohazard.BioRand
         private sealed class Context(
             RandomizerConfiguration configuration,
             DataManager dataManager,
+            DataManager gameDataManager,
             Map map,
             Rng rng,
             ModBuilder modBuilder,
@@ -707,6 +730,7 @@ namespace IntelOrca.Biohazard.BioRand
         {
             public RandomizerConfiguration Configuration => configuration;
             public DataManager DataManager => dataManager;
+            public DataManager GameDataManager => gameDataManager;
             public Map Map => map;
             public Rng Rng => rng;
             public ModBuilder ModBuilder => modBuilder;
