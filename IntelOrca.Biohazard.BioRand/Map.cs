@@ -124,6 +124,7 @@ namespace IntelOrca.Biohazard.BioRand
     {
         public string? Name { get; set; }
         public string? LinkedRoom { get; set; }
+        public string[]? Tags { get; set; }
         public RdtId[]? Rdts { get; set; }
         public int[]? Requires { get; set; }
         public MapRoomDoor[]? Doors { get; set; }
@@ -138,6 +139,7 @@ namespace IntelOrca.Biohazard.BioRand
             return new MapRoom()
             {
                 Name = Name,
+                Tags = Tags,
                 Rdts = Rdts,
                 Doors = Doors?.Where(x => x.IsIncludedInFilter(filter)).ToArray() ?? [],
                 Items = Items?.Where(x => x.IsIncludedInFilter(filter)).ToArray() ?? [],
@@ -146,6 +148,13 @@ namespace IntelOrca.Biohazard.BioRand
                 Enemies = Enemies,
                 Npcs = Npcs
             };
+        }
+
+        public bool HasTag(string tag)
+        {
+            if (Tags == null)
+                return false;
+            return Tags.Contains(tag);
         }
     }
 

@@ -190,7 +190,8 @@
     },
     "42": {
       "name": "Flare",
-      "kind": "key/consumable"
+      "kind": "key/consumable",
+      "group": 1
     },
     "43": {
       "name": "Slides",
@@ -856,7 +857,7 @@
           "player": 0
         },
         {
-          "name": "BARRY'S GIFT'",
+          "name": "BARRY'S GIFT",
           "id": 6,
           "globalId": 14,
           "type": 17,
@@ -2855,6 +2856,7 @@
       ],
       "doors": [
         {
+          "id": 0,
           "target": "300",
           "randomize": false,
           "requires2": [
@@ -2864,12 +2866,16 @@
           "noUnlock": true
         },
         {
+          "id": 1,
           "target": "301"
         },
         {
-          "target": "304"
+          "id": 2,
+          "name": "GATE TO GUARDHOUSE",
+          "target": "304:0"
         },
         {
+          "id": 3,
           "name": "LADDER TO CAVES",
           "target": "307",
           "requires2": [
@@ -2897,21 +2903,59 @@
       ],
       "doors": [
         {
+          "name": "LIFT TO LAB",
+          "id": 0,
           "target": "500",
           "kind": "blocked"
+        },
+        {
+          "name": "DOOR TO FOUNTAIN",
+          "create": true,
+          "id": 8,
+          "texture": 3,
+          "special": 6,
+          "target": "305:0",
+          "entrance": {
+            "x": 28350,
+            "y": 0,
+            "z": 5700,
+            "d": 0,
+            "cut": 4
+          }
+        }
+      ],
+      "flags": [
+        {
+          "name": "BRAD_303",
+          "requires2": [
+            "item(42)"
+          ]
+        }
+      ],
+      "items": [
+        {
+          "name": "FLARE",
+          "id": 2,
+          "globalId": 73,
+          "type": 42,
+          "amount": 1,
+          "group": -1
         }
       ],
       "enemies": []
     },
     "304": {
       "name": "GUARDHOUSE GATE",
+      "tags": [ "guardhouse" ],
       "rdts": [ "304" ],
       "doors": [
         {
-          "target": "302"
+          "id": 0,
+          "target": "302:2"
         },
         {
-          "target": "400"
+          "id": 1,
+          "target": "400:0"
         }
       ],
       "items": [
@@ -2965,10 +3009,12 @@
       ],
       "doors": [
         {
+          "id": 2,
           "target": "30F"
         },
         {
           "name": "FOUNTAIN STAIRS",
+          "id": 1,
           "target": "310",
           "requires2": [
             "item(63)",
@@ -2976,6 +3022,18 @@
           ],
           "noUnlock": true,
           "randomize": false
+        },
+        {
+          "name": "DOOR TO HELIPORT",
+          "id": 0,
+          "target": "303:8",
+          "entrance": {
+            "x": 3130,
+            "y": 0,
+            "z": 16900,
+            "d": 0,
+            "cut": 0
+          }
         }
       ],
       "items": [
@@ -3382,6 +3440,7 @@
     },
     "310": {
       "name": "FOUNTAIN STAIRS",
+      "tags": [ "lab" ],
       "rdts": [ "310" ],
       "doors": [
         // {
@@ -3395,6 +3454,7 @@
     },
     "400": {
       "name": "GUARDHOUSE ENTRANCE",
+      "tags": [ "guardhouse" ],
       "rdts": [ "400" ],
       "doors": [
         {
@@ -3448,6 +3508,7 @@
     },
     "401": {
       "name": "GUARDHOUSE ROOM 001",
+      "tags": [ "guardhouse" ],
       "rdts": [ "401" ],
       "doors": [
         {
@@ -3495,6 +3556,7 @@
     },
     "402": {
       "name": "GUARDHOUSE ROOM 001 BATHROOM",
+      "tags": [ "guardhouse" ],
       "rdts": [ "402" ],
       "doors": [
         {
@@ -3521,6 +3583,7 @@
     },
     "403": {
       "name": "GUARDHOUSE SAVE",
+      "tags": [ "guardhouse" ],
       "rdts": [ "403" ],
       "doorRando": [
         {
@@ -3570,6 +3633,7 @@
     },
     "404": {
       "name": "GUARDHOUSE BAR",
+      "tags": [ "guardhouse" ],
       "rdts": [ "404" ],
       "doors": [
         {
@@ -3603,6 +3667,7 @@
     },
     "405": {
       "name": "GUARDHOUSE WESKER CORRIDOR",
+      "tags": [ "guardhouse" ],
       "rdts": [ "405" ],
       "doors": [
         {
@@ -3666,6 +3731,7 @@
     },
     "406": {
       "name": "GUARDHOUSE ROOM 002",
+      "tags": [ "guardhouse" ],
       "rdts": [ "406" ],
       "doors": [
         {
@@ -3718,6 +3784,7 @@
     },
     "407": {
       "name": "GUARDHOUSE ROOM 002 BATHROOM",
+      "tags": [ "guardhouse" ],
       "rdts": [ "407" ],
       "doors": [
         {
@@ -3743,6 +3810,7 @@
     },
     "408": {
       "name": "GUARDHOUSE NEST",
+      "tags": [ "guardhouse" ],
       "rdts": [ "408" ],
       "doorRando": [
         {
@@ -3797,6 +3865,7 @@
     },
     "409": {
       "name": "GUARDHOUSE DRUG STORAGE",
+      "tags": [ "guardhouse" ],
       "rdts": [ "409" ],
       "doorRando": [
         {
@@ -3825,6 +3894,7 @@
     },
     "40A": {
       "name": "GUARDHOUSE ROOM 003",
+      "tags": [ "guardhouse" ],
       "rdts": [ "40A" ],
       "doors": [
         {
@@ -3864,6 +3934,7 @@
     },
     "40B": {
       "name": "GUARDHOUSE ROOM 003 BATHROOM",
+      "tags": [ "guardhouse" ],
       "rdts": [ "40B" ],
       "doors": [
         {
@@ -3889,6 +3960,7 @@
     },
     "40C": {
       "name": "GUARDHOUSE PLANT 42",
+      "tags": [ "guardhouse" ],
       "rdts": [ "40C" ],
       "doorRando": [
         {
@@ -3922,6 +3994,7 @@
     },
     "40D": {
       "name": "GUARDHOUSE BOX PASSAGE",
+      "tags": [ "guardhouse" ],
       "rdts": [ "40D" ],
       "doors": [
         {
@@ -3940,6 +4013,7 @@
     },
     "40D/EXIT": {
       "name": "GUARDHOUSE BOX PASSAGE EXIT",
+      "tags": [ "guardhouse" ],
       "rdts": [ "40D" ],
       "doors": [
         {
@@ -3971,6 +4045,7 @@
     },
     "40E": {
       "name": "GUARDHOUSE WATER TANK",
+      "tags": [ "guardhouse" ],
       "rdts": [ "40E" ],
       "doors": [
         {
@@ -3993,6 +4068,7 @@
     },
     "40F": {
       "name": "GUARDHOUSE PLANT 42 ROOTS",
+      "tags": [ "guardhouse" ],
       "rdts": [ "40F" ],
       "doors": [
         {
@@ -4019,6 +4095,7 @@
     },
     "410": {
       "name": "GUARDHOUSE WEAPON STORAGE",
+      "tags": [ "guardhouse" ],
       "rdts": [ "410" ],
       "doors": [
         {
@@ -4076,6 +4153,7 @@
     },
     "411": {
       "name": "GUARDHOUSE CONTROL",
+      "tags": [ "guardhouse" ],
       "rdts": [ "411" ],
       "doors": [
         {
@@ -4091,6 +4169,7 @@
     },
     "500": {
       "name": "LABORATORY B1 ENTRANCE",
+      "tags": [ "lab" ],
       "rdts": [ "500" ],
       "doorRando": [
         {
@@ -4132,6 +4211,7 @@
     },
     "501": {
       "name": "LABORATORY B1 ESCAPE",
+      "tags": [ "lab" ],
       "rdts": [ "501" ],
       "doors": [
         {
@@ -4158,6 +4238,7 @@
     },
     "502": {
       "name": "LABORATORY B2 BOX",
+      "tags": [ "lab" ],
       "rdts": [ "502" ],
       "doorRando": [
         {
@@ -4223,6 +4304,7 @@
     },
     "503": {
       "name": "LABORATORY B2 STAIRS",
+      "tags": [ "lab" ],
       "rdts": [ "503" ],
       "doors": [
         {
@@ -4270,6 +4352,7 @@
     },
     "504": {
       "name": "LABORATORY B2 CONFERENCE ROOM",
+      "tags": [ "lab" ],
       "rdts": [ "504" ],
       "doors": [
         {
@@ -4304,6 +4387,7 @@
     },
     "505": {
       "name": "LABORATORY B3 RING CORRIDOR",
+      "tags": [ "lab" ],
       "rdts": [ "505" ],
       "doors": [
         {
@@ -4334,6 +4418,7 @@
     },
     "506": {
       "name": "LABORATORY B3 COMPUTER",
+      "tags": [ "lab" ],
       "rdts": [ "506" ],
       "doors": [
         {
@@ -4359,6 +4444,7 @@
     },
     "507/TABLE": {
       "name": "LABORATORY B3 MORGUE (TABLE)",
+      "tags": [ "lab" ],
       "rdts": [ "507" ],
       "doors": [
         {
@@ -4392,6 +4478,7 @@
     },
     "507/STORE": {
       "name": "LABORATORY B3 MORGUE (STORE)",
+      "tags": [ "lab" ],
       "rdts": [ "507" ],
       "doors": [
         {
@@ -4424,6 +4511,7 @@
     },
     "508": {
       "name": "LABORATORY B3 WEST CORRIDOR",
+      "tags": [ "lab" ],
       "rdts": [ "508" ],
       "doorRando": [
         {
@@ -4472,6 +4560,7 @@
     },
     "509": {
       "name": "LABORATORY B3 WEST MO DISC",
+      "tags": [ "lab" ],
       "rdts": [ "509" ],
       "doors": [
         {
@@ -4505,6 +4594,7 @@
     },
     "50A": {
       "name": "LABORATORY B3 WEST XRAY",
+      "tags": [ "lab" ],
       "rdts": [ "50A" ],
       "doors": [
         {
@@ -4551,6 +4641,7 @@
     },
     "50B": {
       "name": "LABORATORY B3 CELL CORRIDOR",
+      "tags": [ "lab" ],
       "rdts": [ "50B" ],
       "doorRando": [
         {
@@ -4569,6 +4660,7 @@
     },
     "50C": {
       "name": "LABORATORY B3 EAST CORRIDOR",
+      "tags": [ "lab" ],
       "rdts": [ "50C" ],
       "doorRando": [
         {
@@ -4604,6 +4696,7 @@
     },
     "50D": {
       "name": "LABORATORY B1 ESCAPE ELEVATOR (CUTSCENE)",
+      "tags": [ "lab" ],
       "rdts": [ "50D" ],
       "doorRando": [
         {
@@ -4624,6 +4717,7 @@
     },
     "50E": {
       "name": "LABORATORY B3 SAVE",
+      "tags": [ "lab" ],
       "rdts": [ "50E" ],
       "doorRando": [
         {
@@ -4681,6 +4775,7 @@
     },
     "50F": {
       "name": "LABORATORY B3 POWER SWITCH",
+      "tags": [ "lab" ],
       "rdts": [ "50F" ],
       "doors": [
         {
@@ -4698,6 +4793,7 @@
     },
     "510": {
       "name": "LABORATORY B3 POWER MO DISC",
+      "tags": [ "lab" ],
       "rdts": [ "510" ],
       "doors": [
         {
@@ -4723,6 +4819,7 @@
     },
     "511": {
       "name": "LABORATORY B3 ENGINE",
+      "tags": [ "lab" ],
       "rdts": [ "511" ],
       "doors": [
         {
@@ -4743,6 +4840,7 @@
     },
     "512": {
       "name": "LABORATORY B3 CELL",
+      "tags": [ "lab" ],
       "rdts": [ "512" ],
       "doorRando": [
         {
@@ -4757,6 +4855,7 @@
     },
     "513": {
       "name": "LABORATORY B2 TYRANT",
+      "tags": [ "lab" ],
       "rdts": [ "513" ],
       "doors": [
         {
@@ -4813,6 +4912,7 @@
     },
     "514": {
       "name": "LABORATORY B4 BETRAYAL CORRIDOR",
+      "tags": [ "lab" ],
       "rdts": [ "514" ],
       "doors": [
         {
@@ -4857,6 +4957,7 @@
     },
     "515": {
       "name": "LABORATORY B4 ELEVATOR (CUTSCENE)",
+      "tags": [ "lab" ],
       "rdts": [ "515" ],
       "doors": [
         {

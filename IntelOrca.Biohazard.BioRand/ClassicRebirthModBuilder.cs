@@ -51,6 +51,33 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
+        public void Dump(string outputPath)
+        {
+            AddSupplementaryFiles();
+
+            try
+            {
+                if (Directory.Exists(outputPath))
+                {
+                    Directory.Delete(outputPath, true);
+                }
+            }
+            catch
+            {
+            }
+            Directory.CreateDirectory(outputPath);
+            foreach (var kvp in _files)
+            {
+                var fullPath = Path.Combine(outputPath, kvp.Key);
+                var dir = Path.GetDirectoryName(fullPath);
+                if (dir != null)
+                {
+                    Directory.CreateDirectory(dir);
+                }
+                File.WriteAllBytes(fullPath, kvp.Value);
+            }
+        }
+
         public byte[] Create7z()
         {
             AddSupplementaryFiles();

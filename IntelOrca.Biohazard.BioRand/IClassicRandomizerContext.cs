@@ -18,9 +18,7 @@ namespace IntelOrca.Biohazard.BioRand
         DataManager DataManager { get; }
         DataManager GameDataManager { get; }
         Rng Rng { get; }
-        public int PlayerIndex { get; }
-        public string PlayerName { get; }
-        Map Map { get; }
+        Variation Variation { get; }
         ModBuilder ModBuilder { get; }
     }
 }

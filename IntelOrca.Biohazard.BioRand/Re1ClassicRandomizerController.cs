@@ -13,7 +13,102 @@ namespace IntelOrca.Biohazard.BioRand
 {
     internal class Re1ClassicRandomizerController : IClassicRandomizerController
     {
-        public ImmutableArray<string> Players => ["Chris", "Jill"];
+        public ImmutableArray<Variation> GetVariations(IClassicRandomizerContext context)
+        {
+            return [
+                new Variation(0, "Chris", GetMap(context, 0)),
+                new Variation(1, "Jill", GetMap(context, 1))
+            ];
+        }
+
+        public Map GetMap(IClassicRandomizerContext context, int playerIndex)
+        {
+            var config = context.Configuration;
+
+            // Apply player, scenario filter
+            var map = context.DataManager.GetJson<Map>(BioVersion.Biohazard1, "rdt.json");
+            map = map.For(new MapFilter(false, (byte)playerIndex, 0));
+
+            if (!config.GetValueOrDefault("progression/guardhouse", true))
+            {
+                var guardhouseRooms = map.Rooms.Where(x => x.Value.HasTag("guardhouse")).ToArray();
+                foreach (var r in guardhouseRooms)
+                {
+                    map.Rooms.Remove(r.Key);
+                }
+                var courtyardRoom = map.Rooms["302"];
+                var gate = courtyardRoom.Doors.First(x => x.Name == "GATE TO GUARDHOUSE");
+                gate.Target = null;
+            }
+            if (config.GetValueOrDefault("progression/lab", true))
+            {
+                var fountainRoom = map.Rooms["305"];
+                var fountainDoor = fountainRoom.Doors.First(x => x.Name == "DOOR TO HELIPORT");
+                fountainDoor.Target = null;
+
+                var helipadRoom = map.Rooms["303"];
+                var helipadDoor = helipadRoom.Doors.First(x => x.Name == "DOOR TO FOUNTAIN");
+                helipadDoor.Target = null;
+            }
+            else
+            {
+                var labRooms = map.Rooms.Where(x => x.Value.HasTag("lab")).ToArray();
+                foreach (var r in labRooms)
+                {
+                    map.Rooms.Remove(r.Key);
+                }
+                var fountainRoom = map.Rooms["305"];
+                var fountainDoor = fountainRoom.Doors.First(x => x.Name == "FOUNTAIN STAIRS");
+                fountainDoor.Target = null;
+                fountainDoor.Requires2 = [];
+            }
+
+            var keys = map.Items!.Values;
+            var items = map.Rooms!.Values.SelectMany(x => x.Items).ToArray();
+
+            var guardhouseKeys = keys.Where(x => x.Group == 8).ToArray();
+            var guardhouseItems = items.Where(x => x.Group == 8).ToArray();
+            var mansion2Items = items.Where(x => x.Group == 2).ToArray();
+            var labItems = items.Where(x => x.Group == 32).ToArray();
+
+            foreach (var item in items)
+                item.Group = -1;
+
+            if (config.GetValueOrDefault("progression/guardhouse", true))
+            {
+                // Only guardhouse can contain guardhouse keys
+                foreach (var item in items)
+                    item.Group &= ~8;
+                foreach (var item in guardhouseItems)
+                    item.Group = 8 | 128;
+
+                // Mansion 2
+                foreach (var item in items)
+                    item.Group &= ~64;
+                var plant42item = map.Rooms!["40C"].Items.First(x => x.Name == "KEY IN FIREPLACE");
+                plant42item.Group = 64;
+                map.Items[54].Group = 64;
+            }
+
+            // Cave segment
+            var caveDoor = map.Rooms!["302"].Doors.First(x => x.Name == "LADDER TO CAVES");
+            caveDoor.Kind = "noreturn";
+
+            // Lab segment
+            var labDoor = map.Rooms!["305"].Doors.First(x => x.Name == "FOUNTAIN STAIRS");
+            labDoor.Kind = "noreturn";
+
+            // Battery
+            foreach (var item in items)
+                item.Group &= ~256;
+            map.Items[39].Group = 256;
+            foreach (var item in mansion2Items)
+                item.Group |= 256;
+            foreach (var item in labItems)
+                item.Group |= 256;
+
+            return map;
+        }
 
         public GameData GetGameData(IClassicRandomizerContext context, int player)
         {
@@ -77,6 +172,7 @@ namespace IntelOrca.Biohazard.BioRand
             ShotgunOnWallFix();
             DisableBarryEvesdrop();
             AllowPartnerItemBoxes();
+            EnableFountainHeliportDoors();
 
             void FixPassCodeDoor()
             {
@@ -186,6 +282,48 @@ namespace IntelOrca.Biohazard.BioRand
                 room?.Nop(0x1F920);
             }
 
+            void EnableFountainHeliportDoors()
+            {
+                var rdtFountain = gameData.GetRdt(RdtId.Parse("305"));
+                if (rdtFountain != null)
+                {
+                    var door = (DoorAotSeOpcode)rdtFountain.Doors.First(x => x.Id == 0);
+                    door.Special = 11;
+                    door.Animation = 11;
+                    door.NextX = 29130;
+                    door.NextY = 0;
+                    door.NextZ = 5700;
+                    door.NextD = 2048;
+
+                    // Remove message aot_reset
+                    rdtFountain.Nop(0x3E9AE);
+                }
+
+                var rdtHeliport = gameData.GetRdt(RdtId.Parse("303"));
+                if (rdtHeliport != null)
+                {
+                    var door = (DoorAotSeOpcode)rdtHeliport.ConvertToDoor(8, 11, null, null);
+                    door.Target = RdtId.Parse("305");
+                    door.Special = 11;
+                    door.Animation = 11;
+                    door.NextX = 3130;
+                    door.NextY = 0;
+                    door.NextZ = 16900;
+                    door.NextD = 0;
+
+                    rdtHeliport.Nop(0x111BE);
+                    rdtHeliport.Nop(0x111C0);
+
+                    // Set cut to 4 if last room is ?05
+                    rdtHeliport.AdditionalOpcodes.AddRange([
+                        new UnknownOpcode(0, 0x01, [ 0x0C ]),
+                        new UnknownOpcode(0, 0x06, [ 0x03, 0x00, 0x05 ]),
+                        new UnknownOpcode(0, 0x23, [ 0x01 ]),
+                        new UnknownOpcode(0, 0x08, [ 0x02, 0x04, 0x00 ]),
+                        new UnknownOpcode(0, 0x03, [ 0x00 ])
+                    ]);
+                }
+            }
         }
 
         private void DisableCutscenes(IClassicRandomizerContext context, GameData gameData, int player)
