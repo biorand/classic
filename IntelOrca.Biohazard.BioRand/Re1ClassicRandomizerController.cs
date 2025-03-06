@@ -137,6 +137,21 @@ namespace IntelOrca.Biohazard.BioRand
             var map = context.DataManager.GetJson<Map>(BioVersion.Biohazard1, "rdt.json");
             map = map.For(new MapFilter(false, (byte)playerIndex, 0));
 
+            // Lockpick, remove all sword key and small key requirements
+            if (playerIndex == 1)
+            {
+                var allEdges = map.Rooms.SelectMany(x => x.Value.AllEdges).ToArray();
+                foreach (var edge in allEdges)
+                {
+                    if (edge.Requires2 != null)
+                    {
+                        edge.Requires2 = edge.Requires2
+                            .Where(x => x != "item(51)" && x != "item(61)")
+                            .ToArray();
+                    }
+                }
+            }
+
             // Enable / disable guardhouse rooms
             if (!config.GetValueOrDefault("progression/guardhouse", true))
             {

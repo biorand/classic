@@ -134,6 +134,34 @@ namespace IntelOrca.Biohazard.BioRand
         public MapRoomNpcs[]? Npcs { get; set; }
         public new DoorRandoSpec[]? DoorRando { get; set; }
 
+        public IEnumerable<MapEdge> AllEdges
+        {
+            get
+            {
+                if (Doors != null)
+                {
+                    foreach (var door in Doors)
+                    {
+                        yield return door;
+                    }
+                }
+                if (Flags != null)
+                {
+                    foreach (var flag in Flags)
+                    {
+                        yield return flag;
+                    }
+                }
+                if (Items != null)
+                {
+                    foreach (var item in Items)
+                    {
+                        yield return item;
+                    }
+                }
+            }
+        }
+
         public MapRoom For(MapFilter filter)
         {
             return new MapRoom()

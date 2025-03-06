@@ -374,6 +374,7 @@ namespace IntelOrca.Biohazard.BioRand
                 });
             }
 
+#if false
             page = result.CreatePage("Enemies");
             group = page.CreateGroup("");
             group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
@@ -454,6 +455,7 @@ namespace IntelOrca.Biohazard.BioRand
                     });
                 }
             }
+#endif
 
             page = result.CreatePage("Cutscenes");
             group = page.CreateGroup("");
@@ -466,7 +468,7 @@ namespace IntelOrca.Biohazard.BioRand
                 Default = false
             });
 
-            page = result.CreatePage("Music");
+            // page = result.CreatePage("Music");
             controller.UpdateConfigDefinition(result);
             return result;
 
@@ -577,14 +579,17 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 throw new RandomizerUserException("Door randomizer not implemented yet.");
             }
-            var lockRandomizer = new LockRandomizer();
-            lockRandomizer.Randomise(context);
-            var keyRandomizer = new KeyRandomizer();
-            keyRandomizer.RandomiseItems(context);
             var inventoryRandomizer = new InventoryRandomizer();
             inventoryRandomizer.Randomize(context);
-            var itemRandomizer = new ItemRandomizer();
-            itemRandomizer.Randomize(context);
+            var lockRandomizer = new LockRandomizer();
+            lockRandomizer.Randomise(context);
+            if (context.Configuration.GetValueOrDefault("items/random", false))
+            {
+                var keyRandomizer = new KeyRandomizer();
+                keyRandomizer.RandomiseItems(context);
+                var itemRandomizer = new ItemRandomizer();
+                itemRandomizer.Randomize(context);
+            }
         }
 
         private sealed class Context(
@@ -948,6 +953,11 @@ namespace IntelOrca.Biohazard.BioRand
             var seed = context.Rng.Next(0, int.MaxValue);
             var modBuilder = context.ModBuilder;
 
+            var includeDocuments =
+                context.Configuration.GetValueOrDefault("items/documents", false) &&
+                context.Configuration.GetValueOrDefault("items/documents/keys", false);
+            var includeHiddenItems = context.Configuration.GetValueOrDefault("items/hidden/keys", false);
+
             var graphBuilder = new GraphBuilder();
             var roomNodes = new Dictionary<string, Node>();
             var flagNodes = new Dictionary<string, Node>();
@@ -1021,6 +1031,12 @@ namespace IntelOrca.Biohazard.BioRand
                         foreach (var item in room.Items)
                         {
                             if (item.Optional == true)
+                                continue;
+
+                            if (item.Document == true && !includeDocuments)
+                                continue;
+
+                            if (item.Hidden == true && !includeHiddenItems)
                                 continue;
 
                             var label = item.Name != null ? $"{roomKey}|{room.Name}/{item.Name}" : $"{roomKey}";
