@@ -705,9 +705,9 @@ namespace IntelOrca.Biohazard.BioRand
             var chosen = pool.Shuffle(rng).FirstOrDefault();
             if (chosen != null)
             {
-                var ammoMin = config.GetValueOrDefault($"{prefix}/ammo/min", 0);
-                var ammoMax = config.GetValueOrDefault($"{prefix}/ammo/max", 0);
-                var ammoTotal = rng.Next(ammoMin, ammoMax + 1);
+                var ammoMin = config.GetValueOrDefault($"{prefix}/ammo/min", 0.0) * chosen.Definition.Max;
+                var ammoMax = config.GetValueOrDefault($"{prefix}/ammo/max", 0.0) * chosen.Definition.Max;
+                var ammoTotal = (int)Math.Round(rng.NextDouble(ammoMin, ammoMax));
                 chosen.WeaponAmount = Math.Min(ammoTotal, chosen.Definition.Max);
                 if (chosen.Definition.Ammo is int[] ammo && ammo.Length != 0)
                 {
