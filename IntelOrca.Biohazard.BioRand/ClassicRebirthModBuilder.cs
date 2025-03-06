@@ -116,14 +116,22 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
-        private static void SevenZip(string outputPath, string directory)
+        private static async void SevenZip(string outputPath, string directory)
         {
             var sevenZipPath = Find7z() ?? throw new Exception("Unable to find 7z");
             var psi = new ProcessStartInfo(sevenZipPath, $"a -r -mx9 \"{outputPath}\" *")
             {
+                CreateNoWindow = true,
+                RedirectStandardOutput = true,
+                RedirectStandardError = true,
+                UseShellExecute = false,
                 WorkingDirectory = directory
             };
             var process = Process.Start(psi);
+
+            var stdoutReadTask = process.StandardOutput.ReadToEndAsync();
+            var stderrReadTask = process.StandardError.ReadToEndAsync();
+
             process.WaitForExit();
             if (process.ExitCode != 0)
                 throw new Exception("Failed to create 7z");

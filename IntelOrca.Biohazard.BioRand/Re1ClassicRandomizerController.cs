@@ -13,6 +13,114 @@ namespace IntelOrca.Biohazard.BioRand
 {
     internal class Re1ClassicRandomizerController : IClassicRandomizerController
     {
+        public void UpdateConfigDefinition(RandomizerConfigurationDefinition definition)
+        {
+            var page = definition.Pages.First(x => x.Label == "General");
+            page.Groups.Insert(0, new RandomizerConfigurationDefinition.Group("Progression (non-door randomizer)")
+            {
+                Items =
+                [
+                    new RandomizerConfigurationDefinition.GroupItem()
+                    {
+                        Id = "progression/guardhouse",
+                        Label = "Guardhouse",
+                        Description = "Include the guardhouse in the randomizer. If disabled, the gates to the guardhouse will be locked.",
+                        Type = "switch",
+                        Default = true
+                    },
+                    new RandomizerConfigurationDefinition.GroupItem()
+                    {
+                        Id = "progression/lab",
+                        Label = "Lab",
+                        Description = "Include the lab in the randomizer. If disabled, there will be no doom books, and you can go straight to the heliport when you reach the fountain.",
+                        Type = "switch",
+                        Default = true
+                    },
+                    new RandomizerConfigurationDefinition.GroupItem()
+                    {
+                        Id = "progression/mansion/split",
+                        Label = "Split Mansion",
+                        Description =
+                            "Split the mansion into two segments, before and after plant 42. " +
+                            "The helmet key will be behind plant 42, and the battery will be in a mansion 2 room. " +
+                            "Only applicable if guardhouse is enabled.",
+                        Type = "switch",
+                        Default = false
+                    },
+                    new RandomizerConfigurationDefinition.GroupItem()
+                    {
+                        Id = "progression/guardhouse/segmented",
+                        Label = "Segmented Guardhouse",
+                        Description = "Isolate the guardhouse in the randomizer. If enabled, the guardhouse will be a standalone segment.",
+                        Type = "switch",
+                        Default = false
+                    },
+                    new RandomizerConfigurationDefinition.GroupItem()
+                    {
+                        Id = "progression/caves/segmented",
+                        Label = "Segmented Caves",
+                        Description = "Isolate the caves in the randomizer. If enabled, the caves will be a standalone segment.",
+                        Type = "switch",
+                        Default = true
+                    },
+                    new RandomizerConfigurationDefinition.GroupItem()
+                    {
+                        Id = "progression/lab/segmented",
+                        Label = "Segmented Lab",
+                        Description = "Isolate the lab in the randomizer. If enabled, the lab will be a standalone segment.",
+                        Type = "switch",
+                        Default = true
+                    },
+                    // new RandomizerConfigurationDefinition.GroupItem()
+                    // {
+                    //     Id = "progression/guardhouse/plant42",
+                    //     Label = "Mandatory Plant 42",
+                    //     Description = "Plant 42 must be defeated to complete the randomizer. If disabled, it may optional for some seeds.",
+                    //     Type = "switch",
+                    //     Default = false
+                    // },
+                    // new RandomizerConfigurationDefinition.GroupItem()
+                    // {
+                    //     Id = "progression/mansion/yawn2",
+                    //     Label = "Mandatory Yawn",
+                    //     Description = "Yawn must be defeated to complete the randomizer. If disabled, it may optional for some seeds.",
+                    //     Type = "switch",
+                    //     Default = false
+                    // },
+                    // new RandomizerConfigurationDefinition.GroupItem()
+                    // {
+                    //     Id = "progression/lab/tyrant",
+                    //     Label = "Mandatory Tyrant 1",
+                    //     Description = "Tyrant 1 must be defeated to complete the randomizer. If disabled, it may optional for some seeds.",
+                    //     Type = "switch",
+                    //     Default = false
+                    // }
+                ]
+            });
+
+            // page = definition.Pages.First(x => x.Label == "Inventory");
+            // var group = page.Groups.First(x => x.Label == "Main");
+            // group.Items.AddRange([
+            //     new RandomizerConfigurationDefinition.GroupItem()
+            //     {
+            //         Id = "inventory/special/lockpick",
+            //         Label = "Lockpick",
+            //         Description = "Allows you to open locked drawers and sword key doors. Default will leave Jill with lockpick, Chris without.",
+            //         Type = "dropdown",
+            //         Options = ["Default", "Random", "Never", "Always"],
+            //         Default = "Default"
+            //     },
+            //     new RandomizerConfigurationDefinition.GroupItem()
+            //     {
+            //         Id = "inventory/size",
+            //         Label = "Size",
+            //         Description = "Control how many inventory slots you have. Default will leave Chris with 6 slots, Jill with 8.",
+            //         Type = "dropdown",
+            //         Options = ["Default", "Random", "6", "8"],
+            //         Default = "Default"
+            //     }]);
+        }
+
         public ImmutableArray<Variation> GetVariations(IClassicRandomizerContext context)
         {
             return [
@@ -29,6 +137,7 @@ namespace IntelOrca.Biohazard.BioRand
             var map = context.DataManager.GetJson<Map>(BioVersion.Biohazard1, "rdt.json");
             map = map.For(new MapFilter(false, (byte)playerIndex, 0));
 
+            // Enable / disable guardhouse rooms
             if (!config.GetValueOrDefault("progression/guardhouse", true))
             {
                 var guardhouseRooms = map.Rooms.Where(x => x.Value.HasTag("guardhouse")).ToArray();
@@ -40,6 +149,8 @@ namespace IntelOrca.Biohazard.BioRand
                 var gate = courtyardRoom.Doors.First(x => x.Name == "GATE TO GUARDHOUSE");
                 gate.Target = null;
             }
+
+            // Enable / disable lab rooms
             if (config.GetValueOrDefault("progression/lab", true))
             {
                 var fountainRoom = map.Rooms["305"];
@@ -63,9 +174,9 @@ namespace IntelOrca.Biohazard.BioRand
                 fountainDoor.Requires2 = [];
             }
 
+            // Restrict items, set no return points
             var keys = map.Items!.Values;
             var items = map.Rooms!.Values.SelectMany(x => x.Items).ToArray();
-
             var guardhouseKeys = keys.Where(x => x.Group == 8).ToArray();
             var guardhouseItems = items.Where(x => x.Group == 8).ToArray();
             var mansion2Items = items.Where(x => x.Group == 2).ToArray();
@@ -74,38 +185,47 @@ namespace IntelOrca.Biohazard.BioRand
             foreach (var item in items)
                 item.Group = -1;
 
-            if (config.GetValueOrDefault("progression/guardhouse", true))
+            if (config.GetValueOrDefault("progression/guardhouse", true) &&
+                config.GetValueOrDefault("progression/guardhouse/segmented", false))
             {
                 // Only guardhouse can contain guardhouse keys
                 foreach (var item in items)
                     item.Group &= ~8;
                 foreach (var item in guardhouseItems)
                     item.Group = 8 | 128;
+            }
 
-                // Mansion 2
+            if (config.GetValueOrDefault("progression/mansion/split", false))
+            {
+                // Mansion 2 (helmet key in plant 42)
                 foreach (var item in items)
                     item.Group &= ~64;
                 var plant42item = map.Rooms!["40C"].Items.First(x => x.Name == "KEY IN FIREPLACE");
                 plant42item.Group = 64;
                 map.Items[54].Group = 64;
+
+                // Battery restricted to mansion 2 (and lab obviously)
+                foreach (var item in items)
+                    item.Group &= ~256;
+                map.Items[39].Group = 256;
+                foreach (var item in mansion2Items)
+                    item.Group |= 256;
+                foreach (var item in labItems)
+                    item.Group |= 256;
             }
 
-            // Cave segment
-            var caveDoor = map.Rooms!["302"].Doors.First(x => x.Name == "LADDER TO CAVES");
-            caveDoor.Kind = "noreturn";
+            if (config.GetValueOrDefault("progression/caves/segmented", false))
+            {
+                var caveDoor = map.Rooms!["302"].Doors.First(x => x.Name == "LADDER TO CAVES");
+                caveDoor.Kind = "noreturn";
+            }
 
-            // Lab segment
-            var labDoor = map.Rooms!["305"].Doors.First(x => x.Name == "FOUNTAIN STAIRS");
-            labDoor.Kind = "noreturn";
-
-            // Battery
-            foreach (var item in items)
-                item.Group &= ~256;
-            map.Items[39].Group = 256;
-            foreach (var item in mansion2Items)
-                item.Group |= 256;
-            foreach (var item in labItems)
-                item.Group |= 256;
+            if (config.GetValueOrDefault("progression/lab", true) &&
+                config.GetValueOrDefault("progression/lab/segmented", false))
+            {
+                var labDoor = map.Rooms!["305"].Doors.First(x => x.Name == "FOUNTAIN STAIRS");
+                labDoor.Kind = "noreturn";
+            }
 
             return map;
         }

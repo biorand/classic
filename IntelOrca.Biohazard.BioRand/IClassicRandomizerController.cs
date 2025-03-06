@@ -4,6 +4,7 @@ namespace IntelOrca.Biohazard.BioRand
 {
     internal interface IClassicRandomizerController
     {
+        void UpdateConfigDefinition(RandomizerConfigurationDefinition definition);
         ImmutableArray<Variation> GetVariations(IClassicRandomizerContext context);
         void Write(IClassicRandomizerContext context);
     }

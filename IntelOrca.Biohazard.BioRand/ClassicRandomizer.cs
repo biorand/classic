@@ -74,84 +74,7 @@ namespace IntelOrca.Biohazard.BioRand
 
             var result = new RandomizerConfigurationDefinition();
             var page = result.CreatePage("General");
-            var group = page.CreateGroup("Progression (non-door randomizer)");
-            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
-            {
-                Id = "progression/guardhouse",
-                Label = "Guardhouse",
-                Description = "Include the guardhouse in the randomizer. If disabled, the gates to the guardhouse will be locked.",
-                Type = "switch",
-                Default = true
-            });
-            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
-            {
-                Id = "progression/lab",
-                Label = "Lab",
-                Description = "Include the lab in the randomizer. If disabled, there will be no doom books, and you can go straight to the heliport when you reach the fountain.",
-                Type = "switch",
-                Default = true
-            });
-            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
-            {
-                Id = "progression/mansion/split",
-                Label = "Split Mansion",
-                Description =
-                    "Split the mansion into two segments, before and after plant 42. " +
-                    "The helmet key will be behind plant 42, and the battery will be in a mansion 2 room. " +
-                    "Only applicable if guardhouse is enabled.",
-                Type = "switch",
-                Default = false
-            });
-            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
-            {
-                Id = "progression/guardhouse/segmented",
-                Label = "Segmented Guardhouse",
-                Description = "Isolate the guardhouse in the randomizer. If enabled, the guardhouse will be a standalone segment.",
-                Type = "switch",
-                Default = false
-            });
-            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
-            {
-                Id = "progression/caves/segmented",
-                Label = "Segmented Caves",
-                Description = "Isolate the caves in the randomizer. If enabled, the caves will be a standalone segment.",
-                Type = "switch",
-                Default = true
-            });
-            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
-            {
-                Id = "progression/lab/segmented",
-                Label = "Segmented Lab",
-                Description = "Isolate the lab in the randomizer. If enabled, the lab will be a standalone segment.",
-                Type = "switch",
-                Default = true
-            });
-            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
-            {
-                Id = "progression/guardhouse/plant42",
-                Label = "Mandatory Plant 42",
-                Description = "Plant 42 must be defeated to complete the randomizer. If disabled, it may optional for some seeds.",
-                Type = "switch",
-                Default = false
-            });
-            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
-            {
-                Id = "progression/mansion/yawn2",
-                Label = "Mandatory Yawn",
-                Description = "Yawn must be defeated to complete the randomizer. If disabled, it may optional for some seeds.",
-                Type = "switch",
-                Default = false
-            });
-            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
-            {
-                Id = "progression/lab/tyrant",
-                Label = "Mandatory Tyrant 1",
-                Description = "Tyrant 1 must be defeated to complete the randomizer. If disabled, it may optional for some seeds.",
-                Type = "switch",
-                Default = false
-            });
-
-            group = page.CreateGroup("Door Randomizer");
+            var group = page.CreateGroup("Door Randomizer");
             group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
             {
                 Id = "doors/random",
@@ -209,24 +132,6 @@ namespace IntelOrca.Biohazard.BioRand
                 Type = "dropdown",
                 Options = ["Random", "Never", "Always"],
                 Default = "Always"
-            });
-            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
-            {
-                Id = "inventory/special/lockpick",
-                Label = "Lockpick",
-                Description = "Allows you to open locked drawers and sword key doors. Default will leave Jill with lockpick, Chris without.",
-                Type = "dropdown",
-                Options = ["Default", "Random", "Never", "Always"],
-                Default = "Default"
-            });
-            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
-            {
-                Id = "inventory/size",
-                Label = "Size",
-                Description = "Control how many inventory slots you have. Default will leave Chris with 6 slots, Jill with 8.",
-                Type = "dropdown",
-                Options = ["Default", "Random", "6", "8"],
-                Default = "Default"
             });
             foreach (var s in new string[] { "Primary", "Secondary" })
             {
@@ -562,6 +467,7 @@ namespace IntelOrca.Biohazard.BioRand
             });
 
             page = result.CreatePage("Music");
+            controller.UpdateConfigDefinition(result);
             return result;
 
             static RandomizerConfigurationDefinition.GroupItemCategory GetCategory(string kind)
@@ -667,6 +573,10 @@ namespace IntelOrca.Biohazard.BioRand
 
         private void Randomize(IClassicRandomizerPlayerContext context)
         {
+            if (context.Configuration.GetValueOrDefault("doors/random", true))
+            {
+                throw new RandomizerUserException("Door randomizer not implemented yet.");
+            }
             var lockRandomizer = new LockRandomizer();
             lockRandomizer.Randomise(context);
             var keyRandomizer = new KeyRandomizer();
@@ -976,22 +886,25 @@ namespace IntelOrca.Biohazard.BioRand
                 }
             }
 
-            var availableLocks = new Queue<byte>([200, 201, 205, 206]);
-
-            foreach (var pair in pairs)
+            if (context.Configuration.GetValueOrDefault("locks/random", true))
             {
-                if (pair.A.Door.NoUnlock || pair.B.Door.NoUnlock)
-                    continue;
+                var availableLocks = new Queue<byte>([200, 201, 205, 206]);
+                foreach (var pair in pairs)
+                {
+                    if (pair.A.Door.NoUnlock || pair.B.Door.NoUnlock)
+                        continue;
 
-                var lockId = pair.A.Door.LockId ?? pair.B.Door.LockId;
-                if (lockId == null && availableLocks.Count != 0)
-                    lockId = availableLocks.Dequeue();
-                if (lockId == null)
-                    continue;
+                    var lockId = pair.A.Door.LockId ?? pair.B.Door.LockId;
+                    if (lockId == null && availableLocks.Count != 0)
+                        lockId = availableLocks.Dequeue();
+                    if (lockId == null)
+                        continue;
 
-                var doorLock = new DoorLock(lockId.Value, 51); // Sword Key
-                SetDoorLock(modBuilder, pair.A, doorLock);
-                SetDoorLock(modBuilder, pair.B, doorLock);
+                    var doorLock = new DoorLock(lockId.Value, 51); // Sword Key
+                    SetDoorLock(modBuilder, pair.A, doorLock);
+                    SetDoorLock(modBuilder, pair.B, doorLock);
+                }
+                throw new RandomizerUserException("Lock randomizer not implemented yet.");
             }
         }
 
