@@ -116,7 +116,7 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
-        private static async void SevenZip(string outputPath, string directory)
+        private static void SevenZip(string outputPath, string directory)
         {
             var sevenZipPath = Find7z() ?? throw new Exception("Unable to find 7z");
             var psi = new ProcessStartInfo(sevenZipPath, $"a -r -mx9 \"{outputPath}\" *")
