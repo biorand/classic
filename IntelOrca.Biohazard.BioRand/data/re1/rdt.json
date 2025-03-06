@@ -221,7 +221,8 @@
     "48": {
       "name": "Lighter",
       "kind": "key/reusuable",
-      "group": 1
+      "group": 1,
+      "amount": 0
     },
     "51": {
       "name": "Sword Key",

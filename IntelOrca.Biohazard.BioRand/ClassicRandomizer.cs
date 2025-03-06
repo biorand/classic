@@ -1079,7 +1079,16 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 var key = kvp.Value;
                 var itemType = (byte)keyToItemId[key];
-                modBuilder.SetItem(kvp.Key, new Item(itemType, 1));
+                var itemDefinition = map.GetItem(itemType);
+                var amount = itemDefinition?.Amount ?? 1;
+                if (itemDefinition?.Discard == true)
+                {
+                    amount = map.Rooms
+                        .SelectMany(x => x.Value.AllEdges)
+                        .SelectMany(x => x.Requires2 ?? [])
+                        .Count(x => x == $"item({itemType})");
+                }
+                modBuilder.SetItem(kvp.Key, new Item(itemType, (ushort)amount));
             }
 
             Requirement[] GetRequirements(MapEdge e)

@@ -103,6 +103,8 @@ namespace IntelOrca.Biohazard.BioRand
         public int[]? Ammo { get; set; }
         public int Max { get; set; }
         public int Group { get; set; }
+        public int? Amount { get; set; }
+        public bool Discard { get; set; }
     }
 
     public class MapEnemyGroup
