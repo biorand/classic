@@ -1110,13 +1110,20 @@ namespace IntelOrca.Biohazard.BioRand
 
             var itemSlots = new ItemSlotCollection(modBuilder, map, documentPriority, hiddenPriority, rng);
 
+            // Inventory weapons
+            var inventoryWeapons = modBuilder.Inventory[0].Entries
+                .Select(x => new KeyValuePair<int, MapItemDefinition>(x.Type, map.Items[x.Type]))
+                .Where(x => x.Value.Kind.StartsWith("weapon/"))
+                .Select(x => new WeaponInfo(x.Key, x.Value, config))
+                .ToArray();
+
             // Weapons
             var weapons = map.Items
                 .Where(x => x.Value.Kind.StartsWith("weapon/"))
                 .Select(x => new WeaponInfo(x.Key, x.Value, config))
                 .Shuffle(rng);
-            var wpgroup = new HashSet<string>();
-            var wpplaced = new List<WeaponInfo>();
+            var wpgroup = new HashSet<string>(inventoryWeapons.Select(x => x.Group));
+            var wpplaced = new List<WeaponInfo>(inventoryWeapons);
             foreach (var wp in weapons)
             {
                 if (!wp.Enabled)
