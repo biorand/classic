@@ -28,7 +28,7 @@ namespace IntelOrca.Biohazard.BioRand
             return value;
         }
 
-        internal static int[] ParseNopArray(System.Text.Json.JsonElement[]? nopArray, RandomizedRdt rdt)
+        internal static int[] ParseNopArray(JsonElement[]? nopArray, RandomizedRdt rdt)
         {
             var nop = new List<int>();
             if (nopArray != null)
@@ -65,7 +65,7 @@ namespace IntelOrca.Biohazard.BioRand
             return nop.ToArray();
         }
 
-        private static int ParseLiteral(string s)
+        public static int ParseLiteral(string s)
         {
             if (s.StartsWith("0x"))
             {
@@ -224,7 +224,7 @@ namespace IntelOrca.Biohazard.BioRand
 
     public class MapRoomItem : MapEdge
     {
-        public System.Text.Json.JsonElement[]? Nop { get; set; }
+        public JsonElement[]? Nop { get; set; }
         public JsonElement[]? Offsets { get; set; }
         public byte Id { get; set; }
         public byte? ItemId { get; set; }
@@ -241,11 +241,12 @@ namespace IntelOrca.Biohazard.BioRand
         public bool? Hidden { get; set; }
         public bool? Optional { get; set; }
         public int Group { get; set; }
+        public string[]? TypeOffsets { get; set; }
     }
 
     public class MapRoomEnemies : MapFilterable
     {
-        public System.Text.Json.JsonElement[]? Nop { get; set; }
+        public JsonElement[]? Nop { get; set; }
         public int[]? ExcludeOffsets { get; set; }
         public int[]? ExcludeTypes { get; set; }
         public int[]? IncludeTypes { get; set; }
@@ -279,7 +280,7 @@ namespace IntelOrca.Biohazard.BioRand
     public class DoorRandoSpec
     {
         public string? Category { get; set; }
-        public System.Text.Json.JsonElement[]? Nop { get; set; }
+        public JsonElement[]? Nop { get; set; }
         public bool Cutscene { get; set; }
         public int? Player { get; set; }
         public int? Scenario { get; set; }

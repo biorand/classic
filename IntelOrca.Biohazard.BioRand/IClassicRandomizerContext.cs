@@ -9,7 +9,7 @@ namespace IntelOrca.Biohazard.BioRand
         DataManager GameDataManager { get; }
         Rng Rng { get; }
         ClassicRebirthModBuilder CrModBuilder { get; }
-        ImmutableArray<ModBuilder> Variations { get; }
+        ImmutableArray<IClassicRandomizerPlayerContext> GeneratedVariations { get; }
     }
 
     internal interface IClassicRandomizerPlayerContext

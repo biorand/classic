@@ -544,7 +544,7 @@ namespace IntelOrca.Biohazard.BioRand
                 var dump = modBuilder.GetDump(playerContext);
                 crModBuilder.SetFile($"log_{v.PlayerName.ToLowerInvariant()}.md", Encoding.UTF8.GetBytes(dump));
 
-                context.Variations = context.Variations.Add(modBuilder);
+                context.GeneratedVariations = context.GeneratedVariations.Add(playerContext);
             }
 
             controller.Write(context);
@@ -604,7 +604,7 @@ namespace IntelOrca.Biohazard.BioRand
             public DataManager GameDataManager => gameDataManager;
             public Rng Rng => rng;
             public ClassicRebirthModBuilder CrModBuilder => crModBuilder;
-            public ImmutableArray<ModBuilder> Variations { get; set; } = [];
+            public ImmutableArray<IClassicRandomizerPlayerContext> GeneratedVariations { get; set; } = [];
         }
 
         private sealed class PlayerContext(
@@ -1312,6 +1312,11 @@ namespace IntelOrca.Biohazard.BioRand
         public void SetDoorLock(RdtItemId doorIdentity, DoorLock doorLock)
         {
             _doorLock.Add(doorIdentity, doorLock);
+        }
+
+        public Item? GetItem(int globalId)
+        {
+            return _itemMap.TryGetValue(globalId, out var item) ? item : null;
         }
 
         public void SetItem(int globalId, Item item)

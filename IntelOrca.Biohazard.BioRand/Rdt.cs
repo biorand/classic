@@ -794,6 +794,20 @@ namespace IntelOrca.Biohazard.BioRand
             Console.WriteLine();
         }
 
+        public void Decompile()
+        {
+            Script = Decompile(RdtFile, false, false);
+            ScriptDisassembly = Decompile(RdtFile, true, false);
+            ScriptListing = Decompile(RdtFile, true, true);
+        }
+
+        private static string Decompile(IRdt rdtFile, bool assemblyFormat, bool listingFormat)
+        {
+            var scriptDecompiler = new ScriptDecompiler(assemblyFormat, listingFormat);
+            rdtFile.ReadScript(scriptDecompiler);
+            return scriptDecompiler.GetScript();
+        }
+
         public override string ToString()
         {
             return RdtId.ToString();

@@ -302,12 +302,23 @@ namespace IntelOrca.Biohazard.BioRand
             var randomDoors = context.Configuration.GetValueOrDefault("doors/random", false);
             var randomItems = context.Configuration.GetValueOrDefault("items/random", false);
 
+            FixDoorToWardrobe();
             FixPassCodeDoor();
             AllowRoughPassageDoorUnlock();
             ShotgunOnWallFix();
             DisableBarryEvesdrop();
             AllowPartnerItemBoxes();
             EnableFountainHeliportDoors();
+
+            void FixDoorToWardrobe()
+            {
+                var rdt112 = gameData.GetRdt(RdtId.Parse("112"));
+                var rdt612 = gameData.GetRdt(RdtId.Parse("612"));
+                rdt112?.Nop(0x17864, 0x17866);
+                rdt112?.Nop(0x17884, 0x17886);
+                rdt612?.Nop(0x17864, 0x17866);
+                rdt612?.Nop(0x17884, 0x17886);
+            }
 
             void FixPassCodeDoor()
             {
@@ -641,11 +652,12 @@ namespace IntelOrca.Biohazard.BioRand
         {
             for (var p = 0; p < 2; p++)
             {
-                var variation = context.Variations[p];
+                var variation = context.GeneratedVariations[p];
                 var gameData = GetGameData(context, p);
+                ApplyPostPatches(variation, gameData);
                 foreach (var rrdt in gameData.Rdts)
                 {
-                    variation.ApplyToRdt(rrdt);
+                    variation.ModBuilder.ApplyToRdt(rrdt);
                 }
                 foreach (var rrdt in gameData.Rdts)
                 {
@@ -655,10 +667,41 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
+        private void ApplyPostPatches(IClassicRandomizerPlayerContext generatedVariation, GameData gameData)
+        {
+            // For each changed item, patch any additional bytes
+            var map = generatedVariation.Variation.Map;
+            foreach (var kvp in map.Rooms)
+            {
+                var rdts = kvp.Value.Rdts
+                    .Select(gameData.GetRdt)
+                    .Where(x => x != null)
+                    .Select(x => x!)
+                    .ToArray();
+                foreach (var item in (kvp.Value.Items ?? []))
+                {
+                    if (item.GlobalId is not short globalId)
+                        return;
+
+                    if (generatedVariation.ModBuilder.GetItem(globalId) is Item newItem && item.TypeOffsets != null)
+                    {
+                        foreach (var o in item.TypeOffsets)
+                        {
+                            var typeOffset = Map.ParseLiteral(o);
+                            foreach (var rdt in rdts)
+                            {
+                                rdt.Patches.Add(new KeyValuePair<int, byte>(typeOffset, newItem.Type));
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         private void AddInventoryXml(IClassicRandomizerContext context)
         {
-            var inventories = context.Variations
-                .SelectMany(x => x.Inventory)
+            var inventories = context.GeneratedVariations
+                .SelectMany(x => x.ModBuilder.Inventory)
                 .ToArray();
 
             using var ms = new MemoryStream();

@@ -734,7 +734,10 @@
           "type": 31,
           "amount": 1,
           "group": 1,
-          "player": 0
+          "player": 0,
+          "typeOffsets": [
+            "0x2831F"
+          ]
         },
         {
           "name": "BROKEN STATUE",
@@ -767,7 +770,10 @@
           "type": 31,
           "amount": 1,
           "group": 1,
-          "player": 1
+          "player": 1,
+          "typeOffsets": [
+            "0x2848B"
+          ]
         },
         {
           "name": "BROKEN STATUE",
@@ -855,7 +861,10 @@
           "type": 2,
           "amount": 15,
           "group": 1,
-          "player": 0
+          "player": 0,
+          "typeOffsets": [
+            "0x2FDDD"
+          ]
         },
         {
           "name": "BARRY'S GIFT",
@@ -1183,7 +1192,10 @@
           "requires2": [
             "item(33)"
           ],
-          "group": 1
+          "group": 1,
+          "typeOffsets": [
+            "0x270F"
+          ]
         },
         {
           "name": "RED EYE",
@@ -1194,7 +1206,10 @@
           "requires2": [
             "item(34)"
           ],
-          "group": 1
+          "group": 1,
+          "typeOffsets": [
+            "0x26E7"
+          ]
         }
       ],
       "enemies": [
@@ -1257,7 +1272,10 @@
           ],
           "group": 1,
           "player": 0,
-          "doorRando": false
+          "doorRando": false,
+          "typeOffsets": [
+            "0x30C45"
+          ]
         },
         {
           "name": "BEHIND SLIDING DOOR",
@@ -1271,7 +1289,10 @@
           "group": 1,
           "player": 0,
           "doorRando": true,
-          "optional": true
+          "optional": true,
+          "typeOffsets": [
+            "0x30C45"
+          ]
         },
         {
           "name": "BEHIND SLIDING DOOR",
@@ -1283,7 +1304,10 @@
             "item(35)"
           ],
           "group": 1,
-          "player": 1
+          "player": 1,
+          "typeOffsets": [
+            "0x30BB9"
+          ]
         },
         {
           "name": "BEHIND BOOKSHELF",
@@ -1360,11 +1384,6 @@
     },
     "112": {
       "name": "1F EAST BIG MIRROR",
-      "doorRando": [
-        {
-          "nop": [ "0x17864-0x17866", "0x17884-0x17886" ]
-        }
-      ],
       "rdts": [ "112", "612" ],
       "doors": [
         {
@@ -1400,7 +1419,10 @@
           "globalId": 212,
           "type": 47,
           "amount": 3,
-          "group": 1
+          "group": 1,
+          "typeOffsets": [
+            "0x17969"
+          ]
         }
       ],
       "enemies": [
@@ -1425,7 +1447,10 @@
           "type": 61,
           "amount": 1,
           "group": 1,
-          "player": 0
+          "player": 0,
+          "typeOffsets": [
+            "0x1CBC5"
+          ]
         }
       ],
       "enemies": [
@@ -1539,7 +1564,10 @@
           "requires2": [
             "item(28)"
           ],
-          "group": 1
+          "group": 1,
+          "typeOffsets": [
+            "0x1FEFD"
+          ]
         }
       ],
       "enemies": [
@@ -2634,7 +2662,10 @@
           "globalId": 57,
           "type": 39,
           "amount": 1,
-          "group": 2
+          "group": 2,
+          "typeOffsets": [
+            "0x14B51"
+          ]
         }
       ],
       "enemies": [
