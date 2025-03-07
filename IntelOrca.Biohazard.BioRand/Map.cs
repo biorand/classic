@@ -187,6 +187,13 @@ namespace IntelOrca.Biohazard.BioRand
                 return false;
             return Tags.Contains(tag);
         }
+
+        public bool HasAnyTag(IEnumerable<string> tags)
+        {
+            if (Tags == null)
+                return false;
+            return Tags.Any(x => tags.Contains(x));
+        }
     }
 
     public class MapRoomDoor : MapEdge

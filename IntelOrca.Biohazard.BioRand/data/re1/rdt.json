@@ -499,6 +499,7 @@
     "100": {
       "name": "1F WEST SAVE",
       "rdts": [ "100", "600" ],
+      "tags": [ "box", "safe", "save" ],
       "doorRando": [
         {
           "category": "box"
@@ -824,6 +825,7 @@
     "106": {
       "name": "1F MAIN HALL",
       "rdts": [ "106", "606" ],
+      "tags": [ "save" ],
       "doors": [
         {
           "target": "105",
@@ -1615,6 +1617,7 @@
     "118": {
       "name": "1F EAST SAVE",
       "rdts": [ "118", "618" ],
+      "tags": [ "box", "safe", "save" ],
       "doorRando": [
         {
           "category": "box"
@@ -3158,6 +3161,7 @@
     "307": {
       "name": "CAVES ENTRANCE",
       "rdts": [ "307" ],
+      "tags": [ "save" ],
       "doors": [
         {
           "target": "302",
@@ -3445,6 +3449,7 @@
     "30E": {
       "name": "CAVES SAVE",
       "rdts": [ "30E" ],
+      "tags": [ "box", "safe", "save" ],
       "doorRando": [
         {
           "category": "box"
@@ -3666,7 +3671,7 @@
     },
     "403": {
       "name": "GUARDHOUSE SAVE",
-      "tags": [ "guardhouse" ],
+      "tags": [ "guardhouse", "box", "safe", "save" ],
       "rdts": [ "403" ],
       "doorRando": [
         {
@@ -4356,7 +4361,7 @@
     },
     "502": {
       "name": "LABORATORY B2 BOX",
-      "tags": [ "lab" ],
+      "tags": [ "lab", "box" ],
       "rdts": [ "502" ],
       "doorRando": [
         {
@@ -4835,7 +4840,7 @@
     },
     "50E": {
       "name": "LABORATORY B3 SAVE",
-      "tags": [ "lab" ],
+      "tags": [ "lab", "box", "safe", "save" ],
       "rdts": [ "50E" ],
       "doorRando": [
         {

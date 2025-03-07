@@ -1434,6 +1434,17 @@ namespace IntelOrca.Biohazard.BioRand
             var totalRooms = roomList.Count;
             var roomWeight = config.GetValueOrDefault("enemies/rooms", 0.0);
             var enemyRoomTotal = (int)Math.Round(roomWeight * totalRooms);
+
+            // Remove rooms we ban enemies from
+            var banTags = new List<string>();
+            if (!config.GetValueOrDefault("enemies/box", false))
+                banTags.Add("box");
+            if (!config.GetValueOrDefault("enemies/safe", false))
+                banTags.Add("safe");
+            if (!config.GetValueOrDefault("enemies/save", false))
+                banTags.Add("save");
+            roomList.RemoveAll(x => x.HasAnyTag(banTags));
+
             while (roomList.Count > enemyRoomTotal)
                 roomList.RemoveAt(roomList.Count - 1);
 
