@@ -124,8 +124,17 @@ namespace IntelOrca.Biohazard.BioRand
 
         private static void SevenZip(string outputPath, string directory)
         {
+            // -mx9      Use best compression
+            // -ms=e     Use a separate solid block for each file extension
+            // -mqs=on   Enable sorting files by type in solid archives
+
+            // Classic Rebirth is very slow at reading solid 7z archives and it advises
+            // against using solid archives. However solid archives are so much smaller,
+            // luckily CR is still fast at loading the archive if we use a separate solid
+            // block per file type. The file size is still just as small which is great!
+
             var sevenZipPath = Find7z() ?? throw new Exception("Unable to find 7z");
-            var psi = new ProcessStartInfo(sevenZipPath, $"a -r -mx9 \"{outputPath}\" *")
+            var psi = new ProcessStartInfo(sevenZipPath, $"a -r -mx9 -ms=e -mqs=on \"{outputPath}\" *")
             {
                 CreateNoWindow = true,
                 RedirectStandardOutput = true,
