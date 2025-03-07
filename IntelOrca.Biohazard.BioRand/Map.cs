@@ -176,7 +176,7 @@ namespace IntelOrca.Biohazard.BioRand
                 Items = Items?.Where(x => x.IsIncludedInFilter(filter)).ToArray() ?? [],
                 Flags = Flags?.Where(x => x.IsIncludedInFilter(filter)).ToArray() ?? [],
                 DoorRando = DoorRando,
-                Enemies = Enemies,
+                Enemies = Enemies?.Where(x => x.IsIncludedInFilter(filter)).ToArray() ?? [],
                 Npcs = Npcs
             };
         }
@@ -256,6 +256,7 @@ namespace IntelOrca.Biohazard.BioRand
     {
         public int? Id { get; set; }
         public int? GlobalId { get; set; }
+        public string? Kind { get; set; }
         public JsonElement[]? Nop { get; set; }
         public int[]? ExcludeOffsets { get; set; }
         public int[]? ExcludeTypes { get; set; }

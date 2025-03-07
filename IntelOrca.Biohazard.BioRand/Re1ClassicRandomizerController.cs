@@ -689,7 +689,10 @@ namespace IntelOrca.Biohazard.BioRand
                 {
                     variation.ModBuilder.ApplyToRdt(rrdt);
                 }
-                ApplyEnemies(context, variation, gameData);
+                if (context.Configuration.GetValueOrDefault("enemies/random", false))
+                {
+                    ApplyEnemies(context, variation, gameData);
+                }
                 foreach (var rrdt in gameData.Rdts)
                 {
                     rrdt.Save();
@@ -763,7 +766,6 @@ namespace IntelOrca.Biohazard.BioRand
                     continue;
 
                 var offsets = rdt.Enemies
-                    .Where(x => x.KillId != 255)
                     .Where(x => CanRemoveEnemy(x.Type))
                     .Select(x => x.Offset)
                     .ToArray();

@@ -647,7 +647,7 @@
     },
     "104": {
       "name": "1F WEST TEA CORRIDOR",
-      "rdts": [ "604" ],
+      "rdts": [ "104", "604" ],
       "doors": [
         {
           "target": "103",
@@ -1036,6 +1036,12 @@
           "excludeTypes": [ 4, 12 ],
           "maxDifficulty": 0,
           "player": 0
+        },
+        {
+          "name": "BARRY",
+          "id": 0,
+          "kind": "npc",
+          "player": 1
         },
         {
           "condition": "!(!1:32 && 1:33)",
