@@ -120,6 +120,7 @@ namespace IntelOrca.Biohazard.BioRand
         public string Key { get; set; } = "";
         public string Name { get; set; } = "";
         public int[] Id { get; set; } = [];
+        public int[]? Esp { get; set; }
     }
 
     public class MapRoom : MapFilterable
@@ -246,6 +247,8 @@ namespace IntelOrca.Biohazard.BioRand
 
     public class MapRoomEnemies : MapFilterable
     {
+        public int? Id { get; set; }
+        public int? GlobalId { get; set; }
         public JsonElement[]? Nop { get; set; }
         public int[]? ExcludeOffsets { get; set; }
         public int[]? ExcludeTypes { get; set; }

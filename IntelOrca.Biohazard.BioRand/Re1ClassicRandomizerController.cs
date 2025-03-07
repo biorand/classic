@@ -1,11 +1,16 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using System.Xml;
 using IntelOrca.Biohazard.BioRand.RE1;
+using IntelOrca.Biohazard.Extensions;
 using IntelOrca.Biohazard.Room;
+using IntelOrca.Biohazard.Script;
 using IntelOrca.Biohazard.Script.Opcodes;
 using SixLabors.ImageSharp.PixelFormats;
 
@@ -288,11 +293,6 @@ namespace IntelOrca.Biohazard.BioRand
             }
 
             var gd = new GameData([.. result]);
-            ApplyRdtPatches(context, gd, player);
-            if (context.Configuration.GetValueOrDefault("cutscenes/disable", false))
-            {
-                DisableCutscenes(context, gd, player);
-            }
             return gd;
         }
 
@@ -302,13 +302,21 @@ namespace IntelOrca.Biohazard.BioRand
             var randomDoors = context.Configuration.GetValueOrDefault("doors/random", false);
             var randomItems = context.Configuration.GetValueOrDefault("items/random", false);
 
+            DisableDogWindows();
             FixDoorToWardrobe();
             FixPassCodeDoor();
+            FixDrugStoreRoom();
             AllowRoughPassageDoorUnlock();
             ShotgunOnWallFix();
             DisableBarryEvesdrop();
             AllowPartnerItemBoxes();
             EnableFountainHeliportDoors();
+
+            void DisableDogWindows()
+            {
+                var rdt108 = gameData.GetRdt(RdtId.Parse("108"));
+                rdt108?.Nop(0x19754, 0x197EE);
+            }
 
             void FixDoorToWardrobe()
             {
@@ -341,10 +349,10 @@ namespace IntelOrca.Biohazard.BioRand
 
                     if (!randomDoors && player == 1)
                     {
-                        rdt.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x01, new byte[] { 0x0A }));
-                        rdt.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x04, new byte[] { 0x01, 0x25, 0x00 }));
-                        rdt.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x05, new byte[] { 0x02, PassCodeDoorLockId - 192, 0 }));
-                        rdt.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x03, new byte[] { 0x00 }));
+                        rdt.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x01, [0x0A]));
+                        rdt.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x04, [0x01, 0x25, 0x00]));
+                        rdt.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x05, [0x02, PassCodeDoorLockId - 192, 0]));
+                        rdt.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x03, [0x00]));
                     }
 
                     rdt.Nop(0x41A34);
@@ -361,6 +369,16 @@ namespace IntelOrca.Biohazard.BioRand
                         }
                     }
                 }
+            }
+
+            void FixDrugStoreRoom()
+            {
+                if (player != 0)
+                    return;
+
+                var rdt = gameData.GetRdt(RdtId.Parse("409"));
+                rdt?.Nop(0x166D4, 0x16742);
+                rdt?.Nop(0x168AA, 0x16918);
             }
 
             void AllowRoughPassageDoorUnlock()
@@ -643,6 +661,7 @@ namespace IntelOrca.Biohazard.BioRand
         public void Write(IClassicRandomizerContext context)
         {
             WriteRdts(context);
+            AddSoundXml(context);
             AddInventoryXml(context);
             AddBackgroundTextures(context);
             WritePatchFile(context);
@@ -650,21 +669,49 @@ namespace IntelOrca.Biohazard.BioRand
 
         private void WriteRdts(IClassicRandomizerContext context)
         {
+            var debugScripts = Environment.GetEnvironmentVariable("BIORAND_DEBUG_SCRIPTS") == "true";
+
             for (var p = 0; p < 2; p++)
             {
                 var variation = context.GeneratedVariations[p];
                 var gameData = GetGameData(context, p);
+                if (debugScripts)
+                {
+                    DecompileGameData(context, gameData, p, "scripts/");
+                }
+                ApplyRdtPatches(context, gameData, p);
+                if (context.Configuration.GetValueOrDefault("cutscenes/disable", false))
+                {
+                    DisableCutscenes(context, gameData, p);
+                }
                 ApplyPostPatches(variation, gameData);
                 foreach (var rrdt in gameData.Rdts)
                 {
                     variation.ModBuilder.ApplyToRdt(rrdt);
                 }
+                ApplyEnemies(context, variation, gameData);
                 foreach (var rrdt in gameData.Rdts)
                 {
                     rrdt.Save();
                     context.CrModBuilder.SetFile(rrdt.OriginalPath!, rrdt.RdtFile.Data);
                 }
+                if (debugScripts)
+                {
+                    DecompileGameData(context, gameData, p, "scripts_modded/");
+                }
             }
+        }
+
+        private static void DecompileGameData(IClassicRandomizerContext context, GameData gameData, int player, string prefix)
+        {
+            var crModBuilder = context.CrModBuilder;
+            Parallel.ForEach(gameData.Rdts, rrdt =>
+            {
+                rrdt.Decompile();
+                crModBuilder.SetFile($"{prefix}{rrdt.RdtId}{player}.bio", Encoding.UTF8.GetBytes(rrdt.Script));
+                crModBuilder.SetFile($"{prefix}{rrdt.RdtId}{player}.lst", Encoding.UTF8.GetBytes(rrdt.ScriptListing));
+                crModBuilder.SetFile($"{prefix}{rrdt.RdtId}{player}.s", Encoding.UTF8.GetBytes(rrdt.ScriptDisassembly));
+            });
         }
 
         private void ApplyPostPatches(IClassicRandomizerPlayerContext generatedVariation, GameData gameData)
@@ -695,6 +742,171 @@ namespace IntelOrca.Biohazard.BioRand
                         }
                     }
                 }
+            }
+        }
+
+        private void ApplyEnemies(IClassicRandomizerContext context, IClassicRandomizerPlayerContext variation, GameData gameData)
+        {
+            // Clear all enemies
+            var map = variation.Variation.Map;
+            foreach (var rdt in gameData.Rdts)
+            {
+                var room = map.Rooms.Values.FirstOrDefault(x => x.Rdts.Contains(rdt.RdtId));
+                if (room == null)
+                    continue;
+
+                var firstEnemyBlock = (room.Enemies ?? []).FirstOrDefault();
+                if (firstEnemyBlock == null)
+                    continue;
+
+                if (firstEnemyBlock.Id != null)
+                    continue;
+
+                var offsets = rdt.Enemies
+                    .Where(x => x.KillId != 255)
+                    .Where(x => CanRemoveEnemy(x.Type))
+                    .Select(x => x.Offset)
+                    .ToArray();
+                foreach (var o in offsets)
+                {
+                    rdt.Nop(o);
+                }
+            }
+
+            var allEffects = HarvestAllEffs(gameData);
+            var groups = variation.ModBuilder.EnemyPlacements.GroupBy(x => x.RdtId);
+            foreach (var g in groups)
+            {
+                var rdt = gameData.GetRdt(g.Key);
+                if (rdt == null)
+                    continue;
+
+                var requiredEsp = new HashSet<byte>();
+                var opcodes = new List<OpcodeBase>();
+                string? condition = null;
+                foreach (var ep in g)
+                {
+                    if (ep.Create)
+                    {
+                        var opcode = CreateEnemyOpcode(ep);
+                        opcodes.Add(opcode);
+                        condition ??= ep.Condition;
+                    }
+                    else
+                    {
+                        foreach (var e in rdt.Enemies.Where(x => x.Id == ep.Id))
+                        {
+                            e.Type = (byte)ep.Type;
+                        }
+                    }
+                    foreach (var esp in ep.Esp)
+                        requiredEsp.Add((byte)esp);
+                }
+                InsertConditions(rdt, opcodes, condition);
+                AddRequiredEsps(rdt, requiredEsp, allEffects);
+            }
+
+            bool CanRemoveEnemy(byte type)
+            {
+                switch (type)
+                {
+                    case Re1EnemyIds.Zombie:
+                    case Re1EnemyIds.ZombieNaked:
+                    case Re1EnemyIds.Cerberus:
+                    case Re1EnemyIds.WebSpinner:
+                    case Re1EnemyIds.BlackTiger:
+                    case Re1EnemyIds.Crow:
+                    case Re1EnemyIds.Hunter:
+                    case Re1EnemyIds.Wasp:
+                    case Re1EnemyIds.Chimera:
+                    case Re1EnemyIds.Snake:
+                    case Re1EnemyIds.Neptune:
+                    case Re1EnemyIds.Tyrant1:
+                    case Re1EnemyIds.Plant42Vines:
+                    case Re1EnemyIds.ZombieResearcher:
+                        return true;
+                    default:
+                        return false;
+                }
+            }
+
+            SceEmSetOpcode CreateEnemyOpcode(EnemyPlacement ep)
+            {
+                return new SceEmSetOpcode()
+                {
+                    Length = 22,
+                    Opcode = (byte)OpcodeV1.SceEmSet,
+                    Type = (byte)ep.Type,
+                    State = 0,
+                    KillId = (byte)ep.GlobalId,
+                    Re1Unk04 = 1,
+                    Re1Unk05 = 2,
+                    Re1Unk06 = 0,
+                    Re1Unk07 = 0,
+                    D = (short)ep.D,
+                    Re1Unk0A = 0,
+                    Re1Unk0B = 0,
+                    X = (short)ep.X,
+                    Y = (short)ep.Y,
+                    Z = (short)ep.Z,
+                    Id = (byte)ep.Id,
+                    Re1Unk13 = 0,
+                    Re1Unk14 = 0,
+                    Re1Unk15 = 0,
+                };
+            }
+
+            void InsertConditions(RandomizedRdt rdt, List<OpcodeBase> enemyOpcodes, string? condition)
+            {
+                if (string.IsNullOrEmpty(condition))
+                {
+                    rdt.AdditionalOpcodes.AddRange(enemyOpcodes);
+                    return;
+                }
+
+                var scdCondition = ScdCondition.Parse(condition!);
+                var opcodes = scdCondition.Generate(BioVersion.Biohazard1, enemyOpcodes);
+                rdt.AdditionalOpcodes.AddRange(opcodes);
+            }
+
+            static Dictionary<byte, EmbeddedEffect> HarvestAllEffs(GameData gameData)
+            {
+                var result = new Dictionary<byte, EmbeddedEffect>();
+                foreach (var rdt in gameData.Rdts)
+                {
+                    var embeddedEffects = ((Rdt1)rdt.RdtFile).EmbeddedEffects;
+                    for (var i = 0; i < embeddedEffects.Count; i++)
+                    {
+                        var ee = embeddedEffects[i];
+                        if (ee.Id != 0xFF && !result.ContainsKey(ee.Id))
+                        {
+                            result[ee.Id] = ee;
+                        }
+                    }
+                }
+                return result;
+            }
+
+            static void AddRequiredEsps(RandomizedRdt rdt, HashSet<byte> espIds, Dictionary<byte, EmbeddedEffect> allEffects)
+            {
+                if (espIds.Count == 0)
+                    return;
+
+                var rdtFile = (Rdt1)rdt.RdtFile;
+                var embeddedEffects = rdtFile.EmbeddedEffects;
+                var missingIds = espIds.Except(embeddedEffects.Ids).ToArray();
+                if (missingIds.Length == 0)
+                    return;
+
+                var existingEffects = embeddedEffects.Effects.ToList();
+                foreach (var id in missingIds)
+                {
+                    existingEffects.Add(allEffects[id]);
+                }
+
+                var rdtBuilder = rdtFile.ToBuilder();
+                rdtBuilder.EmbeddedEffects = new EmbeddedEffectList(rdtFile.Version, existingEffects.ToArray());
+                rdt.RdtFile = rdtBuilder.ToRdt();
             }
         }
 
@@ -774,6 +986,109 @@ namespace IntelOrca.Biohazard.BioRand
                 }
             });
             return ms.ToArray();
+        }
+
+        private void AddSoundXml(IClassicRandomizerContext context)
+        {
+            var bgmTable = context.DataManager.GetData(BioVersion.Biohazard1, "bgm_tbl.xml");
+            context.CrModBuilder.SetFile("bgm_tbl.xml", bgmTable);
+
+            var xml = context.DataManager.GetText(BioVersion.Biohazard1, "sounds.xml");
+            var doc = new XmlDocument();
+            doc.LoadXml(xml);
+
+            var enemyPlacements = context.GeneratedVariations[0].ModBuilder.EnemyPlacements;
+            var roomNodes = doc.SelectNodes("Rooms/Room");
+            foreach (XmlNode roomNode in roomNodes)
+            {
+                var idAttribute = roomNode.Attributes["id"];
+                if (idAttribute == null)
+                    continue;
+
+                if (!RdtId.TryParse(idAttribute.Value, out var roomId))
+                    continue;
+
+                var firstEnemy = enemyPlacements.FirstOrDefault(x => x.RdtId == roomId);
+                var firstEnemyType = (byte?)firstEnemy?.Type;
+                FixRoomSounds(context, roomId, firstEnemyType, roomNode);
+            }
+        }
+
+        private void FixRoomSounds(IClassicRandomizerContext context, RdtId rdtId, byte? enemyType, XmlNode roomNode)
+        {
+            if (enemyType != null)
+            {
+                var template = GetTemplateXml(enemyType.Value);
+                var entryNodes = roomNode.SelectNodes("Sound/Entry");
+                for (int i = 0; i < 16; i++)
+                {
+                    entryNodes[i].InnerText = template[i] ?? "";
+                }
+            }
+
+            var xml = roomNode.InnerXml;
+            context.CrModBuilder.SetFile($"tables/room_{rdtId}.xml", Encoding.UTF8.GetBytes(xml));
+        }
+
+        private static string[] GetTemplateXml(byte enemyType)
+        {
+            string[]? result = null;
+            switch (enemyType)
+            {
+                case Re1EnemyIds.Zombie:
+                    result = ["z_taore", "z_ftL", "z_ftR", "z_kamu", "z_k02", "z_k01", "z_head", "z_haki", "z_sanj", "z_k03"];
+                    break;
+                case Re1EnemyIds.ZombieNaked:
+                    result = ["z_taore", "zep_ftL", "z_ftR", "ze_kamu", "z_nisi2", "z_nisi1", "ze_head", "ze_haki", "ze_sanj", "z_nisi3", "FL_walk", "FL_jump", "steam_b", "FL_ceil", "FL_fall", "FL_slash"];
+                    break;
+                case Re1EnemyIds.Cerberus:
+                    result = ["cer_foot", "cer_taoA", "cer_unar", "cer_bite", "cer_cryA", "cer_taoB", "cer_jkMX", "cer_kamu", "cer_cryB", "cer_runMX"];
+                    break;
+                case Re1EnemyIds.WebSpinner:
+                    result = ["kuasi_A", "kuasi_B", "kuasi_C", "sp_rakk", "sp_atck", "sp_bomb", "sp_fumu", "sp_Doku", "sp_sanj2"];
+                    break;
+                case Re1EnemyIds.BlackTiger:
+                    result = ["kuasi_A", "kuasi_B", "kuasi_C", "sp_rakk", "sp_atck", "sp_bomb", "sp_fumu", "sp_Doku", "poison"];
+                    break;
+                case Re1EnemyIds.Crow:
+                    result = ["RVcar1", "RVpat", "RVcar2", "RVwing1", "RVwing2", "RVfryed"];
+                    break;
+                case Re1EnemyIds.Hunter:
+                    result = ["HU_walkA", "HU_walkB", "HU_jump", "HU_att", "HU_land", "HU_smash", "HU_dam", "HU_Nout"];
+                    break;
+                case Re1EnemyIds.Wasp:
+                    result = ["bee4_ed", "hatinage", "bee_fumu"];
+                    break;
+                case Re1EnemyIds.Plant42:
+                    break;
+                case Re1EnemyIds.Chimera:
+                    result = ["FL_walk", "FL_jump", "steam_b", "FL_ceil", "FL_fall", "FL_slash", "FL_att", "FL_dam", "FL_out"];
+                    break;
+                case Re1EnemyIds.Snake:
+                    result = ["PY_mena", "PY_hit2", "PY_fall"];
+                    break;
+                case Re1EnemyIds.Neptune:
+                    result = ["nep_attB", "nep_attA", "nep_nomu", "nep_tura", "nep_twis", "nep_jump"];
+                    break;
+                case Re1EnemyIds.Tyrant1:
+                    result = ["TY_foot", "TY_kaze", "TY_slice", "TY_HIT", "TY_trust", "", "TY_taore", "TY_nage"];
+                    break;
+                case Re1EnemyIds.Yawn1:
+                    break;
+                case Re1EnemyIds.Plant42Roots:
+                    break;
+                case Re1EnemyIds.Plant42Vines:
+                    break;
+                case Re1EnemyIds.Tyrant2:
+                    break;
+                case Re1EnemyIds.ZombieResearcher:
+                    result = ["z_taore", "z_ftL", "z_ftR", "z_kamu", "z_mika02", "z_mika01", "z_head", "z_Hkick", "z_Ugoron", "z_mika03"];
+                    break;
+                case Re1EnemyIds.Yawn2:
+                    break;
+            }
+            Array.Resize(ref result, 16);
+            return result;
         }
 
         private static readonly RdtId[] g_missingRooms =

@@ -126,6 +126,11 @@
       "kind": "ammo/grenadelauncher/flame",
       "max": 100
     },
+    "27": {
+      "name": "V-JOLT",
+      "kind": "key/consumable",
+      "group": 1
+    },
     "28": {
       "name": "Broken Shotgun",
       "kind": "key/consumable",
@@ -363,7 +368,8 @@
         {
           "key": "zombie",
           "name": "Zombie",
-          "id": [ 0, 1, 17 ]
+          "id": [ 0, 1, 17 ],
+          "esp": [ 3, 4 ]
         }
       ]
     },
@@ -375,7 +381,8 @@
         {
           "key": "cerberus",
           "name": "Cerberus",
-          "id": [ 2 ]
+          "id": [ 2 ],
+          "esp": [ 4 ]
         }
       ]
     },
@@ -387,12 +394,14 @@
         {
           "key": "spider",
           "name": "Web Spinner",
-          "id": [ 2 ]
+          "id": [ 2 ],
+          "esp": [ 30 ]
         },
         {
           "key": "blacktiger",
           "name": "Black Tiger",
-          "id": [ 4 ]
+          "id": [ 4 ],
+          "esp": [ 30 ]
         }
       ]
     },
@@ -404,7 +413,8 @@
         {
           "key": "crow",
           "name": "Crow",
-          "id": [ 5 ]
+          "id": [ 5 ],
+          "esp": [ 28 ]
         }
       ]
     },
@@ -416,7 +426,8 @@
         {
           "key": "hunter",
           "name": "Hunter",
-          "id": [ 6 ]
+          "id": [ 6 ],
+          "esp": [ 3, 4 ]
         }
       ]
     },
@@ -440,7 +451,8 @@
         {
           "key": "chimera",
           "name": "Chimera",
-          "id": [ 9 ]
+          "id": [ 9 ],
+          "esp": [ 3, 4, 29, 31 ]
         }
       ]
     },
@@ -452,7 +464,8 @@
         {
           "key": "snake",
           "name": "Snake",
-          "id": [ 10 ]
+          "id": [ 10 ],
+          "esp": [ 4 ]
         }
       ]
     },
@@ -464,7 +477,8 @@
         {
           "key": "neptune",
           "name": "Neptune",
-          "id": [ 11 ]
+          "id": [ 11 ],
+          "esp": [ 23, 37 ]
         }
       ]
     },
@@ -695,8 +709,9 @@
       ],
       "enemies": [
         {
-          "excludeTypes": [ 3, 4, 10 ],
-          "randomPlacements": false
+          "id": 0,
+          "globalId": 28,
+          "excludeTypes": [ 3, 4, 10 ]
         }
       ],
       "npcs": []
@@ -2015,8 +2030,9 @@
       ],
       "enemies": [
         {
-          "excludeTypes": [ 2 ],
-          "randomPlacements": false
+          "id": 0,
+          "globalId": 23,
+          "excludeTypes": [ 2 ]
         }
       ]
     },
@@ -2175,6 +2191,8 @@
       ],
       "enemies": [
         {
+          "id": 0,
+          "globalId": 62,
           "keepState": true,
           "includeTypes": [ 11, 12, 18 ],
           "ignoreRatio": true
@@ -2341,9 +2359,9 @@
       ],
       "enemies": [
         {
-          "keepState": true,
-          "includeTypes": [ 4, 11, 12, 13 ],
-          "ignoreRatio": true
+          "id": 0,
+          "globalId": 24,
+          "includeTypes": [ 4, 11, 12, 13 ]
         }
       ]
     },
@@ -2767,13 +2785,14 @@
       ],
       "enemies": [
         {
-          "excludeTypes": [ 4 ],
-          "randomPlacements": false
+          "id": 0,
+          "globalId": 107,
+          "excludeTypes": [ 4 ]
         },
         {
-          "excludeTypes": [ 4 ],
-          "keepPositions": true,
-          "randomPlacements": true
+          "id": 1,
+          "globalId": 108,
+          "excludeTypes": [ 4 ]
         }
       ]
     },
@@ -2873,8 +2892,7 @@
       ],
       "enemies": [
         {
-          "excludeTypes": [ 3, 4, 7, 10 ],
-          "randomPlacements": true
+          "excludeTypes": [ 3, 4, 7, 10 ]
         }
       ]
     },
@@ -2974,7 +2992,13 @@
           "group": -1
         }
       ],
-      "enemies": []
+      "enemies": [
+        {
+          "id": 0,
+          "globalId": 89,
+          "includeTypes": [ 16 ]
+        }
+      ]
     },
     "304": {
       "name": "GUARDHOUSE GATE",
@@ -3206,6 +3230,11 @@
         {
           "excludeTypes": [ 4 ],
           "player": 0
+        },
+        {
+          "condition": "!(!1:88 && 1:72 && !1:93)",
+          "excludeTypes": [ 4 ],
+          "player": 1
         }
       ]
     },
@@ -3285,7 +3314,18 @@
           "group": 16
         }
       ],
-      "enemies": [],
+      "enemies": [
+        {
+          "id": 1,
+          "globalId": 80,
+          "includeTypes": [ 6 ]
+        },
+        {
+          "id": 2,
+          "globalId": 81,
+          "includeTypes": [ 6 ]
+        }
+      ],
       "npcs": [
         {
           "includeTypes": [ 40 ],
@@ -3342,7 +3382,18 @@
           "player": 1
         }
       ],
-      "enemies": []
+      "enemies": [
+        {
+          "id": 0,
+          "globalId": 122,
+          "includeTypes": [ 6 ]
+        },
+        {
+          "id": 1,
+          "globalId": 123,
+          "includeTypes": [ 6 ]
+        }
+      ]
     },
     "30C": {
       "name": "CAVES BLACK TIGER",
@@ -3365,6 +3416,10 @@
           "amount": 1,
           "group": 16
         }
+      ],
+      "enemies": [
+        {
+        }
       ]
     },
     "30D": {
@@ -3383,8 +3438,7 @@
       ],
       "enemies": [
         {
-          "excludeTypes": [ 4 ],
-          "randomPlacements": true
+          "excludeTypes": [ 4 ]
         }
       ]
     },
@@ -3533,8 +3587,7 @@
       ],
       "enemies": [
         {
-          "excludeTypes": [ 4 ],
-          "randomPlacements": true
+          "excludeTypes": [ 4 ]
         }
       ]
     },
@@ -3581,8 +3634,7 @@
       "enemies": [
         {
           "excludeTypes": [ 4 ],
-          "maxDifficulty": 1,
-          "randomPlacements": true
+          "maxDifficulty": 1
         }
       ]
     },
@@ -3608,8 +3660,7 @@
       "enemies": [
         {
           "excludeTypes": [ 4 ],
-          "maxDifficulty": 0,
-          "randomPlacements": true
+          "maxDifficulty": 0
         }
       ]
     },
@@ -3693,7 +3744,6 @@
       ],
       "enemies": [
         {
-          "randomPlacements": true
         }
       ]
     },
@@ -3886,11 +3936,9 @@
       "enemies": [
         {
           "condition": "!(!0:0 && 1:61 && 1:170)",
-          "randomPlacements": true,
           "player": 0
         },
         {
-          "randomPlacements": true,
           "player": 1
         }
       ]
@@ -3908,6 +3956,36 @@
       "doors": [
         {
           "target": "408"
+        }
+      ],
+      "items": [
+        {
+          "name": "EMPTY BOTTLE/1",
+          "id": 1,
+          "globalId": 60,
+          "type": 19,
+          "amount": 1
+        },
+        {
+          "name": "EMPTY BOTTLE/2",
+          "id": 2,
+          "globalId": 61,
+          "type": 19,
+          "amount": 1
+        },
+        {
+          "name": "EMPTY BOTTLE/3",
+          "id": 3,
+          "globalId": 62,
+          "type": 19,
+          "amount": 1
+        },
+        {
+          "name": "EMPTY BOTTLE/4",
+          "id": 4,
+          "globalId": 63,
+          "type": 19,
+          "amount": 1
         }
       ],
       "enemies": [
@@ -4105,6 +4183,14 @@
       "doors": [
         {
           "target": "40E"
+        }
+      ],
+      "flags": [
+        {
+          "name": "VJOLT_ROOTS",
+          "requires2": [
+            "item(27)"
+          ]
         }
       ],
       "items": [
@@ -4924,7 +5010,13 @@
           "group": 32
         }
       ],
-      "enemies": [],
+      "enemies": [
+        {
+          "id": 1,
+          "globalId": 112,
+          "includeTypes": [ 12 ]
+        }
+      ],
       "npcs": [
         {
           "includeTypes": [ 46 ],

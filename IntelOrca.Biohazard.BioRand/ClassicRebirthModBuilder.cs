@@ -29,7 +29,13 @@ namespace IntelOrca.Biohazard.BioRand
             SetFile("manifest.txt", data);
         }
 
-        public void SetFile(string path, ReadOnlyMemory<byte> data) => _files[path] = data.ToArray();
+        public void SetFile(string path, ReadOnlyMemory<byte> data)
+        {
+            lock (_files)
+            {
+                _files[path] = data.ToArray();
+            }
+        }
 
         private void AddSupplementaryFiles()
         {

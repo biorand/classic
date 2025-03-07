@@ -8,6 +8,7 @@ using System.Reflection;
 using System.Text;
 using IntelOrca.Biohazard.BioRand.Routing;
 using SixLabors.ImageSharp;
+using static IntelOrca.Biohazard.BioRand.EnemyRandomiser;
 
 namespace IntelOrca.Biohazard.BioRand
 {
@@ -374,9 +375,16 @@ namespace IntelOrca.Biohazard.BioRand
                 });
             }
 
-#if false
             page = result.CreatePage("Enemies");
             group = page.CreateGroup("");
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "enemies/random",
+                Label = "Randomize Enemies",
+                Description = "Allow BioRand to place random enemies in random places in each room.",
+                Type = "switch",
+                Default = true
+            });
             group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
             {
                 Id = "enemies/safe",
@@ -438,15 +446,25 @@ namespace IntelOrca.Biohazard.BioRand
                 }
             }
 
-            group = page.CreateGroup("Maximum per Room");
+            group = page.CreateGroup("Min/Max per Room");
             foreach (var enemyGroup in map.Enemies)
             {
                 foreach (var entry in enemyGroup.Entries)
                 {
                     group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
                     {
+                        Id = $"enemies/min/{entry.Key}",
+                        Label = $"Min. {entry.Name}",
+                        Type = "range",
+                        Min = 1,
+                        Max = 16,
+                        Step = 1,
+                        Default = 1
+                    });
+                    group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+                    {
                         Id = $"enemies/max/{entry.Key}",
-                        Label = entry.Name,
+                        Label = $"Max. {entry.Name}",
                         Type = "range",
                         Min = 1,
                         Max = 16,
@@ -455,7 +473,6 @@ namespace IntelOrca.Biohazard.BioRand
                     });
                 }
             }
-#endif
 
             page = result.CreatePage("Cutscenes");
             group = page.CreateGroup("");
@@ -589,6 +606,11 @@ namespace IntelOrca.Biohazard.BioRand
                 keyRandomizer.RandomiseItems(context);
                 var itemRandomizer = new ItemRandomizer();
                 itemRandomizer.Randomize(context);
+            }
+            if (context.Configuration.GetValueOrDefault("enemies/random", false))
+            {
+                var enemyRandomizer = new EnemyRandomizer();
+                enemyRandomizer.Randomize(context);
             }
         }
 
@@ -1297,13 +1319,221 @@ namespace IntelOrca.Biohazard.BioRand
         }
     }
 
+    internal class EnemyRandomizer
+    {
+        public void Randomize(IClassicRandomizerPlayerContext context)
+        {
+            // Decide what room is going to have what enemy type
+            var roomWithEnemies = GetRoomSelection(context);
+
+            // Find all global IDs used in fixed enemies
+            var usedGlobalIds = context.Variation.Map.Rooms
+                .SelectMany(x => x.Value.Enemies ?? [])
+                .Where(x => x.GlobalId != null)
+                .Select(x => x.GlobalId)
+                .ToHashSet();
+
+            // Create bag of available global IDs
+            var allEnemyIds = new List<int>();
+            for (var i = 0; i < 255; i++)
+            {
+                if (!usedGlobalIds.Contains(i))
+                {
+                    allEnemyIds.Add(i);
+                }
+            }
+            var enemyIdBag = allEnemyIds.ToEndlessBag(context.Rng);
+
+            // Create or set enemies
+            var enemyPositions = context.DataManager.GetJson<EnemyPosition[]>(BioVersion.Biohazard1, "enemy.json");
+            foreach (var rwe in roomWithEnemies)
+            {
+                var rdts = rwe.Room.Rdts ?? [];
+                var type = context.Rng.NextOf(rwe.EnemyInfo.Type);
+
+                var roomDefiniedEnemies = rwe.Room.Enemies ?? [];
+                if (roomDefiniedEnemies.Any(x => x.Id != null))
+                {
+                    // Fixed enemies
+                    foreach (var e in roomDefiniedEnemies)
+                    {
+                        foreach (var rdtId in rdts)
+                        {
+                            var placement = new EnemyPlacement()
+                            {
+                                RdtId = rdtId,
+                                GlobalId = e.GlobalId ?? 0,
+                                Id = e.Id ?? 0,
+                                Type = type,
+                                Esp = rwe.EnemyInfo.Entry.Esp ?? []
+                            };
+                            context.ModBuilder.AddEnemy(placement);
+                        }
+                    }
+                }
+                else
+                {
+                    // Clear room, add new enemies
+                    var numEnemies = context.Rng.Next(rwe.EnemyInfo.MinPerRoom, rwe.EnemyInfo.MaxPerRoom + 1);
+                    var positions = enemyPositions
+                        .Where(x => rdts.Contains(RdtId.Parse(x.Room ?? "")))
+                        .ToEndlessBag(context.Rng);
+                    if (positions.Count == 0)
+                        continue;
+
+                    var chosenPositions = positions.Next(numEnemies);
+                    var globalId = enemyIdBag.Next();
+                    var condition = roomDefiniedEnemies.First().Condition;
+                    foreach (var rdtId in rdts)
+                    {
+                        var id = 0;
+                        foreach (var p in chosenPositions)
+                        {
+                            var placement = new EnemyPlacement()
+                            {
+                                Create = true,
+                                RdtId = rdtId,
+                                GlobalId = globalId,
+                                Id = id,
+                                Type = type,
+                                X = p.X,
+                                Y = p.Y,
+                                Z = p.Z,
+                                D = p.D,
+                                Esp = rwe.EnemyInfo.Entry.Esp ?? [],
+                                Condition = condition
+                            };
+                            context.ModBuilder.AddEnemy(placement);
+                            id++;
+                        }
+                    }
+                }
+            }
+        }
+
+        private RoomWithEnemies[] GetRoomSelection(IClassicRandomizerPlayerContext context)
+        {
+            var config = context.Configuration;
+            var map = context.Variation.Map;
+
+            var rdtSeen = new HashSet<RdtId>();
+            var roomList = new List<MapRoom>();
+            foreach (var kvp in map.Rooms)
+            {
+                var rdts = kvp.Value.Rdts;
+                if (rdts == null)
+                    continue;
+                if (rdts.Any(rdtSeen.Contains))
+                    continue;
+
+                rdtSeen.AddRange(rdts);
+                roomList.Add(kvp.Value);
+            }
+            roomList = roomList.Shuffle(context.Rng).ToList();
+
+            var totalRooms = roomList.Count;
+            var roomWeight = config.GetValueOrDefault("enemies/rooms", 0.0);
+            var enemyRoomTotal = (int)Math.Round(roomWeight * totalRooms);
+            while (roomList.Count > enemyRoomTotal)
+                roomList.RemoveAt(roomList.Count - 1);
+
+            var enemyInfo = new List<EnemyInfo>();
+            foreach (var ed in map.Enemies)
+            {
+                foreach (var ede in ed.Entries)
+                {
+                    enemyInfo.Add(new EnemyInfo()
+                    {
+                        Group = ed,
+                        Entry = ede,
+                        Weight = config.GetValueOrDefault($"enemies/distribution/{ede.Key}", 0.0),
+                        MinPerRoom = Math.Max(1, config.GetValueOrDefault($"enemies/min/{ede.Key}", 1)),
+                        MaxPerRoom = Math.Min(16, config.GetValueOrDefault($"enemies/max/{ede.Key}", 6))
+                    });
+                }
+            }
+            var totalEnemyWeight = enemyInfo.Sum(x => x.Weight);
+            foreach (var ei in enemyInfo)
+            {
+                ei.NumRooms = (int)Math.Round(enemyRoomTotal * (ei.Weight / totalEnemyWeight));
+            }
+            enemyInfo = enemyInfo.OrderBy(x => x.NumRooms).ToList();
+
+            var result = new List<RoomWithEnemies>();
+            foreach (var ei in enemyInfo)
+            {
+                var enemiesLeft = ei.NumRooms;
+                for (var i = 0; i < roomList.Count; i++)
+                {
+                    if (enemiesLeft <= 0)
+                        continue;
+
+                    var room = roomList[i];
+                    var enemies = room.Enemies?.FirstOrDefault();
+                    if (enemies == null)
+                        continue;
+
+                    var includedTypes = enemies.IncludeTypes;
+                    if (includedTypes != null)
+                    {
+                        if (!ei.Type.Any(x => includedTypes.Contains(x)))
+                        {
+                            continue;
+                        }
+                    }
+                    else
+                    {
+                        var excludedTypes = enemies.ExcludeTypes;
+                        if (excludedTypes != null && ei.Type.Any(x => excludedTypes.Contains(x)))
+                        {
+                            continue;
+                        }
+                    }
+
+                    enemiesLeft--;
+                    roomList.RemoveAt(i--);
+                    result.Add(new RoomWithEnemies(room, ei));
+                }
+            }
+            return [.. result];
+        }
+
+        private class RoomWithEnemies(MapRoom room, EnemyInfo enemyInfo)
+        {
+            public MapRoom Room => room;
+            public EnemyInfo EnemyInfo => enemyInfo;
+
+            public override string ToString()
+            {
+                return $"[{string.Join(", ", Room.Rdts ?? [])}] -> {EnemyInfo}";
+            }
+        }
+
+        private class EnemyInfo
+        {
+            public required MapEnemyGroup Group { get; set; }
+            public required MapEnemyGroupEntry Entry { get; set; }
+            public required double Weight { get; set; }
+            public required int MinPerRoom { get; set; }
+            public required int MaxPerRoom { get; set; }
+
+            public int NumRooms { get; set; }
+
+            public int[] Type => Entry.Id;
+
+            public override string ToString() => Entry.Name;
+        }
+    }
+
     internal class ModBuilder
     {
         private readonly Dictionary<RdtItemId, DoorLock> _doorLock = new();
         private readonly Dictionary<int, Item> _itemMap = new();
+        private readonly List<EnemyPlacement> _enemyPlacements = new();
 
         public ImmutableArray<RandomInventory> Inventory { get; set; } = [];
         public ImmutableArray<int> AssignedItemGlobalIds => [.. _itemMap.Keys];
+        public ImmutableArray<EnemyPlacement> EnemyPlacements => [.. _enemyPlacements];
 
         public void SetDoorTarget(RdtItemId doorIdentity, RdtItemId target)
         {
@@ -1322,6 +1552,11 @@ namespace IntelOrca.Biohazard.BioRand
         public void SetItem(int globalId, Item item)
         {
             _itemMap.Add(globalId, item);
+        }
+
+        public void AddEnemy(EnemyPlacement placement)
+        {
+            _enemyPlacements.Add(placement);
         }
 
         public void ApplyToRdt(RandomizedRdt rrdt)
@@ -1364,6 +1599,17 @@ namespace IntelOrca.Biohazard.BioRand
             DumpGroup("ammo", "Ammo");
             DumpGroup("health", "Health");
             DumpGroup("ink", "Ink");
+
+            sb.AppendLine($"# Enemies");
+            sb.AppendLine("| Global ID | RDT | ID | Enemy |");
+            sb.AppendLine("| --------- |-----|----|------ |");
+            foreach (var enemy in _enemyPlacements.OrderBy(x => x.RdtId).ThenBy(x => x.Id))
+            {
+                var entry = map.Enemies.SelectMany(x => x.Entries).FirstOrDefault(x => x.Id.Contains(enemy.Type));
+                var enemyName = entry?.Name ?? $"{enemy.Type}";
+                sb.AppendLine($"| {enemy.GlobalId} | {enemy.RdtId} | {enemy.Id} | {enemyName} |");
+            }
+
             return sb.ToString();
 
             void DumpInventory(string playerName, RandomInventory inventory)
@@ -1439,5 +1685,20 @@ namespace IntelOrca.Biohazard.BioRand
     {
         public int Id => id;
         public int KeyItemId => keyItemId;
+    }
+
+    internal class EnemyPlacement
+    {
+        public RdtId RdtId { get; set; }
+        public int GlobalId { get; set; }
+        public int Id { get; set; }
+        public int Type { get; set; }
+        public int X { get; set; }
+        public int Y { get; set; }
+        public int Z { get; set; }
+        public int D { get; set; }
+        public bool Create { get; set; }
+        public int[] Esp { get; set; } = [];
+        public string? Condition { get; set; }
     }
 }
