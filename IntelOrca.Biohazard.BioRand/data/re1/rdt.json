@@ -620,20 +620,24 @@
       "doors": [
         {
           "id": 0,
-          "target": "101"
+          "target": "101:2"
         },
         {
-          "target": "104",
+          "id": 1,
+          "target": "104:0",
           "kind": "unlock"
         },
         {
-          "target": "10C"
+          "id": 2,
+          "target": "10C:0"
         },
         {
-          "target": "10D"
+          "id": 3,
+          "target": "10D:0"
         },
         {
-          "target": "10E",
+          "id": 4,
+          "target": "10E:0",
           "requires2": [
             "item(51)"
           ]
@@ -650,21 +654,25 @@
       "rdts": [ "104", "604" ],
       "doors": [
         {
-          "target": "103",
+          "id": 0,
+          "target": "103:1",
           "kind": "locked"
         },
         {
-          "target": "105",
+          "id": 3,
+          "target": "105:0",
           "randomize": false
         },
         {
-          "target": "10F",
+          "id": 1,
+          "target": "10F:0",
           "requires2": [
             "item(51)"
           ]
         },
         {
-          "target": "110",
+          "id": 2,
+          "target": "110:0",
           "kind": "blocked"
         }
       ],
@@ -722,11 +730,13 @@
       "rdts": [ "105", "605" ],
       "doors": [
         {
-          "target": "104",
+          "id": 0,
+          "target": "104:3",
           "randomize": false
         },
         {
-          "target": "106",
+          "id": 1,
+          "target": "106:2",
           "randomize": false
         }
       ],
@@ -828,20 +838,24 @@
       "tags": [ "save" ],
       "doors": [
         {
-          "target": "105",
+          "id": 2,
+          "target": "105:1",
           "randomize": false
         },
         {
-          "target": "107"
+          "id": 0,
+          "target": "107:0"
         },
         {
-          "target": "111",
+          "id": 1,
+          "target": "111:0",
           "requires2": [
             "item(52)"
           ]
         },
         {
-          "target": "203",
+          "id": 4,
+          "target": "203:0",
           "randomize": false
         },
         {
@@ -944,10 +958,12 @@
       "rdts": [ "107", "607" ],
       "doors": [
         {
-          "target": "106"
+          "id": 0,
+          "target": "106:0"
         },
         {
-          "target": "108",
+          "id": 1,
+          "target": "108:0",
           "requires2": [
             "item(51)"
           ]
@@ -975,10 +991,12 @@
       "rdts": [ "108", "608" ],
       "doors": [
         {
-          "target": "107"
+          "id": 0,
+          "target": "107:1"
         },
         {
-          "target": "109"
+          "id": 1,
+          "target": "109:0"
         }
       ],
       "items": [
@@ -1003,22 +1021,27 @@
       "rdts": [ "109", "609" ],
       "doors": [
         {
-          "target": "108"
+          "id": 0,
+          "target": "108:1"
         },
         {
-          "target": "10A"
+          "id": 4,
+          "target": "10A:0"
         },
         {
-          "target": "114",
+          "id": 1,
+          "target": "114:0",
           "requires2": [
             "item(52)"
           ]
         },
         {
-          "target": "113"
+          "id": 2,
+          "target": "113:0"
         },
         {
-          "target": "115"
+          "id": 3,
+          "target": "115:0"
         }
       ],
       "items": [
@@ -1056,23 +1079,28 @@
       "rdts": [ "10A", "60A" ],
       "doors": [
         {
-          "target": "109"
+          "id": 0,
+          "target": "109:4"
         },
         {
-          "target": "10B",
+          "id": 3,
+          "target": "10B:0",
           "kind": "unlock"
         },
         {
-          "target": "117"
+          "id": 1,
+          "target": "117:0"
         },
         {
-          "target": "119",
+          "id": 2,
+          "target": "119:0",
           "requires2": [
             "item(54)"
           ]
         },
         {
-          "target": "11A"
+          "id": 4,
+          "target": "11A:0"
         }
       ],
       "enemies": [
@@ -1087,14 +1115,17 @@
       "rdts": [ "10B", "60B" ],
       "doors": [
         {
-          "target": "10A",
+          "id": 0,
+          "target": "10A:3",
           "kind": "locked"
         },
         {
-          "target": "118"
+          "id": 2,
+          "target": "118:0"
         },
         {
-          "target": "207"
+          "id": 1,
+          "target": "207:2"
         }
       ],
       "items": [
@@ -1119,7 +1150,8 @@
       "name": "1F WEST GREENHOUSE",
       "doors": [
         {
-          "target": "103"
+          "id": 1,
+          "target": "103:0"
         },
         {
           "target": "10C/BACK",
@@ -1202,7 +1234,8 @@
       "rdts": [ "10D", "60D" ],
       "doors": [
         {
-          "target": "103"
+          "id": 0,
+          "target": "103:3"
         }
       ],
       "items": [
@@ -1247,7 +1280,8 @@
       "rdts": [ "10E", "60E" ],
       "doors": [
         {
-          "target": "103"
+          "id": 0,
+          "target": "103:4"
         }
       ],
       "items": [
@@ -1280,7 +1314,8 @@
       "rdts": [ "10F", "60F" ],
       "doors": [
         {
-          "target": "104"
+          "id": 0,
+          "target": "104:1"
         }
       ],
       "items": [
@@ -1360,7 +1395,8 @@
       "rdts": [ "110", "610" ],
       "doors": [
         {
-          "target": "104",
+          "id": 0,
+          "target": "104:2",
           "kind": "unlock"
         }
       ],
@@ -1371,10 +1407,12 @@
       "rdts": [ "111", "611" ],
       "doors": [
         {
-          "target": "106"
+          "id": 0,
+          "target": "106:1"
         },
         {
-          "target": "112"
+          "id": 1,
+          "target": "112:0"
         }
       ],
       "items": [
@@ -1410,10 +1448,12 @@
       "rdts": [ "112", "612" ],
       "doors": [
         {
-          "target": "111"
+          "id": 0,
+          "target": "111:1"
         },
         {
-          "target": "11C",
+          "id": 1,
+          "target": "11C:0",
           "requires2": [
             "item(56)"
           ]
@@ -1459,7 +1499,8 @@
       "rdts": [ "113", "613" ],
       "doors": [
         {
-          "target": "109"
+          "id": 0,
+          "target": "109:2"
         }
       ],
       "items": [
@@ -1488,7 +1529,8 @@
       "rdts": [ "114", "614" ],
       "doors": [
         {
-          "target": "109"
+          "id": 0,
+          "target": "109:1"
         }
       ],
       "items": [
@@ -1548,10 +1590,12 @@
       "rdts": [ "115", "615" ],
       "doors": [
         {
-          "target": "109"
+          "id": 0,
+          "target": "109:3"
         },
         {
-          "target": "116"
+          "id": 1,
+          "target": "116:0"
         }
       ],
       "enemies": [
@@ -1574,7 +1618,8 @@
       "rdts": [ "116", "616" ],
       "doors": [
         {
-          "target": "115"
+          "id": 0,
+          "target": "115:1"
         }
       ],
       "items": [
@@ -1605,7 +1650,8 @@
       "rdts": [ "117", "617" ],
       "doors": [
         {
-          "target": "10A"
+          "id": 0,
+          "target": "10A:1"
         }
       ],
       "items": [
@@ -1631,7 +1677,8 @@
       ],
       "doors": [
         {
-          "target": "10B"
+          "id": 0,
+          "target": "10B:2"
         }
       ],
       "items": [
@@ -1682,6 +1729,12 @@
     "119": {
       "name": "1F EAST STUDY",
       "rdts": [ "119", "619" ],
+      "doors": [
+        {
+          "id": 0,
+          "target": "10A:2"
+        }
+      ],
       "items": [
         {
           "name": "BOOK",
@@ -1717,10 +1770,12 @@
       ],
       "doors": [
         {
-          "target": "10A"
+          "id": 0,
+          "target": "10A:4"
         },
         {
-          "target": "11B",
+          "id": 1,
+          "target": "11B:0",
           "requires2": [
             "item(41)",
             "item(44)",
@@ -1742,10 +1797,12 @@
       "rdts": [ "11B", "61B" ],
       "doors": [
         {
-          "target": "11A"
+          "id": 0,
+          "target": "11A:1"
         },
         {
-          "target": "300"
+          "id": 1,
+          "target": "300:2"
         }
       ],
       "items": [
@@ -1786,7 +1843,8 @@
       ],
       "doors": [
         {
-          "target": "112"
+          "id": 0,
+          "target": "112:1"
         }
       ]
     },
