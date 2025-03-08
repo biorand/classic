@@ -663,6 +663,7 @@ namespace IntelOrca.Biohazard.BioRand
             WriteRdts(context);
             AddSoundXml(context);
             AddInventoryXml(context);
+            AddEnemySkins(context);
             AddBackgroundTextures(context);
             WritePatchFile(context);
         }
@@ -932,6 +933,12 @@ namespace IntelOrca.Biohazard.BioRand
             doc.AppendChild(root);
             doc.Save(ms);
             context.CrModBuilder.SetFile("init.xml", ms.ToArray());
+        }
+
+        private void AddEnemySkins(IClassicRandomizerContext context)
+        {
+            var emd100B = context.DataManager.GetData(BioVersion.Biohazard1, "emd/orca/EM100B.EMD");
+            context.CrModBuilder.SetFile("ENEMY/EM100B.EMD", emd100B);
         }
 
         private static RandomInventory CreateEmptyInventory(int size)
