@@ -1583,7 +1583,11 @@
           "group": 1
         }
       ],
-      "enemies": []
+      "enemies": [
+        {
+          "excludeTypes": [ 4 ]
+        }
+      ]
     },
     "115": {
       "name": "1F EAST JILL SANDWICH",
@@ -2456,7 +2460,7 @@
       ],
       "enemies": [
         {
-          "excludeTypes": [ 4, 12 ],
+          "excludeTypes": [ 2, 4, 12 ],
           "maxDifficulty": 0
         }
       ]
@@ -3217,7 +3221,7 @@
       ],
       "enemies": [
         {
-          "excludeTypes": [ 3, 4, 7, 10 ],
+          "excludeTypes": [ 3, 4, 7, 9, 10 ],
           "maxDifficulty": 1
         }
       ]

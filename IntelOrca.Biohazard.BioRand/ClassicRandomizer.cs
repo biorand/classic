@@ -1384,7 +1384,12 @@ namespace IntelOrca.Biohazard.BioRand
                     else
                     {
                         // Clear room, add new enemies
-                        var numEnemies = rng.Next(rwe.EnemyInfo.MinPerRoom, rwe.EnemyInfo.MaxPerRoom + 1);
+                        var min = rwe.EnemyInfo.MinPerRoom;
+                        var max = rwe.EnemyInfo.MaxPerRoom + 1;
+                        if (e.MaxDifficulty is int maxDifficulty)
+                            max = Math.Max(1, (int)Math.Round(max / (double)(4 - maxDifficulty)));
+
+                        var numEnemies = rng.Next(min, max + 1);
                         var positions = enemyPositions
                             .Where(x => rwe.Room.Rdts.Contains(RdtId.Parse(x.Room ?? "")))
                             .ToEndlessBag(rng);
@@ -1462,7 +1467,7 @@ namespace IntelOrca.Biohazard.BioRand
                 foreach (var kvp in map.Rooms)
                 {
                     var rdts = kvp.Value.Rdts;
-                    if (rdts == null)
+                    if (rdts == null || kvp.Value.Enemies == null)
                         continue;
 
                     var supportedEnemies = enemyInfo.Where(x => SupportsEnemy(kvp.Value, x)).ToImmutableArray();
@@ -1497,7 +1502,10 @@ namespace IntelOrca.Biohazard.BioRand
                 enemyRoomTotal = roomList.Count;
 
                 // Shuffle order of rooms
-                roomList = [.. roomList.Shuffle(rng)];
+                roomList = roomList
+                    .Shuffle(rng)
+                    .OrderBy(x => x.SupportedEnemies.Count()) // Pick off more limited rooms first (otherwise they never get set)
+                    .ToList();
 
                 var totalEnemyWeight = enemyInfo.Sum(x => x.Weight);
                 foreach (var ei in enemyInfo)
@@ -1671,7 +1679,7 @@ namespace IntelOrca.Biohazard.BioRand
                 .SelectMany(x => x.Entries)
                 .SelectMany(x => x.Id.Select(y => (x, y)))
                 .ToDictionary(x => x.Item2, x => x.Item1);
-            foreach (var g in _enemyPlacements.GroupBy(x => typeToEntryMap[x.Type]))
+            foreach (var g in _enemyPlacements.GroupBy(x => typeToEntryMap[x.Type]).OrderByDescending(x => x.Count()))
             {
                 var enemyName = g.Key.Name;
                 var total = g.Count();

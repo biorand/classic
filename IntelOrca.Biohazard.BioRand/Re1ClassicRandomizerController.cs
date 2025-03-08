@@ -305,6 +305,7 @@ namespace IntelOrca.Biohazard.BioRand
             var randomItems = context.Configuration.GetValueOrDefault("items/random", false);
 
             DisableDogWindows();
+            DisableDogBoiler();
             FixDoorToWardrobe();
             FixPassCodeDoor();
             FixDrugStoreRoom();
@@ -318,6 +319,12 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 var rdt108 = gameData.GetRdt(RdtId.Parse("108"));
                 rdt108?.Nop(0x19754, 0x197EE);
+            }
+
+            void DisableDogBoiler()
+            {
+                var rdt114 = gameData.GetRdt(RdtId.Parse("114"));
+                rdt114?.Nop(0x24B80, 0x24C1C);
             }
 
             void FixDoorToWardrobe()
