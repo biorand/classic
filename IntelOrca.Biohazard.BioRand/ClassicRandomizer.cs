@@ -483,17 +483,6 @@ namespace IntelOrca.Biohazard.BioRand
                 }
             }
 
-            page = result.CreatePage("Cutscenes");
-            group = page.CreateGroup("");
-            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
-            {
-                Id = "cutscenes/disable",
-                Label = "Disable All Cutscenes",
-                Description = "Disable all cutscenes in the game.",
-                Type = "switch",
-                Default = false
-            });
-
             // page = result.CreatePage("Music");
             controller.UpdateConfigDefinition(result);
             return result;
@@ -546,7 +535,24 @@ namespace IntelOrca.Biohazard.BioRand
             var gameDataManager = GetGameDataManager();
             var rng = new Rng(input.Seed);
 
-            var context = new Context(input.Configuration, dataManager, gameDataManager, rng);
+            var modifiedConfig = input.Configuration.Clone();
+            var ink = modifiedConfig.GetValueOrDefault("ink/enable", "Default");
+            if (ink == "Default")
+            {
+                ink = modifiedConfig.GetValueOrDefault("variation", "Chris") == "Chris" ? "Always" : "Never";
+            }
+            else if (ink == "Random")
+            {
+                ink = rng.NextOf("Never", "Always");
+            }
+            if (ink != "Always")
+            {
+                modifiedConfig["inventory/ink/min"] = 0;
+                modifiedConfig["inventory/ink/max"] = 0;
+                modifiedConfig["items/distribution/ink"] = 0;
+            }
+
+            var context = new Context(modifiedConfig, dataManager, gameDataManager, rng);
             var generatedVariation = Randomize(context);
             var crModBuilder = CreateCrModBuilder(input, generatedVariation);
 

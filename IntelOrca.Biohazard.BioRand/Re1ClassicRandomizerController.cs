@@ -22,6 +22,25 @@ namespace IntelOrca.Biohazard.BioRand
         public void UpdateConfigDefinition(RandomizerConfigurationDefinition definition)
         {
             var page = definition.Pages.First(x => x.Label == "General");
+
+            page.Groups[0].Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "cutscenes/disable",
+                Label = "Remove Alpha Team",
+                Description = "Remove the other members of the Alpha team, i.e. Chris, Jill, Rebecca, Barry, and Wesker. Disables all related cutscenes.",
+                Type = "switch",
+                Default = false
+            });
+            page.Groups[0].Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "ink/enable",
+                Label = "Requires Ink Ribbons to Save",
+                Description = "If disabled, no ink ribbons will be placed, and saving can be done at any time unlimited times at a typewriter. Default will enable it for Chris, but not Jill.",
+                Type = "dropdown",
+                Options = ["Default", "Never", "Always", "Random"],
+                Default = false
+            });
+
             page.Groups.Insert(1, new RandomizerConfigurationDefinition.Group("Progression (non-door randomizer)")
             {
                 Items =
@@ -304,6 +323,11 @@ namespace IntelOrca.Biohazard.BioRand
             var randomDoors = context.Configuration.GetValueOrDefault("doors/random", false);
             var randomItems = context.Configuration.GetValueOrDefault("items/random", false);
 
+            var ink = context.Configuration.GetValueOrDefault("ink/enable", "Never");
+            var value = (byte)(ink == "Always" ? 0 : 1);
+            gameData.GetRdt(RdtId.Parse("106"))?.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x05, [0, 123, value]));
+
+            EnableMoreJillItems();
             DisableDogWindows();
             DisableDogBoiler();
             FixDoorToWardrobe();
@@ -315,6 +339,12 @@ namespace IntelOrca.Biohazard.BioRand
             DisableBarryEvesdrop();
             AllowPartnerItemBoxes();
             EnableFountainHeliportDoors();
+
+            void EnableMoreJillItems()
+            {
+                gameData.GetRdt(RdtId.Parse("106"))?.Nop(0x2FC06);
+                gameData.GetRdt(RdtId.Parse("106"))?.Nop(0x31862);
+            }
 
             void DisableDogWindows()
             {
@@ -615,7 +645,6 @@ namespace IntelOrca.Biohazard.BioRand
             }
             else
             {
-                // Set(0, 123, 0); // Jill uses ink ribbons
                 rdt.AdditionalOpcodes.AddRange(
                     ScdCondition.Parse("1:0").Generate(BioVersion.Biohazard1, [
                         Set(0, 101, 0), // Chris in cell cutscene
