@@ -24,10 +24,10 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 sb.Append($"Module = {m.FileName}\r\n");
             }
-
-            var data = Encoding.UTF8.GetBytes(sb.ToString());
-            SetFile("manifest.txt", data);
+            SetFile("manifest.txt", sb.ToString());
         }
+
+        public void SetFile(string path, string data) => SetFile(path, Encoding.UTF8.GetBytes(data));
 
         public void SetFile(string path, ReadOnlyMemory<byte> data)
         {
@@ -52,8 +52,7 @@ namespace IntelOrca.Biohazard.BioRand
                     .Replace("\n", "\r\n");
                 if (!processed.EndsWith("\r\n"))
                     processed += "\r\n";
-                var data = Encoding.UTF8.GetBytes(processed);
-                SetFile("description.txt", data);
+                SetFile("description.txt", processed);
             }
         }
 

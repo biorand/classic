@@ -1,6 +1,4 @@
-﻿using System.Collections.Immutable;
-
-namespace IntelOrca.Biohazard.BioRand
+﻿namespace IntelOrca.Biohazard.BioRand
 {
     internal interface IClassicRandomizerContext
     {
@@ -8,11 +6,9 @@ namespace IntelOrca.Biohazard.BioRand
         DataManager DataManager { get; }
         DataManager GameDataManager { get; }
         Rng Rng { get; }
-        ClassicRebirthModBuilder CrModBuilder { get; }
-        ImmutableArray<IClassicRandomizerPlayerContext> GeneratedVariations { get; }
     }
 
-    internal interface IClassicRandomizerPlayerContext
+    internal interface IClassicRandomizerGeneratedVariation
     {
         RandomizerConfiguration Configuration { get; }
         DataManager DataManager { get; }

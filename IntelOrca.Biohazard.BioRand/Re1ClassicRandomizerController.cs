@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
@@ -18,6 +17,8 @@ namespace IntelOrca.Biohazard.BioRand
 {
     internal class Re1ClassicRandomizerController : IClassicRandomizerController
     {
+        public ImmutableArray<string> VariationNames { get; } = ["Chris", "Jill"];
+
         public void UpdateConfigDefinition(RandomizerConfigurationDefinition definition)
         {
             var page = definition.Pages.First(x => x.Label == "General");
@@ -126,12 +127,13 @@ namespace IntelOrca.Biohazard.BioRand
             //     }]);
         }
 
-        public ImmutableArray<Variation> GetVariations(IClassicRandomizerContext context)
+        public Variation GetVariation(IClassicRandomizerContext context, string name)
         {
-            return [
-                new Variation(0, "Chris", GetMap(context, 0)),
-                new Variation(1, "Jill", GetMap(context, 1))
-            ];
+            var playerIndex = VariationNames.IndexOf(name);
+            if (playerIndex == -1)
+                playerIndex = 0;
+
+            return new Variation(playerIndex, VariationNames[playerIndex], GetMap(context, playerIndex));
         }
 
         public Map GetMap(IClassicRandomizerContext context, int playerIndex)
@@ -250,12 +252,12 @@ namespace IntelOrca.Biohazard.BioRand
             return map;
         }
 
-        public GameData GetGameData(IClassicRandomizerContext context, int player)
+        public static GameData GetGameData(DataManager gameDataManager, int player)
         {
             var result = new List<RandomizedRdt>();
             for (var i = 1; i <= 7; i++)
             {
-                var files = context.GameDataManager.GetFiles($"JPN/STAGE{i}");
+                var files = gameDataManager.GetFiles($"JPN/STAGE{i}");
                 foreach (var path in files)
                 {
                     var fileName = Path.GetFileName(path);
@@ -266,7 +268,7 @@ namespace IntelOrca.Biohazard.BioRand
                         var rdtPlayer = int.Parse(match.Groups[2].Value);
                         if (rdtPlayer == player)
                         {
-                            var fileData = context.GameDataManager.GetData(path);
+                            var fileData = gameDataManager.GetData(path);
                             if (fileData.Length < 16)
                                 continue;
 
@@ -296,7 +298,7 @@ namespace IntelOrca.Biohazard.BioRand
             return gd;
         }
 
-        private void ApplyRdtPatches(IClassicRandomizerContext context, GameData gameData, int player)
+        private void ApplyRdtPatches(IClassicRandomizerGeneratedVariation context, GameData gameData, int player)
         {
             const byte PassCodeDoorLockId = 209;
             var randomDoors = context.Configuration.GetValueOrDefault("doors/random", false);
@@ -490,7 +492,7 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
-        private void DisableCutscenes(IClassicRandomizerContext context, GameData gameData, int player)
+        private void DisableCutscenes(IClassicRandomizerGeneratedVariation context, GameData gameData, int player)
         {
             if (player == 0)
             {
@@ -508,217 +510,212 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
-        private void WritePatchFile(IClassicRandomizerContext context)
+        private void WritePatchFile(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
         {
             using var ms = new MemoryStream();
             var pw = new PatchWriter(ms);
-            WritePatches(context, pw);
+            WritePatches(pw);
             var data = ms.ToArray();
+            crModBuilder.SetFile("biorand.dat", data);
 
-            context.CrModBuilder.SetFile("biorand.dat", data);
-        }
-
-        private void WritePatches(IClassicRandomizerContext context, PatchWriter pw)
-        {
-            var randomDoors = context.Configuration.GetValueOrDefault("doors/random", false);
-
-            DisableDemo(pw);
-            FixFlamethrowerCombine(pw);
-            FixWasteHeal(pw);
-            FixNeptuneDamage(pw);
-            FixChrisInventorySize(pw);
-            FixYawnPoison(pw, randomDoors);
-        }
-
-        private static void DisableDemo(PatchWriter pw)
-        {
-            pw.Begin(0x48E031);
-            pw.Write(0x90);
-            pw.Write(0x90);
-            pw.Write(0x90);
-            pw.Write(0x90);
-            pw.Write(0x90);
-            pw.Write(0x90);
-            pw.Write(0x90);
-            pw.End();
-        }
-
-        private static void FixFlamethrowerCombine(PatchWriter pw)
-        {
-            // and bx, 0x7F -> nop
-            pw.Begin(0x4483BD);
-            pw.Write(0x90);
-            pw.Write(0x90);
-            pw.Write(0x90);
-            pw.Write(0x90);
-            pw.End();
-
-            // and bx, 0x7F -> nop
-            pw.Begin(0x44842D);
-            pw.Write(0x90);
-            pw.Write(0x90);
-            pw.Write(0x90);
-            pw.Write(0x90);
-            pw.End();
-        }
-
-        private static void FixWasteHeal(PatchWriter pw)
-        {
-            // Allow using heal items when health is at max
-            // jge 0447AA2h -> nop
-            pw.Begin(0x447A39);
-            pw.Write(0x90);
-            pw.Write(0x90);
-            pw.End();
-        }
-
-        private static void FixNeptuneDamage(PatchWriter pw)
-        {
-            // Neptune has no death routine, so replace it with Cerberus's
-            // 0x4AA0EC -> 0x004596D0
-            pw.Begin(0x4AA0EC);
-            pw.Write32(0x004596D0);
-            pw.End();
-
-            // Give Neptune a damage value for each weapon
-            const int numWeapons = 10;
-            const int entrySize = 12;
-            var damageValues = new short[] { 16, 14, 32, 40, 130, 20, 100, 200, 100, 900 };
-            var enemyDataArrays = new uint[] { 0x4AF908U, 0x4B0268 };
-            foreach (var enemyData in enemyDataArrays)
+            void WritePatches(PatchWriter pw)
             {
-                var neptuneData = enemyData + (Re1EnemyIds.Neptune * (numWeapons * entrySize)) + 0x06;
-                for (var i = 0; i < numWeapons; i++)
-                {
-                    pw.Begin(neptuneData);
-                    pw.Write16(damageValues[i]);
-                    pw.End();
-                    neptuneData += entrySize;
-                }
+                var randomDoors = context.Configuration.GetValueOrDefault("doors/random", false);
+
+                DisableDemo(pw);
+                FixFlamethrowerCombine(pw);
+                FixWasteHeal(pw);
+                FixNeptuneDamage(pw);
+                FixChrisInventorySize(pw);
+                FixYawnPoison(pw, randomDoors);
             }
-        }
 
-        private static void FixChrisInventorySize(PatchWriter pw)
-        {
-            // Inventory instructions
-            var addresses = new uint[]
+            static void DisableDemo(PatchWriter pw)
             {
-                0x40B461,
-                0x40B476,
-                0x40B483,
-                0x414103,
-                0x414022,
-                0x4142CC
-            };
-            foreach (var addr in addresses)
-            {
-                pw.Begin(addr);
-                pw.Write(0xB0);
-                pw.Write(0x01);
+                pw.Begin(0x48E031);
+                pw.Write(0x90);
+                pw.Write(0x90);
+                pw.Write(0x90);
+                pw.Write(0x90);
                 pw.Write(0x90);
                 pw.Write(0x90);
                 pw.Write(0x90);
                 pw.End();
             }
 
-            // Partner swap
-            pw.Begin(0x0041B208);
-            pw.Write(0xC7);
-            pw.Write(0x05);
-            pw.Write32(0x00AA8E48);
-            pw.Write32(0x00C38814);
-            pw.End();
-
-            // Rebirth
-            pw.Begin(0x100505A3);
-            pw.Write(0xB8);
-            pw.Write(0x01);
-            pw.Write(0x00);
-            pw.Write(0x00);
-            pw.Write(0x00);
-            pw.Write(0x90);
-            pw.Write(0x90);
-            pw.End();
-
-            pw.Begin(0x1006F0C2 + 3);
-            pw.Write(0x8);
-            pw.End();
-        }
-
-        private static void FixYawnPoison(PatchWriter pw, bool doorRandomizer)
-        {
-            const byte ST_POISON = 0x02;
-            const byte ST_POISON_YAWN = 0x20;
-
-            pw.Begin(0x45B8C0 + 6); // 80 0D 90 52 C3 00 20
-            if (doorRandomizer)
-                pw.Write(ST_POISON);
-            else
-                pw.Write(ST_POISON_YAWN);
-            pw.End();
-        }
-
-        public void Write(IClassicRandomizerContext context)
-        {
-            WriteRdts(context);
-            AddSoundXml(context);
-            AddInventoryXml(context);
-            AddEnemySkins(context);
-            AddBackgroundTextures(context);
-            WritePatchFile(context);
-        }
-
-        private void WriteRdts(IClassicRandomizerContext context)
-        {
-            var debugScripts = Environment.GetEnvironmentVariable("BIORAND_DEBUG_SCRIPTS") == "true";
-
-            for (var p = 0; p < 2; p++)
+            static void FixFlamethrowerCombine(PatchWriter pw)
             {
-                var variation = context.GeneratedVariations[p];
-                var gameData = GetGameData(context, p);
-                if (debugScripts)
+                // and bx, 0x7F -> nop
+                pw.Begin(0x4483BD);
+                pw.Write(0x90);
+                pw.Write(0x90);
+                pw.Write(0x90);
+                pw.Write(0x90);
+                pw.End();
+
+                // and bx, 0x7F -> nop
+                pw.Begin(0x44842D);
+                pw.Write(0x90);
+                pw.Write(0x90);
+                pw.Write(0x90);
+                pw.Write(0x90);
+                pw.End();
+            }
+
+            static void FixWasteHeal(PatchWriter pw)
+            {
+                // Allow using heal items when health is at max
+                // jge 0447AA2h -> nop
+                pw.Begin(0x447A39);
+                pw.Write(0x90);
+                pw.Write(0x90);
+                pw.End();
+            }
+
+            static void FixNeptuneDamage(PatchWriter pw)
+            {
+                // Neptune has no death routine, so replace it with Cerberus's
+                // 0x4AA0EC -> 0x004596D0
+                pw.Begin(0x4AA0EC);
+                pw.Write32(0x004596D0);
+                pw.End();
+
+                // Give Neptune a damage value for each weapon
+                const int numWeapons = 10;
+                const int entrySize = 12;
+                var damageValues = new short[] { 16, 14, 32, 40, 130, 20, 100, 200, 100, 900 };
+                var enemyDataArrays = new uint[] { 0x4AF908U, 0x4B0268 };
+                foreach (var enemyData in enemyDataArrays)
                 {
-                    DecompileGameData(context, gameData, p, "scripts/");
+                    var neptuneData = enemyData + (Re1EnemyIds.Neptune * (numWeapons * entrySize)) + 0x06;
+                    for (var i = 0; i < numWeapons; i++)
+                    {
+                        pw.Begin(neptuneData);
+                        pw.Write16(damageValues[i]);
+                        pw.End();
+                        neptuneData += entrySize;
+                    }
                 }
-                ApplyRdtPatches(context, gameData, p);
-                if (context.Configuration.GetValueOrDefault("cutscenes/disable", false))
+            }
+
+            static void FixChrisInventorySize(PatchWriter pw)
+            {
+                // Inventory instructions
+                var addresses = new uint[]
                 {
-                    DisableCutscenes(context, gameData, p);
-                }
-                ApplyPostPatches(variation, gameData);
-                foreach (var rrdt in gameData.Rdts)
+                0x40B461,
+                0x40B476,
+                0x40B483,
+                0x414103,
+                0x414022,
+                0x4142CC
+                };
+                foreach (var addr in addresses)
                 {
-                    variation.ModBuilder.ApplyToRdt(rrdt);
+                    pw.Begin(addr);
+                    pw.Write(0xB0);
+                    pw.Write(0x01);
+                    pw.Write(0x90);
+                    pw.Write(0x90);
+                    pw.Write(0x90);
+                    pw.End();
                 }
-                if (context.Configuration.GetValueOrDefault("enemies/random", false))
-                {
-                    ApplyEnemies(context, variation, gameData);
-                }
-                foreach (var rrdt in gameData.Rdts)
-                {
-                    rrdt.Save();
-                    context.CrModBuilder.SetFile(rrdt.OriginalPath!, rrdt.RdtFile.Data);
-                }
-                if (debugScripts)
-                {
-                    DecompileGameData(context, gameData, p, "scripts_modded/");
-                }
+
+                // Partner swap
+                pw.Begin(0x0041B208);
+                pw.Write(0xC7);
+                pw.Write(0x05);
+                pw.Write32(0x00AA8E48);
+                pw.Write32(0x00C38814);
+                pw.End();
+
+                // Rebirth
+                pw.Begin(0x100505A3);
+                pw.Write(0xB8);
+                pw.Write(0x01);
+                pw.Write(0x00);
+                pw.Write(0x00);
+                pw.Write(0x00);
+                pw.Write(0x90);
+                pw.Write(0x90);
+                pw.End();
+
+                pw.Begin(0x1006F0C2 + 3);
+                pw.Write(0x8);
+                pw.End();
+            }
+
+            static void FixYawnPoison(PatchWriter pw, bool doorRandomizer)
+            {
+                const byte ST_POISON = 0x02;
+                const byte ST_POISON_YAWN = 0x20;
+
+                pw.Begin(0x45B8C0 + 6); // 80 0D 90 52 C3 00 20
+                if (doorRandomizer)
+                    pw.Write(ST_POISON);
+                else
+                    pw.Write(ST_POISON_YAWN);
+                pw.End();
             }
         }
 
-        private static void DecompileGameData(IClassicRandomizerContext context, GameData gameData, int player, string prefix)
+        public void Write(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
         {
-            var crModBuilder = context.CrModBuilder;
-            Parallel.ForEach(gameData.Rdts, rrdt =>
-            {
-                rrdt.Decompile();
-                crModBuilder.SetFile($"{prefix}{rrdt.RdtId}{player}.bio", Encoding.UTF8.GetBytes(rrdt.Script));
-                crModBuilder.SetFile($"{prefix}{rrdt.RdtId}{player}.lst", Encoding.UTF8.GetBytes(rrdt.ScriptListing));
-                crModBuilder.SetFile($"{prefix}{rrdt.RdtId}{player}.s", Encoding.UTF8.GetBytes(rrdt.ScriptDisassembly));
-            });
+            WriteRdts(context, crModBuilder);
+            AddSoundXml(context, crModBuilder);
+            AddInventoryXml(context, crModBuilder);
+            AddEnemySkins(context, crModBuilder);
+            AddBackgroundTextures(context, crModBuilder);
+            WritePatchFile(context, crModBuilder);
         }
 
-        private void ApplyPostPatches(IClassicRandomizerPlayerContext generatedVariation, GameData gameData)
+        private void WriteRdts(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
+        {
+            var debugScripts = Environment.GetEnvironmentVariable("BIORAND_DEBUG_SCRIPTS") == "true";
+
+            var p = context.Variation.PlayerIndex;
+            var gameData = GetGameData(context.GameDataManager, p);
+            if (debugScripts)
+            {
+                DecompileGameData(p, "scripts/");
+            }
+            ApplyRdtPatches(context, gameData, p);
+            if (context.Configuration.GetValueOrDefault("cutscenes/disable", false))
+            {
+                DisableCutscenes(context, gameData, p);
+            }
+            ApplyPostPatches(context, gameData);
+            foreach (var rrdt in gameData.Rdts)
+            {
+                context.ModBuilder.ApplyToRdt(rrdt);
+            }
+            if (context.Configuration.GetValueOrDefault("enemies/random", false))
+            {
+                ApplyEnemies(context, gameData);
+            }
+            foreach (var rrdt in gameData.Rdts)
+            {
+                rrdt.Save();
+                crModBuilder.SetFile(rrdt.OriginalPath!, rrdt.RdtFile.Data);
+            }
+            if (debugScripts)
+            {
+                DecompileGameData(p, "scripts_modded/");
+            }
+
+            void DecompileGameData(int player, string prefix)
+            {
+                Parallel.ForEach(gameData.Rdts, rrdt =>
+                {
+                    rrdt.Decompile();
+                    crModBuilder.SetFile($"{prefix}{rrdt.RdtId}{player}.bio", rrdt.Script ?? "");
+                    crModBuilder.SetFile($"{prefix}{rrdt.RdtId}{player}.lst", rrdt.ScriptListing ?? "");
+                    crModBuilder.SetFile($"{prefix}{rrdt.RdtId}{player}.s", rrdt.ScriptDisassembly ?? "");
+                });
+            }
+        }
+
+        private void ApplyPostPatches(IClassicRandomizerGeneratedVariation generatedVariation, GameData gameData)
         {
             // For each changed item, patch any additional bytes
             var map = generatedVariation.Variation.Map;
@@ -749,10 +746,10 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
-        private void ApplyEnemies(IClassicRandomizerContext context, IClassicRandomizerPlayerContext variation, GameData gameData)
+        private void ApplyEnemies(IClassicRandomizerGeneratedVariation context, GameData gameData)
         {
             // Clear all enemies
-            var map = variation.Variation.Map;
+            var map = context.Variation.Map;
             foreach (var rdt in gameData.Rdts)
             {
                 var room = map.Rooms.Values.FirstOrDefault(x => x.Rdts.Contains(rdt.RdtId));
@@ -777,7 +774,7 @@ namespace IntelOrca.Biohazard.BioRand
             }
 
             var allEffects = HarvestAllEffs(gameData);
-            var groups = variation.ModBuilder.EnemyPlacements.GroupBy(x => x.RdtId);
+            var groups = context.ModBuilder.EnemyPlacements.GroupBy(x => x.RdtId);
             foreach (var g in groups)
             {
                 var rdt = gameData.GetRdt(g.Key);
@@ -913,11 +910,9 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
-        private void AddInventoryXml(IClassicRandomizerContext context)
+        private void AddInventoryXml(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
         {
-            var inventories = context.GeneratedVariations
-                .SelectMany(x => x.ModBuilder.Inventory)
-                .ToArray();
+            var inventories = context.ModBuilder.Inventory;
 
             using var ms = new MemoryStream();
             var doc = new XmlDocument();
@@ -932,81 +927,81 @@ namespace IntelOrca.Biohazard.BioRand
 
             doc.AppendChild(root);
             doc.Save(ms);
-            context.CrModBuilder.SetFile("init.xml", ms.ToArray());
+            crModBuilder.SetFile("init.xml", ms.ToArray());
+
+            static RandomInventory CreateEmptyInventory(int size)
+            {
+                var entries = new List<RandomInventory.Entry>();
+                for (var i = 0; i < size; i++)
+                {
+                    entries.Add(new RandomInventory.Entry());
+                }
+                entries[0] = new RandomInventory.Entry(Re1ItemIds.CombatKnife, 1);
+                return new RandomInventory([.. entries], null);
+            }
+
+            static XmlElement CreatePlayerNode(XmlDocument doc, RandomInventory main, RandomInventory partner)
+            {
+                var playerNode = doc.CreateElement("Player");
+                foreach (var inv in new[] { main, partner })
+                {
+                    foreach (var entry in inv.Entries)
+                    {
+                        var entryNode = doc.CreateElement("Entry");
+                        entryNode.SetAttribute("id", entry.Type.ToString());
+                        entryNode.SetAttribute("count", entry.Count.ToString());
+                        playerNode.AppendChild(entryNode);
+                    }
+                }
+                return playerNode;
+            }
         }
 
-        private void AddEnemySkins(IClassicRandomizerContext context)
+        private void AddEnemySkins(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
         {
             var emd100B = context.DataManager.GetData(BioVersion.Biohazard1, "emd/orca/EM100B.EMD");
-            context.CrModBuilder.SetFile("ENEMY/EM100B.EMD", emd100B);
+            crModBuilder.SetFile("ENEMY/EM100B.EMD", emd100B);
         }
 
-        private static RandomInventory CreateEmptyInventory(int size)
-        {
-            var entries = new List<RandomInventory.Entry>();
-            for (var i = 0; i < size; i++)
-            {
-                entries.Add(new RandomInventory.Entry());
-            }
-            entries[0] = new RandomInventory.Entry(Re1ItemIds.CombatKnife, 1);
-            return new RandomInventory([.. entries], null);
-        }
-
-        private static XmlElement CreatePlayerNode(XmlDocument doc, RandomInventory main, RandomInventory partner)
-        {
-            var playerNode = doc.CreateElement("Player");
-            foreach (var inv in new[] { main, partner })
-            {
-                foreach (var entry in inv.Entries)
-                {
-                    var entryNode = doc.CreateElement("Entry");
-                    entryNode.SetAttribute("id", entry.Type.ToString());
-                    entryNode.SetAttribute("count", entry.Count.ToString());
-                    playerNode.AppendChild(entryNode);
-                }
-            }
-            return playerNode;
-        }
-
-        private void AddBackgroundTextures(IClassicRandomizerContext context)
+        private void AddBackgroundTextures(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
         {
             var bgPng = context.DataManager.GetData(BioVersion.Biohazard1, "bg.png");
             var bgPix = PngToPix(bgPng);
-            context.CrModBuilder.SetFile("data/title.pix", bgPix);
-            context.CrModBuilder.SetFile("type.png", bgPng);
-        }
+            crModBuilder.SetFile("data/title.pix", bgPix);
+            crModBuilder.SetFile("type.png", bgPng);
 
-        private byte[] PngToPix(byte[] png)
-        {
-            using var img = SixLabors.ImageSharp.Image.Load<Rgba32>(png);
-            using var ms = new MemoryStream();
-            var bw = new BinaryWriter(ms);
-            img.ProcessPixelRows(accessor =>
+            static byte[] PngToPix(byte[] png)
             {
-                for (var y = 0; y < accessor.Height; y++)
+                using var img = SixLabors.ImageSharp.Image.Load<Rgba32>(png);
+                using var ms = new MemoryStream();
+                var bw = new BinaryWriter(ms);
+                img.ProcessPixelRows(accessor =>
                 {
-                    var row = accessor.GetRowSpan(y);
-                    for (int i = 0; i < accessor.Width; i++)
+                    for (var y = 0; y < accessor.Height; y++)
                     {
-                        var c = row[i];
-                        var c4 = (ushort)((c.R / 8) | ((c.G / 8) << 5) | ((c.B / 8) << 10));
-                        bw.Write(c4);
+                        var row = accessor.GetRowSpan(y);
+                        for (int i = 0; i < accessor.Width; i++)
+                        {
+                            var c = row[i];
+                            var c4 = (ushort)((c.R / 8) | ((c.G / 8) << 5) | ((c.B / 8) << 10));
+                            bw.Write(c4);
+                        }
                     }
-                }
-            });
-            return ms.ToArray();
+                });
+                return ms.ToArray();
+            }
         }
 
-        private void AddSoundXml(IClassicRandomizerContext context)
+        private void AddSoundXml(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
         {
             var bgmTable = context.DataManager.GetData(BioVersion.Biohazard1, "bgm_tbl.xml");
-            context.CrModBuilder.SetFile("bgm_tbl.xml", bgmTable);
+            crModBuilder.SetFile("bgm_tbl.xml", bgmTable);
 
             var xml = context.DataManager.GetText(BioVersion.Biohazard1, "sounds.xml");
             var doc = new XmlDocument();
             doc.LoadXml(xml);
 
-            var enemyPlacements = context.GeneratedVariations[0].ModBuilder.EnemyPlacements;
+            var enemyPlacements = context.ModBuilder.EnemyPlacements;
             var roomNodes = doc.SelectNodes("Rooms/Room");
             foreach (XmlNode roomNode in roomNodes)
             {
@@ -1019,85 +1014,83 @@ namespace IntelOrca.Biohazard.BioRand
 
                 var firstEnemy = enemyPlacements.FirstOrDefault(x => x.RdtId == roomId);
                 var firstEnemyType = (byte?)firstEnemy?.Type;
-                FixRoomSounds(context, roomId, firstEnemyType, roomNode);
+                FixRoomSounds(roomId, firstEnemyType, roomNode);
             }
-        }
 
-        private void FixRoomSounds(IClassicRandomizerContext context, RdtId rdtId, byte? enemyType, XmlNode roomNode)
-        {
-            if (enemyType != null)
+            void FixRoomSounds(RdtId rdtId, byte? enemyType, XmlNode roomNode)
             {
-                var template = GetTemplateXml(enemyType.Value);
-                var entryNodes = roomNode.SelectNodes("Sound/Entry");
-                for (int i = 0; i < 16; i++)
+                if (enemyType != null)
                 {
-                    entryNodes[i].InnerText = template[i] ?? "";
+                    var template = GetTemplateXml(enemyType.Value);
+                    var entryNodes = roomNode.SelectNodes("Sound/Entry");
+                    for (int i = 0; i < 16; i++)
+                    {
+                        entryNodes[i].InnerText = template[i] ?? "";
+                    }
                 }
+                crModBuilder.SetFile($"tables/room_{rdtId}.xml", roomNode.InnerXml);
             }
 
-            var xml = roomNode.InnerXml;
-            context.CrModBuilder.SetFile($"tables/room_{rdtId}.xml", Encoding.UTF8.GetBytes(xml));
-        }
-
-        private static string[] GetTemplateXml(byte enemyType)
-        {
-            string[]? result = null;
-            switch (enemyType)
+            static string[] GetTemplateXml(byte enemyType)
             {
-                case Re1EnemyIds.Zombie:
-                    result = ["z_taore", "z_ftL", "z_ftR", "z_kamu", "z_k02", "z_k01", "z_head", "z_haki", "z_sanj", "z_k03"];
-                    break;
-                case Re1EnemyIds.ZombieNaked:
-                    result = ["z_taore", "zep_ftL", "z_ftR", "ze_kamu", "z_nisi2", "z_nisi1", "ze_head", "ze_haki", "ze_sanj", "z_nisi3", "FL_walk", "FL_jump", "steam_b", "FL_ceil", "FL_fall", "FL_slash"];
-                    break;
-                case Re1EnemyIds.Cerberus:
-                    result = ["cer_foot", "cer_taoA", "cer_unar", "cer_bite", "cer_cryA", "cer_taoB", "cer_jkMX", "cer_kamu", "cer_cryB", "cer_runMX"];
-                    break;
-                case Re1EnemyIds.WebSpinner:
-                    result = ["kuasi_A", "kuasi_B", "kuasi_C", "sp_rakk", "sp_atck", "sp_bomb", "sp_fumu", "sp_Doku", "sp_sanj2"];
-                    break;
-                case Re1EnemyIds.BlackTiger:
-                    result = ["kuasi_A", "kuasi_B", "kuasi_C", "sp_rakk", "sp_atck", "sp_bomb", "sp_fumu", "sp_Doku", "poison"];
-                    break;
-                case Re1EnemyIds.Crow:
-                    result = ["RVcar1", "RVpat", "RVcar2", "RVwing1", "RVwing2", "RVfryed"];
-                    break;
-                case Re1EnemyIds.Hunter:
-                    result = ["HU_walkA", "HU_walkB", "HU_jump", "HU_att", "HU_land", "HU_smash", "HU_dam", "HU_Nout"];
-                    break;
-                case Re1EnemyIds.Wasp:
-                    result = ["bee4_ed", "hatinage", "bee_fumu"];
-                    break;
-                case Re1EnemyIds.Plant42:
-                    break;
-                case Re1EnemyIds.Chimera:
-                    result = ["FL_walk", "FL_jump", "steam_b", "FL_ceil", "FL_fall", "FL_slash", "FL_att", "FL_dam", "FL_out"];
-                    break;
-                case Re1EnemyIds.Snake:
-                    result = ["PY_mena", "PY_hit2", "PY_fall"];
-                    break;
-                case Re1EnemyIds.Neptune:
-                    result = ["nep_attB", "nep_attA", "nep_nomu", "nep_tura", "nep_twis", "nep_jump"];
-                    break;
-                case Re1EnemyIds.Tyrant1:
-                    result = ["TY_foot", "TY_kaze", "TY_slice", "TY_HIT", "TY_trust", "", "TY_taore", "TY_nage"];
-                    break;
-                case Re1EnemyIds.Yawn1:
-                    break;
-                case Re1EnemyIds.Plant42Roots:
-                    break;
-                case Re1EnemyIds.Plant42Vines:
-                    break;
-                case Re1EnemyIds.Tyrant2:
-                    break;
-                case Re1EnemyIds.ZombieResearcher:
-                    result = ["z_taore", "z_ftL", "z_ftR", "z_kamu", "z_mika02", "z_mika01", "z_head", "z_Hkick", "z_Ugoron", "z_mika03"];
-                    break;
-                case Re1EnemyIds.Yawn2:
-                    break;
+                string[]? result = null;
+                switch (enemyType)
+                {
+                    case Re1EnemyIds.Zombie:
+                        result = ["z_taore", "z_ftL", "z_ftR", "z_kamu", "z_k02", "z_k01", "z_head", "z_haki", "z_sanj", "z_k03"];
+                        break;
+                    case Re1EnemyIds.ZombieNaked:
+                        result = ["z_taore", "zep_ftL", "z_ftR", "ze_kamu", "z_nisi2", "z_nisi1", "ze_head", "ze_haki", "ze_sanj", "z_nisi3", "FL_walk", "FL_jump", "steam_b", "FL_ceil", "FL_fall", "FL_slash"];
+                        break;
+                    case Re1EnemyIds.Cerberus:
+                        result = ["cer_foot", "cer_taoA", "cer_unar", "cer_bite", "cer_cryA", "cer_taoB", "cer_jkMX", "cer_kamu", "cer_cryB", "cer_runMX"];
+                        break;
+                    case Re1EnemyIds.WebSpinner:
+                        result = ["kuasi_A", "kuasi_B", "kuasi_C", "sp_rakk", "sp_atck", "sp_bomb", "sp_fumu", "sp_Doku", "sp_sanj2"];
+                        break;
+                    case Re1EnemyIds.BlackTiger:
+                        result = ["kuasi_A", "kuasi_B", "kuasi_C", "sp_rakk", "sp_atck", "sp_bomb", "sp_fumu", "sp_Doku", "poison"];
+                        break;
+                    case Re1EnemyIds.Crow:
+                        result = ["RVcar1", "RVpat", "RVcar2", "RVwing1", "RVwing2", "RVfryed"];
+                        break;
+                    case Re1EnemyIds.Hunter:
+                        result = ["HU_walkA", "HU_walkB", "HU_jump", "HU_att", "HU_land", "HU_smash", "HU_dam", "HU_Nout"];
+                        break;
+                    case Re1EnemyIds.Wasp:
+                        result = ["bee4_ed", "hatinage", "bee_fumu"];
+                        break;
+                    case Re1EnemyIds.Plant42:
+                        break;
+                    case Re1EnemyIds.Chimera:
+                        result = ["FL_walk", "FL_jump", "steam_b", "FL_ceil", "FL_fall", "FL_slash", "FL_att", "FL_dam", "FL_out"];
+                        break;
+                    case Re1EnemyIds.Snake:
+                        result = ["PY_mena", "PY_hit2", "PY_fall"];
+                        break;
+                    case Re1EnemyIds.Neptune:
+                        result = ["nep_attB", "nep_attA", "nep_nomu", "nep_tura", "nep_twis", "nep_jump"];
+                        break;
+                    case Re1EnemyIds.Tyrant1:
+                        result = ["TY_foot", "TY_kaze", "TY_slice", "TY_HIT", "TY_trust", "", "TY_taore", "TY_nage"];
+                        break;
+                    case Re1EnemyIds.Yawn1:
+                        break;
+                    case Re1EnemyIds.Plant42Roots:
+                        break;
+                    case Re1EnemyIds.Plant42Vines:
+                        break;
+                    case Re1EnemyIds.Tyrant2:
+                        break;
+                    case Re1EnemyIds.ZombieResearcher:
+                        result = ["z_taore", "z_ftL", "z_ftR", "z_kamu", "z_mika02", "z_mika01", "z_head", "z_Hkick", "z_Ugoron", "z_mika03"];
+                        break;
+                    case Re1EnemyIds.Yawn2:
+                        break;
+                }
+                Array.Resize(ref result, 16);
+                return result;
             }
-            Array.Resize(ref result, 16);
-            return result;
         }
 
         private static readonly RdtId[] g_missingRooms =
