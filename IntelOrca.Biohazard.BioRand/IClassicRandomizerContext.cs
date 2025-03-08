@@ -8,12 +8,8 @@
         Rng Rng { get; }
     }
 
-    internal interface IClassicRandomizerGeneratedVariation
+    internal interface IClassicRandomizerGeneratedVariation : IClassicRandomizerContext
     {
-        RandomizerConfiguration Configuration { get; }
-        DataManager DataManager { get; }
-        DataManager GameDataManager { get; }
-        Rng Rng { get; }
         Variation Variation { get; }
         ModBuilder ModBuilder { get; }
     }

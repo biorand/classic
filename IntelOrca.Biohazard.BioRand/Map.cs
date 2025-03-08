@@ -28,6 +28,15 @@ namespace IntelOrca.Biohazard.BioRand
             return value;
         }
 
+        internal MapRoom[] GetRoomsContaining(RdtId id)
+        {
+            if (Rooms == null)
+                return [];
+            return Rooms.Values
+                .Where(x => (x.Rdts ?? []).Contains(id))
+                .ToArray();
+        }
+
         internal static int[] ParseNopArray(JsonElement[]? nopArray, RandomizedRdt rdt)
         {
             var nop = new List<int>();
