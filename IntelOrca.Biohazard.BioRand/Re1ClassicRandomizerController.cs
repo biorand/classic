@@ -550,8 +550,68 @@ namespace IntelOrca.Biohazard.BioRand
                         Set(1, 2, 0), // First zombie found
                         Set(1, 3, 0), // Second cutscene (Jill? Wesker?)
                         Set(1, 36, 0), // First Rebecca save room cutscene
-                        Set(1, 167, 0) // Init. dining room emblem state
+                        Set(1, 69, 0), // Brad call cutscene in final lab room
+                        Set(1, 100, 0), // Prevent Plant 42 Rebecca switch
+                        Set(1, 167, 0), // Init. dining room emblem state
+                        Set(1, 171, 0), // Wesker cutscene after Plant 42
+                        Set(0, 101, 0), // Jill in cell cutscene
+                        Set(0, 127, 0), // Pick up radio
+                        Set(0, 192, 0) // Rebecca not saved
                     ]));
+
+                // Disable hunter / rebecca scream
+                gameData.GetRdt(RdtId.Parse("60A"))?.Nop(0xF702);
+
+                // Disable rebecca in trouble
+                gameData.GetRdt(RdtId.Parse("601"))?.Nop(0x24CAA, 0x24E16);
+                gameData.GetRdt(RdtId.Parse("601"))?.Nop(0x24E1E, 0x24E8A);
+                gameData.GetRdt(RdtId.Parse("706"))?.Nop(0x3785C, 0x3796A);
+                gameData.GetRdt(RdtId.Parse("706"))?.Nop(0x37972, 0x379F6);
+
+                // Disable Jill in cell
+                gameData.GetRdt(RdtId.Parse("512"))?.Nop(0xAF4C, 0xAF8E);
+
+                // Disable Wesker cutscene
+                gameData.GetRdt(RdtId.Parse("514"))?.Nop(0xEFCE, 0xF048);
+
+                // Disable Wesker / Tyrant cutscene
+                var rdt513 = gameData.GetRdt(RdtId.Parse("513"));
+                if (rdt513 != null)
+                {
+                    rdt513.Patches.Add(new KeyValuePair<int, byte>(0x1C4AA + 1, 0));
+                    rdt513.Patches.Add(new KeyValuePair<int, byte>(0x1C4AA + 2, 55));
+                    rdt513.Patches.Add(new KeyValuePair<int, byte>(0x1C6E8 + 1, 0));
+                    rdt513.Patches.Add(new KeyValuePair<int, byte>(0x1C6E8 + 2, 55));
+                    rdt513.Nop(0x1C484);
+                    rdt513.Nop(0x1C6B0);
+                    rdt513.AdditionalOpcodes.Add(new SceEmSetOpcode()
+                    {
+                        Opcode = 0x1B,
+                        Type = 0x0C,
+                        State = 0,
+                        KillId = 112,
+                        Re1Unk04 = 1,
+                        Re1Unk05 = 2,
+                        Re1Unk06 = 0,
+                        Re1Unk07 = 0,
+                        D = 3072,
+                        Re1Unk0A = 0,
+                        Re1Unk0B = 0,
+                        X = 10700,
+                        Y = 0,
+                        Z = 7000,
+                        Id = 1,
+                        Re1Unk13 = 0,
+                        Re1Unk14 = 0,
+                        Re1Unk15 = 0
+                    });
+                    rdt513.AdditionalFrameOpcodes.AddRange(
+                        ScdCondition.Parse("0:55 && 4:11").Generate(BioVersion.Biohazard1, [
+                            Set(4, 11, 0),
+                            new UnknownOpcode(0, 0x16, [0x00]),
+                            new UnknownOpcode(0, 0x16, [0x01]),
+                            new UnknownOpcode(0, 0x15, [0x02])]));
+                }
             }
             else
             {

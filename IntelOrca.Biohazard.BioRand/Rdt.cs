@@ -673,6 +673,22 @@ namespace IntelOrca.Biohazard.BioRand
                 rdtBuilder.Script = scriptBuilder.ToProcedureList();
                 RdtFile = rdtBuilder.ToRdt();
             }
+            else if (Version == BioVersion.Biohazard1 && RdtFile is Rdt1 rdt1)
+            {
+                var ms = new MemoryStream();
+                var bw = new BinaryWriter(ms);
+                foreach (var opcode in AdditionalFrameOpcodes)
+                {
+                    opcode.Write(bw);
+                }
+
+                var rdtBuilder = rdt1.ToBuilder();
+                var scdBuilder = rdtBuilder.MainSCD.ToBuilder();
+                bw.Write(scdBuilder.Procedures[0].Data);
+                scdBuilder.Procedures[0] = new ScdProcedure(BioVersion.Biohazard1, ms.ToArray());
+                rdtBuilder.MainSCD = scdBuilder.ToContainer();
+                RdtFile = rdtBuilder.ToRdt();
+            }
             else if (Version == BioVersion.Biohazard2 && RdtFile is Rdt2 rdt2)
             {
                 var ms = new MemoryStream();
