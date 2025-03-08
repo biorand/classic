@@ -618,11 +618,15 @@ namespace IntelOrca.Biohazard.BioRand
                 // Set(0, 123, 0); // Jill uses ink ribbons
                 rdt.AdditionalOpcodes.AddRange(
                     ScdCondition.Parse("1:0").Generate(BioVersion.Biohazard1, [
+                        Set(0, 101, 0), // Chris in cell cutscene
+                        Set(0, 124, 0), // Lockpick
+                        Set(0, 127, 0), // Pick up radio
                         Set(1, 0, 0), // 106 first cutscene
                         Set(1, 2, 0), // 104 first zombie found
                         Set(1, 3, 0), // 106 Wesker search cutscene
                         Set(1, 5, 0), // 106/203 Wesker search complete
                         Set(1, 7, 0), // 106/203 Barry gift cutscene (also disables 115 sandwich rescue and 20A cutscene)
+                        Set(1, 69, 0), // Brad call cutscene in final lab room
                         Set(1, 86, 0), // 20E Yawn poison partner recovery
                         Set(1, 97, 0), // 20D Richard receives serum
                         Set(1, 103, 0), // 212 Forrest cutscene
@@ -630,8 +634,70 @@ namespace IntelOrca.Biohazard.BioRand
                         Set(1, 167, 0), // Init. dining room emblem state
                         Set(1, 172, 0), // 104 visted
                         Set(1, 173, 0), // 105 zombie cutscene
-                        Set(0, 124, 0) // Lockpick
+                        Set(1, 175, 0), // Wesker cutscene after Plant 42
+                        Set(1, 192, 0) // Barry not saved
                     ]));
+
+                // Disable Plant 42 Barry
+                gameData.GetRdt(RdtId.Parse("40C"))?.Nop(0x64C8);
+                gameData.GetRdt(RdtId.Parse("40C"))?.Nop(0x64D4);
+
+                // Disable Barry in Yawn 2 room
+                foreach (var rdtId in new[] { "20C", "70C" })
+                {
+                    var rdt20C = gameData.GetRdt(RdtId.Parse(rdtId));
+                    if (rdt20C != null)
+                    {
+                        rdt20C.Patches.Add(new KeyValuePair<int, byte>(0x96EA + 14, 0x2C));
+                        rdt20C.Nop(0x9704);
+                        rdt20C.Nop(0x970A);
+                    }
+                }
+
+                // Disable Wesker cutscene
+                gameData.GetRdt(RdtId.Parse("514"))?.Nop(0xEFCE, 0xF0C6);
+
+                // Disable Chris in cell
+                gameData.GetRdt(RdtId.Parse("512"))?.Nop(0xAF4C, 0xAF74);
+
+                // Disable Wesker / Tyrant cutscene
+                var rdt513 = gameData.GetRdt(RdtId.Parse("513"));
+                if (rdt513 != null)
+                {
+                    rdt513.Nop(0x1C484);
+                    rdt513.Patches.Add(new KeyValuePair<int, byte>(0x1C4AA + 1, 0));
+                    rdt513.Patches.Add(new KeyValuePair<int, byte>(0x1C4AA + 2, 55));
+                    rdt513.Nop(0x1C724);
+                    rdt513.Patches.Add(new KeyValuePair<int, byte>(0x1C7C8 + 1, 0));
+                    rdt513.Patches.Add(new KeyValuePair<int, byte>(0x1C7C8 + 2, 55));
+                    rdt513.AdditionalOpcodes.Add(new SceEmSetOpcode()
+                    {
+                        Opcode = 0x1B,
+                        Type = 0x0C,
+                        State = 0,
+                        KillId = 112,
+                        Re1Unk04 = 1,
+                        Re1Unk05 = 2,
+                        Re1Unk06 = 0,
+                        Re1Unk07 = 0,
+                        D = 3072,
+                        Re1Unk0A = 0,
+                        Re1Unk0B = 0,
+                        X = 10700,
+                        Y = 0,
+                        Z = 7000,
+                        Id = 1,
+                        Re1Unk13 = 0,
+                        Re1Unk14 = 0,
+                        Re1Unk15 = 0
+                    });
+                    rdt513.AdditionalFrameOpcodes.AddRange(
+                        ScdCondition.Parse("0:55 && 4:11").Generate(BioVersion.Biohazard1, [
+                            Set(4, 11, 0),
+                            new UnknownOpcode(0, 0x16, [0x00]),
+                            new UnknownOpcode(0, 0x16, [0x01]),
+                            new UnknownOpcode(0, 0x15, [0x02])]));
+                }
             }
 
             static UnknownOpcode Set(byte group, byte index, byte value)
