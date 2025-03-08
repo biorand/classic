@@ -22,7 +22,7 @@ namespace IntelOrca.Biohazard.BioRand
         public void UpdateConfigDefinition(RandomizerConfigurationDefinition definition)
         {
             var page = definition.Pages.First(x => x.Label == "General");
-            page.Groups.Insert(0, new RandomizerConfigurationDefinition.Group("Progression (non-door randomizer)")
+            page.Groups.Insert(1, new RandomizerConfigurationDefinition.Group("Progression (non-door randomizer)")
             {
                 Items =
                 [
