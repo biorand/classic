@@ -509,6 +509,22 @@ namespace IntelOrca.Biohazard.BioRand
                 Set("106", 1, 36, 0); // First Rebecca save room cutscene
                 Set("106", 1, 167, 0); // Init. dining room emblem state
             }
+            else
+            {
+                Set("106", 1, 0, 0); // 106 first cutscene
+                Set("106", 1, 2, 0); // 104 first zombie found
+                Set("106", 1, 3, 0); // 106 Wesker search cutscene
+                Set("106", 1, 5, 0); // 106/203 Wesker search complete
+                Set("106", 1, 7, 0); // 106/203 Barry gift cutscene (also disables 20A cutscene)
+                Set("106", 1, 103, 0); // 212 Forrest cutscene
+                Set("106", 1, 161, 0); // 105 first dining room cutscene
+                Set("106", 1, 167, 0); // Init. dining room emblem state
+                Set("106", 1, 172, 0); // 104 visted
+                Set("106", 1, 173, 0); // 105 zombie cutscene
+
+                Set("106", 0, 124, 0); // Lockpick
+                // Set("106", 0, 123, 0); // Jill uses ink ribbons
+            }
 
             void Set(string rdtId, byte group, byte index, byte value)
             {

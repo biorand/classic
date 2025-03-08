@@ -229,6 +229,12 @@
       "group": 1,
       "amount": 0
     },
+    "49": {
+      "name": "Lockpick",
+      "kind": "key/reusuable",
+      "group": 1,
+      "amount": 0
+    },
     "51": {
       "name": "Sword Key",
       "kind": "key/reusuable",
@@ -882,8 +888,7 @@
           "globalId": 52,
           "type": 47,
           "amount": 3,
-          "group": 1,
-          "player": 0
+          "group": 1
         },
         {
           "name": "GUN ON FLOOR",
@@ -976,8 +981,7 @@
           "globalId": 39,
           "type": 47,
           "amount": 3,
-          "group": 1,
-          "player": 0
+          "group": 1
         }
       ],
       "enemies": [
@@ -2199,8 +2203,7 @@
           "type": 47,
           "amount": 3,
           "hidden": true,
-          "group": 1,
-          "player": 0
+          "group": 1
         }
       ],
       "enemies": [
@@ -2709,8 +2712,7 @@
           "globalId": 91,
           "type": 47,
           "amount": 3,
-          "group": 2,
-          "player": 0
+          "group": 2
         }
       ],
       "enemies": [
@@ -3551,8 +3553,7 @@
           "globalId": 240,
           "type": 47,
           "amount": 3,
-          "group": 16,
-          "player": 0
+          "group": 16
         }
       ],
       "enemies": [
@@ -3811,8 +3812,7 @@
           "globalId": 182,
           "type": 47,
           "amount": 3,
-          "group": 8,
-          "player": 0
+          "group": 8
         }
       ],
       "enemies": [
