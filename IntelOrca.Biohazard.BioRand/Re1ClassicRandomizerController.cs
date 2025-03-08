@@ -311,6 +311,7 @@ namespace IntelOrca.Biohazard.BioRand
             FixDrugStoreRoom();
             AllowRoughPassageDoorUnlock();
             ShotgunOnWallFix();
+            DisablePoisonChallenge();
             DisableBarryEvesdrop();
             AllowPartnerItemBoxes();
             EnableFountainHeliportDoors();
@@ -422,11 +423,47 @@ namespace IntelOrca.Biohazard.BioRand
                 if (!randomItems)
                     return;
 
-                var rdt = gameData.GetRdt(new RdtId(0, 0x16));
-                if (rdt == null)
-                    return;
+                // Prevent placing shotgun
+                var rdt116 = gameData.GetRdt(RdtId.Parse("116"));
+                var rdt516 = gameData.GetRdt(RdtId.Parse("516"));
+                for (var i = 2; i < 2 + 8; i++)
+                {
+                    rdt116?.Patches.Add(new KeyValuePair<int, byte>(0x1FE62 + i, 0));
+                    rdt516?.Patches.Add(new KeyValuePair<int, byte>(0x1FE62 + i, 0));
+                }
 
-                rdt.Nop(0x1FE16);
+                // Lock both doors in sandwich room (since we can't put item back on wall)
+                foreach (var rdtId in new[] { "115", "515" })
+                {
+                    var rdt115 = gameData.GetRdt(RdtId.Parse(rdtId));
+                    if (player == 0)
+                    {
+                        rdt115?.Patches.Add(new KeyValuePair<int, byte>(0x22BC + 2, 1));
+                        rdt115?.Patches.Add(new KeyValuePair<int, byte>(0x22DE + 2, 1));
+                    }
+                    else
+                    {
+                        rdt115?.Nop(0x2342);
+                    }
+                }
+            }
+
+            void DisablePoisonChallenge()
+            {
+                var rdt = gameData.GetRdt(RdtId.Parse("20E"));
+                if (player == 0)
+                {
+                    rdt?.Nop(0x10724);
+                    rdt?.Nop(0x1073A, 0x10740);
+                    rdt?.Nop(0x1075A, 0x107FC);
+                    rdt?.Nop(0x107F2, 0x107FC);
+                }
+                else
+                {
+                    rdt?.Nop(0x10724, 0x1072A);
+                    rdt?.Nop(0x10744, 0x10780);
+                    rdt?.Nop(0x1078A, 0x10794);
+                }
             }
 
             void DisableBarryEvesdrop()
@@ -501,35 +538,45 @@ namespace IntelOrca.Biohazard.BioRand
 
         private void DisableCutscenes(IClassicRandomizerGeneratedVariation context, GameData gameData, int player)
         {
+            var rdt = gameData.GetRdt(RdtId.Parse("106"));
+            if (rdt == null)
+                return;
+
             if (player == 0)
             {
-                Set("106", 1, 0, 0); // First cutscene
-                Set("106", 1, 2, 0); // First zombie found
-                Set("106", 1, 3, 0); // Second cutscene (Jill? Wesker?)
-                Set("106", 1, 36, 0); // First Rebecca save room cutscene
-                Set("106", 1, 167, 0); // Init. dining room emblem state
+                rdt.AdditionalOpcodes.AddRange(
+                    ScdCondition.Parse("1:0").Generate(BioVersion.Biohazard1, [
+                        Set(1, 0, 0), // First cutscene
+                        Set(1, 2, 0), // First zombie found
+                        Set(1, 3, 0), // Second cutscene (Jill? Wesker?)
+                        Set(1, 36, 0), // First Rebecca save room cutscene
+                        Set(1, 167, 0) // Init. dining room emblem state
+                    ]));
             }
             else
             {
-                Set("106", 1, 0, 0); // 106 first cutscene
-                Set("106", 1, 2, 0); // 104 first zombie found
-                Set("106", 1, 3, 0); // 106 Wesker search cutscene
-                Set("106", 1, 5, 0); // 106/203 Wesker search complete
-                Set("106", 1, 7, 0); // 106/203 Barry gift cutscene (also disables 20A cutscene)
-                Set("106", 1, 103, 0); // 212 Forrest cutscene
-                Set("106", 1, 161, 0); // 105 first dining room cutscene
-                Set("106", 1, 167, 0); // Init. dining room emblem state
-                Set("106", 1, 172, 0); // 104 visted
-                Set("106", 1, 173, 0); // 105 zombie cutscene
-
-                Set("106", 0, 124, 0); // Lockpick
-                // Set("106", 0, 123, 0); // Jill uses ink ribbons
+                // Set(0, 123, 0); // Jill uses ink ribbons
+                rdt.AdditionalOpcodes.AddRange(
+                    ScdCondition.Parse("1:0").Generate(BioVersion.Biohazard1, [
+                        Set(1, 0, 0), // 106 first cutscene
+                        Set(1, 2, 0), // 104 first zombie found
+                        Set(1, 3, 0), // 106 Wesker search cutscene
+                        Set(1, 5, 0), // 106/203 Wesker search complete
+                        Set(1, 7, 0), // 106/203 Barry gift cutscene (also disables 115 sandwich rescue and 20A cutscene)
+                        Set(1, 86, 0), // 20E Yawn poison partner recovery
+                        Set(1, 97, 0), // 20D Richard receives serum
+                        Set(1, 103, 0), // 212 Forrest cutscene
+                        Set(1, 161, 0), // 105 first dining room cutscene
+                        Set(1, 167, 0), // Init. dining room emblem state
+                        Set(1, 172, 0), // 104 visted
+                        Set(1, 173, 0), // 105 zombie cutscene
+                        Set(0, 124, 0) // Lockpick
+                    ]));
             }
 
-            void Set(string rdtId, byte group, byte index, byte value)
+            static UnknownOpcode Set(byte group, byte index, byte value)
             {
-                var rdt = gameData.GetRdt(RdtId.Parse(rdtId))!;
-                rdt?.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x05, [group, index, value]));
+                return new UnknownOpcode(0, 0x05, [group, index, value]);
             }
         }
 
@@ -752,7 +799,7 @@ namespace IntelOrca.Biohazard.BioRand
                 foreach (var item in (kvp.Value.Items ?? []))
                 {
                     if (item.GlobalId is not short globalId)
-                        return;
+                        continue;
 
                     if (generatedVariation.ModBuilder.GetItem(globalId) is Item newItem && item.TypeOffsets != null)
                     {

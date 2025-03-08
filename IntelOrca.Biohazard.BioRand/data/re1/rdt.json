@@ -1326,6 +1326,7 @@
         {
           "name": "BEHIND SLIDING DOOR",
           "id": 4,
+          "globalId": 21,
           "type": 32,
           "amount": 1,
           "requires2": [
@@ -1342,6 +1343,7 @@
         {
           "name": "BEHIND SLIDING DOOR",
           "id": 4,
+          "globalId": 21,
           "type": 32,
           "amount": 1,
           "requires2": [
@@ -1359,6 +1361,7 @@
         {
           "name": "BEHIND SLIDING DOOR",
           "id": 4,
+          "globalId": 21,
           "type": 32,
           "amount": 1,
           "requires2": [
@@ -3251,9 +3254,11 @@
         {
           "name": "BARRY'S PHOTO",
           "id": 3,
+          "globalId": 117,
           "type": 106,
           "amount": 0,
           "optional": true,
+          "document": true,
           "group": 16,
           "player": 1
         }
