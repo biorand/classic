@@ -1477,6 +1477,11 @@ namespace IntelOrca.Biohazard.BioRand
                         continue;
 
                     var supportedEnemies = enemyInfo.Where(x => SupportsEnemy(kvp.Value, x)).ToImmutableArray();
+                    var roomTags = kvp.Value.Tags ?? [];
+                    if (roomTags.Any(banTags.Contains))
+                    {
+                        supportedEnemies = [];
+                    }
                     if (!separateRdts)
                     {
                         var unseenRdts = rdts.Where(x => !rdtSeen.Contains(x)).ToImmutableArray();
