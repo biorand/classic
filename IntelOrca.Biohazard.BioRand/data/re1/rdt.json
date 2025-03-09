@@ -2376,6 +2376,11 @@
       ],
       "enemies": [
         {
+          "id": 0,
+          "kind": "npc",
+          "player": 0
+        },
+        {
           "condition": "1:67",
           "excludeTypes": [ 4, 11 ],
           "maxDifficulty": 0
@@ -4188,7 +4193,8 @@
         {
           "player": 1
         }
-      ]
+      ],
+      "enemies": []
     },
     "40D": {
       "name": "GUARDHOUSE BOX PASSAGE",
@@ -4897,8 +4903,7 @@
       "enemies": [
         {
           "id": 0,
-          "kind": "npc",
-          "player": 1
+          "kind": "npc"
         },
         {
           "condition": "0:45",
