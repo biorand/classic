@@ -660,7 +660,7 @@ namespace IntelOrca.Biohazard.BioRand
                         Set(1, 97, 0), // 20D Richard receives serum
                         Set(1, 103, 0), // 212 Forrest cutscene
                         Set(1, 161, 0), // 105 first dining room cutscene
-                        Set(1, 167, 0), // Init. dining room emblem state
+                        Set(1, 170, 0), // Init. dining room emblem state
                         Set(1, 172, 0), // 104 visted
                         Set(1, 173, 0), // 105 zombie cutscene
                         Set(1, 175, 0), // Wesker cutscene after Plant 42
