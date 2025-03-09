@@ -1893,10 +1893,12 @@
       "rdts": [ "200", "700" ],
       "doors": [
         {
-          "target": "213"
+          "id": 0,
+          "target": "213:1"
         },
         {
-          "target": "21C"
+          "id": 1,
+          "target": "21C:0"
         }
       ]
     },
@@ -1909,14 +1911,27 @@
           "target": "101:3"
         },
         {
-          "target": "202"
+          "id": 0,
+          "target": "202:0"
         },
-        // {
-        //   "target": "214",
-        //   "kind": "unlock"
-        // },
         {
-          "target": "215",
+          "id": 1,
+          "target": "214:1",
+          "lockId": 209,
+          "kind": "blocked",
+          "player": 0
+        },
+        {
+          "id": 1,
+          "target": "214:5",
+          "lockId": 209,
+          "kind": "blocked",
+          "player": 1
+        },
+        {
+          "id": 2,
+          "target": "215:0",
+          "lockId": 204,
           "requires2": [
             "item(54)"
           ]
@@ -1934,10 +1949,12 @@
       "rdts": [ "202", "702" ],
       "doors": [
         {
-          "target": "201"
+          "id": 0,
+          "target": "201:0"
         },
         {
-          "target": "203"
+          "id": 1,
+          "target": "203:3"
         }
       ],
       "enemies": [
@@ -1957,17 +1974,21 @@
       ],
       "doors": [
         {
-          "target": "106",
+          "id": 0,
+          "target": "106:4",
           "randomize": false
         },
         {
-          "target": "202"
+          "id": 3,
+          "target": "202:1"
         },
         {
-          "target": "204"
+          "id": 2,
+          "target": "204:0"
         },
         {
-          "target": "211"
+          "id": 1,
+          "target": "211:0"
         }
       ],
       "items": [
@@ -1995,23 +2016,31 @@
       "rdts": [ "204", "704" ],
       "doors": [
         {
-          "target": "203"
+          "id": 0,
+          "target": "203:2"
         },
         {
-          "target": "205",
+          "id": 1,
+          "target": "205:0",
+          "lockId": 206,
           "requires2": [
             "item(52)"
           ]
         },
         {
-          "target": "206"
+          "id": 2,
+          "target": "206:0"
         },
         {
-          "target": "207",
+          "id": 3,
+          "target": "207:0",
+          "lockId": 150,
           "kind": "locked"
         },
         {
-          "target": "20D",
+          "id": 4,
+          "target": "20D:0",
+          "lockId": 141,
           "requires2": [
             "item(52)"
           ]
@@ -2028,7 +2057,8 @@
       "rdts": [ "205", "705" ],
       "doors": [
         {
-          "target": "204"
+          "id": 0,
+          "target": "204:1"
         }
       ],
       "items": [
@@ -2053,23 +2083,13 @@
       "rdts": [ "206", "706" ],
       "doors": [
         {
-          "target": "204"
+          "id": 0,
+          "target": "204:2"
         },
         {
-          "target": "207",
-          "kind": "oneway",
-          "doorRando": false
-        },
-        {
-          "target": "207",
-          "entrance": {
-            "x": 9180,
-            "y": 0,
-            "z": 11280,
-            "d": 2048,
-            "cut": 3
-          },
-          "doorRando": true
+          "id": 1,
+          "target": "207:4",
+          "kind": "unlock"
         }
       ],
       "items": [
@@ -2093,26 +2113,28 @@
       "rdts": [ "207", "707" ],
       "doors": [
         {
-          "target": "10B"
+          "id": 0,
+          "target": "204:3"
         },
         {
-          "target": "204"
-        },
-        {
-          "target": "208",
+          "id": 1,
+          "target": "208:1",
           "requires2": [
             "item(52)"
           ]
         },
         {
-          "target": "20B"
+          "id": 2,
+          "target": "10B:1"
         },
         {
-          "create": true,
-          "texture": 0,
-          "target": "206",
+          "id": 3,
+          "target": "20B:0"
+        },
+        {
           "id": 4,
-          "doorRando": true
+          "target": "206:1",
+          "kind": "locked"
         }
       ],
       "enemies": [
@@ -2126,13 +2148,16 @@
       "rdts": [ "208", "708" ],
       "doors": [
         {
-          "target": "207"
+          "id": 0,
+          "target": "209:0"
         },
         {
-          "target": "209"
+          "id": 1,
+          "target": "207:1"
         },
         {
-          "target": "20A"
+          "id": 2,
+          "target": "20A:0"
         }
       ],
       "enemies": [
@@ -2148,7 +2173,8 @@
       "rdts": [ "209", "709" ],
       "doors": [
         {
-          "target": "208"
+          "id": 0,
+          "target": "208:0"
         }
       ],
       "items": [
@@ -2206,7 +2232,8 @@
       ],
       "doors": [
         {
-          "target": "208"
+          "id": 0,
+          "target": "208:2"
         }
       ],
       "items": [
@@ -2257,10 +2284,12 @@
       "rdts": [ "20B", "70B" ],
       "doors": [
         {
-          "target": "207"
+          "id": 0,
+          "target": "207:2"
         },
         {
-          "target": "20C",
+          "id": 5,
+          "target": "20C:0",
           "requires2": [
             "item(54)"
           ]
@@ -2288,7 +2317,8 @@
       "rdts": [ "20C", "70C" ],
       "doors": [
         {
-          "target": "20B"
+          "id": 0,
+          "target": "20B:5"
         },
         {
           "target": "20C/GRAVE",
@@ -2315,7 +2345,9 @@
       "rdts": [ "20C", "70C" ],
       "doors": [
         {
-          "target": "21A"
+          "id": 1,
+          "target": "21A:0",
+          "noUnlock": true
         }
       ]
     },
@@ -2329,10 +2361,12 @@
       ],
       "doors": [
         {
-          "target": "204"
+          "id": 0,
+          "target": "204:4"
         },
         {
-          "target": "20E"
+          "id": 1,
+          "target": "20E:0"
         }
       ],
       "items": [
@@ -2381,13 +2415,16 @@
       "rdts": [ "20E", "70E" ],
       "doors": [
         {
-          "target": "20D"
+          "id": 0,
+          "target": "20D:1"
         },
         {
-          "target": "20F"
+          "id": 1,
+          "target": "20F:0"
         },
         {
-          "target": "210",
+          "id": 2,
+          "target": "210:0",
           "requires2": [
             "item(53)"
           ]
@@ -2411,7 +2448,8 @@
       "rdts": [ "20F", "70F" ],
       "doors": [
         {
-          "target": "20E"
+          "id": 0,
+          "target": "20E:1"
         }
       ],
       "items": [
@@ -2447,7 +2485,8 @@
       "rdts": [ "210", "710" ],
       "doors": [
         {
-          "target": "20E"
+          "id": 0,
+          "target": "20E:2"
         }
       ],
       "items": [
@@ -2481,10 +2520,12 @@
       "rdts": [ "211", "711" ],
       "doors": [
         {
-          "target": "203"
+          "id": 0,
+          "target": "203:1"
         },
         {
-          "target": "212"
+          "id": 1,
+          "target": "212:0"
         }
       ],
       "items": [
@@ -2517,7 +2558,8 @@
       ],
       "doors": [
         {
-          "target": "211"
+          "id": 0,
+          "target": "211:1"
         }
       ],
       "items": [
@@ -2554,13 +2596,26 @@
       "rdts": [ "213", "713" ],
       "doors": [
         {
-          "target": "214"
+          "id": 0,
+          "target": "216:0"
         },
         {
-          "target": "216"
+          "id": 1,
+          "target": "200:0"
         },
         {
-          "target": "219"
+          "id": 2,
+          "target": "219:0"
+        },
+        {
+          "id": 3,
+          "target": "214:0",
+          "player": 0
+        },
+        {
+          "id": 3,
+          "target": "214:1",
+          "player": 1
         }
       ],
       "items": [
@@ -2583,12 +2638,27 @@
       "name": "2F WEST BLUE CORRIDOR",
       "rdts": [ "214", "714" ],
       "doors": [
-        // {
-        //   "target": "201",
-        //   "kind": "locked"
-        // },
         {
-          "target": "213"
+          "id": 0,
+          "target": "213:3",
+          "player": 0
+        },
+        {
+          "id": 1,
+          "target": "213:3",
+          "player": 1
+        },
+        {
+          "id": 1,
+          "target": "201:1",
+          "kind": "unlock",
+          "player": 0
+        },
+        {
+          "id": 5,
+          "target": "201:1",
+          "kind": "unlock",
+          "player": 1
         }
       ],
       "items": [
@@ -2626,6 +2696,12 @@
     "215": {
       "name": "2F WEST DEER ROOM",
       "rdts": [ "215", "715" ],
+      "doors": [
+        {
+          "id": 0,
+          "target": "201:2"
+        }
+      ],
       "items": [
         {
           "name": "SHELLS",
@@ -2664,14 +2740,17 @@
       "rdts": [ "216", "716" ],
       "doors": [
         {
-          "target": "213"
+          "id": 0,
+          "target": "213:0"
         },
         {
-          "target": "216",
+          "id": 1,
+          "target": "217:0"
+        },
+        {
+          "id": 2,
+          "target": "218:0",
           "kind": "unblock"
-        },
-        {
-          "target": "217"
         }
       ],
       "items": [
@@ -2707,7 +2786,8 @@
       "rdts": [ "217", "717" ],
       "doors": [
         {
-          "target": "216"
+          "id": 0,
+          "target": "216:1"
         }
       ],
       "items": [
@@ -2731,7 +2811,8 @@
       "rdts": [ "218", "718" ],
       "doors": [
         {
-          "target": "216"
+          "id": 0,
+          "target": "216:2"
         }
       ],
       "items": [
@@ -2764,7 +2845,8 @@
       "rdts": [ "219", "719" ],
       "doors": [
         {
-          "target": "213"
+          "id": 0,
+          "target": "213:2"
         }
       ],
       "items": [
@@ -2808,10 +2890,13 @@
       "rdts": [ "21A", "71A" ],
       "doors": [
         {
-          "target": "20C/GRAVE"
+          "id": 0,
+          "target": "20C/GRAVE:1",
+          "noUnlock": true
         },
         {
-          "target": "21B"
+          "id": 1,
+          "target": "21B:0"
         }
       ],
       "items": [
@@ -2835,10 +2920,13 @@
       "rdts": [ "21B", "71B" ],
       "doors": [
         {
-          "target": "21A"
+          "id": 0,
+          "target": "21A:1"
         },
         {
-          "target": "21C",
+          "id": 1,
+          "target": "21C:1",
+          "lockId": 155,
           "kind": "unlock"
         }
       ],
@@ -2871,19 +2959,23 @@
       "rdts": [ "21C", "71C" ],
       "doors": [
         {
-          "target": "200"
+          "id": 0,
+          "target": "200:1"
         },
         {
-          "target": "110"
-        },
-        {
-          "target": "21B",
+          "id": 1,
+          "target": "21B:1",
+          "lockId": 155,
           "kind": "locked"
+        },
+        {
+          "id": 2,
+          "target": "110:1"
         }
       ],
       "items": [
         {
-          "name": "INK NEAR SINK",
+          "name": "SMALL KEY NEAR SINK",
           "id": 10,
           "globalId": 228,
           "type": 61,

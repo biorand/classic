@@ -926,7 +926,16 @@ namespace IntelOrca.Biohazard.BioRand
 
             if (context.Configuration.GetValueOrDefault("locks/random", true))
             {
-                var availableLocks = new Queue<byte>([200, 201, 205, 206]);
+                var reservedLockIds = (map.Rooms ?? []).Values
+                    .SelectMany(x => x.Doors)
+                    .Where(x => x.LockId != null)
+                    .Select(x => x.LockId!)
+                    .ToHashSet();
+
+                var availableLocks = Enumerable.Range(128, 128)
+                    .Select(static x => (byte)x)
+                    .Where(x => !reservedLockIds.Contains(x))
+                    .ToQueue();
                 foreach (var pair in pairs)
                 {
                     if (pair.A.Door.NoUnlock || pair.B.Door.NoUnlock)
@@ -939,8 +948,17 @@ namespace IntelOrca.Biohazard.BioRand
                         continue;
 
                     var doorLock = new DoorLock(lockId.Value, 51); // Sword Key
-                    SetDoorLock(modBuilder, pair.A, doorLock);
-                    SetDoorLock(modBuilder, pair.B, doorLock);
+                    var doorLockA = doorLock;
+                    var doorLockB = doorLock;
+
+                    // Work around for key randomizer complaining about requirements on other side of blocked door
+                    if (pair.A.Door.Kind == "unblock")
+                        doorLockB = new DoorLock(lockId.Value, 255);
+                    else if (pair.B.Door.Kind == "unblock")
+                        doorLockA = new DoorLock(lockId.Value, 255);
+
+                    SetDoorLock(modBuilder, pair.A, doorLockA);
+                    SetDoorLock(modBuilder, pair.B, doorLockB);
                 }
                 throw new RandomizerUserException("Lock randomizer not implemented yet.");
             }

@@ -330,6 +330,7 @@ namespace IntelOrca.Biohazard.BioRand
             EnableMoreJillItems();
             DisableDogWindows();
             DisableDogBoiler();
+            AddDoor207();
             FixDoorToWardrobe();
             FixPassCodeDoor();
             FixDrugStoreRoom();
@@ -356,6 +357,39 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 var rdt114 = gameData.GetRdt(RdtId.Parse("114"));
                 rdt114?.Nop(0x24B80, 0x24C1C);
+            }
+
+            void AddDoor207()
+            {
+                foreach (var rtdId in new[] { "207", "707" })
+                {
+                    var rdt207 = gameData.GetRdt(RdtId.Parse(rtdId));
+                    if (rdt207 != null)
+                    {
+                        rdt207.Nop(0x1C576);
+                        rdt207.AdditionalOpcodes.Add(new DoorAotSeOpcode()
+                        {
+                            Opcode = 0x0C,
+                            Id = 4,
+                            X = 800,
+                            Z = 10400,
+                            W = 1900,
+                            D = 1700,
+                            Special = 0,
+                            Re1UnkB = 0,
+                            Animation = 0,
+                            Re1UnkC = 2,
+                            LockId = 149,
+                            Target = new RdtId(255, 0x06),
+                            NextX = 9180,
+                            NextY = 0,
+                            NextZ = 11280,
+                            NextD = 2048,
+                            LockType = 255,
+                            Free = 129
+                        });
+                    }
+                }
             }
 
             void FixDoorToWardrobe()
