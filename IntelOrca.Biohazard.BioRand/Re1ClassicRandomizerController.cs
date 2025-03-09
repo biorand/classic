@@ -1143,9 +1143,13 @@ namespace IntelOrca.Biohazard.BioRand
             var doc = new XmlDocument();
             var root = doc.CreateElement("Init");
 
-            var chris = inventories.Length > 0 ? inventories[0] : CreateEmptyInventory(6);
-            var jill = inventories.Length > 1 ? inventories[1] : CreateEmptyInventory(8);
-            var rebecca = inventories.Length > 2 ? inventories[2] : CreateEmptyInventory(6);
+            var chris = CreateEmptyInventory(6);
+            var jill = CreateEmptyInventory(8);
+            var rebecca = CreateEmptyInventory(6);
+            if (context.Variation.PlayerIndex == 0)
+                chris = inventories[0];
+            else
+                jill = inventories[0];
 
             root.AppendChild(CreatePlayerNode(doc, jill, new RandomInventory()));
             root.AppendChild(CreatePlayerNode(doc, chris, rebecca));

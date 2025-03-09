@@ -1611,6 +1611,16 @@
       ],
       "enemies": [
         {
+          "id": 0,
+          "kind": "npc",
+          "player": 1
+        },
+        {
+          "id": 1,
+          "kind": "npc",
+          "player": 1
+        },
+        {
           "condition": "!(7:0 && 7:1 && 1:32)",
           "excludeTypes": [ 4 ],
           "maxDifficulty": 0,
@@ -4430,7 +4440,8 @@
           "amount": 1,
           "group": 32
         }
-      ]
+      ],
+      "enemies": []
     },
     "502": {
       "name": "LABORATORY B2 BOX",
@@ -4885,6 +4896,11 @@
       ],
       "enemies": [
         {
+          "id": 0,
+          "kind": "npc",
+          "player": 1
+        },
+        {
           "condition": "0:45",
           "excludeTypes": [ 4 ]
         }
@@ -5155,7 +5171,8 @@
           "includeOffsets": [ 61612 ],
           "player": 1
         }
-      ]
+      ],
+      "enemies": []
     },
     "515": {
       "name": "LABORATORY B4 ELEVATOR (CUTSCENE)",
