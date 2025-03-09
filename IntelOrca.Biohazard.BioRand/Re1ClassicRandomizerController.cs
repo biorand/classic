@@ -1189,7 +1189,7 @@ namespace IntelOrca.Biohazard.BioRand
         private void AddEnemySkins(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
         {
             var emd100B = context.DataManager.GetData(BioVersion.Biohazard1, "emd/orca/EM100B.EMD");
-            crModBuilder.SetFile("ENEMY/EM100B.EMD", emd100B);
+            crModBuilder.SetFile($"ENEMY/EM1{context.Variation.PlayerIndex}0B.EMD", emd100B);
         }
 
         private void AddBackgroundTextures(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
