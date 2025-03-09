@@ -566,7 +566,8 @@
         },
         {
           "id": 3,
-          "target": "201:3"
+          "target": "201:3",
+          "noUnlock": true
         }
       ],
       "enemies": [
@@ -631,6 +632,7 @@
         {
           "id": 1,
           "target": "104:0",
+          "lockId": 146,
           "kind": "unlock"
         },
         {
@@ -644,6 +646,7 @@
         {
           "id": 4,
           "target": "10E:0",
+          "lockId": 203,
           "requires2": [
             "item(51)"
           ]
@@ -662,6 +665,7 @@
         {
           "id": 0,
           "target": "103:1",
+          "lockId": 146,
           "kind": "locked"
         },
         {
@@ -672,6 +676,7 @@
         {
           "id": 1,
           "target": "10F:0",
+          "lockId": 134,
           "requires2": [
             "item(51)"
           ]
@@ -679,6 +684,7 @@
         {
           "id": 2,
           "target": "110:0",
+          "lockId": 211,
           "kind": "blocked"
         }
       ],
@@ -855,6 +861,7 @@
         {
           "id": 1,
           "target": "111:0",
+          "lockId": 197,
           "requires2": [
             "item(52)"
           ]
@@ -862,6 +869,7 @@
         {
           "id": 4,
           "target": "203:0",
+          "noUnlock": true,
           "randomize": false
         },
         {
@@ -969,6 +977,7 @@
         {
           "id": 1,
           "target": "108:0",
+          "lockId": 137,
           "requires2": [
             "item(51)"
           ]
@@ -1035,6 +1044,7 @@
         {
           "id": 1,
           "target": "114:0",
+          "lockId": 196,
           "requires2": [
             "item(52)"
           ]
@@ -1089,6 +1099,7 @@
         {
           "id": 3,
           "target": "10B:0",
+          "lockId": 148,
           "kind": "unlock"
         },
         {
@@ -1098,6 +1109,7 @@
         {
           "id": 2,
           "target": "119:0",
+          "lockId": 216,
           "requires2": [
             "item(54)"
           ]
@@ -1121,6 +1133,7 @@
         {
           "id": 0,
           "target": "10A:3",
+          "lockId": 148,
           "kind": "locked"
         },
         {
@@ -1129,7 +1142,8 @@
         },
         {
           "id": 1,
-          "target": "207:2"
+          "target": "207:2",
+          "noUnlock": true
         }
       ],
       "items": [
@@ -1404,6 +1418,7 @@
         {
           "id": 0,
           "target": "104:2",
+          "lockId": 147,
           "kind": "unlock"
         }
       ],
@@ -1461,6 +1476,7 @@
         {
           "id": 1,
           "target": "11C:0",
+          "lockId": 176,
           "requires2": [
             "item(56)"
           ]
@@ -1602,11 +1618,13 @@
       "doors": [
         {
           "id": 0,
-          "target": "109:3"
+          "target": "109:3",
+          "lockId": 128
         },
         {
           "id": 1,
-          "target": "116:0"
+          "target": "116:0",
+          "lockId": 129
         }
       ],
       "enemies": [
@@ -1797,6 +1815,7 @@
         {
           "id": 1,
           "target": "11B:0",
+          "lockId": 151,
           "requires2": [
             "item(41)",
             "item(44)",
