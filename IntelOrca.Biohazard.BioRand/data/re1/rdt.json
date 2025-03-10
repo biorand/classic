@@ -3024,15 +3024,19 @@
       "rdts": [ "300" ],
       "doors": [
         {
-          "target": "11B"
+          "id": 0,
+          "target": "301:0"
         },
         {
-          "target": "301"
-        },
-        {
-          "target": "302",
+          "id": 1,
+          "target": "302:0",
           "kind": "blocked",
+          "noUnlock": true,
           "randomize": false
+        },
+        {
+          "id": 2,
+          "target": "11B:1"
         }
       ],
       "items": [
@@ -3104,13 +3108,17 @@
       ],
       "doors": [
         {
-          "target": "300"
+          "id": 0,
+          "target": "300:0"
         },
         {
-          "target": "302",
+          "id": 1,
+          "target": "302:1",
+          "kind": "blocked",
           "requires2": [
             "item(29)"
-          ]
+          ],
+          "noUnlock": true
         }
       ],
       "enemies": [
@@ -3130,7 +3138,7 @@
       "doors": [
         {
           "id": 0,
-          "target": "300",
+          "target": "300:1",
           "randomize": false,
           "requires2": [
             "flag(COURTYARD_LIFT_POWER)"
@@ -3140,7 +3148,8 @@
         },
         {
           "id": 1,
-          "target": "301"
+          "target": "301:1",
+          "noUnlock": true
         },
         {
           "id": 2,
@@ -3150,7 +3159,7 @@
         {
           "id": 3,
           "name": "LADDER TO CAVES",
-          "target": "307",
+          "target": "307:0",
           "requires2": [
             "flag(COURTYARD_LIFT_POWER)"
           ],
@@ -3178,8 +3187,9 @@
         {
           "name": "LIFT TO LAB",
           "id": 0,
-          "target": "500",
-          "kind": "blocked"
+          "target": "50D:1",
+          "kind": "blocked",
+          "noUnlock": true
         },
         {
           "name": "DOOR TO FOUNTAIN",
@@ -3288,21 +3298,6 @@
       ],
       "doors": [
         {
-          "id": 2,
-          "target": "30F"
-        },
-        {
-          "name": "FOUNTAIN STAIRS",
-          "id": 1,
-          "target": "310",
-          "requires2": [
-            "item(63)",
-            "item(64)"
-          ],
-          "noUnlock": true,
-          "randomize": false
-        },
-        {
           "name": "DOOR TO HELIPORT",
           "id": 0,
           "target": "303:8",
@@ -3313,6 +3308,23 @@
             "d": 0,
             "cut": 0
           }
+        },
+        {
+          "name": "FOUNTAIN STAIRS",
+          "id": 1,
+          "target": "310:0",
+          "kind": "unblock",
+          "requires2": [
+            "item(63)",
+            "item(64)"
+          ],
+          "noUnlock": true,
+          "randomize": false
+        },
+        {
+          "id": 2,
+          "target": "30F:0",
+          "noUnlock": true
         }
       ],
       "items": [
@@ -3355,7 +3367,8 @@
       "rdts": [ "306" ],
       "doors": [
         {
-          "target": "30F"
+          "id": 0,
+          "target": "30F:1"
         }
       ],
       "items": [
@@ -3384,14 +3397,17 @@
       "tags": [ "save" ],
       "doors": [
         {
-          "target": "302",
-          "doorRando": true
+          "id": 0,
+          "target": "302:3",
+          "noUnlock": true
         },
         {
-          "target": "308"
+          "id": 1,
+          "target": "308:0"
         },
         {
-          "target": "30B",
+          "target": "307/BACK",
+          "kind": "unblock",
           "requires2": [
             "item(30)"
           ]
@@ -3428,6 +3444,21 @@
         }
       ]
     },
+    "307/BACK": {
+      "name": "CAVES ENTRANCE (BACK)",
+      "rdts": [ "307" ],
+      "doors": [
+        {
+          "target": "307",
+          "kind": "blocked"
+        },
+        {
+          "id": 2,
+          "target": "30B:0",
+          "lockId": 167
+        }
+      ]
+    },
     "308": {
       "name": "CAVES BRANCH PASSAGE",
       "rdts": [ "308" ],
@@ -3439,7 +3470,8 @@
       ],
       "doors": [
         {
-          "target": "307"
+          "id": 0,
+          "target": "307:1"
         },
         {
           "id": 1,
@@ -3480,7 +3512,7 @@
         },
         {
           "id": 2,
-          "target": "30A"
+          "target": "30A:0"
         }
       ],
       "items": [
@@ -3519,7 +3551,8 @@
       "rdts": [ "30A" ],
       "doors": [
         {
-          "target": "309"
+          "id": 0,
+          "target": "309:2"
         }
       ],
       "items": [
@@ -3581,9 +3614,12 @@
       "rdts": [ "30B" ],
       "doors": [
         {
-          "target": "307"
+          "id": 0,
+          "target": "307",
+          "lockId": 167
         },
         {
+          "id": 1,
           "target": "30C",
           "kind": "unblock"
         }
@@ -3626,10 +3662,12 @@
       "rdts": [ "30C" ],
       "doors": [
         {
-          "target": "30B"
+          "id": 0,
+          "target": "30B:1"
         },
         {
-          "target": "30D",
+          "id": 1,
+          "target": "30D:0",
           "kind": "unblock"
         }
       ],
@@ -3653,13 +3691,17 @@
       "rdts": [ "30D" ],
       "doors": [
         {
-          "target": "30C"
+          "id": 0,
+          "target": "30C:1"
         },
         {
-          "target": "30E"
+          "id": 1,
+          "target": "30E:0"
         },
         {
-          "target": "30F"
+          "id": 2,
+          "target": "30F:2",
+          "lockId": 175
         }
       ],
       "enemies": [
@@ -3679,7 +3721,8 @@
       ],
       "doors": [
         {
-          "target": "30D"
+          "id": 0,
+          "target": "30D:1"
         }
       ],
       "items": [
@@ -3721,17 +3764,20 @@
       "rdts": [ "30F" ],
       "doors": [
         {
-          "target": "305",
+          "id": 0,
+          "target": "305:2",
           "noUnlock": true
         },
         {
-          "target": "306",
+          "target": "30F/BACK",
+          "kind": "blocked",
           "requires2": [
             "item(30)"
           ]
         },
         {
-          "target": "30D"
+          "id": 2,
+          "target": "30D:2"
         }
       ],
       "items": [
@@ -3750,17 +3796,35 @@
         }
       ]
     },
+    "30F/BACK": {
+      "name": "CAVES SECOND BOULDER (BACK)",
+      "rdts": [ "30F" ],
+      "doors": [
+        {
+          "target": "30F",
+          "kind": "blocked"
+        },
+        {
+          "id": 1,
+          "target": "306:0"
+        }
+      ]
+    },
     "310": {
       "name": "FOUNTAIN STAIRS",
       "tags": [ "lab" ],
       "rdts": [ "310" ],
       "doors": [
-        // {
-        //   "target": "305",
-        //   "randomize": false
-        // },
         {
-          "target": "500"
+          "id": 0,
+          "target": "305:1",
+          "noUnlock": true,
+          "randomize": false
+        },
+        {
+          "id": 1,
+          "target": "500:1",
+          "noUnlock": true
         }
       ]
     },
@@ -4562,10 +4626,12 @@
           "target": "500"
         },
         {
-          "target": "50D",
+          "target": "50D:0",
           "requires2": [
             "item(39)"
           ],
+          "kind": "noreturn",
+          "noUnlock": true,
           "randomize": false
         }
       ],
@@ -5054,12 +5120,15 @@
       ],
       "doors": [
         {
-          "target": "501",
+          "id": 0,
+          "target": "501:1",
+          "noUnlock": true,
           "randomize": false
         },
         {
-          "target": "303",
-          "kind": "noreturn",
+          "id": 1,
+          "target": "303:0",
+          "noUnlock": true,
           "randomize": false
         }
       ]
