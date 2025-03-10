@@ -4650,17 +4650,22 @@
       ],
       "doors": [
         {
-          "target": "310"
-        },
-        {
-          "target": "501",
+          "id": 0,
+          "target": "501:0",
+          "lockId": 156,
           "requires2": [
             "item(55)"
-          ],
-          "requiresRoom": [ "505", "513" ]
+          ]
         },
         {
-          "target": "502"
+          "id": 1,
+          "target": "310:1",
+          "noUnlock": true
+        },
+        {
+          "id": 2,
+          "target": "502",
+          "noUnlock": true
         }
       ],
       "enemies": [
@@ -4682,9 +4687,12 @@
       "rdts": [ "501" ],
       "doors": [
         {
-          "target": "500"
+          "id": 0,
+          "target": "500:0",
+          "lockId": 156
         },
         {
+          "id": 1,
           "target": "50D:0",
           "requires2": [
             "item(39)"
@@ -4725,23 +4733,29 @@
       ],
       "doors": [
         {
-          "target": "500",
+          "id": 0,
+          "target": "500:2",
+          "noUnlock": true,
           "player": 0
         },
         {
-          "target": "500",
+          "id": 0,
+          "target": "500:2",
+          "noUnlock": true,
           "player": 1,
           "doorRando": false
         },
         {
-          "target": "500",
+          "id": 0,
+          "target": "500:2",
           "kind": "unblock",
           "noUnlock": true,
           "player": 1,
           "doorRando": true
         },
         {
-          "target": "503"
+          "id": 1,
+          "target": "503:0"
         }
       ],
       "npcs": [
@@ -4778,14 +4792,21 @@
       "rdts": [ "503" ],
       "doors": [
         {
-          "target": "502"
+          "id": 0,
+          "target": "502:1"
         },
         {
-          "target": "504",
-          "requiresRoom": [ "506" ]
+          "id": 1,
+          "target": "504:0",
+          "requires2": [
+            "flag(506_COMPUTER_MOLE)"
+          ],
+          "noUnlock": true
         },
         {
-          "target": "505"
+          "id": 2,
+          "target": "505:0",
+          "noUnlock": true
         }
       ],
       "items": [
@@ -4826,7 +4847,9 @@
       "rdts": [ "504" ],
       "doors": [
         {
-          "target": "503"
+          "id": 0,
+          "target": "503:1",
+          "noUnlock": true
         }
       ],
       "items": [
@@ -4861,20 +4884,28 @@
       "rdts": [ "505" ],
       "doors": [
         {
-          "target": "503"
+          "id": 0,
+          "target": "503:2",
+          "noUnlock": true
         },
         {
-          "target": "506"
+          "id": 1,
+          "target": "506:0"
         },
         {
-          "target": "507/STORE",
+          "id": 2,
+          "target": "507/STORE:0",
+          "lockId": 173,
           "kind": "locked"
         },
         {
-          "target": "508"
+          "id": 3,
+          "target": "508:0"
         },
         {
-          "target": "50C",
+          "id": 4,
+          "target": "50C:0",
+          "lockId": 157,
           "requires2": [
             "item(60)"
           ]
@@ -4892,7 +4923,16 @@
       "rdts": [ "506" ],
       "doors": [
         {
-          "target": "505"
+          "id": 0,
+          "target": "505:1"
+        }
+      ],
+      "flags": [
+        {
+          "name": "506_COMPUTER_JOHNADA"
+        },
+        {
+          "name": "506_COMPUTER_MOLE"
         }
       ],
       "items": [
@@ -4922,8 +4962,8 @@
           "kind": "oneway"
         },
         {
-          "target": "50C",
-          "kind": "unlock"
+          "id": 1,
+          "target": "50C:0"
         }
       ],
       "items": [
@@ -4952,7 +4992,10 @@
       "rdts": [ "507" ],
       "doors": [
         {
-          "target": "505"
+          "id": 0,
+          "target": "505",
+          "lockId": 173,
+          "kind": "unlock"
         }
       ],
       "items": [
@@ -4990,23 +5033,30 @@
       ],
       "doors": [
         {
-          "target": "505"
+          "id": 0,
+          "target": "505:3"
         },
         {
-          "target": "509",
-          "requiresRoom": [ "506" ]
+          "id": 1,
+          "target": "509:0",
+          "requires2": [
+            "flag(506_COMPUTER_JOHNADA)"
+          ],
+          "noUnlock": true
         },
         {
-          "target": "50A"
+          "id": 2,
+          "target": "50A:0"
         },
         {
-          "target": "50B",
+          "id": 3,
+          "target": "50B:0",
           "requires2": [
             "flag(MO_DISC_507)",
             "flag(MO_DISC_509)",
             "flag(MO_DISC_510)"
           ],
-          "requiresRoom": [ "507", "509", "510" ]
+          "noUnlock": true
         }
       ],
       "enemies": [
@@ -5034,7 +5084,9 @@
       "rdts": [ "509" ],
       "doors": [
         {
-          "target": "508"
+          "id": 0,
+          "target": "508:1",
+          "noUnlock": true
         }
       ],
       "items": [
@@ -5068,7 +5120,8 @@
       "rdts": [ "50A" ],
       "doors": [
         {
-          "target": "508"
+          "id": 0,
+          "target": "508:2"
         }
       ],
       "items": [
@@ -5120,10 +5173,17 @@
       ],
       "doors": [
         {
-          "target": "508"
+          "id": 0,
+          "target": "508:3",
+          "noUnlock": true
         },
         {
-          "target": "512"
+          "id": 1,
+          "target": "512:0",
+          "requires2": [
+            "room(513)"
+          ],
+          "noUnlock": true
         }
       ],
       "enemies": []
@@ -5139,20 +5199,29 @@
       ],
       "doors": [
         {
-          "target": "505"
+          "id": 0,
+          "target": "505:4",
+          "lockId": 157
         },
         {
-          "target": "507/TABLE"
+          "id": 1,
+          "target": "507/TABLE:1"
         },
         {
-          "target": "50E"
+          "id": 2,
+          "target": "50E:0"
         },
         {
-          "target": "50F"
+          "id": 3,
+          "target": "50F:0"
         },
         {
-          "target": "515",
-          "requiresRoom": [ "50F", "511" ],
+          "id": 4,
+          "target": "515:0",
+          "requires2": [
+            "room(50F)",
+            "room(511)"
+          ],
           "noUnlock": true,
           "randomize": false
         }
@@ -5203,7 +5272,7 @@
       ],
       "doors": [
         {
-          "target": "50C"
+          "target": "50C:0"
         }
       ],
       "items": [
@@ -5256,10 +5325,12 @@
       "rdts": [ "50F" ],
       "doors": [
         {
-          "target": "50C"
+          "id": 0,
+          "target": "50C:3"
         },
         {
-          "target": "510"
+          "id": 1,
+          "target": "510:0"
         }
       ],
       "enemies": [
@@ -5274,10 +5345,12 @@
       "rdts": [ "510" ],
       "doors": [
         {
-          "target": "50F"
+          "id": 0,
+          "target": "50F:1"
         },
         {
-          "target": "511"
+          "id": 1,
+          "target": "511:0"
         }
       ],
       "flags": [
@@ -5300,7 +5373,8 @@
       "rdts": [ "511" ],
       "doors": [
         {
-          "target": "510"
+          "id": 0,
+          "target": "510:1"
         }
       ],
       "enemies": [
@@ -5326,7 +5400,9 @@
       ],
       "doors": [
         {
-          "target": "50B"
+          "id": 0,
+          "target": "50B:1",
+          "noUnlock": true
         }
       ]
     },
@@ -5336,7 +5412,9 @@
       "rdts": [ "513" ],
       "doors": [
         {
-          "target": "514",
+          "id": 0,
+          "target": "514:0",
+          "noUnlock": true,
           "randomize": false
         }
       ],
@@ -5399,11 +5477,15 @@
       "rdts": [ "514" ],
       "doors": [
         {
-          "target": "513",
+          "id": 0,
+          "target": "513:0",
+          "noUnlock": true,
           "randomize": false
         },
         {
-          "target": "515",
+          "id": 1,
+          "target": "515:1",
+          "noUnlock": true,
           "randomize": false
         }
       ],
@@ -5445,11 +5527,15 @@
       "rdts": [ "515" ],
       "doors": [
         {
-          "target": "50C",
+          "id": 0,
+          "target": "50C:4",
+          "noUnlock": true,
           "randomize": false
         },
         {
-          "target": "514",
+          "id": 1,
+          "target": "514:1",
+          "noUnlock": true,
           "randomize": false
         }
       ]
