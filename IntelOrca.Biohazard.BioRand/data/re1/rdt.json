@@ -2145,7 +2145,8 @@
         },
         {
           "id": 2,
-          "target": "10B:1"
+          "target": "10B:1",
+          "noUnlock": true
         },
         {
           "id": 3,
@@ -2305,7 +2306,7 @@
       "doors": [
         {
           "id": 0,
-          "target": "207:2"
+          "target": "207:3"
         },
         {
           "id": 5,
