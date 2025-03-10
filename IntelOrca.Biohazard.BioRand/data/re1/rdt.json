@@ -506,11 +506,6 @@
       "name": "1F WEST SAVE",
       "rdts": [ "100", "600" ],
       "tags": [ "box", "safe", "save" ],
-      "doorRando": [
-        {
-          "category": "box"
-        }
-      ],
       "doors": [
         {
           "id": 0,
@@ -541,12 +536,6 @@
     "101": {
       "name": "1F WEST STAIRS",
       "rdts": [ "101", "601" ],
-      "doorRando": [
-        {
-          "cutscene": true,
-          "player": 0
-        }
-      ],
       "doors": [
         {
           "id": 0,
@@ -1729,11 +1718,6 @@
       "name": "1F EAST SAVE",
       "rdts": [ "118", "618" ],
       "tags": [ "box", "safe", "save" ],
-      "doorRando": [
-        {
-          "category": "box"
-        }
-      ],
       "doors": [
         {
           "id": 0,
@@ -1822,11 +1806,6 @@
     "11A": {
       "name": "1F EAST OUTSIDE CREST EXIT",
       "rdts": [ "11A", "61A" ],
-      "doorRando": [
-        {
-          "category": "bridge"
-        }
-      ],
       "doors": [
         {
           "id": 0,
@@ -1842,7 +1821,8 @@
             "item(45)",
             "item(46)"
           ],
-          "noUnlock": true
+          "noUnlock": true,
+          "segmentEnd": true
         }
       ],
       "enemies": [
@@ -1896,11 +1876,7 @@
     "11C": {
       "name": "1F EAST WARDROBE",
       "rdts": [ "11C", "61C" ],
-      "doorRando": [
-        {
-          "category": "exclude"
-        }
-      ],
+      "tags": [ "exclude" ],
       "doors": [
         {
           "id": 0,
@@ -1987,12 +1963,6 @@
     "203": {
       "name": "2F MAIN HALL",
       "rdts": [ "203", "703" ],
-      "doorRando": [
-        {
-          "nop": [ "0x23698-0x236EA" ],
-          "player": 1
-        }
-      ],
       "doors": [
         {
           "id": 0,
@@ -2246,12 +2216,6 @@
     "20A": {
       "name": "2F EAST FISH TANK",
       "rdts": [ "20A", "70A" ],
-      "doorRando": [
-        {
-          "cutscene": true,
-          "player": 1
-        }
-      ],
       "doors": [
         {
           "id": 0,
@@ -2376,11 +2340,6 @@
     "20D": {
       "name": "2F EAST RICHARD",
       "rdts": [ "20D", "70D" ],
-      "doorRando": [
-        {
-          "category": "exclude"
-        }
-      ],
       "doors": [
         {
           "id": 0,
@@ -2571,13 +2530,6 @@
     "212": {
       "name": "2F EAST BALCONY",
       "rdts": [ "212", "712" ],
-      "doorRando": [
-        {
-          "cutscene": true,
-          "nop": [ "0x2474E-0x2475A" ],
-          "player": 1
-        }
-      ],
       "doors": [
         {
           "id": 0,
@@ -3102,11 +3054,6 @@
     "301": {
       "name": "COURTYARD RESERVOIR",
       "rdts": [ "301" ],
-      "doorRando": [
-        {
-          "category": "exclude"
-        }
-      ],
       "doors": [
         {
           "id": 0,
@@ -3131,11 +3078,6 @@
     "302": {
       "name": "COURTYARD WATERFALL",
       "rdts": [ "302" ],
-      "doorRando": [
-        {
-          "nop": [ "0x192C4", "0x192D0", "0x192DC", "0x1944A", "0x19450" ]
-        }
-      ],
       "doors": [
         {
           "id": 0,
@@ -3179,11 +3121,6 @@
     "303": {
       "name": "HELIPAD",
       "rdts": [ "303" ],
-      "doorRando": [
-        {
-          "category": "exclude"
-        }
-      ],
       "doors": [
         {
           "name": "LIFT TO LAB",
@@ -3291,12 +3228,6 @@
     "305": {
       "name": "FOUNTAIN",
       "rdts": [ "305" ],
-      "doorRando": [
-        {
-          "category": "bridge",
-          "nop": [ "0x3EEEC", "0x3EEF8" ]
-        }
-      ],
       "doors": [
         {
           "name": "DOOR TO HELIPORT",
@@ -3320,6 +3251,7 @@
             "item(64)"
           ],
           "noUnlock": true,
+          "segmentEnd": true,
           "randomize": false
         },
         {
@@ -3463,12 +3395,6 @@
     "308": {
       "name": "CAVES BRANCH PASSAGE",
       "rdts": [ "308" ],
-      "doorRando": [
-        {
-          "nop": [ "0x1AFD8-0x1B074" ],
-          "player": 1
-        }
-      ],
       "doors": [
         {
           "id": 0,
@@ -3715,11 +3641,6 @@
       "name": "CAVES SAVE",
       "rdts": [ "30E" ],
       "tags": [ "box", "safe", "save" ],
-      "doorRando": [
-        {
-          "category": "box"
-        }
-      ],
       "doors": [
         {
           "id": 0,
@@ -3967,11 +3888,6 @@
       "name": "GUARDHOUSE SAVE",
       "tags": [ "guardhouse", "box", "safe", "save" ],
       "rdts": [ "403" ],
-      "doorRando": [
-        {
-          "category": "box"
-        }
-      ],
       "doors": [
         {
           "id": 0,
@@ -4203,11 +4119,6 @@
       "name": "GUARDHOUSE NEST",
       "tags": [ "guardhouse" ],
       "rdts": [ "408" ],
-      "doorRando": [
-        {
-          "nop": [ 199372, 199374, 199404, 199406 ]
-        }
-      ],
       "doors": [
         {
           "id": 0,
@@ -4263,12 +4174,6 @@
       "name": "GUARDHOUSE DRUG STORAGE",
       "tags": [ "guardhouse" ],
       "rdts": [ "409" ],
-      "doorRando": [
-        {
-          "category": "exclude",
-          "player": 0
-        }
-      ],
       "doors": [
         {
           "id": 0,
@@ -4396,11 +4301,6 @@
       "name": "GUARDHOUSE PLANT 42",
       "tags": [ "guardhouse" ],
       "rdts": [ "40C" ],
-      "doorRando": [
-        {
-          "category": "exclude"
-        }
-      ],
       "doors": [
         {
           "id": 0,
@@ -4638,16 +4538,6 @@
       "name": "LABORATORY B1 ENTRANCE",
       "tags": [ "lab" ],
       "rdts": [ "500" ],
-      "doorRando": [
-        {
-          "nop": [ "0xCF1A-0xCF5E" ],
-          "player": 0
-        },
-        {
-          "nop": [ "0xCF1A-0xCF90" ],
-          "player": 1
-        }
-      ],
       "doors": [
         {
           "id": 0,
@@ -4718,19 +4608,6 @@
       "name": "LABORATORY B2 BOX",
       "tags": [ "lab", "box" ],
       "rdts": [ "502" ],
-      "doorRando": [
-        {
-          "category": "box",
-          "nop": [ "0x4934-0x4964", "0x4970-0x497A" ],
-          "player": 0
-        },
-        {
-          "category": "box",
-          "cutscene": true,
-          "nop": [ "0x498E-0x499C", "0x49A8", "0x4A00" ],
-          "player": 1
-        }
-      ],
       "doors": [
         {
           "id": 0,
@@ -5026,11 +4903,6 @@
       "name": "LABORATORY B3 WEST CORRIDOR",
       "tags": [ "lab" ],
       "rdts": [ "508" ],
-      "doorRando": [
-        {
-          "nop": [ "0x442", "0x450", "0x480" ]
-        }
-      ],
       "doors": [
         {
           "id": 0,
@@ -5166,11 +5038,6 @@
       "name": "LABORATORY B3 CELL CORRIDOR",
       "tags": [ "lab" ],
       "rdts": [ "50B" ],
-      "doorRando": [
-        {
-          "cutscene": true
-        }
-      ],
       "doors": [
         {
           "id": 0,
@@ -5192,11 +5059,6 @@
       "name": "LABORATORY B3 EAST CORRIDOR",
       "tags": [ "lab" ],
       "rdts": [ "50C" ],
-      "doorRando": [
-        {
-          "cutscene": true
-        }
-      ],
       "doors": [
         {
           "id": 0,
@@ -5241,11 +5103,6 @@
       "name": "LABORATORY B1 ESCAPE ELEVATOR (CUTSCENE)",
       "tags": [ "lab" ],
       "rdts": [ "50D" ],
-      "doorRando": [
-        {
-          "category": "exclude"
-        }
-      ],
       "doors": [
         {
           "id": 0,
@@ -5265,11 +5122,6 @@
       "name": "LABORATORY B3 SAVE",
       "tags": [ "lab", "box", "safe", "save" ],
       "rdts": [ "50E" ],
-      "doorRando": [
-        {
-          "category": "box"
-        }
-      ],
       "doors": [
         {
           "target": "50C:0"
@@ -5393,11 +5245,6 @@
       "name": "LABORATORY B3 CELL",
       "tags": [ "lab" ],
       "rdts": [ "512" ],
-      "doorRando": [
-        {
-          "cutscene": true
-        }
-      ],
       "doors": [
         {
           "id": 0,
