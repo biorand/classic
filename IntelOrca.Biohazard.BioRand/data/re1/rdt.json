@@ -1927,10 +1927,6 @@
       "rdts": [ "201", "701" ],
       "doors": [
         {
-          "id": 3,
-          "target": "101:3"
-        },
-        {
           "id": 0,
           "target": "202:0"
         },
@@ -1955,6 +1951,11 @@
           "requires2": [
             "item(54)"
           ]
+        },
+        {
+          "id": 3,
+          "target": "101:3",
+          "noUnlock": true
         }
       ],
       "enemies": [
@@ -3834,19 +3835,24 @@
       "rdts": [ "400" ],
       "doors": [
         {
-          "target": "304"
+          "id": 0,
+          "target": "304:1"
         },
         {
-          "target": "401"
+          "id": 1,
+          "target": "401:0"
         },
         {
-          "target": "403"
+          "id": 2,
+          "target": "403:0"
         },
         {
-          "target": "404"
+          "id": 3,
+          "target": "404:0"
         },
         {
-          "target": "405"
+          "id": 4,
+          "target": "405:0"
         }
       ],
       "items": [
@@ -3887,10 +3893,12 @@
       "rdts": [ "401" ],
       "doors": [
         {
-          "target": "400"
+          "id": 0,
+          "target": "400:1"
         },
         {
-          "target": "402"
+          "id": 1,
+          "target": "402:0"
         }
       ],
       "items": [
@@ -3934,7 +3942,8 @@
       "rdts": [ "402" ],
       "doors": [
         {
-          "target": "401"
+          "id": 0,
+          "target": "401:1"
         }
       ],
       "items": [
@@ -3965,7 +3974,8 @@
       ],
       "doors": [
         {
-          "target": "400"
+          "id": 0,
+          "target": "400:0"
         }
       ],
       "items": [
@@ -4010,7 +4020,8 @@
       "rdts": [ "404" ],
       "doors": [
         {
-          "target": "400"
+          "id": 0,
+          "target": "400:3"
         }
       ],
       "items": [
@@ -4042,16 +4053,20 @@
       "rdts": [ "405" ],
       "doors": [
         {
-          "target": "400"
+          "id": 0,
+          "target": "400:4"
         },
         {
-          "target": "406",
+          "id": 1,
+          "target": "406:0",
+          "lockId": 169,
           "requires2": [
             "item(57)"
           ]
         },
         {
-          "target": "408"
+          "id": 2,
+          "target": "408:0"
         }
       ],
       "items": [
@@ -4106,13 +4121,17 @@
       "rdts": [ "406" ],
       "doors": [
         {
-          "target": "405"
+          "id": 0,
+          "target": "405:1",
+          "lockId": 169
         },
         {
-          "target": "407"
+          "id": 1,
+          "target": "407:0"
         },
         {
-          "target": "40D",
+          "id": 2,
+          "target": "40D:0",
           "kind": "unblock",
           "noUnlock": true
         }
@@ -4159,7 +4178,8 @@
       "rdts": [ "407" ],
       "doors": [
         {
-          "target": "406"
+          "id": 0,
+          "target": "406:1"
         }
       ],
       "items": [
@@ -4190,21 +4210,28 @@
       ],
       "doors": [
         {
-          "target": "405"
+          "id": 0,
+          "target": "405:2"
         },
         {
-          "target": "409",
-          "kind": "unblock"
+          "id": 1,
+          "target": "409:0",
+          "kind": "unblock",
+          "noUnlock": true
         },
         {
-          "target": "40A",
+          "id": 2,
+          "target": "40A:0",
+          "lockId": 170,
           "requires2": [
             "item(58)"
           ]
         },
         {
-          "target": "40C",
-          "kind": "locked"
+          "id": 3,
+          "target": "40C:0",
+          "kind": "locked",
+          "noUnlock": true
         }
       ],
       "items": [
@@ -4244,7 +4271,9 @@
       ],
       "doors": [
         {
-          "target": "408"
+          "id": 0,
+          "target": "408:1",
+          "noUnlock": true
         }
       ],
       "items": [
@@ -4297,17 +4326,22 @@
       "rdts": [ "40A" ],
       "doors": [
         {
-          "target": "408"
+          "id": 0,
+          "target": "408:2",
+          "lockId": 170
         },
         {
-          "target": "40B"
+          "id": 1,
+          "target": "40B:0"
         },
         {
+          "id": 2,
           "target": "40C",
           "kind": "oneway",
           "requires2": [
             "item(62)"
           ],
+          "noUnlock": true,
           "doorRando": false
         }
       ],
@@ -4337,7 +4371,8 @@
       "rdts": [ "40B" ],
       "doors": [
         {
-          "target": "40A"
+          "id": 0,
+          "target": "40A:1"
         }
       ],
       "items": [
@@ -4368,8 +4403,10 @@
       ],
       "doors": [
         {
-          "target": "408",
-          "kind": "unlock"
+          "id": 0,
+          "target": "408:3",
+          "kind": "unlock",
+          "noUnlock": true
         }
       ],
       "items": [
@@ -4398,7 +4435,9 @@
       "rdts": [ "40D" ],
       "doors": [
         {
-          "target": "406"
+          "id": 0,
+          "target": "406:2",
+          "noUnlock": true
         },
         {
           "target": "40D/EXIT",
@@ -4421,7 +4460,8 @@
           "kind": "blocked"
         },
         {
-          "target": "40E"
+          "id": 1,
+          "target": "40E:0"
         }
       ],
       "items": [
@@ -4449,20 +4489,33 @@
       "rdts": [ "40E" ],
       "doors": [
         {
-          "target": "40D"
+          "id": 0,
+          "target": "40D:1"
         },
         {
-          "target": "40F"
+          "id": 1,
+          "target": "40F:0"
         },
         {
-          "target": "410",
-          "requiresRoom": [ "411" ]
+          "id": 2,
+          "target": "410:0",
+          "lockId": 164,
+          "requires2": [
+            "room(411)"
+          ],
+          "noUnlock": true
         },
         {
-          "target": "411",
+          "id": 3,
+          "target": "411:0",
+          "lockId": 171,
           "requires2": [
             "item(59)"
           ]
+        }
+      ],
+      "enemies": [
+        {
         }
       ]
     },
@@ -4472,7 +4525,8 @@
       "rdts": [ "40F" ],
       "doors": [
         {
-          "target": "40E"
+          "id": 0,
+          "target": "40E:1"
         }
       ],
       "flags": [
@@ -4507,7 +4561,10 @@
       "rdts": [ "410" ],
       "doors": [
         {
-          "target": "40E"
+          "id": 0,
+          "target": "40E:2",
+          "lockId": 164,
+          "noUnlock": true
         }
       ],
       "items": [
@@ -4565,7 +4622,9 @@
       "rdts": [ "411" ],
       "doors": [
         {
-          "target": "40E"
+          "id": 0,
+          "target": "40E:3",
+          "lockId": 171
         }
       ],
       "enemies": [
