@@ -131,6 +131,25 @@ namespace IntelOrca.Biohazard.BioRand
                 Type = "switch",
                 Default = false
             });
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "locks/preserve",
+                Label = "Preserve Vanilla Locks",
+                Description = "Do not change doors that already have locks.",
+                Type = "switch",
+                Default = false
+            });
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "locks/ratio",
+                Label = "Amount of Locked Doors",
+                Description = "Amount of doors to lock.",
+                Type = "percent",
+                Step = 0.01,
+                Min = 0,
+                Max = 1,
+                Default = 0.25
+            });
 
             page = result.CreatePage("Inventory");
             group = page.CreateGroup("Main");
@@ -874,6 +893,7 @@ namespace IntelOrca.Biohazard.BioRand
     {
         public void Randomise(IClassicRandomizerGeneratedVariation context)
         {
+            var rng = context.Rng.NextFork();
             var map = context.Variation.Map;
             var modBuilder = context.ModBuilder;
 
@@ -926,8 +946,15 @@ namespace IntelOrca.Biohazard.BioRand
 
             if (context.Configuration.GetValueOrDefault("locks/random", true))
             {
-                var reservedLockIds = (map.Rooms ?? []).Values
-                    .SelectMany(x => x.Doors)
+                var preserveLocks = context.Configuration.GetValueOrDefault("locks/preserve", false);
+                var lockRatio = context.Configuration.GetValueOrDefault("locks/ratio", 0.0);
+
+                var restrictedPairs = (preserveLocks
+                    ? pairs.Where(x => x.NoUnlock || x.LockId != null)
+                    : pairs.Where(x => x.NoUnlock))
+                    .ToHashSet();
+
+                var reservedLockIds = restrictedPairs
                     .Where(x => x.LockId != null)
                     .Select(x => x.LockId!)
                     .ToHashSet();
@@ -936,46 +963,67 @@ namespace IntelOrca.Biohazard.BioRand
                     .Select(static x => (byte)x)
                     .Where(x => !reservedLockIds.Contains(x))
                     .ToQueue();
-                foreach (var pair in pairs)
+
+                var lockLimit = (int)Math.Round(pairs.Count * lockRatio);
+                var numLocks = restrictedPairs.Count(x => x.LockId != null);
+                var shuffledPairs = pairs.Except(restrictedPairs).Shuffle(rng);
+                var possibleKeys = map.Items
+                    .Where(x => x.Value.Discard && x.Value.Kind.StartsWith("key/"))
+                    .ToArray();
+                foreach (var pair in shuffledPairs)
                 {
-                    if (pair.A.Door.NoUnlock || pair.B.Door.NoUnlock)
-                        continue;
+                    var lockId = pair.LockId;
+                    if (numLocks >= lockLimit)
+                    {
+                        SetDoorLock(modBuilder, pair.A, null);
+                        SetDoorLock(modBuilder, pair.B, null);
+                    }
+                    else
+                    {
+                        if (lockId == null && availableLocks.Count != 0)
+                            lockId = availableLocks.Dequeue();
+                        if (lockId == null)
+                            continue;
 
-                    var lockId = pair.A.Door.LockId ?? pair.B.Door.LockId;
-                    if (lockId == null && availableLocks.Count != 0)
-                        lockId = availableLocks.Dequeue();
-                    if (lockId == null)
-                        continue;
+                        var keyType = rng.NextOf(possibleKeys).Key;
+                        var doorLock = new DoorLock(lockId.Value, keyType);
+                        var doorLockA = doorLock;
+                        var doorLockB = doorLock;
 
-                    var doorLock = new DoorLock(lockId.Value, 51); // Sword Key
-                    var doorLockA = doorLock;
-                    var doorLockB = doorLock;
+                        // Work around for key randomizer complaining about requirements on other side of blocked door
+                        if (pair.A.Door.Kind == "unblock")
+                            doorLockB = new DoorLock(lockId.Value, 255);
+                        else if (pair.B.Door.Kind == "unblock")
+                            doorLockA = new DoorLock(lockId.Value, 255);
 
-                    // Work around for key randomizer complaining about requirements on other side of blocked door
-                    if (pair.A.Door.Kind == "unblock")
-                        doorLockB = new DoorLock(lockId.Value, 255);
-                    else if (pair.B.Door.Kind == "unblock")
-                        doorLockA = new DoorLock(lockId.Value, 255);
-
-                    SetDoorLock(modBuilder, pair.A, doorLockA);
-                    SetDoorLock(modBuilder, pair.B, doorLockB);
+                        SetDoorLock(modBuilder, pair.A, doorLockA);
+                        SetDoorLock(modBuilder, pair.B, doorLockB);
+                        numLocks++;
+                    }
                 }
-                throw new RandomizerUserException("Lock randomizer not implemented yet.");
             }
         }
 
-        private void SetDoorLock(ModBuilder modBuilder, DoorInfo doorInfo, DoorLock doorLock)
+        private void SetDoorLock(ModBuilder modBuilder, DoorInfo doorInfo, DoorLock? doorLock)
         {
             var doorId = (byte)(doorInfo.Door.Id ?? 0);
             foreach (var rdtId in doorInfo.Room.Rdts ?? [])
             {
                 modBuilder.SetDoorLock(new RdtItemId(rdtId, doorId), doorLock);
             }
-            doorInfo.Door.LockId = (byte)doorLock.Id;
-            if (doorLock.KeyItemId == 255)
+            if (doorLock == null)
+            {
+                doorInfo.Door.LockId = null;
                 doorInfo.Door.Requires2 = [];
+            }
             else
-                doorInfo.Door.Requires2 = [$"item({doorLock.KeyItemId})"];
+            {
+                doorInfo.Door.LockId = (byte)doorLock.Value.Id;
+                if (doorLock.Value.KeyItemId == 255)
+                    doorInfo.Door.Requires2 = [];
+                else
+                    doorInfo.Door.Requires2 = [$"item({doorLock.Value.KeyItemId})"];
+            }
         }
 
         [DebuggerDisplay("({A}, {B})")]
@@ -983,6 +1031,14 @@ namespace IntelOrca.Biohazard.BioRand
         {
             public DoorInfo A => a;
             public DoorInfo B => b;
+
+            public byte? LockId => A.Door.LockId ?? B.Door.LockId;
+            public bool NoUnlock => A.Door.NoUnlock || B.Door.NoUnlock;
+
+            public string Identity { get; } = $"{a.Identity} <-> {b.Identity}";
+
+            public override int GetHashCode() => Identity.GetHashCode();
+            public override bool Equals(object obj) => obj is DoorPair dp && Identity == dp.Identity;
         }
 
         [DebuggerDisplay("{Identity}")]
@@ -993,6 +1049,9 @@ namespace IntelOrca.Biohazard.BioRand
             public MapRoomDoor Door => door;
 
             public string Identity { get; } = $"{roomKey}:{door.Id}";
+
+            public override int GetHashCode() => Identity.GetHashCode();
+            public override bool Equals(object obj) => obj is DoorInfo di && Identity == di.Identity;
         }
     }
 
@@ -1627,7 +1686,7 @@ namespace IntelOrca.Biohazard.BioRand
 
     internal class ModBuilder
     {
-        private readonly Dictionary<RdtItemId, DoorLock> _doorLock = new();
+        private readonly Dictionary<RdtItemId, DoorLock?> _doorLock = new();
         private readonly Dictionary<int, Item> _itemMap = new();
         private readonly List<EnemyPlacement> _enemyPlacements = new();
 
@@ -1639,7 +1698,7 @@ namespace IntelOrca.Biohazard.BioRand
         {
         }
 
-        public void SetDoorLock(RdtItemId doorIdentity, DoorLock doorLock)
+        public void SetDoorLock(RdtItemId doorIdentity, DoorLock? doorLock)
         {
             _doorLock.Add(doorIdentity, doorLock);
         }
@@ -1666,8 +1725,16 @@ namespace IntelOrca.Biohazard.BioRand
                 var doorIdentity = new RdtItemId(rrdt.RdtId, doorOpcode.Id);
                 if (_doorLock.TryGetValue(doorIdentity, out var doorLock))
                 {
-                    doorOpcode.LockId = (byte)doorLock.Id;
-                    doorOpcode.LockType = (byte)doorLock.KeyItemId;
+                    if (doorLock == null)
+                    {
+                        doorOpcode.LockId = 0;
+                        doorOpcode.LockType = 0;
+                    }
+                    else
+                    {
+                        doorOpcode.LockId = (byte)doorLock.Value.Id;
+                        doorOpcode.LockType = (byte)doorLock.Value.KeyItemId;
+                    }
                 }
             }
             foreach (var itemOpcode in rrdt.Items)

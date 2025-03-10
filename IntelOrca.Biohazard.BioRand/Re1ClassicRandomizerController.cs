@@ -343,8 +343,15 @@ namespace IntelOrca.Biohazard.BioRand
 
             void EnableMoreJillItems()
             {
-                gameData.GetRdt(RdtId.Parse("106"))?.Nop(0x2FC06);
-                gameData.GetRdt(RdtId.Parse("106"))?.Nop(0x31862);
+                // gameData.GetRdt(RdtId.Parse("106"))?.Patches.Add(new KeyValuePair<int, byte>(0x2FC02 + 1, 7));
+                // gameData.GetRdt(RdtId.Parse("106"))?.Patches.Add(new KeyValuePair<int, byte>(0x2FC02 + 2, 52));
+                // gameData.GetRdt(RdtId.Parse("106"))?.Patches.Add(new KeyValuePair<int, byte>(0x2FC02 + 3, 0));
+                // gameData.GetRdt(RdtId.Parse("106"))?.Nop(0x2FC06);
+                // gameData.GetRdt(RdtId.Parse("106"))?.Patches.Add(new KeyValuePair<int, byte>(0x2FFBC + 1, 7));
+                // gameData.GetRdt(RdtId.Parse("106"))?.Patches.Add(new KeyValuePair<int, byte>(0x2FFBC + 2, 52));
+                // gameData.GetRdt(RdtId.Parse("106"))?.Patches.Add(new KeyValuePair<int, byte>(0x2FFBC + 3, 0));
+                // gameData.GetRdt(RdtId.Parse("106"))?.Nop(0x2FFC0);
+                // gameData.GetRdt(RdtId.Parse("106"))?.Nop(0x31862);
             }
 
             void DisableDogWindows()

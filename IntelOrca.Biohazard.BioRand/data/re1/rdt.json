@@ -249,7 +249,7 @@
     },
     "53": {
       "name": "Shield Key",
-      "kind": "key/consumable",
+      "kind": "key/reusuable",
       "discard": true,
       "group": 1
     },
@@ -261,37 +261,37 @@
     },
     "55": {
       "name": "Master Key",
-      "kind": "key/consumable",
+      "kind": "key/reusuable",
       "discard": true,
       "group": 32
     },
     "56": {
       "name": "Special Key",
-      "kind": "key/consumable",
+      "kind": "key/reusuable",
       "discard": true,
       "group": 1
     },
     "57": {
       "name": "002 Key",
-      "kind": "key/consumable",
+      "kind": "key/reusuable",
       "discard": true,
       "group": 8
     },
     "58": {
       "name": "003 Key",
-      "kind": "key/consumable",
+      "kind": "key/reusuable",
       "discard": true,
       "group": 8
     },
     "59": {
       "name": "Control Key",
-      "kind": "key/consumable",
+      "kind": "key/reusuable",
       "discard": true,
       "group": 8
     },
     "60": {
       "name": "Power Room Key",
-      "kind": "key/consumable",
+      "kind": "key/reusuable",
       "discard": true
     },
     "61": {
@@ -671,6 +671,7 @@
         {
           "id": 3,
           "target": "105:0",
+          "noUnlock": true,
           "randomize": false
         },
         {
@@ -749,6 +750,7 @@
         {
           "id": 1,
           "target": "106:2",
+          "noUnlock": true,
           "randomize": false
         }
       ],
@@ -852,6 +854,7 @@
         {
           "id": 2,
           "target": "105:1",
+          "noUnlock": true,
           "randomize": false
         },
         {
@@ -896,7 +899,18 @@
           "globalId": 52,
           "type": 47,
           "amount": 3,
-          "group": 1
+          "group": 1,
+          "player": 0
+        },
+        {
+          "name": "TYPEWRITER INK",
+          "id": 5,
+          "globalId": 52,
+          "type": 47,
+          "amount": 3,
+          "group": 1,
+          "optional": true, // TODO fix this for Jill
+          "player": 1
         },
         {
           "name": "GUN ON FLOOR",
@@ -1055,7 +1069,9 @@
         },
         {
           "id": 3,
-          "target": "115:0"
+          "target": "115:0",
+          "lockId": 128,
+          "noUnlock": true
         }
       ],
       "items": [
@@ -1619,12 +1635,14 @@
         {
           "id": 0,
           "target": "109:3",
-          "lockId": 128
+          "lockId": 128,
+          "noUnlock": true
         },
         {
           "id": 1,
           "target": "116:0",
-          "lockId": 129
+          "lockId": 129,
+          "noUnlock": true
         }
       ],
       "enemies": [
@@ -1658,7 +1676,9 @@
       "doors": [
         {
           "id": 0,
-          "target": "115:1"
+          "target": "115:1",
+          "lockId": 129,
+          "noUnlock": true
         }
       ],
       "items": [
