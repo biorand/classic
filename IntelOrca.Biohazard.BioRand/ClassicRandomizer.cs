@@ -1194,8 +1194,24 @@ namespace IntelOrca.Biohazard.BioRand
                 var amount = itemDefinition?.Amount ?? 1;
                 if (itemDefinition?.Discard == true)
                 {
-                    amount = map.Rooms
-                        .SelectMany(x => x.Value.AllEdges)
+                    var allEdges = map.Rooms.SelectMany(x => x.Value.AllEdges).ToList();
+                    var lockIds = new HashSet<int>();
+                    for (var i = 0; i < allEdges.Count; i++)
+                    {
+                        var edge = allEdges[i];
+                        if (edge is MapRoomDoor door)
+                        {
+                            if (door.LockId is byte lockId)
+                            {
+                                if (!lockIds.Add(lockId))
+                                {
+                                    allEdges.RemoveAt(i);
+                                    i--;
+                                }
+                            }
+                        }
+                    }
+                    amount = allEdges
                         .SelectMany(x => x.Requires2 ?? [])
                         .Count(x => x == $"item({itemType})");
                 }
