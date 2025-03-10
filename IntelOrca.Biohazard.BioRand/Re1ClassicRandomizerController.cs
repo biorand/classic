@@ -334,6 +334,7 @@ namespace IntelOrca.Biohazard.BioRand
             DisableDogWindows();
             DisableDogBoiler();
             AddDoor207();
+            FixDoor104();
             FixDoorToWardrobe();
             FixPassCodeDoor();
             FixDrugStoreRoom();
@@ -399,6 +400,18 @@ namespace IntelOrca.Biohazard.BioRand
                             Free = 129
                         });
                     }
+                }
+            }
+
+            void FixDoor104()
+            {
+                var rdt104 = gameData.GetRdt(RdtId.Parse("104"));
+                if (rdt104 != null)
+                {
+                    var door = rdt104.Doors.FirstOrDefault(x => x.Id == 2);
+                    door.NextX = 12700;
+                    door.NextY = -7200;
+                    door.NextZ = 3300;
                 }
             }
 
