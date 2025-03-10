@@ -638,6 +638,7 @@ namespace IntelOrca.Biohazard.BioRand
                         Set(1, 3, 0), // Second cutscene (Jill? Wesker?)
                         Set(1, 36, 0), // First Rebecca save room cutscene
                         Set(1, 69, 0), // Brad call cutscene in final lab room
+                        Set(1, 72, 0), // Enrico cutscene
                         Set(1, 100, 0), // Prevent Plant 42 Rebecca switch
                         Set(1, 167, 0), // Init. dining room emblem state
                         Set(1, 171, 0), // Wesker cutscene after Plant 42
@@ -713,6 +714,7 @@ namespace IntelOrca.Biohazard.BioRand
                         Set(1, 5, 0), // 106/203 Wesker search complete
                         Set(1, 7, 0), // 106/203 Barry gift cutscene (also disables 115 sandwich rescue and 20A cutscene)
                         Set(1, 69, 0), // Brad call cutscene in final lab room
+                        Set(1, 72, 0), // Enrico cutscene
                         Set(1, 86, 0), // 20E Yawn poison partner recovery
                         Set(1, 97, 0), // 20D Richard receives serum
                         Set(1, 103, 0), // 212 Forrest cutscene
