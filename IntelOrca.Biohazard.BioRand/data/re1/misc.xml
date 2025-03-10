@@ -1,0 +1,65 @@
+﻿<Strings>
+  <Text>Will you take\nthe {color 1}{string 0}{color 0}?{branch 2 10 0}</Text>
+  <Text>You got the {color 1}{string 0}{color 0}.</Text>
+  <Text>You can't carry any more\nitems.</Text>
+  <Text>You have used\nthe {color 1}{string 0}{color 0}.</Text>
+  <Text>Will you put down the\n{color 1}{string 0}{color 0}?{branch 2 10 1}</Text>
+  <Text>Will you use\nthe {color 1}{string 0}{color 0}?{branch 2 10 1}</Text>
+  <Text>{color 1}{string 0}{color 0}\nhas been filed.{clear 0}{timed 1}</Text>
+  <Text>This key is useless now.\nDiscard?{branch 2 10 2}</Text>
+  <Text>\nIt's locked.{clear 0}\nA carving of a sword.</Text>
+  <Text>\nIt's locked.{clear 0}\nA carving of armor.</Text>
+  <Text>\nIt's locked.{clear 0}\nA carving of a shield.</Text>
+  <Text>\nIt's locked.{clear 0}\nA carving of a helmet.</Text>
+  <Text>\nIt's locked.{clear 0}\nMaster key required.</Text>
+  <Text>\nIt's locked.{clear 0}\nCloset key required.</Text>
+  <Text>\nIt's locked.{clear 0}\nThe plate says 002.</Text>
+  <Text>\nIt's locked.{clear 0}\nThe plate says 003.</Text>
+  <Text>\nIt's locked.{clear 0}\nControl Room key required.</Text>
+  <Text>\nIt's locked.{clear 0}\nPower Room key required.</Text>
+  <Text>\nIt's locked.</Text>
+  <Text>\nIt's locked from inside.</Text>
+  <Text>\nYou unlocked it.</Text>
+  <Text>\nIt's locked.{clear 0}Use the lockpick to open\nthe door.</Text>
+  <Text>\nI've got to hurry!</Text>
+  <Text>There is no time to check\nit.</Text>
+  <Text>\nThe desk is locked.</Text>
+  <Text>\nThe desk is locked.{clear 0}Will you use\nthe {color 1}{string 0}{color 0}?{branch 2 10 1}</Text>
+  <Text>\n{scroll 0}          Chris...{scroll 16}{clear 48}\n {scroll 0}         Chris...{scroll 2}{timed 48}</Text>
+  <Text>{scroll 2}They have escaped\ninto the mansion{clear 48}where they thought\nit was safe.{clear 48}Yet···{timed 48}</Text>
+  <Text>{scroll 2}You have once\n{scroll 2}again entered{clear 48}{scroll 2}the world of\n{scroll 2}survival horror.{clear 48}{scroll 2}Good luck!{timed 48}</Text>
+  <Text>{scroll 2}Be smart!\n{scroll 2}Fighting foes{clear 48}{scroll 2}isn't the only\n{scroll 2}way to survive{clear 48}{scroll 2}this horror.{timed 64}</Text>
+  <Text>\nIt's an old typewriter.{clear 0}If I had an {color 1}INK RIBBON{color 0}, I\ncould save my progress...</Text>
+  <Text>You can save your progress\nwith this.{clear 0}Will you use\nthe {color 1}INK RIBBON{color 0}?{branch 0 1 0}You can save your progress\nwith this.{clear 0}Will you save your progress?{branch 0 1 0}The number 002 is engraved.</Text>
+  <Text>You can save your progress\nwith this.{clear 0}Will you save your progress?{branch 0 1 0}The number 002 is engraved.</Text>
+  <Text>A carving of a sword.</Text>
+  <Text>A carving of armor.</Text>
+  <Text>A carving of a shield.</Text>
+  <Text>A carving of a helmet.</Text>
+  <Text>The number 002 is engraved.</Text>
+  <Text>The number 003 is engraved.</Text>
+  <Text>A desk key.</Text>
+  <Text>A strange mark is carved\nhere.</Text>
+  <Text>It's specially coated and\nlooks important...</Text>
+  <Text>There must be a closet\nsomewhere.</Text>
+  <Text>Its end is square-shaped.</Text>
+  <Text>Its end is hex.-shaped.</Text>
+  <Text>All pages are blank.\nWhat's it for...?</Text>
+  <Text>There was a medal in the\nbook.</Text>
+  <Text>A chemical to kill the\nweeds.</Text>
+  <Text>{color 1}{string 0}{color 0} loaded.</Text>
+  <Text>I don't need this any\nmore.</Text>
+  <Text>Too dangerous to mix here.</Text>
+  <Text>The poison gas enveloped.</Text>
+  <Text>The mixing seems to have\nfailed.  It disappeared.</Text>
+  <Text>Will you mix the herbs?{branch 0 1 0}Mixing these does not seem\nto work.</Text>
+  <Text>Mixing these does not seem\nto work.</Text>
+  <Text>You can't use this alone.</Text>
+  <Text>You can't use it here.</Text>
+  <Text>This chemical can be mixed\nwith other chemicals.</Text>
+  <Text>You can't use it here.</Text>
+  <Text>You can't use it here.</Text>
+  <Text>You can't use it here.</Text>
+  <Text>You can't use it here.</Text>
+  <Text>You don't need to use this\nitem at the moment.</Text>
+</Strings>

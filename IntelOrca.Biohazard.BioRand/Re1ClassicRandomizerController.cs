@@ -176,6 +176,9 @@ namespace IntelOrca.Biohazard.BioRand
                             .ToArray();
                     }
                 }
+
+                // Remove sword key item for Jill so lock rando doesn't try to use it
+                map.Items.Remove(51);
             }
 
             // Enable / disable guardhouse rooms
@@ -928,6 +931,7 @@ namespace IntelOrca.Biohazard.BioRand
         public void Write(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
         {
             WriteRdts(context, crModBuilder);
+            AddMiscXml(context, crModBuilder);
             AddSoundXml(context, crModBuilder);
             AddInventoryXml(context, crModBuilder);
             AddEnemySkins(context, crModBuilder);
@@ -1260,6 +1264,12 @@ namespace IntelOrca.Biohazard.BioRand
                 });
                 return ms.ToArray();
             }
+        }
+
+        private void AddMiscXml(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
+        {
+            var miscTable = context.DataManager.GetData(BioVersion.Biohazard1, "misc.xml");
+            crModBuilder.SetFile("misc.xml", miscTable);
         }
 
         private void AddSoundXml(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
