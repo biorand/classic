@@ -1041,15 +1041,17 @@ namespace IntelOrca.Biohazard.BioRand
                 if (room == null)
                     continue;
 
-                var firstEnemyBlock = (room.Enemies ?? []).FirstOrDefault();
-                if (firstEnemyBlock == null)
+                if (room.Enemies == null || room.Enemies.Length == 0)
                     continue;
 
-                if (firstEnemyBlock.Id != null)
-                    continue;
+                var reservedIds = room.Enemies
+                    .Where(x => x.Id != null)
+                    .Select(x => x.Id!)
+                    .ToArray();
 
                 var offsets = rdt.Enemies
                     .Where(x => CanRemoveEnemy(x.Type))
+                    .Where(x => !reservedIds.Contains(x.Id))
                     .Select(x => x.Offset)
                     .ToArray();
                 foreach (var o in offsets)

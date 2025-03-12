@@ -1182,7 +1182,8 @@
             "item(38)"
           ]
         }
-      ]
+      ],
+      "enemies": []
     },
     "10C/BACK": {
       "rdts": [ "10C", "60C" ],
@@ -1327,8 +1328,8 @@
       ],
       "enemies": [
         {
-          "excludeTypes": [ 2, 4, 10 ],
-          "keepState": true
+          "id": 0,
+          "excludeTypes": [ 2, 4, 10 ]
         }
       ]
     },
@@ -2090,7 +2091,8 @@
           "globalId": 247,
           "type": 110,
           "amount": 1,
-          "group": 1
+          "group": 1,
+          "document": true
         }
       ],
       "enemies": [
@@ -2315,7 +2317,6 @@
         {
           "id": 0,
           "globalId": 62,
-          "keepState": true,
           "includeTypes": [ 11, 12, 18 ],
           "ignoreRatio": true
         }
@@ -3502,6 +3503,10 @@
       ],
       "enemies": [
         {
+          "id": 0,
+          "kind": "npc"
+        },
+        {
           "id": 1,
           "globalId": 80,
           "includeTypes": [ 6 ]
@@ -4018,14 +4023,28 @@
       ],
       "enemies": [
         {
+          "id": 0,
+          "kind": "npc"
+        },
+        {
+          "id": 1,
+          "kind": "npc"
+        },
+        {
+          "id": 2,
+          "kind": "npc"
+        },
+        {
+          "id": 3,
+          "kind": "npc"
+        },
+        {
           "condition": "!(1:171 && !0:0)",
-          "excludeOffsets": [ 103644, 103666, 103688 ],
           "excludeTypes": [ 4 ],
           "player": 0
         },
         {
           "condition": "!(1:175 && !0:0)",
-          "excludeOffsets": [ 103668, 103690, 103712 ],
           "excludeTypes": [ 4 ],
           "player": 1
         }
@@ -4450,6 +4469,10 @@
       ],
       "enemies": [
         {
+          "id": 0,
+          "kind": "npc"
+        },
+        {
           "excludeTypes": [ 3, 4, 7, 10 ],
           "maxDifficulty": 0
         }
@@ -4823,6 +4846,14 @@
         }
       ],
       "enemies": [
+        {
+          "id": 0,
+          "kind": "npc"
+        },
+        {
+          "id": 1,
+          "kind": "npc"
+        },
         {
           "excludeTypes": [ 4 ],
           "maxDifficulty": 1
