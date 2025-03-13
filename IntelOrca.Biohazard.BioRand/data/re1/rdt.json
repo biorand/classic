@@ -3063,7 +3063,7 @@
         {
           "id": 1,
           "target": "302:1",
-          "kind": "blocked",
+          "kind": "unblock",
           "requires2": [
             "item(29)"
           ],
@@ -3093,6 +3093,7 @@
         {
           "id": 1,
           "target": "301:1",
+          "kind": "blocked",
           "noUnlock": true
         },
         {
