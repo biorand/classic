@@ -783,6 +783,10 @@ namespace IntelOrca.Biohazard.BioRand
 
             public RandomInventory Build()
             {
+                while (_entries.Count < Capacity)
+                {
+                    _entries.Add(new RandomInventory.Entry());
+                }
                 return new RandomInventory([.. _entries], null);
             }
 
@@ -1263,6 +1267,7 @@ namespace IntelOrca.Biohazard.BioRand
 
             // Inventory weapons
             var inventoryWeapons = modBuilder.Inventory[0].Entries
+                .Where(x => x.Type != 0)
                 .Select(x => new KeyValuePair<int, MapItemDefinition>(x.Type, map.Items[x.Type]))
                 .Where(x => x.Value.Kind.StartsWith("weapon/"))
                 .Select(x => new WeaponInfo(x.Key, x.Value, config))
