@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using IntelOrca.Biohazard.BioRand.Routing;
 using SixLabors.ImageSharp;
 
@@ -1766,12 +1765,12 @@ namespace IntelOrca.Biohazard.BioRand
         public string GetDump(IClassicRandomizerGeneratedVariation context)
         {
             var map = context.Variation.Map;
-            var sb = new StringBuilder();
+            var mdb = new MarkdownBuilder();
 
-            sb.AppendLine($"# Inventory");
+            mdb.Heading(1, "Inventory");
             DumpInventory(context.Variation.PlayerName, Inventory[0]);
 
-            sb.AppendLine($"# Items");
+            mdb.Heading(1, "Items");
 
             var placedItems = _itemMap
                 .Select(x => new PlacedItem(x.Key, x.Value, map.GetItem(x.Value.Type)))
@@ -1783,10 +1782,9 @@ namespace IntelOrca.Biohazard.BioRand
             DumpGroup("health", "Health");
             DumpGroup("ink", "Ink");
 
-            sb.AppendLine($"# Enemies");
-            sb.AppendLine($"### Summary");
-            sb.AppendLine("| Enemy | Total | Rooms | Avg. per room |");
-            sb.AppendLine("| ----- |-------|-------|---------------|");
+            mdb.Heading(1, "Enemies");
+            mdb.Heading(3, "Summary");
+            mdb.Table("Enemy", "Total", "Rooms", "Avg. per room");
             var typeToEntryMap = map.Enemies
                 .SelectMany(x => x.Entries)
                 .SelectMany(x => x.Id.Select(y => (x, y)))
@@ -1797,35 +1795,32 @@ namespace IntelOrca.Biohazard.BioRand
                 var total = g.Count();
                 var rooms = g.GroupBy(x => x.RdtId).Count();
                 var avg = ((double)total / rooms).ToString("0.0");
-                sb.AppendLine($"| {enemyName} | {total} | {rooms} | {avg} |");
+                mdb.TableRow(enemyName, total, rooms, avg);
             }
-            sb.AppendLine();
 
-            sb.AppendLine($"### List");
-            sb.AppendLine("| Global ID | RDT | Room | ID | Enemy |");
-            sb.AppendLine("| --------- |-----|------|----|------ |");
+            mdb.Heading(3, "List");
+            mdb.Table("Global ID", "RDT", "Room", "ID", "Enemy");
             foreach (var enemy in _enemyPlacements.OrderBy(x => x.RdtId).ThenBy(x => x.Id))
             {
                 var entry = map.Enemies.SelectMany(x => x.Entries).FirstOrDefault(x => x.Id.Contains(enemy.Type));
                 var enemyName = entry?.Name ?? $"{enemy.Type}";
                 var roomName = map.GetRoomsContaining(enemy.RdtId).FirstOrDefault()?.Name ?? "";
-                sb.AppendLine($"| {enemy.GlobalId} | {enemy.RdtId} | {roomName} | {enemy.Id} | {enemyName} |");
+                mdb.TableRow(enemy.GlobalId, enemy.RdtId, roomName, enemy.Id, enemyName);
             }
 
-            return sb.ToString();
+            return mdb.Build();
 
             void DumpInventory(string playerName, RandomInventory inventory)
             {
-                sb.AppendLine($"## {playerName}");
-                sb.AppendLine("| Item | Amount |");
-                sb.AppendLine("|------|--------|");
+                mdb.Heading(2, playerName);
+                mdb.Table("Item", "Amount");
                 foreach (var entry in inventory.Entries)
                 {
                     if (entry.Part != 0)
                         continue;
 
                     var itemName = map.GetItem(entry.Type)?.Name ?? $"{entry.Type}";
-                    sb.AppendLine($"| {itemName} | {entry.Count} |");
+                    mdb.TableRow(itemName, entry.Count);
                 }
             }
 
@@ -1841,15 +1836,13 @@ namespace IntelOrca.Biohazard.BioRand
                     .ThenBy(x => x.GlobalId)
                     .ToArray();
 
-                sb.AppendLine($"## {heading}");
-                sb.AppendLine("| ID | Item | Amount | RDT | Room | Location |");
-                sb.AppendLine("|----|------|--------|-----|------|----------|");
+                mdb.Heading(2, heading);
+                mdb.Table("ID", "Item", "Amount", "RDT", "Room", "Location");
                 foreach (var i in filtered)
                 {
                     var (rdtId, room, location) = GetItemSlotName(map, i.GlobalId);
-                    sb.AppendLine($"| {i.GlobalId} | {i.Definition?.Name} | {i.Item.Amount} | {rdtId} | {room} | {location} |");
+                    mdb.TableRow(i.GlobalId, i.Definition?.Name ?? "", i.Item.Amount, rdtId, room, location);
                 }
-                sb.AppendLine();
             }
         }
 
