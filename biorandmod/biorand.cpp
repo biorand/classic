@@ -1,6 +1,8 @@
 #define _CRT_SECURE_NO_WARNINGS
 #define WIN32_LEAN_AND_MEAN
 
+#include "biorand.h"
+
 #include <algorithm>
 #include <cstdint>
 #include <stdio.h>
@@ -301,18 +303,67 @@ static void RE2_HookLoadGame()
 
 static void ModMain(HMODULE hExecutable)
 {
-    RE2_HookLoadGame();
+    /*
+    auto mm = MemoryManager();
+    auto checkByte = mm.Read<uint8_t>(0x004C5E13);
+    if (checkByte == 0x66)
+    {
+        // RE 1
+        MessageBoxA(NULL, "This is RE 1", "RE 1", MB_OK);
+    }
+    else if (checkByte == 0xE8)
+    {
+        // RE 2
+        RE2_HookLoadGame();
+    }
+    else
+    {
+        // RE 3
+    }
+
     SetupDataPath(hExecutable);
     ProcessDataFile(_dataPath);
     CreateThread(NULL, 0, &ModThreadRunner, NULL, 0, NULL);
+    */
 }
+
+#define DLL_EXPORT EXTERN_C __declspec(dllexport)
+
+DLL_EXPORT void Modsdk_post_init()
+{
+    auto mm = MemoryManager();
+    auto checkByte = mm.Read<uint8_t>(0x004C5E13);
+    if (checkByte == 0x66)
+    {
+        // RE 1
+        init_re1(mm);
+    }
+    else if (checkByte == 0xE8)
+    {
+        // RE 2
+    }
+    else
+    {
+        // RE 3
+    }
+}
+
+/*
+DLL_EXPORT void Modsdk_load(uint8_t* src, size_t pos, size_t size)
+{
+}
+
+DLL_EXPORT void Modsdk_save(uint8_t*& dst, size_t& size)
+{
+}
+*/
 
 BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 {
     switch (dwReason)
     {
     case DLL_PROCESS_ATTACH:
-        ModMain(GetModuleHandleA(NULL));
+        // ModMain(GetModuleHandleA(NULL));
         break;
     case DLL_THREAD_ATTACH:
     case DLL_THREAD_DETACH:
