@@ -1433,6 +1433,9 @@ namespace IntelOrca.Biohazard.BioRand
                     }
                 }
 
+                // Shuffle room list for main randomness
+                roomList = roomList.Shuffle(rng).ToList();
+
                 // Now remove rooms which we want to be empty
                 var totalRooms = roomList.Count;
                 var enemyRoomTotal = (int)Math.Round(roomWeight * totalRooms);
@@ -1447,35 +1450,33 @@ namespace IntelOrca.Biohazard.BioRand
 
                 // Shuffle order of rooms
                 roomList = roomList
-                    .Shuffle(rng)
                     .OrderBy(x => x.SupportedEnemies.Count()) // Pick off more limited rooms first (otherwise they never get set)
                     .ToList();
 
                 var totalEnemyWeight = enemyInfo.Sum(x => x.Weight);
                 foreach (var ei in enemyInfo)
                 {
-                    ei.NumRooms = (int)Math.Round(enemyRoomTotal * (ei.Weight / totalEnemyWeight));
+                    ei.NumRooms = (int)Math.Ceiling(enemyRoomTotal * (ei.Weight / totalEnemyWeight));
                 }
                 enemyInfo = [.. enemyInfo.OrderBy(x => x.NumRooms)];
 
                 var result = new List<RoomWithEnemies>();
-                foreach (var ei in enemyInfo)
+                foreach (var room in roomList)
                 {
-                    var enemiesLeft = ei.NumRooms;
-                    for (var i = 0; i < roomList.Count; i++)
-                    {
-                        if (enemiesLeft <= 0)
-                            break;
+                    var ei = room.SupportedEnemies
+                        .Where(x => x.NumRooms > 0)
+                        .Shuffle(rng)
+                        .FirstOrDefault();
 
-                        var room = roomList[i];
-                        if (!room.SupportedEnemies.Contains(ei))
-                            continue;
+                    // Fallback
+                    ei ??= room.SupportedEnemies
+                        .OrderBy(x => x.Weight)
+                        .First();
 
-                        enemiesLeft--;
-                        roomList.RemoveAt(i--);
-                        result.Add(new RoomWithEnemies(room, ei));
-                    }
+                    ei.NumRooms--;
+                    result.Add(new RoomWithEnemies(room, ei));
                 }
+
                 return [.. result];
             }
 
