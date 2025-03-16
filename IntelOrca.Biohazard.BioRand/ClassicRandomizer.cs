@@ -1197,7 +1197,11 @@ namespace IntelOrca.Biohazard.BioRand
                 var amount = itemDefinition?.Amount ?? 1;
                 if (itemDefinition?.Discard == true)
                 {
-                    var allEdges = map.Rooms.SelectMany(x => x.Value.AllEdges).ToList();
+                    var requireS = $"item({itemType})";
+                    var allEdges = map.Rooms
+                        .SelectMany(x => x.Value.AllEdges)
+                        .Where(x => x.Requires2?.Contains(requireS) == true)
+                        .ToList();
                     var lockIds = new HashSet<int>();
                     for (var i = 0; i < allEdges.Count; i++)
                     {
@@ -1214,9 +1218,7 @@ namespace IntelOrca.Biohazard.BioRand
                             }
                         }
                     }
-                    amount = allEdges
-                        .SelectMany(x => x.Requires2 ?? [])
-                        .Count(x => x == $"item({itemType})");
+                    amount = allEdges.Count;
                 }
                 modBuilder.SetItem(kvp.Key, new Item(itemType, (ushort)amount));
             }
