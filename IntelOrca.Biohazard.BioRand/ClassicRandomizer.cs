@@ -1815,6 +1815,18 @@ namespace IntelOrca.Biohazard.BioRand
                 mdb.TableRow(enemy.GlobalId, enemy.RdtId, roomName, enemy.Id, enemyName);
             }
 
+            mdb.Heading(1, "Doors");
+            mdb.Table("RDT", "ID", "ROOM", "DOOR", "LOCK", "REQUIRES");
+            foreach (var r in map.Rooms)
+            {
+                foreach (var d in r.Value.Doors ?? [])
+                {
+                    var rdt = r.Value.Rdts.FirstOrDefault();
+                    mdb.TableRow(rdt, d.Id ?? -1, r.Key, d.Name ?? "", d.LockId ?? 0, string.Join(", ", d.Requires2 ?? []));
+                }
+            }
+
+
             return mdb.Build();
 
             void DumpInventory(string playerName, RandomInventory inventory)
