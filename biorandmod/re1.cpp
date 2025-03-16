@@ -105,6 +105,8 @@ private:
         _mm.Write(0x447A39, data, sizeof(data));
 
         // Allow using blue herbs when not poisoned
+        // je 0447AADh -> nop
+        _mm.Write(0x447AAD, data, sizeof(data));
         // je 0447AE7h -> nop
         _mm.Write(0x447AE7, data, sizeof(data));
     }
