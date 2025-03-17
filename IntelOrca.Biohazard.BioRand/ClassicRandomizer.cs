@@ -1657,7 +1657,8 @@ namespace IntelOrca.Biohazard.BioRand
                 foreach (var d in r.Value.Doors ?? [])
                 {
                     var rdt = r.Value.Rdts.FirstOrDefault();
-                    mdb.TableRow(rdt, d.Id ?? -1, r.Key, d.Name ?? "", d.LockId ?? 0, string.Join(", ", d.Requires2 ?? []));
+                    var requires = string.Join(", ", (d.Requires2 ?? []).Select(GetRequiresString));
+                    mdb.TableRow(rdt, (object?)d.Id ?? "", r.Key, r.Value.Name ?? "", d.LockId ?? 0, requires);
                 }
             }
 
@@ -1697,6 +1698,20 @@ namespace IntelOrca.Biohazard.BioRand
                     var (rdtId, room, location) = GetItemSlotName(map, i.GlobalId);
                     mdb.TableRow(i.GlobalId, i.Definition?.Name ?? "", i.Item.Amount, rdtId, room, location);
                 }
+            }
+
+            string GetRequiresString(string s)
+            {
+                var req = MapRequirement.Parse(s);
+                if (req.Kind == MapRequirementKind.Item)
+                {
+                    if (int.TryParse(req.Value, out var itemId))
+                    {
+                        var item = map.GetItem(itemId);
+                        return item?.Name ?? s;
+                    }
+                }
+                return s;
             }
         }
 
