@@ -544,7 +544,7 @@
         {
           "id": 1,
           "target": "102:0",
-          "lockId": 202,
+          "lockId": 10,
           "requires2": [
             "item(52)"
           ]
@@ -571,7 +571,8 @@
       "doors": [
         {
           "id": 0,
-          "target": "101:2"
+          "target": "101:1",
+          "lockId": 10
         }
       ],
       "items": [
@@ -621,7 +622,7 @@
         {
           "id": 1,
           "target": "104:0",
-          "lockId": 146,
+          "lockId": 18,
           "kind": "unlock"
         },
         {
@@ -635,7 +636,7 @@
         {
           "id": 4,
           "target": "10E:0",
-          "lockId": 203,
+          "lockId": 11,
           "requires2": [
             "item(51)"
           ]
@@ -654,7 +655,7 @@
         {
           "id": 0,
           "target": "103:1",
-          "lockId": 146,
+          "lockId": 18,
           "kind": "locked"
         },
         {
@@ -666,7 +667,7 @@
         {
           "id": 1,
           "target": "10F:0",
-          "lockId": 134,
+          "lockId": 6,
           "requires2": [
             "item(51)"
           ]
@@ -674,7 +675,7 @@
         {
           "id": 2,
           "target": "110:0",
-          "lockId": 211,
+          "lockId": 19,
           "kind": "blocked"
         }
       ],
@@ -854,7 +855,7 @@
         {
           "id": 1,
           "target": "111:0",
-          "lockId": 197,
+          "lockId": 5,
           "requires2": [
             "item(52)"
           ]
@@ -981,7 +982,7 @@
         {
           "id": 1,
           "target": "108:0",
-          "lockId": 137,
+          "lockId": 9,
           "requires2": [
             "item(51)"
           ]
@@ -1009,7 +1010,8 @@
       "doors": [
         {
           "id": 0,
-          "target": "107:1"
+          "target": "107:1",
+          "lockId": 9
         },
         {
           "id": 1,
@@ -1048,7 +1050,7 @@
         {
           "id": 1,
           "target": "114:0",
-          "lockId": 196,
+          "lockId": 4,
           "requires2": [
             "item(52)"
           ]
@@ -1060,7 +1062,7 @@
         {
           "id": 3,
           "target": "115:0",
-          "lockId": 128,
+          "lockId": 0,
           "noUnlock": true
         }
       ],
@@ -1105,7 +1107,7 @@
         {
           "id": 3,
           "target": "10B:0",
-          "lockId": 148,
+          "lockId": 20,
           "kind": "unlock"
         },
         {
@@ -1115,7 +1117,7 @@
         {
           "id": 2,
           "target": "119:0",
-          "lockId": 216,
+          "lockId": 24,
           "requires2": [
             "item(54)"
           ]
@@ -1139,7 +1141,7 @@
         {
           "id": 0,
           "target": "10A:3",
-          "lockId": 148,
+          "lockId": 20,
           "kind": "locked"
         },
         {
@@ -1306,7 +1308,8 @@
       "doors": [
         {
           "id": 0,
-          "target": "103:4"
+          "target": "103:4",
+          "lockId": 11
         }
       ],
       "items": [
@@ -1340,7 +1343,8 @@
       "doors": [
         {
           "id": 0,
-          "target": "104:1"
+          "target": "104:1",
+          "lockId": 6
         }
       ],
       "items": [
@@ -1425,7 +1429,7 @@
         {
           "id": 0,
           "target": "104:2",
-          "lockId": 147,
+          "lockId": 19,
           "kind": "unlock",
           "noUnlock": true // To prevent softlock in lock rando
         },
@@ -1443,7 +1447,8 @@
       "doors": [
         {
           "id": 0,
-          "target": "106:1"
+          "target": "106:1",
+          "lockId": 5
         },
         {
           "id": 1,
@@ -1489,7 +1494,7 @@
         {
           "id": 1,
           "target": "11C:0",
-          "lockId": 176,
+          "lockId": 48,
           "requires2": [
             "item(56)"
           ]
@@ -1566,7 +1571,8 @@
       "doors": [
         {
           "id": 0,
-          "target": "109:1"
+          "target": "109:1",
+          "lockId": 4
         }
       ],
       "items": [
@@ -1632,13 +1638,13 @@
         {
           "id": 0,
           "target": "109:3",
-          "lockId": 128,
+          "lockId": 0,
           "noUnlock": true
         },
         {
           "id": 1,
           "target": "116:0",
-          "lockId": 129,
+          "lockId": 1,
           "noUnlock": true
         }
       ],
@@ -1674,7 +1680,7 @@
         {
           "id": 0,
           "target": "115:1",
-          "lockId": 129,
+          "lockId": 1,
           "noUnlock": true
         }
       ],
@@ -1783,7 +1789,8 @@
       "doors": [
         {
           "id": 0,
-          "target": "10A:2"
+          "target": "10A:2",
+          "lockId": 24
         }
       ],
       "items": [
@@ -1822,7 +1829,7 @@
         {
           "id": 1,
           "target": "11B:0",
-          "lockId": 151,
+          "lockId": 23,
           "requires2": [
             "item(41)",
             "item(44)",
@@ -1846,7 +1853,8 @@
       "doors": [
         {
           "id": 0,
-          "target": "11A:1"
+          "target": "11A:1",
+          "lockId": 23
         },
         {
           "id": 1,
@@ -1888,7 +1896,8 @@
       "doors": [
         {
           "id": 0,
-          "target": "112:1"
+          "target": "112:1",
+          "lockId": 48
         }
       ]
     },
@@ -1919,21 +1928,21 @@
         {
           "id": 1,
           "target": "214:1",
-          "lockId": 209,
+          "lockId": 17,
           "kind": "blocked",
           "player": 0
         },
         {
           "id": 1,
           "target": "214:5",
-          "lockId": 209,
+          "lockId": 17,
           "kind": "blocked",
           "player": 1
         },
         {
           "id": 2,
           "target": "215:0",
-          "lockId": 204,
+          "lockId": 12,
           "requires2": [
             "item(54)"
           ]
@@ -2023,7 +2032,7 @@
         {
           "id": 1,
           "target": "205:0",
-          "lockId": 206,
+          "lockId": 14,
           "requires2": [
             "item(52)"
           ]
@@ -2035,13 +2044,13 @@
         {
           "id": 3,
           "target": "207:0",
-          "lockId": 150,
+          "lockId": 22,
           "kind": "locked"
         },
         {
           "id": 4,
           "target": "20D:0",
-          "lockId": 141,
+          "lockId": 13,
           "requires2": [
             "item(52)"
           ]
@@ -2059,7 +2068,8 @@
       "doors": [
         {
           "id": 0,
-          "target": "204:1"
+          "target": "204:1",
+          "lockId": 14
         }
       ],
       "items": [
@@ -2090,7 +2100,7 @@
         {
           "id": 1,
           "target": "207:4",
-          "lockId": 149,
+          "lockId": 21,
           "kind": "unlock"
         }
       ],
@@ -2118,7 +2128,7 @@
         {
           "id": 0,
           "target": "204:3",
-          "lockId": 150,
+          "lockId": 22,
           "kind": "unlock"
         },
         {
@@ -2140,7 +2150,7 @@
         {
           "id": 4,
           "target": "206:1",
-          "lockId": 149,
+          "lockId": 21,
           "kind": "locked"
         }
       ],
@@ -2357,7 +2367,8 @@
       "doors": [
         {
           "id": 0,
-          "target": "204:4"
+          "target": "204:4",
+          "lockId": 13
         },
         {
           "id": 1,
@@ -2639,14 +2650,14 @@
         {
           "id": 1,
           "target": "201:1",
-          "lockId": 209,
+          "lockId": 17,
           "kind": "unlock",
           "player": 0
         },
         {
           "id": 5,
           "target": "201:1",
-          "lockId": 209,
+          "lockId": 17,
           "kind": "unlock",
           "player": 1
         }
@@ -2689,7 +2700,8 @@
       "doors": [
         {
           "id": 0,
-          "target": "201:2"
+          "target": "201:2",
+          "lockId": 12
         }
       ],
       "items": [
@@ -2918,7 +2930,7 @@
         {
           "id": 1,
           "target": "21C:1",
-          "lockId": 155,
+          "lockId": 27,
           "kind": "unlock",
           "noUnlock": true // To prevent softlock in lock rando
         }
@@ -2958,7 +2970,7 @@
         {
           "id": 1,
           "target": "21B:1",
-          "lockId": 155,
+          "lockId": 27,
           "kind": "locked",
           "noUnlock": true // To prevent softlock in lock rando
         },
@@ -3410,7 +3422,7 @@
         {
           "id": 2,
           "target": "30B:0",
-          "lockId": 167
+          "lockId": 39
         }
       ]
     },
@@ -3569,7 +3581,7 @@
         {
           "id": 0,
           "target": "307",
-          "lockId": 167
+          "lockId": 39
         },
         {
           "id": 1,
@@ -3659,7 +3671,7 @@
         {
           "id": 2,
           "target": "30F:2",
-          "lockId": 175
+          "lockId": 47
         }
       ],
       "enemies": [
@@ -3730,7 +3742,8 @@
         },
         {
           "id": 2,
-          "target": "30D:2"
+          "target": "30D:2",
+          "lockId": 47
         }
       ],
       "items": [
@@ -4006,7 +4019,7 @@
         {
           "id": 1,
           "target": "406:0",
-          "lockId": 169,
+          "lockId": 41,
           "requires2": [
             "item(57)"
           ]
@@ -4084,7 +4097,7 @@
         {
           "id": 0,
           "target": "405:1",
-          "lockId": 169
+          "lockId": 41
         },
         {
           "id": 1,
@@ -4178,7 +4191,7 @@
         {
           "id": 2,
           "target": "40A:0",
-          "lockId": 170,
+          "lockId": 42,
           "requires2": [
             "item(58)"
           ]
@@ -4278,7 +4291,7 @@
         {
           "id": 0,
           "target": "408:2",
-          "lockId": 170
+          "lockId": 42
         },
         {
           "id": 1,
@@ -4444,7 +4457,7 @@
         {
           "id": 2,
           "target": "410:0",
-          "lockId": 164,
+          "lockId": 36,
           "requires2": [
             "room(411)"
           ],
@@ -4453,7 +4466,7 @@
         {
           "id": 3,
           "target": "411:0",
-          "lockId": 171,
+          "lockId": 43,
           "requires2": [
             "item(59)"
           ]
@@ -4512,7 +4525,7 @@
         {
           "id": 0,
           "target": "40E:2",
-          "lockId": 164,
+          "lockId": 36,
           "noUnlock": true
         }
       ],
@@ -4573,7 +4586,7 @@
         {
           "id": 0,
           "target": "40E:3",
-          "lockId": 171
+          "lockId": 43
         }
       ],
       "enemies": [
@@ -4591,7 +4604,7 @@
         {
           "id": 0,
           "target": "501:0",
-          "lockId": 156,
+          "lockId": 28,
           "requires2": [
             "item(55)"
           ]
@@ -4628,7 +4641,7 @@
         {
           "id": 0,
           "target": "500:0",
-          "lockId": 156
+          "lockId": 28
         },
         {
           "id": 1,
@@ -4821,7 +4834,7 @@
         {
           "id": 2,
           "target": "507/STORE:0",
-          "lockId": 173,
+          "lockId": 45,
           "kind": "locked"
         },
         {
@@ -4831,7 +4844,7 @@
         {
           "id": 4,
           "target": "50C:0",
-          "lockId": 157,
+          "lockId": 29,
           "requires2": [
             "item(60)"
           ]
@@ -4928,7 +4941,7 @@
         {
           "id": 0,
           "target": "505",
-          "lockId": 173,
+          "lockId": 45,
           "kind": "unlock"
         }
       ],
@@ -5120,7 +5133,7 @@
         {
           "id": 0,
           "target": "505:4",
-          "lockId": 157
+          "lockId": 29
         },
         {
           "id": 1,

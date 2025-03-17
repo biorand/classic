@@ -240,7 +240,7 @@ namespace IntelOrca.Biohazard.BioRand
                 .Select(x => x.LockId!)
                 .ToHashSet();
 
-            var availableLocks = Enumerable.Range(128, 128)
+            var availableLocks = Enumerable.Range(0, 63)
                 .Select(static x => (byte)x)
                 .Where(x => !reservedLockIds.Contains(x))
                 .ToQueue();
