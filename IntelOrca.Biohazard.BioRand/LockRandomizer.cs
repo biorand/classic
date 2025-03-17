@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 
@@ -12,10 +13,22 @@ namespace IntelOrca.Biohazard.BioRand
             var doors = GetDoors(context);
             var pairs = GetDoorPairs(context, doors);
 
+            var preserveLocks = context.Configuration.GetValueOrDefault("locks/preserve", false);
+            if (preserveLocks)
+            {
+                var actualDoors = doors.Values.Select(x => x.Door);
+                foreach (var d in actualDoors.Where(x => x.LockId != null))
+                {
+                    d.NoUnlock = true;
+                }
+            }
+
             LockNowhereDoors(context, doors);
             if (context.Configuration.GetValueOrDefault("locks/random", true))
             {
-                RandomizeLocks(context, pairs);
+                var rng = context.Rng.NextFork();
+                KeepBoxRouteClear(context, rng);
+                RandomizeLocks(context, rng, pairs);
             }
         }
 
@@ -79,16 +92,138 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
-        private void RandomizeLocks(IClassicRandomizerGeneratedVariation context, List<DoorPair> pairs)
+        private void KeepBoxRouteClear(IClassicRandomizerGeneratedVariation context, Rng rng)
         {
-            var rng = context.Rng.NextFork();
+            var map = context.Variation.Map;
+            var beginEnd = map.BeginEndRooms.FirstOrDefault();
+            var startRoom = map.GetRoom(beginEnd.Start ?? "");
+            if (startRoom == null)
+                return;
+
+            // Get list of all possible routes to a box room
+            var head = new KeylessRoute(map, [startRoom], []);
+            var q = new Queue<KeylessRoute>([head]);
+            var final = new List<KeylessRoute>();
+            while (q.Count != 0)
+            {
+                var r = q.Dequeue();
+                var next = r.Next;
+                if (next.Length == 0)
+                {
+                    if (r.Tail.Tags?.Contains("box") == true)
+                    {
+                        final.Add(r);
+                    }
+                }
+                else
+                {
+                    foreach (var n in r.Next)
+                    {
+                        q.Enqueue(n);
+                    }
+                }
+            }
+
+            // Filter routes to most direct ones
+            var headTogether = head.Together;
+            final = final
+                .Where(x => !x.ContainsButNotAtStart(headTogether))
+                .Shuffle(rng)
+                .ToList();
+
+            // Choose one and make sure all doors in route are never locked
+            var chosen = final.FirstOrDefault();
+            foreach (var door in chosen.Doors)
+            {
+                door.NoUnlock = true;
+            }
+        }
+
+        private class KeylessRoute(Map map, ImmutableList<MapRoom> rooms, ImmutableList<MapRoomDoor> doors)
+        {
+            public ImmutableList<MapRoom> Rooms => rooms;
+            public ImmutableList<MapRoomDoor> Doors => doors;
+
+            public MapRoom Tail => Rooms.Last();
+            public ImmutableArray<KeylessRoute> Next => Neighbours
+                .Where(x => !rooms.Contains(x.Item1))
+                .Select(x => new KeylessRoute(map, rooms.Add(x.Item1), doors.Add(x.Item2)))
+                .ToImmutableArray();
+
+            private ImmutableArray<(MapRoom, MapRoomDoor)> Neighbours
+            {
+                get
+                {
+                    return Tail.Doors
+                        .Where(x => !x.NoUnlock || x.LockId == null)
+                        .Select(x => (map.GetRoom(x.TargetRoom ?? ""), x))
+                        .Where(x => x.Item1 != null)
+                        .Select(x => (x.Item1!, x.Item2))
+                        .ToImmutableArray();
+                }
+            }
+
+            public ImmutableHashSet<MapRoom> Together
+            {
+                get
+                {
+                    var hash = new HashSet<MapRoom>();
+                    var q = new Queue<MapRoom>([Tail]);
+                    while (q.Count > 0)
+                    {
+                        var n = q.Dequeue();
+                        foreach (var d in n.Doors ?? [])
+                        {
+                            if (!d.NoUnlock || d.LockId != null)
+                                continue;
+
+                            var conn = map.GetRoom(d.TargetRoom ?? "");
+                            if (conn == null)
+                                continue;
+
+                            if (hash.Add(conn))
+                            {
+                                q.Enqueue(conn);
+                            }
+                        }
+                    }
+                    return hash.OrderBy(x => x.Name).ToImmutableHashSet();
+                }
+            }
+
+            public bool ContainsButNotAtStart(ImmutableHashSet<MapRoom> haystack)
+            {
+                var state = false;
+                foreach (var r in Rooms)
+                {
+                    if (haystack.Contains(r))
+                    {
+                        if (state)
+                        {
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        state = true;
+                    }
+                }
+                return false;
+            }
+
+            public override string ToString()
+            {
+                return string.Join(" -> ", Rooms.Select(x => x.Name ?? null));
+            }
+        }
+
+        private void RandomizeLocks(IClassicRandomizerGeneratedVariation context, Rng rng, List<DoorPair> pairs)
+        {
             var modBuilder = context.ModBuilder;
-            var preserveLocks = context.Configuration.GetValueOrDefault("locks/preserve", false);
             var lockRatio = context.Configuration.GetValueOrDefault("locks/ratio", 0.0);
 
-            var restrictedPairs = (preserveLocks
-                ? pairs.Where(x => x.NoUnlock || x.LockId != null)
-                : pairs.Where(x => x.NoUnlock))
+            var restrictedPairs = pairs
+                .Where(x => x.NoUnlock)
                 .ToHashSet();
 
             var reservedLockIds = restrictedPairs

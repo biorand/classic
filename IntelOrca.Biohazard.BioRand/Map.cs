@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -25,6 +26,14 @@ namespace IntelOrca.Biohazard.BioRand
             if (Rooms == null)
                 return null;
             Rooms.TryGetValue(id.ToString(), out var value);
+            return value;
+        }
+
+        internal MapRoom? GetRoom(string key)
+        {
+            if (Rooms == null)
+                return null;
+            Rooms.TryGetValue(key, out var value);
             return value;
         }
 
@@ -132,6 +141,7 @@ namespace IntelOrca.Biohazard.BioRand
         public int[]? Esp { get; set; }
     }
 
+    [DebuggerDisplay("{Name}")]
     public class MapRoom : MapFilterable
     {
         public string? Name { get; set; }
@@ -227,6 +237,17 @@ namespace IntelOrca.Biohazard.BioRand
         public int[]? Requires { get; set; }
         public string[]? RequiresRoom { get; set; }
         public string? Kind { get; set; }
+
+        public string? TargetRoom
+        {
+            get
+            {
+                if (Target == null)
+                    return null;
+                var parts = Target.Split(':');
+                return parts[0];
+            }
+        }
     }
 
     public class MapRoomDoorEntrance
