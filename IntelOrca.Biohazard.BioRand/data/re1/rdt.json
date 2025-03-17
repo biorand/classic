@@ -1426,7 +1426,13 @@
           "id": 0,
           "target": "104:2",
           "lockId": 147,
-          "kind": "unlock"
+          "kind": "unlock",
+          "noUnlock": true // To prevent softlock in lock rando
+        },
+        {
+          "id": 1,
+          "target": "21C:2",
+          "noUnlock": true // To prevent softlock in lock rando
         }
       ],
       "enemies": []
@@ -2084,6 +2090,7 @@
         {
           "id": 1,
           "target": "207:4",
+          "lockId": 149,
           "kind": "unlock"
         }
       ],
@@ -2131,6 +2138,7 @@
         {
           "id": 4,
           "target": "206:1",
+          "lockId": 149,
           "kind": "locked"
         }
       ],
@@ -2874,7 +2882,8 @@
         },
         {
           "id": 1,
-          "target": "21B:0"
+          "target": "21B:0",
+          "noUnlock": true // To prevent softlock in lock rando
         }
       ],
       "items": [
@@ -2899,13 +2908,15 @@
       "doors": [
         {
           "id": 0,
-          "target": "21A:1"
+          "target": "21A:1",
+          "noUnlock": true // To prevent softlock in lock rando
         },
         {
           "id": 1,
           "target": "21C:1",
           "lockId": 155,
-          "kind": "unlock"
+          "kind": "unlock",
+          "noUnlock": true // To prevent softlock in lock rando
         }
       ],
       "items": [
@@ -2944,11 +2955,13 @@
           "id": 1,
           "target": "21B:1",
           "lockId": 155,
-          "kind": "locked"
+          "kind": "locked",
+          "noUnlock": true // To prevent softlock in lock rando
         },
         {
           "id": 2,
-          "target": "110:1"
+          "target": "110:1",
+          "noUnlock": true // To prevent softlock in lock rando
         }
       ],
       "items": [
