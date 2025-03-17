@@ -734,6 +734,7 @@
         {
           "id": 0,
           "target": "104:3",
+          "noUnlock": true,
           "randomize": false
         },
         {
@@ -2120,12 +2121,12 @@
         },
         {
           "id": 2,
-          "target": "10B:1",
-          "noUnlock": true
+          "target": "20B:0"
         },
         {
           "id": 3,
-          "target": "20B:0"
+          "target": "10B:1",
+          "noUnlock": true
         },
         {
           "id": 4,
