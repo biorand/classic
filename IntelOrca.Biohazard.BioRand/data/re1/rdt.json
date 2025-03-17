@@ -2117,7 +2117,9 @@
       "doors": [
         {
           "id": 0,
-          "target": "204:3"
+          "target": "204:3",
+          "lockId": 150,
+          "kind": "unlock"
         },
         {
           "id": 1,

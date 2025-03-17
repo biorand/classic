@@ -16,7 +16,7 @@ namespace IntelOrca.Biohazard.BioRand
             var preserveLocks = context.Configuration.GetValueOrDefault("locks/preserve", false);
             if (preserveLocks)
             {
-                var actualDoors = doors.Values.Select(x => x.Door);
+                var actualDoors = doors.Select(x => x.Door);
                 foreach (var d in actualDoors.Where(x => x.LockId != null))
                 {
                     d.NoUnlock = true;
@@ -27,15 +27,15 @@ namespace IntelOrca.Biohazard.BioRand
             if (context.Configuration.GetValueOrDefault("locks/random", true))
             {
                 var rng = context.Rng.NextFork();
-                KeepBoxRouteClear(context, rng);
+                KeepBoxRouteClear(context, rng, doors);
                 RandomizeLocks(context, rng, pairs);
             }
         }
 
-        private Dictionary<string, DoorInfo> GetDoors(IClassicRandomizerGeneratedVariation context)
+        private ImmutableArray<DoorInfo> GetDoors(IClassicRandomizerGeneratedVariation context)
         {
             var map = context.Variation.Map;
-            var doors = new Dictionary<string, DoorInfo>();
+            var doors = ImmutableArray.CreateBuilder<DoorInfo>();
             if (map.Rooms != null)
             {
                 foreach (var kvp in map.Rooms)
@@ -51,34 +51,35 @@ namespace IntelOrca.Biohazard.BioRand
                             continue;
 
                         var doorInfo = new DoorInfo(roomKey, room, door);
-                        doors.Add(doorInfo.Identity, doorInfo);
+                        doors.Add(doorInfo);
                     }
                 }
             }
-            return doors;
+            return doors.ToImmutable();
         }
 
-        private List<DoorPair> GetDoorPairs(IClassicRandomizerGeneratedVariation context, Dictionary<string, DoorInfo> doors)
+        private List<DoorPair> GetDoorPairs(IClassicRandomizerGeneratedVariation context, ImmutableArray<DoorInfo> doors)
         {
+            var dict = doors.ToDictionary(x => x.Identity);
             var pairs = new List<DoorPair>();
-            while (doors.Count != 0)
+            while (dict.Count != 0)
             {
-                var a = doors.First().Value;
-                doors.Remove(a.Identity);
+                var a = dict.First().Value;
+                dict.Remove(a.Identity);
 
                 var target = a.Door.Target ?? "";
-                if (doors.TryGetValue(target, out var b))
+                if (dict.TryGetValue(target, out var b))
                 {
-                    doors.Remove(b.Identity);
+                    dict.Remove(b.Identity);
                     pairs.Add(new DoorPair(a, b));
                 }
             }
             return pairs;
         }
 
-        private void LockNowhereDoors(IClassicRandomizerGeneratedVariation context, Dictionary<string, DoorInfo> doors)
+        private void LockNowhereDoors(IClassicRandomizerGeneratedVariation context, ImmutableArray<DoorInfo> doors)
         {
-            foreach (var doorInfo in doors.Values)
+            foreach (var doorInfo in doors)
             {
                 var door = doorInfo.Door;
                 if (door.Target == null)
@@ -92,7 +93,7 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
-        private void KeepBoxRouteClear(IClassicRandomizerGeneratedVariation context, Rng rng)
+        private void KeepBoxRouteClear(IClassicRandomizerGeneratedVariation context, Rng rng, ImmutableArray<DoorInfo> doors)
         {
             var map = context.Variation.Map;
             var beginEnd = map.BeginEndRooms.FirstOrDefault();
@@ -136,6 +137,14 @@ namespace IntelOrca.Biohazard.BioRand
             foreach (var door in chosen.Doors)
             {
                 door.NoUnlock = true;
+                if (door.LockId != null)
+                {
+                    door.Requires2 = [];
+                    door.LockId = null;
+
+                    var doorInfo = doors.First(x => x.Door == door);
+                    SetDoorLock(context.ModBuilder, doorInfo, null);
+                }
             }
         }
 
