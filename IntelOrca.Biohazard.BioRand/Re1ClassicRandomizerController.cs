@@ -306,7 +306,7 @@ namespace IntelOrca.Biohazard.BioRand
                     var b = rng.Next(0, 0b1111);
                     for (var i = 0; i < 4; i++)
                     {
-                        if ((b & (1 << i)) != 0)
+                        if ((b & (1 << i)) != 0 && areaTags.Count > i)
                         {
                             l.Tags.AddRange(areaTags[i]);
                         }
