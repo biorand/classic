@@ -1740,7 +1740,7 @@ namespace IntelOrca.Biohazard.BioRand
                 {
                     var rdt = r.Value.Rdts.FirstOrDefault();
                     var requires = string.Join(", ", (d.Requires2 ?? []).Select(GetRequiresString));
-                    mdb.TableRow(rdt, (object?)d.Id ?? "", r.Key, r.Value.Name ?? "", d.LockId ?? 0, requires);
+                    mdb.TableRow(rdt, (object?)d.Id ?? "", r.Value.Name ?? "", d.Name ?? "", d.LockId ?? 0, requires);
                 }
             }
 

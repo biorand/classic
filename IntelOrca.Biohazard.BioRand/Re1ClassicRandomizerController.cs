@@ -228,58 +228,65 @@ namespace IntelOrca.Biohazard.BioRand
             var mansion2keyType = 54;
             if (context.Configuration.GetValueOrDefault("locks/random", false))
             {
-                // Set all mansion 2 rooms to mansion 1
-                foreach (var item in map.Rooms.Values.SelectMany(x => x.Items ?? []))
-                {
-                    if (item.Group == 2)
-                    {
-                        item.Group = 1;
-                    }
-                }
-
                 var genericKeys = map.Items.Where(x => x.Value.Discard).Shuffle(rng);
-                if (config.GetValueOrDefault("progression/mansion/split", false))
+                if (context.Configuration.GetValueOrDefault("locks/preserve", false))
                 {
-                    var mansion2key = genericKeys.FirstOrDefault();
-                    mansion2keyType = mansion2key.Key;
-                    genericKeys = genericKeys.Skip(1).ToArray();
-
-                    var mansion2rooms = map.Rooms.Values
-                        .Where(x => x.HasTag("mansion2able"))
-                        .Shuffle(rng);
-                    var numMansion2rooms = rng.Next(2, 9);
-                    mansion2rooms = mansion2rooms.Take(numMansion2rooms).ToArray();
-
-                    var usedLockIds = map.Rooms.Values
-                        .SelectMany(x => x.Doors ?? [])
-                        .Where(x => x.LockId != null)
-                        .Select(x => (int)x.LockId!.Value)
-                        .ToHashSet();
-                    var lockIds = Enumerable.Range(0, 63)
-                        .Except(usedLockIds)
-                        .ToQueue();
-
-                    foreach (var r in mansion2rooms)
+                    genericKeys = genericKeys.Where(x => x.Key != mansion2keyType).ToArray();
+                }
+                else
+                {
+                    // Set all mansion 2 rooms to mansion 1
+                    foreach (var item in map.Rooms.Values.SelectMany(x => x.Items ?? []))
                     {
-                        foreach (var i in r.Items ?? [])
+                        if (item.Group == 2)
                         {
-                            i.Group = 2;
+                            item.Group = 1;
                         }
-                        foreach (var d in r.Doors ?? [])
+                    }
+
+                    if (config.GetValueOrDefault("progression/mansion/split", false))
+                    {
+                        var mansion2key = genericKeys.FirstOrDefault();
+                        mansion2keyType = mansion2key.Key;
+                        genericKeys = genericKeys.Skip(1).ToArray();
+
+                        var mansion2rooms = map.Rooms.Values
+                            .Where(x => x.HasTag("mansion2able"))
+                            .Shuffle(rng);
+                        var numMansion2rooms = rng.Next(2, 9);
+                        mansion2rooms = mansion2rooms.Take(numMansion2rooms).ToArray();
+
+                        var usedLockIds = map.Rooms.Values
+                            .SelectMany(x => x.Doors ?? [])
+                            .Where(x => x.LockId != null)
+                            .Select(x => (int)x.LockId!.Value)
+                            .ToHashSet();
+                        var lockIds = Enumerable.Range(0, 63)
+                            .Except(usedLockIds)
+                            .ToQueue();
+
+                        foreach (var r in mansion2rooms)
                         {
-                            if (d.Target == null)
-                                continue;
-
-                            d.AllowedLocks = [];
-                            d.Requires2 = [$"item({mansion2key.Key})"];
-                            d.LockId = (byte)lockIds.Dequeue();
-
-                            var otherDoor = map.GetOtherSide(d);
-                            if (otherDoor != null)
+                            foreach (var i in r.Items ?? [])
                             {
-                                otherDoor.AllowedLocks = [];
-                                otherDoor.Requires2 = d.Requires2;
-                                otherDoor.LockId = d.LockId;
+                                i.Group = 2;
+                            }
+                            foreach (var d in r.Doors ?? [])
+                            {
+                                if (d.Target == null)
+                                    continue;
+
+                                d.AllowedLocks = [];
+                                d.Requires2 = [$"item({mansion2key.Key})"];
+                                d.LockId = (byte)lockIds.Dequeue();
+
+                                var otherDoor = map.GetOtherSide(d);
+                                if (otherDoor != null)
+                                {
+                                    otherDoor.AllowedLocks = [];
+                                    otherDoor.Requires2 = d.Requires2;
+                                    otherDoor.LockId = d.LockId;
+                                }
                             }
                         }
                     }

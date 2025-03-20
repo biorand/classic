@@ -2339,6 +2339,7 @@
         {
           "id": 5,
           "target": "20C:0",
+          "lockId": 25,
           "requires2": [
             "item(54)"
           ]
@@ -2368,7 +2369,8 @@
       "doors": [
         {
           "id": 0,
-          "target": "20B:5"
+          "target": "20B:5",
+          "lockId": 25
         },
         {
           "target": "20C/GRAVE",
