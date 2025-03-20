@@ -1,4 +1,6 @@
-﻿namespace IntelOrca.Biohazard.BioRand
+﻿using System.Linq;
+
+namespace IntelOrca.Biohazard.BioRand
 {
     internal class RandomInventory
     {
@@ -13,6 +15,14 @@
         {
             Entries = entries;
             Special = special;
+        }
+
+        public RandomInventory WithSize(int max)
+        {
+            var entries = Entries.Take(max).ToList();
+            while (entries.Count < max)
+                entries.Add(new Entry());
+            return new RandomInventory([.. entries], Special);
         }
 
         public struct Entry

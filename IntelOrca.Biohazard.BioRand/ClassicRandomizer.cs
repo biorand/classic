@@ -161,6 +161,28 @@ namespace IntelOrca.Biohazard.BioRand
                 Options = ["Random", "Never", "Always"],
                 Default = "Always"
             });
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "inventory/min",
+                Label = "Min. Starting Items",
+                Description = "Minimum number of inventory slots to fill up.",
+                Type = "range",
+                Min = 0,
+                Max = 8,
+                Step = 1,
+                Default = 4
+            });
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "inventory/max",
+                Label = "Max. Starting Items",
+                Description = "Maximum number of inventory slots to fill up.",
+                Type = "range",
+                Min = 0,
+                Max = 8,
+                Step = 1,
+                Default = 8
+            });
             foreach (var s in new string[] { "Primary", "Secondary" })
             {
                 group = page.CreateGroup($"{s} Weapon");
@@ -682,7 +704,9 @@ namespace IntelOrca.Biohazard.BioRand
             var config = context.Configuration;
             var rng = context.Rng.NextFork();
 
-            var inventorySize = context.Variation.PlayerIndex == 0 ? 6 : 8;
+            var inventorySizeMin = config.GetValueOrDefault("inventory/min", 0);
+            var inventorySizeMax = config.GetValueOrDefault("inventory/max", 8);
+            var inventorySize = rng.Next(inventorySizeMin, inventorySizeMax + 1);
             var inventoryState = new InventoryBuilder(inventorySize);
 
             var knife = GetRandomEnabled("inventory/weapon/knife");
@@ -1010,12 +1034,20 @@ namespace IntelOrca.Biohazard.BioRand
             }
 
             var graph = graphBuilder.ToGraph();
+
+            var deadendLimit = 1000;
             var route = graph.GenerateRoute(seed, new RouteFinderOptions()
             {
                 DebugDeadendCallback = (o) =>
                 {
+                    deadendLimit--;
+                    if (deadendLimit <= 0)
+                    {
+                        throw new RandomizerUserException("Failed to find route, possibly lack of items to place keys.");
+                    }
                 }
             });
+
             var globalIdToKey = itemNodeToGlobalId
                 .Select(kvp => (kvp.Value, route.GetItemContents(kvp.Key)))
                 .Where(x => x.Item2 != null)
