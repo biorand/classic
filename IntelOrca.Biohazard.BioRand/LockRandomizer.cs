@@ -19,12 +19,12 @@ namespace IntelOrca.Biohazard.BioRand
                 var actualDoors = doors.Select(x => x.Door);
                 foreach (var d in actualDoors.Where(x => x.LockId != null))
                 {
-                    d.NoUnlock = true;
+                    d.AllowedLocks = [];
                 }
             }
 
             LockNowhereDoors(context, doors);
-            if (context.Configuration.GetValueOrDefault("locks/random", true))
+            if (context.Configuration.GetValueOrDefault("locks/random", false))
             {
                 var rng = context.Rng.NextFork();
                 KeepBoxRouteClear(context, rng, doors);
@@ -136,7 +136,7 @@ namespace IntelOrca.Biohazard.BioRand
             var chosen = final.FirstOrDefault();
             foreach (var door in chosen.Doors)
             {
-                door.NoUnlock = true;
+                door.AllowedLocks = [];
                 if (door.LockId != null)
                 {
                     door.Requires2 = [];
@@ -232,7 +232,7 @@ namespace IntelOrca.Biohazard.BioRand
             var lockRatio = context.Configuration.GetValueOrDefault("locks/ratio", 0.0);
 
             var restrictedPairs = pairs
-                .Where(x => x.NoUnlock)
+                .Where(x => x.Restricted)
                 .ToHashSet();
 
             var reservedLockIds = restrictedPairs
@@ -248,9 +248,6 @@ namespace IntelOrca.Biohazard.BioRand
             var lockLimit = (int)Math.Round(pairs.Count * lockRatio);
             var numLocks = restrictedPairs.Count(x => x.LockId != null);
             var shuffledPairs = pairs.Except(restrictedPairs).Shuffle(rng);
-            var possibleKeys = context.Variation.Map.Items
-                .Where(x => x.Value.Discard && x.Value.Kind.StartsWith("key/"))
-                .ToArray();
             foreach (var pair in shuffledPairs)
             {
                 var lockId = pair.LockId;
@@ -266,7 +263,7 @@ namespace IntelOrca.Biohazard.BioRand
                     if (lockId == null)
                         continue;
 
-                    var keyType = rng.NextOf(possibleKeys).Key;
+                    var keyType = rng.NextOf(pair.AllowedLocks);
                     var doorLock = new DoorLock(lockId.Value, keyType);
                     var doorLockA = doorLock;
                     var doorLockB = doorLock;
@@ -313,7 +310,8 @@ namespace IntelOrca.Biohazard.BioRand
             public DoorInfo B => b;
 
             public byte? LockId => A.Door.LockId ?? B.Door.LockId;
-            public bool NoUnlock => A.Door.NoUnlock || B.Door.NoUnlock;
+            public int[] AllowedLocks => A.Door.AllowedLocks ?? B.Door.AllowedLocks ?? [];
+            public bool Restricted => AllowedLocks.Length == 0;
 
             public string Identity { get; } = $"{a.Identity} <-> {b.Identity}";
 

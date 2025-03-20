@@ -157,6 +157,7 @@ namespace IntelOrca.Biohazard.BioRand
 
         public Map GetMap(IClassicRandomizerContext context, int playerIndex)
         {
+            var rng = context.Rng.NextFork();
             var config = context.Configuration;
 
             // Apply player, scenario filter
@@ -218,6 +219,53 @@ namespace IntelOrca.Biohazard.BioRand
                 fountainDoor.Requires2 = [];
             }
 
+            // Locks
+            if (context.Configuration.GetValueOrDefault("locks/random", false))
+            {
+                // Areas:
+                // MANSION | CAVES | GUARDHOUSE | LAB
+                var areaTags = new List<string[]>([
+                    ["mansion", "courtyard"],
+                    ["caves"]]);
+                if (config.GetValueOrDefault("progression/guardhouse", true))
+                {
+                    areaTags.Add(["guardhouse"]);
+                }
+                if (config.GetValueOrDefault("progression/lab", true))
+                {
+                    areaTags.Add(["lab"]);
+                }
+                var locks = map.Items
+                    .Where(x => x.Value.Discard)
+                    .Select(x => new DistributedLock(x.Value.Name, x.Key))
+                    .ToArray();
+                foreach (var l in locks)
+                {
+                    var b = rng.Next(0, 0b1111);
+                    for (var i = 0; i < 4; i++)
+                    {
+                        if ((b & (1 << i)) != 0)
+                        {
+                            l.Tags.AddRange(areaTags[i]);
+                        }
+                    }
+                }
+
+                foreach (var kvp in map.Rooms)
+                {
+                    foreach (var d in kvp.Value.Doors ?? [])
+                    {
+                        if (d.NoUnlock)
+                            continue;
+
+                        d.AllowedLocks = locks
+                            .Where(x => x.SupportsRoom(kvp.Value))
+                            .Select(x => x.Key)
+                            .ToArray();
+                    }
+                }
+            }
+
             // Restrict items, set no return points
             var keys = map.Items!.Values;
             var items = map.Rooms!.Values.SelectMany(x => x.Items).ToArray();
@@ -232,6 +280,11 @@ namespace IntelOrca.Biohazard.BioRand
             if (config.GetValueOrDefault("progression/guardhouse", true) &&
                 config.GetValueOrDefault("progression/guardhouse/segmented", false))
             {
+                if (context.Configuration.GetValueOrDefault("locks/random", false))
+                {
+                    throw new RandomizerUserException("Segmented guardhouse with lock randomizer not implemented yet.");
+                }
+
                 // Only guardhouse can contain guardhouse keys
                 foreach (var item in items)
                     item.Group &= ~8;
@@ -262,6 +315,8 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 var caveDoor = map.Rooms!["302"].Doors.First(x => x.Name == "LADDER TO CAVES");
                 caveDoor.Kind = "noreturn";
+
+                map.GetOtherSide(caveDoor)!.Kind = "blocked";
             }
 
             if (config.GetValueOrDefault("progression/lab", true) &&
@@ -269,9 +324,29 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 var labDoor = map.Rooms!["305"].Doors.First(x => x.Name == "FOUNTAIN STAIRS");
                 labDoor.Kind = "noreturn";
+
+                map.GetOtherSide(labDoor)!.Kind = "blocked";
             }
 
             return map;
+        }
+
+        private class DistributedLock(string name, int key)
+        {
+            public string Name => name;
+            public int Key => key;
+            public List<string> Tags { get; set; } = [];
+
+            public bool SupportsRoom(MapRoom room)
+            {
+                if (Tags.Count == 0)
+                    return true;
+
+                var roomTags = room.Tags ?? [];
+                return roomTags.Any(Tags.Contains);
+            }
+
+            public override string ToString() => $"Key = {Name} Tags = [{string.Join(", ", Tags)}]";
         }
 
         public static GameData GetGameData(DataManager gameDataManager, int player)
@@ -390,7 +465,7 @@ namespace IntelOrca.Biohazard.BioRand
                             Re1UnkB = 0,
                             Animation = 0,
                             Re1UnkC = 2,
-                            LockId = 149,
+                            LockId = 21 | 0x80,
                             Target = new RdtId(255, 0x06),
                             NextX = 9180,
                             NextY = 0,

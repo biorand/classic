@@ -1016,24 +1016,31 @@ namespace IntelOrca.Biohazard.BioRand
                 {
                 }
             });
-            var itemToKey = itemNodeToGlobalId
+            var globalIdToKey = itemNodeToGlobalId
                 .Select(kvp => (kvp.Value, route.GetItemContents(kvp.Key)))
                 .Where(x => x.Item2 != null)
                 .ToDictionary(x => x.Item1, x => x.Item2!.Value);
-            var ggg = itemToKey.ToDictionary(x => globalIdToName[x.Key], x => x.Value);
-            var s = route.Log;
+            var locationNameToKey = globalIdToKey.ToDictionary(x => globalIdToName[x.Key], x => x.Value);
+            var log = route.Log;
 
-            foreach (var kvp in itemToKey)
+            var segmentTree = GetSegmentTree(map);
+            foreach (var kvp in globalIdToKey)
             {
+                var globalId = kvp.Key;
                 var key = kvp.Value;
+
                 var itemType = (byte)keyToItemId[key];
                 var itemDefinition = map.GetItem(itemType);
                 var amount = itemDefinition?.Amount ?? 1;
                 if (itemDefinition?.Discard == true)
                 {
                     var requireS = $"item({itemType})";
-                    var allEdges = map.Rooms
-                        .SelectMany(x => x.Value.AllEdges)
+                    var segment = segmentTree.FindSegmentContaining(globalId);
+                    if (segment == null)
+                        continue;
+
+                    var allEdges = segment.DescendantRooms
+                        .SelectMany(x => x.AllEdges)
                         .Where(x => x.Requires2?.Contains(requireS) == true)
                         .ToList();
                     var lockIds = new HashSet<int>();
@@ -1077,6 +1084,81 @@ namespace IntelOrca.Biohazard.BioRand
                     flagNodes[name] = result;
                 }
                 return result;
+            }
+        }
+
+        private static Segment GetSegmentTree(Map map)
+        {
+            var firstRoom = map.GetRoom(map.BeginEndRooms?.FirstOrDefault()?.Start ?? "");
+            if (firstRoom == null)
+                return new Segment([], []);
+
+            var visited = new HashSet<MapRoom>();
+            return VisitSegment(firstRoom);
+
+            Segment VisitSegment(MapRoom room)
+            {
+                var rooms = ImmutableHashSet.CreateBuilder<MapRoom>();
+                var children = ImmutableArray.CreateBuilder<Segment>();
+                VisitRoom(room, rooms, children);
+                return new Segment(rooms.ToImmutable(), children.ToImmutable());
+            }
+
+            void VisitRoom(MapRoom room, ImmutableHashSet<MapRoom>.Builder rooms, ImmutableArray<Segment>.Builder children)
+            {
+                if (visited.Add(room))
+                {
+                    rooms.Add(room);
+                    foreach (var d in room.Doors ?? [])
+                    {
+                        if (d.Kind == "blocked")
+                            continue;
+
+                        var targetRoom = map.GetRoom(d.TargetRoom ?? "");
+                        if (targetRoom == null)
+                            continue;
+
+                        if (d.Kind == "noreturn")
+                            children.Add(VisitSegment(targetRoom));
+                        else
+                            VisitRoom(targetRoom, rooms, children);
+                    }
+                }
+            }
+        }
+
+        private class Segment(ImmutableHashSet<MapRoom> rooms, ImmutableArray<Segment> children)
+        {
+            public ImmutableHashSet<MapRoom> Rooms => rooms;
+            public ImmutableArray<Segment> Children => children;
+
+            public Segment? FindSegmentContaining(int globalId)
+            {
+                if (rooms.SelectMany(x => x.Items ?? []).Any(x => x.GlobalId == globalId))
+                {
+                    return this;
+                }
+                return children
+                    .Select(x => x.FindSegmentContaining(globalId))
+                    .FirstOrDefault(x => x != null);
+            }
+
+            public IEnumerable<MapRoom> DescendantRooms
+            {
+                get
+                {
+                    foreach (var r in rooms)
+                    {
+                        yield return r;
+                    }
+                    foreach (var segment in children)
+                    {
+                        foreach (var r in segment.DescendantRooms)
+                        {
+                            yield return r;
+                        }
+                    }
+                }
             }
         }
     }

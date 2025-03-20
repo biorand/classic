@@ -106,6 +106,17 @@ namespace IntelOrca.Biohazard.BioRand
                     .ToDictionary(x => x.Key, x => x.Value.For(filter))
             };
         }
+
+        public MapRoomDoor? GetOtherSide(MapRoomDoor door)
+        {
+            var targetRoom = door.TargetRoom;
+            var targetId = door.TargetId;
+            if (targetRoom == null || targetId == null)
+                return null;
+
+            var otherRoom = GetRoom(targetRoom);
+            return otherRoom?.Doors?.FirstOrDefault(x => x.Id == targetId.Value);
+        }
     }
 
     public class MapStartEnd : MapFilterable
@@ -237,6 +248,7 @@ namespace IntelOrca.Biohazard.BioRand
         public int[]? Requires { get; set; }
         public string[]? RequiresRoom { get; set; }
         public string? Kind { get; set; }
+        public int[]? AllowedLocks { get; set; }
 
         public string? TargetRoom
         {
@@ -246,6 +258,19 @@ namespace IntelOrca.Biohazard.BioRand
                     return null;
                 var parts = Target.Split(':');
                 return parts[0];
+            }
+        }
+
+        public int? TargetId
+        {
+            get
+            {
+                if (Target == null)
+                    return null;
+                var parts = Target.Split(':');
+                if (parts.Length < 2)
+                    return null;
+                return int.Parse(parts[1]);
             }
         }
     }

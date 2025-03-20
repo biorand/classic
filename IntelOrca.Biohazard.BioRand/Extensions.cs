@@ -136,6 +136,11 @@ namespace IntelOrca.Biohazard.BioRand
             return new Queue<T>(items);
         }
 
+        public static Stack<T> ToStack<T>(this IEnumerable<T> items)
+        {
+            return new Stack<T>(items);
+        }
+
         internal static EndlessBag<T> ToEndlessBag<T>(this IEnumerable<T> items, Rng rng)
         {
             return new EndlessBag<T>(rng, items);
