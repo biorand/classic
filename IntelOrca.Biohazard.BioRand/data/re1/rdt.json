@@ -569,7 +569,7 @@
     "102": {
       "name": "1F WEST STORAGE",
       "rdts": [ "102", "602" ],
-      "tags": [ "mansion" ],
+      "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
           "id": 0,
@@ -1271,7 +1271,7 @@
     "10D": {
       "name": "1F WEST TIGER",
       "rdts": [ "10D", "60D" ],
-      "tags": [ "mansion" ],
+      "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
           "id": 0,
@@ -1318,7 +1318,7 @@
     "10E": {
       "name": "1F WEST BEDROOM",
       "rdts": [ "10E", "60E" ],
-      "tags": [ "mansion" ],
+      "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
           "id": 0,
@@ -1354,7 +1354,7 @@
     "10F": {
       "name": "1F WEST BAR",
       "rdts": [ "10F", "60F" ],
-      "tags": [ "mansion" ],
+      "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
           "id": 0,
@@ -1460,6 +1460,7 @@
     "111": {
       "name": "1F EAST DRESSING",
       "rdts": [ "111", "611" ],
+      "tags": [ "mansion" ],
       "doors": [
         {
           "id": 0,
@@ -1555,7 +1556,7 @@
     "113": {
       "name": "1F EAST BATHROOM",
       "rdts": [ "113", "613" ],
-      "tags": [ "mansion" ],
+      "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
           "id": 0,
@@ -1586,7 +1587,7 @@
     "114": {
       "name": "1F EAST OUTSIDE BOILER",
       "rdts": [ "114", "614" ],
-      "tags": [ "mansion" ],
+      "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
           "id": 0,
@@ -1731,7 +1732,7 @@
     "117": {
       "name": "1F EAST PORTRAITS",
       "rdts": [ "117", "617" ],
-      "tags": [ "mansion" ],
+      "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
           "id": 0,
@@ -1808,7 +1809,7 @@
     "119": {
       "name": "1F EAST STUDY",
       "rdts": [ "119", "619" ],
-      "tags": [ "mansion" ],
+      "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
           "id": 0,
@@ -2095,7 +2096,7 @@
     "205": {
       "name": "2F EAST ARMORY",
       "rdts": [ "205", "705" ],
-      "tags": [ "mansion" ],
+      "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
           "id": 0,
@@ -2222,7 +2223,7 @@
     "209": {
       "name": "2F EAST BEDROOM",
       "rdts": [ "209", "709" ],
-      "tags": [ "mansion" ],
+      "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
           "id": 0,
@@ -2276,7 +2277,7 @@
     "20A": {
       "name": "2F EAST FISH TANK",
       "rdts": [ "20A", "70A" ],
-      "tags": [ "mansion" ],
+      "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
           "id": 0,
@@ -2363,7 +2364,7 @@
     "20C": {
       "name": "PIANO LESSON",
       "rdts": [ "20C", "70C" ],
-      "tags": [ "mansion" ],
+      "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
           "id": 0,
@@ -2493,7 +2494,7 @@
     "20F": {
       "name": "2F EAST DINING ROOM",
       "rdts": [ "20F", "70F" ],
-      "tags": [ "mansion" ],
+      "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
           "id": 0,
@@ -2531,7 +2532,7 @@
     "210": {
       "name": "2F EAST ATTIC",
       "rdts": [ "210", "710" ],
-      "tags": [ "mansion" ],
+      "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
           "id": 0,
@@ -2599,7 +2600,7 @@
     "212": {
       "name": "2F EAST BALCONY",
       "rdts": [ "212", "712" ],
-      "tags": [ "mansion" ],
+      "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
           "id": 0,
@@ -2744,7 +2745,7 @@
     "215": {
       "name": "2F WEST DEER ROOM",
       "rdts": [ "215", "715" ],
-      "tags": [ "mansion" ],
+      "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
           "id": 0,
@@ -2835,7 +2836,7 @@
     "217": {
       "name": "2F WEST LIBRARY PUZZLE",
       "rdts": [ "217", "717" ],
-      "tags": [ "mansion" ],
+      "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
           "id": 0,
@@ -2861,7 +2862,7 @@
     "218": {
       "name": "2F WEST HIDDEN LIBRARY",
       "rdts": [ "218", "718" ],
-      "tags": [ "mansion" ],
+      "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
           "id": 0,
@@ -2896,7 +2897,7 @@
     "219": {
       "name": "2F WEST STORAGE",
       "rdts": [ "219", "719" ],
-      "tags": [ "mansion" ],
+      "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
           "id": 0,

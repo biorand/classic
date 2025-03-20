@@ -30,6 +30,7 @@ namespace IntelOrca.Biohazard.BioRand
                 KeepBoxRouteClear(context, rng, doors);
                 RandomizeLocks(context, rng, pairs);
             }
+            SetDoorLocks(context, doors);
         }
 
         private ImmutableArray<DoorInfo> GetDoors(IClassicRandomizerGeneratedVariation context)
@@ -87,7 +88,7 @@ namespace IntelOrca.Biohazard.BioRand
                     // Door doesn't go anywhere, lock it
                     if (!door.NoUnlock)
                     {
-                        SetDoorLock(context.ModBuilder, doorInfo, new DoorLock(255, 255));
+                        AssignDoorLock(context.ModBuilder, doorInfo, new DoorLock(255, 255));
                     }
                 }
             }
@@ -143,9 +144,137 @@ namespace IntelOrca.Biohazard.BioRand
                     door.LockId = null;
 
                     var doorInfo = doors.First(x => x.Door == door);
-                    SetDoorLock(context.ModBuilder, doorInfo, null);
+                    AssignDoorLock(context.ModBuilder, doorInfo, null);
                 }
             }
+        }
+
+        private void RandomizeLocks(IClassicRandomizerGeneratedVariation context, Rng rng, List<DoorPair> pairs)
+        {
+            var modBuilder = context.ModBuilder;
+            var lockRatio = context.Configuration.GetValueOrDefault("locks/ratio", 0.0);
+
+            var restrictedPairs = pairs
+                .Where(x => x.Restricted)
+                .ToHashSet();
+
+            var reservedLockIds = restrictedPairs
+                .Where(x => x.LockId != null)
+                .Select(x => x.LockId!)
+                .ToHashSet();
+
+            var availableLocks = Enumerable.Range(0, 63)
+                .Select(static x => (byte)x)
+                .Where(x => !reservedLockIds.Contains(x))
+                .ToQueue();
+
+            var lockLimit = (int)Math.Round(pairs.Count * lockRatio);
+            var numLocks = restrictedPairs.Count(x => x.LockId != null);
+            var shuffledPairs = pairs.Except(restrictedPairs).Shuffle(rng);
+            foreach (var pair in shuffledPairs)
+            {
+                var lockId = pair.LockId;
+                if (numLocks >= lockLimit)
+                {
+                    AssignDoorLock(modBuilder, pair.A, null);
+                    AssignDoorLock(modBuilder, pair.B, null);
+                }
+                else
+                {
+                    if (lockId == null && availableLocks.Count != 0)
+                        lockId = availableLocks.Dequeue();
+                    if (lockId == null)
+                        continue;
+
+                    var keyType = rng.NextOf(pair.AllowedLocks);
+                    var doorLock = new DoorLock(lockId.Value, keyType);
+                    var doorLockA = doorLock;
+                    var doorLockB = doorLock;
+
+                    // Work around for key randomizer complaining about requirements on other side of blocked door
+                    if (pair.A.Door.Kind == "unblock")
+                        doorLockB = new DoorLock(lockId.Value, 255);
+                    else if (pair.B.Door.Kind == "unblock")
+                        doorLockA = new DoorLock(lockId.Value, 255);
+
+                    AssignDoorLock(modBuilder, pair.A, doorLockA);
+                    AssignDoorLock(modBuilder, pair.B, doorLockB);
+                    numLocks++;
+                }
+            }
+        }
+
+        private void AssignDoorLock(ModBuilder modBuilder, DoorInfo doorInfo, DoorLock? doorLock)
+        {
+            if (doorLock == null)
+            {
+                doorInfo.Door.LockId = null;
+                doorInfo.Door.Requires2 = [];
+            }
+            else
+            {
+                doorInfo.Door.LockId = (byte)doorLock.Value.Id;
+                if (doorLock.Value.KeyItemId == 255)
+                    doorInfo.Door.Requires2 = [];
+                else
+                    doorInfo.Door.Requires2 = [$"item({doorLock.Value.KeyItemId})"];
+            }
+        }
+
+        private void SetDoorLocks(IClassicRandomizerGeneratedVariation context, ImmutableArray<DoorInfo> doors)
+        {
+            var modBuilder = context.ModBuilder;
+            foreach (var doorInfo in doors)
+            {
+                if (doorInfo.Door.NoUnlock)
+                    continue;
+
+                var requirement = doorInfo.Door.Requirements
+                    .Where(x => x.Kind == MapRequirementKind.Item)
+                    .Select(x => (int?)int.Parse(x.Value))
+                    .FirstOrDefault();
+
+                var doorLock = (DoorLock?)null;
+                if (requirement is int keyItemId)
+                {
+                    doorLock = new DoorLock(doorInfo.Door.LockId ?? 0, keyItemId);
+                }
+
+                var doorId = doorInfo.Door.Id ?? 0;
+                foreach (var rdtId in doorInfo.Room.Rdts ?? [])
+                {
+                    modBuilder.SetDoorLock(new RdtItemId(rdtId, (byte)doorId), doorLock);
+                }
+            }
+        }
+
+        [DebuggerDisplay("({A}, {B})")]
+        private readonly struct DoorPair(DoorInfo a, DoorInfo b)
+        {
+            public DoorInfo A => a;
+            public DoorInfo B => b;
+
+            public byte? LockId => A.Door.LockId ?? B.Door.LockId;
+            public int[] AllowedLocks => A.Door.AllowedLocks ?? B.Door.AllowedLocks ?? [];
+            public bool Restricted => AllowedLocks.Length == 0;
+
+            public string Identity { get; } = $"{a.Identity} <-> {b.Identity}";
+
+            public override int GetHashCode() => Identity.GetHashCode();
+            public override bool Equals(object obj) => obj is DoorPair dp && Identity == dp.Identity;
+        }
+
+        [DebuggerDisplay("{Identity}")]
+        private readonly struct DoorInfo(string roomKey, MapRoom room, MapRoomDoor door)
+        {
+            public string RoomKey => roomKey;
+            public MapRoom Room => room;
+            public MapRoomDoor Door => door;
+
+            public string Identity { get; } = $"{roomKey}:{door.Id}";
+
+            public override int GetHashCode() => Identity.GetHashCode();
+            public override bool Equals(object obj) => obj is DoorInfo di && Identity == di.Identity;
         }
 
         private class KeylessRoute(Map map, ImmutableList<MapRoom> rooms, ImmutableList<MapRoomDoor> doors)
@@ -224,112 +353,6 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 return string.Join(" -> ", Rooms.Select(x => x.Name ?? null));
             }
-        }
-
-        private void RandomizeLocks(IClassicRandomizerGeneratedVariation context, Rng rng, List<DoorPair> pairs)
-        {
-            var modBuilder = context.ModBuilder;
-            var lockRatio = context.Configuration.GetValueOrDefault("locks/ratio", 0.0);
-
-            var restrictedPairs = pairs
-                .Where(x => x.Restricted)
-                .ToHashSet();
-
-            var reservedLockIds = restrictedPairs
-                .Where(x => x.LockId != null)
-                .Select(x => x.LockId!)
-                .ToHashSet();
-
-            var availableLocks = Enumerable.Range(0, 63)
-                .Select(static x => (byte)x)
-                .Where(x => !reservedLockIds.Contains(x))
-                .ToQueue();
-
-            var lockLimit = (int)Math.Round(pairs.Count * lockRatio);
-            var numLocks = restrictedPairs.Count(x => x.LockId != null);
-            var shuffledPairs = pairs.Except(restrictedPairs).Shuffle(rng);
-            foreach (var pair in shuffledPairs)
-            {
-                var lockId = pair.LockId;
-                if (numLocks >= lockLimit)
-                {
-                    SetDoorLock(modBuilder, pair.A, null);
-                    SetDoorLock(modBuilder, pair.B, null);
-                }
-                else
-                {
-                    if (lockId == null && availableLocks.Count != 0)
-                        lockId = availableLocks.Dequeue();
-                    if (lockId == null)
-                        continue;
-
-                    var keyType = rng.NextOf(pair.AllowedLocks);
-                    var doorLock = new DoorLock(lockId.Value, keyType);
-                    var doorLockA = doorLock;
-                    var doorLockB = doorLock;
-
-                    // Work around for key randomizer complaining about requirements on other side of blocked door
-                    if (pair.A.Door.Kind == "unblock")
-                        doorLockB = new DoorLock(lockId.Value, 255);
-                    else if (pair.B.Door.Kind == "unblock")
-                        doorLockA = new DoorLock(lockId.Value, 255);
-
-                    SetDoorLock(modBuilder, pair.A, doorLockA);
-                    SetDoorLock(modBuilder, pair.B, doorLockB);
-                    numLocks++;
-                }
-            }
-        }
-
-        private void SetDoorLock(ModBuilder modBuilder, DoorInfo doorInfo, DoorLock? doorLock)
-        {
-            var doorId = (byte)(doorInfo.Door.Id ?? 0);
-            foreach (var rdtId in doorInfo.Room.Rdts ?? [])
-            {
-                modBuilder.SetDoorLock(new RdtItemId(rdtId, doorId), doorLock);
-            }
-            if (doorLock == null)
-            {
-                doorInfo.Door.LockId = null;
-                doorInfo.Door.Requires2 = [];
-            }
-            else
-            {
-                doorInfo.Door.LockId = (byte)doorLock.Value.Id;
-                if (doorLock.Value.KeyItemId == 255)
-                    doorInfo.Door.Requires2 = [];
-                else
-                    doorInfo.Door.Requires2 = [$"item({doorLock.Value.KeyItemId})"];
-            }
-        }
-
-        [DebuggerDisplay("({A}, {B})")]
-        private readonly struct DoorPair(DoorInfo a, DoorInfo b)
-        {
-            public DoorInfo A => a;
-            public DoorInfo B => b;
-
-            public byte? LockId => A.Door.LockId ?? B.Door.LockId;
-            public int[] AllowedLocks => A.Door.AllowedLocks ?? B.Door.AllowedLocks ?? [];
-            public bool Restricted => AllowedLocks.Length == 0;
-
-            public string Identity { get; } = $"{a.Identity} <-> {b.Identity}";
-
-            public override int GetHashCode() => Identity.GetHashCode();
-            public override bool Equals(object obj) => obj is DoorPair dp && Identity == dp.Identity;
-        }
-
-        [DebuggerDisplay("{Identity}")]
-        private readonly struct DoorInfo(string roomKey, MapRoom room, MapRoomDoor door)
-        {
-            public string RoomKey => roomKey;
-            public MapRoom Room => room;
-            public MapRoomDoor Door => door;
-
-            public string Identity { get; } = $"{roomKey}:{door.Id}";
-
-            public override int GetHashCode() => Identity.GetHashCode();
-            public override bool Equals(object obj) => obj is DoorInfo di && Identity == di.Identity;
         }
     }
 }
