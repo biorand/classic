@@ -482,6 +482,10 @@ namespace IntelOrca.Biohazard.BioRand
 
             var ink = context.Configuration.GetValueOrDefault("ink/enable", "Never");
             var value = (byte)(ink == "Always" ? 0 : 1);
+            if (value == 1 && player == 0)
+            {
+                throw new RandomizerUserException("Disabling ink ribbon requirement for Chris currently not implemented.");
+            }
             gameData.GetRdt(RdtId.Parse("106"))?.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x05, [0, 123, value]));
 
             EnableMoreJillItems();
