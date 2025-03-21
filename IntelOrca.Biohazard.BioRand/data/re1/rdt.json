@@ -3224,16 +3224,17 @@
           "name": "LIFT TO LAB",
           "id": 0,
           "target": "50D:1",
-          "kind": "blocked",
           "noUnlock": true
         },
         {
           "name": "DOOR TO FOUNTAIN",
           "create": true,
           "id": 8,
+          "target": "305:0",
+          "kind": "locked",
+          "lockId": 2,
           "texture": 3,
           "special": 6,
-          "target": "305:0",
           "entrance": {
             "x": 28350,
             "y": 0,
@@ -3258,7 +3259,8 @@
           "globalId": 73,
           "type": 42,
           "amount": 1,
-          "group": -1
+          "group": -1,
+          "optional": true
         }
       ],
       "enemies": [
@@ -3332,6 +3334,8 @@
           "name": "DOOR TO HELIPORT",
           "id": 0,
           "target": "303:8",
+          "kind": "locked",
+          "lockId": 2,
           "entrance": {
             "x": 3130,
             "y": 0,
@@ -5261,7 +5265,6 @@
         {
           "id": 1,
           "target": "303:0",
-          "kind": "noreturn",
           "noUnlock": true,
           "randomize": false
         }
@@ -5420,7 +5423,7 @@
           "globalId": 95,
           "type": 55,
           "amount": 2,
-          "group": 32,
+          "group": 512,
           "doorRando": false
         },
         {
@@ -5430,7 +5433,7 @@
           "type": 55,
           "amount": 2,
           "optional": true,
-          "group": 32,
+          "group": 512,
           "doorRando": true
         },
         {

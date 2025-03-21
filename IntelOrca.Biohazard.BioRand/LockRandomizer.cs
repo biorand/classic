@@ -214,27 +214,37 @@ namespace IntelOrca.Biohazard.BioRand
             var modBuilder = context.ModBuilder;
             foreach (var doorInfo in doors)
             {
-                if (doorInfo.Door.NoUnlock)
+                var door = doorInfo.Door;
+                if (door.NoUnlock)
                     continue;
 
-                if (doorInfo.Door.Id is not int doorId)
+                if (door.Id is not int doorId)
                     continue;
 
+                var doorLockId = door.LockId ?? 0;
                 var doorLock = (DoorLock?)null;
-                if (doorInfo.Door.Target == null)
+                if (door.Target == null)
                 {
                     doorLock = new DoorLock(255, 255);
                 }
+                else if (door.Kind == "locked")
+                {
+                    doorLock = new DoorLock(doorLockId, 255);
+                }
+                else if (door.Kind == "locked")
+                {
+                    doorLock = new DoorLock(doorLockId, 254);
+                }
                 else
                 {
-                    var requirement = doorInfo.Door.Requirements
+                    var requirement = door.Requirements
                         .Where(x => x.Kind == MapRequirementKind.Item)
                         .Select(x => (int?)int.Parse(x.Value))
                         .FirstOrDefault();
 
                     if (requirement is int keyItemId)
                     {
-                        doorLock = new DoorLock(doorInfo.Door.LockId ?? 0, keyItemId);
+                        doorLock = new DoorLock(doorLockId, keyItemId);
                     }
                 }
 

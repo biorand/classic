@@ -112,14 +112,22 @@ namespace IntelOrca.Biohazard.BioRand
                     //     Type = "switch",
                     //     Default = false
                     // },
-                    // new RandomizerConfigurationDefinition.GroupItem()
-                    // {
-                    //     Id = "progression/lab/tyrant",
-                    //     Label = "Mandatory Tyrant 1",
-                    //     Description = "Tyrant 1 must be defeated to complete the randomizer. If disabled, it may optional for some seeds.",
-                    //     Type = "switch",
-                    //     Default = false
-                    // }
+                    new RandomizerConfigurationDefinition.GroupItem()
+                    {
+                        Id = "progression/lab/tyrant",
+                        Label = "Mandatory Tyrant 1",
+                        Description = "Tyrant 1 must be defeated to complete the randomizer. If disabled, it may optional for some seeds.",
+                        Type = "switch",
+                        Default = false
+                    },
+                    new RandomizerConfigurationDefinition.GroupItem()
+                    {
+                        Id = "progression/heliport/tyrant",
+                        Label = "Mandatory Tyrant 2",
+                        Description = "Tyrant 2 must be defeated to complete the randomizer. If disabled, it may optional for some seeds.",
+                        Type = "switch",
+                        Default = false
+                    }
                 ]
             });
 
@@ -182,6 +190,18 @@ namespace IntelOrca.Biohazard.BioRand
                 map.Items.Remove(51);
             }
 
+            const int GROUP_ALL = -1;
+            const int GROUP_MANSION_1 = 1;
+            const int GROUP_MANSION_2 = 2;
+            const int GROUP_COURTYARD = 4;
+            const int GROUP_GUARDHOUSE = 8;
+            const int GROUP_CAVES = 16;
+            const int GROUP_LAB = 32;
+            const int GROUP_PLANT_42 = 64;
+            const int GROUP_SMALL_KEY = 128;
+            const int GROUP_BATTERY = 256;
+            const int GROUP_LAB_TYRANT = 512;
+
             // Enable / disable guardhouse rooms
             if (!config.GetValueOrDefault("progression/guardhouse", false))
             {
@@ -205,11 +225,13 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 var fountainRoom = map.Rooms["305"];
                 var fountainDoor = fountainRoom.Doors.First(x => x.Name == "DOOR TO HELIPORT");
-                fountainDoor.Target = null;
+                fountainDoor.Kind = "locked";
+                fountainDoor.AllowedLocks = [];
 
                 var helipadRoom = map.Rooms["303"];
                 var helipadDoor = helipadRoom.Doors.First(x => x.Name == "DOOR TO FOUNTAIN");
-                helipadDoor.Target = null;
+                helipadDoor.Kind = "unlock";
+                fountainDoor.AllowedLocks = [];
             }
             else
             {
@@ -222,6 +244,13 @@ namespace IntelOrca.Biohazard.BioRand
                 var fountainDoor = fountainRoom.Doors.First(x => x.Name == "FOUNTAIN STAIRS");
                 fountainDoor.Target = null;
                 fountainDoor.Requires2 = [];
+
+                var fountainToHeliportDoor = fountainRoom.Doors.First(x => x.Name == "DOOR TO HELIPORT");
+                fountainToHeliportDoor.Kind = null;
+
+                var helipadRoom = map.Rooms["303"];
+                var helipadToFountainDoor = helipadRoom.Doors.First(x => x.Name == "DOOR TO FOUNTAIN");
+                helipadToFountainDoor.Kind = null;
             }
 
             // Locks
@@ -238,9 +267,9 @@ namespace IntelOrca.Biohazard.BioRand
                     // Set all mansion 2 rooms to mansion 1
                     foreach (var item in map.Rooms.Values.SelectMany(x => x.Items ?? []))
                     {
-                        if (item.Group == 2)
+                        if (item.Group == GROUP_MANSION_2)
                         {
-                            item.Group = 1;
+                            item.Group = GROUP_MANSION_1;
                         }
                     }
 
@@ -275,7 +304,7 @@ namespace IntelOrca.Biohazard.BioRand
                         {
                             foreach (var i in r.Items ?? [])
                             {
-                                i.Group = 2;
+                                i.Group = GROUP_MANSION_2;
                             }
                             foreach (var d in r.Doors ?? [])
                             {
@@ -337,6 +366,7 @@ namespace IntelOrca.Biohazard.BioRand
                         if (otherDoor != null && (otherDoor.NoUnlock || otherDoor.AllowedLocks != null))
                             continue;
 
+                        d.Kind = null;
                         d.AllowedLocks = locks
                             .Where(x => x.SupportsRoom(r))
                             .Select(x => x.Key)
@@ -349,12 +379,13 @@ namespace IntelOrca.Biohazard.BioRand
             var keys = map.Items!.Values;
             var items = map.Rooms!.Values.SelectMany(x => x.Items).ToArray();
             var guardhouseKeys = keys.Where(x => x.Group == 8).ToArray();
-            var guardhouseItems = items.Where(x => x.Group == 8).ToArray();
-            var mansion2Items = items.Where(x => x.Group == 2).ToArray();
-            var labItems = items.Where(x => x.Group == 32).ToArray();
+            var guardhouseItems = items.Where(x => x.Group == GROUP_GUARDHOUSE).ToArray();
+            var mansion2Items = items.Where(x => x.Group == GROUP_MANSION_2).ToArray();
+            var labItems = items.Where(x => x.Group == GROUP_LAB).ToArray();
+            var tyrantItems = items.Where(x => x.Group == GROUP_LAB_TYRANT).ToArray();
 
             foreach (var item in items)
-                item.Group = -1;
+                item.Group = GROUP_ALL;
 
             if (config.GetValueOrDefault("progression/guardhouse", true) &&
                 config.GetValueOrDefault("progression/guardhouse/segmented", false))
@@ -366,28 +397,39 @@ namespace IntelOrca.Biohazard.BioRand
 
                 // Only guardhouse can contain guardhouse keys
                 foreach (var item in items)
-                    item.Group &= ~8;
+                    item.Group &= ~GROUP_GUARDHOUSE;
                 foreach (var item in guardhouseItems)
-                    item.Group = 8 | 128;
+                    item.Group = GROUP_GUARDHOUSE | GROUP_SMALL_KEY;
             }
 
             if (config.GetValueOrDefault("progression/mansion/split", false))
             {
                 // Mansion 2 (helmet key in plant 42)
                 foreach (var item in items)
-                    item.Group &= ~64;
+                    item.Group &= ~GROUP_PLANT_42;
                 var plant42item = map.Rooms!["40C"].Items.First(x => x.Name == "KEY IN FIREPLACE");
-                plant42item.Group = 64;
-                map.Items[mansion2keyType].Group = 64;
+                plant42item.Group = GROUP_PLANT_42;
+                map.Items[mansion2keyType].Group = GROUP_PLANT_42;
 
                 // Battery restricted to mansion 2 (and lab obviously)
                 foreach (var item in items)
-                    item.Group &= ~256;
-                map.Items[39].Group = 256;
+                    item.Group &= ~GROUP_BATTERY;
+                map.Items[39].Group = GROUP_BATTERY;
                 foreach (var item in mansion2Items)
-                    item.Group |= 256;
+                    item.Group |= GROUP_BATTERY;
                 foreach (var item in labItems)
-                    item.Group |= 256;
+                    item.Group |= GROUP_BATTERY;
+            }
+
+            if (config.GetValueOrDefault("progression/lab", true) &&
+                config.GetValueOrDefault("progression/lab/tyrant", false))
+            {
+                // To ensure player has to fight tyrant, place flare there
+                map.Items[42].Group = GROUP_LAB_TYRANT;
+                foreach (var item in items)
+                    item.Group &= ~GROUP_LAB_TYRANT;
+                foreach (var item in tyrantItems)
+                    item.Group = GROUP_LAB_TYRANT;
             }
 
             if (config.GetValueOrDefault("progression/caves/segmented", false))
@@ -502,6 +544,7 @@ namespace IntelOrca.Biohazard.BioRand
             DisableBarryEvesdrop();
             AllowPartnerItemBoxes();
             EnableFountainHeliportDoors();
+            ForceHelipadTyrant();
 
             void EnableMoreJillItems()
             {
@@ -743,6 +786,8 @@ namespace IntelOrca.Biohazard.BioRand
                 if (rdtFountain != null)
                 {
                     var door = (DoorAotSeOpcode)rdtFountain.Doors.First(x => x.Id == 0);
+                    door.LockId = 2;
+                    door.LockType = 255;
                     door.Special = 11;
                     door.Animation = 11;
                     door.NextX = 29130;
@@ -759,6 +804,8 @@ namespace IntelOrca.Biohazard.BioRand
                 {
                     var door = (DoorAotSeOpcode)rdtHeliport.ConvertToDoor(8, 11, null, null);
                     door.Target = RdtId.Parse("305");
+                    door.LockId = 2;
+                    door.LockType = 255;
                     door.Special = 11;
                     door.Animation = 11;
                     door.NextX = 3130;
@@ -777,6 +824,15 @@ namespace IntelOrca.Biohazard.BioRand
                         new UnknownOpcode(0, 0x08, [ 0x02, 0x04, 0x00 ]),
                         new UnknownOpcode(0, 0x03, [ 0x00 ])
                     ]);
+                }
+            }
+
+            void ForceHelipadTyrant()
+            {
+                if (context.Configuration.GetValueOrDefault("progression/heliport/tyrant", false))
+                {
+                    var room = gameData.GetRdt(RdtId.Parse("303"));
+                    room?.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [0, 43, 0]));
                 }
             }
         }
