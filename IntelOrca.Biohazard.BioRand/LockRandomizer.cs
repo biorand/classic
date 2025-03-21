@@ -23,7 +23,6 @@ namespace IntelOrca.Biohazard.BioRand
                 }
             }
 
-            LockNowhereDoors(context, doors);
             if (context.Configuration.GetValueOrDefault("locks/random", false))
             {
                 var rng = context.Rng.NextFork();
@@ -76,22 +75,6 @@ namespace IntelOrca.Biohazard.BioRand
                 }
             }
             return pairs;
-        }
-
-        private void LockNowhereDoors(IClassicRandomizerGeneratedVariation context, ImmutableArray<DoorInfo> doors)
-        {
-            foreach (var doorInfo in doors)
-            {
-                var door = doorInfo.Door;
-                if (door.Target == null)
-                {
-                    // Door doesn't go anywhere, lock it
-                    if (!door.NoUnlock)
-                    {
-                        AssignDoorLock(context.ModBuilder, doorInfo, new DoorLock(255, 255));
-                    }
-                }
-            }
         }
 
         private void KeepBoxRouteClear(IClassicRandomizerGeneratedVariation context, Rng rng, ImmutableArray<DoorInfo> doors)
@@ -234,18 +217,27 @@ namespace IntelOrca.Biohazard.BioRand
                 if (doorInfo.Door.NoUnlock)
                     continue;
 
-                var requirement = doorInfo.Door.Requirements
-                    .Where(x => x.Kind == MapRequirementKind.Item)
-                    .Select(x => (int?)int.Parse(x.Value))
-                    .FirstOrDefault();
+                if (doorInfo.Door.Id is not int doorId)
+                    continue;
 
                 var doorLock = (DoorLock?)null;
-                if (requirement is int keyItemId)
+                if (doorInfo.Door.Target == null)
                 {
-                    doorLock = new DoorLock(doorInfo.Door.LockId ?? 0, keyItemId);
+                    doorLock = new DoorLock(255, 255);
+                }
+                else
+                {
+                    var requirement = doorInfo.Door.Requirements
+                        .Where(x => x.Kind == MapRequirementKind.Item)
+                        .Select(x => (int?)int.Parse(x.Value))
+                        .FirstOrDefault();
+
+                    if (requirement is int keyItemId)
+                    {
+                        doorLock = new DoorLock(doorInfo.Door.LockId ?? 0, keyItemId);
+                    }
                 }
 
-                var doorId = doorInfo.Door.Id ?? 0;
                 foreach (var rdtId in doorInfo.Room.Rdts ?? [])
                 {
                     modBuilder.SetDoorLock(new RdtItemId(rdtId, (byte)doorId), doorLock);
