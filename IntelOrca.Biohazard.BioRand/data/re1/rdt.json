@@ -595,6 +595,7 @@
           "requires2": [
             "item(61)"
           ],
+          "lockId": 30,
           "group": 1
         },
         {
@@ -1482,6 +1483,7 @@
           "requires2": [
             "item(61)"
           ],
+          "lockId": 31,
           "group": 1
         },
         {
@@ -2826,6 +2828,7 @@
           "requires2": [
             "item(61)"
           ],
+          "lockId": 32,
           "group": 2
         }
       ],
@@ -3963,6 +3966,7 @@
           "requires2": [
             "item(61)"
           ],
+          "lockId": 33,
           "group": 8
         }
       ],
@@ -4192,6 +4196,7 @@
           "requires2": [
             "item(61)"
           ],
+          "lockId": 34,
           "group": 8
         },
         {
@@ -4390,7 +4395,9 @@
           "requires2": [
             "item(61)"
           ],
-          "group": 8
+          "lockId": 35,
+          "group": 8,
+          "optional": true // TODO get this working for Jill
         }
       ],
       "enemies": [
@@ -5301,8 +5308,7 @@
           "type": 47,
           "amount": 3,
           "hidden": true,
-          "group": 32,
-          "player": 0
+          "group": 32
         }
       ],
       "enemies": [

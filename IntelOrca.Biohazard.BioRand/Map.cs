@@ -294,6 +294,7 @@ namespace IntelOrca.Biohazard.BioRand
         public short? GlobalId { get; set; }
         public byte? Type { get; set; }
         public byte? Amount { get; set; }
+        public int? LockId { get; set; }
         public string? Link { get; set; }
         public string? Priority { get; set; }
         public int[]? Requires { get; set; }

@@ -256,10 +256,16 @@ namespace IntelOrca.Biohazard.BioRand
                         var numMansion2rooms = rng.Next(2, 9);
                         mansion2rooms = mansion2rooms.Take(numMansion2rooms).ToArray();
 
+                        var itemLockIds = map.Rooms.Values
+                            .SelectMany(x => x.Items ?? [])
+                            .Where(x => x.LockId != null)
+                            .Select(x => x.LockId!.Value)
+                            .ToArray();
                         var usedLockIds = map.Rooms.Values
                             .SelectMany(x => x.Doors ?? [])
                             .Where(x => x.LockId != null)
                             .Select(x => (int)x.LockId!.Value)
+                            .Concat(itemLockIds)
                             .ToHashSet();
                         var lockIds = Enumerable.Range(0, 63)
                             .Except(usedLockIds)

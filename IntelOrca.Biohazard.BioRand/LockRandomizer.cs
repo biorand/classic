@@ -158,13 +158,18 @@ namespace IntelOrca.Biohazard.BioRand
                 .Where(x => x.Restricted)
                 .ToHashSet();
 
+            var itemLockIds = context.Variation.Map.Rooms.Values
+                .SelectMany(x => x.Items ?? [])
+                .Where(x => x.LockId != null)
+                .Select(x => x.LockId!.Value)
+                .ToArray();
             var reservedLockIds = restrictedPairs
                 .Where(x => x.LockId != null)
-                .Select(x => x.LockId!)
+                .Select(x => (int)x.LockId!)
+                .Concat(itemLockIds)
                 .ToHashSet();
 
             var availableLocks = Enumerable.Range(0, 63)
-                .Select(static x => (byte)x)
                 .Where(x => !reservedLockIds.Contains(x))
                 .ToQueue();
 
@@ -182,7 +187,7 @@ namespace IntelOrca.Biohazard.BioRand
                 else
                 {
                     if (lockId == null && availableLocks.Count != 0)
-                        lockId = availableLocks.Dequeue();
+                        lockId = (byte)availableLocks.Dequeue();
                     if (lockId == null)
                         continue;
 
