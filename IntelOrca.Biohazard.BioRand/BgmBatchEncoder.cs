@@ -58,7 +58,7 @@ namespace IntelOrca.Biohazard.BioRand
         private static string GetOrCreateTempPath()
         {
             var tempConvertPath = Path.Combine(Path.GetTempPath(), "biorand", "convert");
-            Directory.CreateDirectory(Path.GetDirectoryName(tempConvertPath));
+            Directory.CreateDirectory(tempConvertPath);
             return tempConvertPath;
         }
 

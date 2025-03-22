@@ -552,6 +552,7 @@ namespace IntelOrca.Biohazard.BioRand
                         Default = true
                     });
                 }
+                group.Items = group.Items.OrderBy(x => x.Label).ToList();
             }
 
             controller.UpdateConfigDefinition(result);
