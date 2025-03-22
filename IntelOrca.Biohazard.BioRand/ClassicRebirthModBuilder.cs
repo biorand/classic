@@ -133,7 +133,7 @@ namespace IntelOrca.Biohazard.BioRand
             // block per file type. The file size is still just as small which is great!
 
             var sevenZipPath = Find7z() ?? throw new Exception("Unable to find 7z");
-            var psi = new ProcessStartInfo(sevenZipPath, $"a -r -mx9 -ms=e -mqs=on \"{outputPath}\" *")
+            var psi = new ProcessStartInfo(sevenZipPath, $"a -r -mx9 -ms=e -mqs=on -ms=2m \"{outputPath}\" *")
             {
                 CreateNoWindow = true,
                 RedirectStandardOutput = true,

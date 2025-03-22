@@ -523,7 +523,37 @@ namespace IntelOrca.Biohazard.BioRand
                 }
             }
 
-            // page = result.CreatePage("Music");
+            page = result.CreatePage("Music");
+            group = page.CreateGroup("");
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = $"music/random",
+                Label = $"Randomize Music",
+                Description = "Randomizes all the background music in the game. Warning: This increases the download size considerably.",
+                Type = "switch",
+                Default = false
+            });
+
+            group = page.CreateGroup("Games");
+            foreach (var basePath in dataManager.BasePaths)
+            {
+                var bgmDir = Path.Combine(basePath, "bgm");
+                if (!Directory.Exists(bgmDir))
+                    continue;
+
+                foreach (var gameDir in Directory.GetDirectories(bgmDir))
+                {
+                    var game = Path.GetFileName(gameDir);
+                    group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+                    {
+                        Id = $"music/game/{game}",
+                        Label = game.ToUpper(),
+                        Type = "switch",
+                        Default = true
+                    });
+                }
+            }
+
             controller.UpdateConfigDefinition(result);
             return result;
 
@@ -644,6 +674,11 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 var enemyRandomizer = new EnemyRandomizer();
                 enemyRandomizer.Randomize(generatedVariation);
+            }
+            if (context.Configuration.GetValueOrDefault("music/random", false))
+            {
+                var musicRandomizer = new MusicRandomizer();
+                musicRandomizer.Randomize(generatedVariation);
             }
             return generatedVariation;
         }
@@ -1654,15 +1689,94 @@ namespace IntelOrca.Biohazard.BioRand
         }
     }
 
+    internal class MusicRandomizer
+    {
+        public void Randomize(IClassicRandomizerGeneratedVariation context)
+        {
+            var rng = context.Rng.NextFork();
+            var modBuilder = context.ModBuilder;
+            var config = context.Configuration;
+            var fullList = GetFullList(context.DataManager);
+            var allowList = fullList
+                .Where(x => config.GetValueOrDefault($"music/game/{x.Game}", false))
+                .GroupBy(x => x.Tag)
+                .ToDictionary(x => x.Key, x => x.ToEndlessBag(rng));
+
+            var bgmMap = context.DataManager.GetJson<Dictionary<string, ImmutableArray<string>>>(BioVersion.Biohazard1, "bgm.json");
+            foreach (var kvp in bgmMap)
+            {
+                var tag = kvp.Key;
+                var musicFiles = kvp.Value;
+                if (!allowList.TryGetValue(tag, out var bag))
+                    continue;
+
+                foreach (var m in musicFiles)
+                {
+                    if (m.StartsWith("!"))
+                        continue;
+                    var mm = m.StartsWith("*") ? m[1..] : m;
+                    modBuilder.SetMusic(mm, bag.Next());
+                }
+            }
+        }
+
+        private static ImmutableArray<MusicSourceFile> GetFullList(DataManager dataManager)
+        {
+            var files = ImmutableArray.CreateBuilder<MusicSourceFile>();
+            foreach (var basePath in dataManager.BasePaths)
+            {
+                var bgmDir = Path.Combine(basePath, "bgm");
+                if (!Directory.Exists(bgmDir))
+                    continue;
+
+                foreach (var gameDir in Directory.GetDirectories(bgmDir))
+                {
+                    var game = Path.GetFileName(gameDir);
+                    foreach (var tagDir in Directory.GetDirectories(gameDir))
+                    {
+                        var tag = Path.GetFileName(tagDir);
+
+                        var bgmFile = Directory.GetFiles(tagDir, "*", SearchOption.AllDirectories);
+                        foreach (var subFile in bgmFile)
+                        {
+                            if (!SupportedMusicExtension(subFile))
+                                continue;
+
+                            files.Add(new MusicSourceFile(subFile, game, tag));
+                        }
+                    }
+
+                }
+            }
+            return files.ToImmutable();
+        }
+
+        private static readonly ImmutableArray<string> g_supportedExtensions = [".ogg", ".wav"];
+        private static bool SupportedMusicExtension(string path)
+        {
+            return g_supportedExtensions.Any(x => path.EndsWith(".ogg", StringComparison.OrdinalIgnoreCase));
+        }
+    }
+
+    [DebuggerDisplay("[{Game}, {Tag}, {Path}]")]
+    internal class MusicSourceFile(string path, string game, string tag)
+    {
+        public string Path => path;
+        public string Game => game;
+        public string Tag => tag;
+    }
+
     internal class ModBuilder
     {
         private readonly Dictionary<RdtItemId, DoorLock?> _doorLock = new();
         private readonly Dictionary<int, Item> _itemMap = new();
         private readonly List<EnemyPlacement> _enemyPlacements = new();
+        private readonly Dictionary<string, MusicSourceFile> _music = new(StringComparer.OrdinalIgnoreCase);
 
         public ImmutableArray<RandomInventory> Inventory { get; set; } = [];
         public ImmutableArray<int> AssignedItemGlobalIds => [.. _itemMap.Keys];
         public ImmutableArray<EnemyPlacement> EnemyPlacements => [.. _enemyPlacements];
+        public ImmutableDictionary<string, MusicSourceFile> Music => _music.ToImmutableDictionary();
 
         public void SetDoorTarget(RdtItemId doorIdentity, RdtItemId target)
         {
@@ -1846,6 +1960,11 @@ namespace IntelOrca.Biohazard.BioRand
                 }
             }
             return (default, "", "");
+        }
+
+        public void SetMusic(string path, MusicSourceFile music)
+        {
+            _music[path] = music;
         }
 
         private readonly struct PlacedItem(int globalId, Item item, MapItemDefinition? definition)

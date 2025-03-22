@@ -1,97 +1,86 @@
 {
   "basement": [
-    "BGM_1A"
+    "sound/BGM_1A.WAV"
   ],
   "countdown": [
-    "BGM_30"
+    "sound/BGM_30.WAV"
   ],
   "safe": [
-    "BGM_31"
+    "sound/BGM_31.WAV"
   ],
   "creepy": [
-    "!BGM_1A",
-    "BGM_00",
-    "BGM_0A",
-    "BGM_0E",
-    "BGM_1B",
-    "BGM_1C",
-    "BGM_1D",
-    "BGM_1E",
-    "BGM_02",
-    "BGM_2D",
-    "BGM_2E",
-    "BGM_3A",
-    "BGM_3E",
-    "BGM_07",
-    "BGM_09",
-    "BGM_14",
-    "BGM_15",
-    "BGM_16",
-    "BGM_17",
-    "BGM_18",
-    "BGM_19",
-    "BGM_20",
-    "BGM_32",
-    "BGM_33",
-    "BGM_34",
-    "BGM_36",
-    "BGM_37",
-    "BGM_49",
-    "BGM_2B",
+    "sound/BGM_00.WAV",
+    "sound/BGM_0A.WAV",
+    "sound/BGM_0E.WAV",
+    "sound/BGM_1B.WAV",
+    "sound/BGM_1C.WAV",
+    "sound/BGM_1D.WAV",
+    "sound/BGM_1E.WAV",
+    "sound/BGM_02.WAV",
+    "sound/BGM_2D.WAV",
+    "sound/BGM_2E.WAV",
+    "sound/BGM_3A.WAV",
+    "sound/BGM_3E.WAV",
+    "sound/BGM_07.WAV",
+    "sound/BGM_09.WAV",
+    "sound/BGM_14.WAV",
+    "sound/BGM_15.WAV",
+    "sound/BGM_16.WAV",
+    "sound/BGM_17.WAV",
+    "sound/BGM_18.WAV",
+    "sound/BGM_19.WAV",
+    "sound/BGM_20.WAV",
+    "sound/BGM_32.WAV",
+    "sound/BGM_33.WAV",
+    "sound/BGM_34.WAV",
+    "sound/BGM_36.WAV",
+    "sound/BGM_37.WAV",
+    "sound/BGM_49.WAV",
+    "sound/BGM_2B.WAV",
 
     // Ambient
-    "*SE_03",
-    "*SE_3C",
-    "*SE_44",
-    "*SE_46",
+    "sound/SE_03.WAV",
+    "sound/SE_3C.WAV",
+    "sound/SE_44.WAV",
+    "sound/SE_46.WAV",
 
     // Alarm
-    "*SE_50"
+    "sound/SE_50.WAV"
   ],
   "calm": [
-    "!BGM_31",
-    "BGM_0C",
-    "BGM_3F",
-    "BGM_13",
-    "BGM_56"
+    "sound/BGM_0C.WAV",
+    "sound/BGM_3F.WAV",
+    "sound/BGM_13.WAV",
+    "sound/BGM_56.WAV"
   ],
   "danger": [
-    "BGM_0F",
-    "BGM_2C",
-    "BGM_3D",
-    "BGM_04",
-    "BGM_05",
-    "BGM_23",
-    "BGM_29",
-    "BGM_38"
+    "sound/BGM_0F.WAV",
+    "sound/BGM_2C.WAV",
+    "sound/BGM_3D.WAV",
+    "sound/BGM_04.WAV",
+    "sound/BGM_05.WAV",
+    "sound/BGM_23.WAV",
+    "sound/BGM_29.WAV",
+    "sound/BGM_38.WAV"
   ],
   "boss": [
-    "BGM_28",
-    "BGM_57",
-    "BGM_08",
-    "BGM_24",
-    "BGM_24A",
-    "BGM_24B",
-    "BGM_25"
+    "sound/BGM_28.WAV",
+    "sound/BGM_57.WAV",
+    "sound/BGM_08.WAV",
+    "sound/BGM_24.WAV",
+    "sound/BGM_24A.WAV",
+    "sound/BGM_24B.WAV",
+    "sound/BGM_25.WAV"
   ],
   "instrument_bad": [
-    "*BGM_10",
-    "*BGM_12",
-    "!BGM_0F",
-    "!BGM_2C"
+    "sound/BGM_10.WAV",
+    "sound/BGM_12.WAV"
   ],
   "instrument_progress": [
-    "*BGM_1F",
-    "*BGM_11",
-    "!BGM_2D",
-    "!BGM_37",
-    "!BGM_2E",
-    "!BGM_3F"
+    "sound/BGM_1F.WAV",
+    "sound/BGM_11.WAV"
   ],
   "instrument_good": [
-    "*BGM_2B",
-    "!BGM_3B",
-    "!BGM_0C",
-    "!BGM_2E"
+    "sound/BGM_2B.WAV"
   ]
 }

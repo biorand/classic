@@ -1021,6 +1021,7 @@ namespace IntelOrca.Biohazard.BioRand
             AddInventoryXml(context, crModBuilder);
             AddEnemySkins(context, crModBuilder);
             AddBackgroundTextures(context, crModBuilder);
+            AddMusic(context, crModBuilder);
         }
 
         private void WriteRdts(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
@@ -1352,6 +1353,15 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
+        private void AddMusic(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
+        {
+            var bgmTable = context.DataManager.GetData(BioVersion.Biohazard1, "bgm_tbl.xml");
+            crModBuilder.SetFile("bgm_tbl.xml", bgmTable);
+
+            var encoder = new BgmBatchEncoder();
+            encoder.Process(context.ModBuilder, crModBuilder);
+        }
+
         private void AddMiscXml(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
         {
             var miscTable = context.DataManager.GetData(BioVersion.Biohazard1, "misc.xml");
@@ -1360,9 +1370,6 @@ namespace IntelOrca.Biohazard.BioRand
 
         private void AddSoundXml(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
         {
-            var bgmTable = context.DataManager.GetData(BioVersion.Biohazard1, "bgm_tbl.xml");
-            crModBuilder.SetFile("bgm_tbl.xml", bgmTable);
-
             var xml = context.DataManager.GetText(BioVersion.Biohazard1, "sounds.xml");
             var doc = new XmlDocument();
             doc.LoadXml(xml);
