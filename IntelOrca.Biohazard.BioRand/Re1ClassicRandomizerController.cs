@@ -376,7 +376,7 @@ namespace IntelOrca.Biohazard.BioRand
                             continue;
 
                         var otherDoor = map.GetOtherSide(d);
-                        if (otherDoor != null && (otherDoor.NoUnlock || otherDoor.AllowedLocks != null))
+                        if (otherDoor == null || otherDoor.NoUnlock || otherDoor.AllowedLocks != null)
                             continue;
 
                         d.Kind = null;
@@ -384,6 +384,9 @@ namespace IntelOrca.Biohazard.BioRand
                             .Where(x => x.SupportsRoom(r))
                             .Select(x => x.Key)
                             .ToArray();
+
+                        otherDoor.Kind = null;
+                        otherDoor.AllowedLocks = d.AllowedLocks;
                     }
                 }
             }
