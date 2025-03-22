@@ -137,9 +137,13 @@ namespace IntelOrca.Biohazard.BioRand
                 var stdoutReadTask = process.StandardOutput.ReadToEndAsync();
                 var stderrReadTask = process.StandardError.ReadToEndAsync();
 
+                var stdout = await stdoutReadTask;
+                var stderr = await stderrReadTask;
+                var stdouterr = string.Join("\n", stdout, stderr);
+
                 var exitCode = process.HasExited ? process.ExitCode : await tcs.Task;
                 if (exitCode != 0)
-                    throw new Exception("Failed to create 7z");
+                    throw new Exception($"Failed to run ffmpeg, exit code {exitCode}\n" + stdouterr);
             }
 
             public static bool IsSupported()
