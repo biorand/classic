@@ -143,7 +143,10 @@ namespace IntelOrca.Biohazard.BioRand
 
                 var exitCode = process.HasExited ? process.ExitCode : await tcs.Task;
                 if (exitCode != 0)
+                {
+                    Console.Error.WriteLine(stdouterr);
                     throw new Exception($"Failed to run ffmpeg, exit code {exitCode}\n" + stdouterr);
+                }
             }
 
             public static bool IsSupported()
