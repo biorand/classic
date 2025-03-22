@@ -206,9 +206,9 @@ namespace IntelOrca.Biohazard.BioRand
             const int GROUP_ALL = -1;
             const int GROUP_MANSION_1 = 1;
             const int GROUP_MANSION_2 = 2;
-            const int GROUP_COURTYARD = 4;
+            // const int GROUP_COURTYARD = 4;
             const int GROUP_GUARDHOUSE = 8;
-            const int GROUP_CAVES = 16;
+            // const int GROUP_CAVES = 16;
             const int GROUP_LAB = 32;
             const int GROUP_PLANT_42 = 64;
             const int GROUP_SMALL_KEY = 128;
