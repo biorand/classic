@@ -95,7 +95,7 @@ namespace IntelOrca.Biohazard.BioRand
                 var next = r.Next;
                 if (next.Length == 0)
                 {
-                    if (r.Tail.Tags?.Contains("box") == true)
+                    if (r.Tail.HasTag(MapTags.Box) == true)
                     {
                         final.Add(r);
                     }

@@ -666,7 +666,7 @@
         {
           "id": 3,
           "target": "105:0",
-          "noUnlock": true,
+          "tags": [ "prologue" ],
           "randomize": false
         },
         {
@@ -741,13 +741,13 @@
         {
           "id": 0,
           "target": "104:3",
-          "noUnlock": true,
+          "tags": [ "prologue" ],
           "randomize": false
         },
         {
           "id": 1,
           "target": "106:2",
-          "noUnlock": true,
+          "tags": [ "prologue" ],
           "randomize": false
         }
       ],
@@ -851,7 +851,7 @@
         {
           "id": 2,
           "target": "105:1",
-          "noUnlock": true,
+          "tags": [ "prologue" ],
           "randomize": false
         },
         {

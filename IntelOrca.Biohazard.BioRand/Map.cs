@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.Json;
@@ -157,7 +158,6 @@ namespace IntelOrca.Biohazard.BioRand
     {
         public string? Name { get; set; }
         public string? LinkedRoom { get; set; }
-        public string[]? Tags { get; set; }
         public RdtId[]? Rdts { get; set; }
         public int[]? Requires { get; set; }
         public MapRoomDoor[]? Doors { get; set; }
@@ -209,20 +209,6 @@ namespace IntelOrca.Biohazard.BioRand
                 Enemies = Enemies?.Where(x => x.IsIncludedInFilter(filter)).ToArray() ?? [],
                 Npcs = Npcs
             };
-        }
-
-        public bool HasTag(string tag)
-        {
-            if (Tags == null)
-                return false;
-            return Tags.Contains(tag);
-        }
-
-        public bool HasAnyTag(IEnumerable<string> tags)
-        {
-            if (Tags == null)
-                return false;
-            return Tags.Any(x => tags.Contains(x));
         }
     }
 
@@ -404,6 +390,7 @@ namespace IntelOrca.Biohazard.BioRand
 
     public abstract class MapFilterable
     {
+        public ImmutableArray<string> Tags { get; set; } = [];
         public bool? DoorRando { get; set; }
         public int? Player { get; set; }
         public int? Scenario { get; set; }
@@ -418,6 +405,9 @@ namespace IntelOrca.Biohazard.BioRand
                 return false;
             return true;
         }
+
+        public bool HasTag(string tag) => Tags.Contains(tag);
+        public bool HasAnyTag(IEnumerable<string> tags) => Tags.Any(x => tags.Contains(x));
     }
 
     public readonly struct MapFilter

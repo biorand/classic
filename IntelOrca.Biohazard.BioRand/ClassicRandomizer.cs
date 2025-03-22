@@ -1491,11 +1491,11 @@ namespace IntelOrca.Biohazard.BioRand
                 // Get a list of room tags where we don't want enemies
                 var banTags = new List<string>();
                 if (!config.GetValueOrDefault("enemies/box", false))
-                    banTags.Add("box");
+                    banTags.Add(MapTags.Box);
                 if (!config.GetValueOrDefault("enemies/safe", false))
-                    banTags.Add("safe");
+                    banTags.Add(MapTags.Safe);
                 if (!config.GetValueOrDefault("enemies/save", false))
-                    banTags.Add("save");
+                    banTags.Add(MapTags.Save);
 
                 // Gather the types of enemies we can use
                 var enemyInfo = new List<EnemyInfo>();
@@ -1524,8 +1524,7 @@ namespace IntelOrca.Biohazard.BioRand
                         continue;
 
                     var supportedEnemies = enemyInfo.Where(x => SupportsEnemy(kvp.Value, x)).ToImmutableArray();
-                    var roomTags = kvp.Value.Tags ?? [];
-                    if (roomTags.Any(banTags.Contains))
+                    if (kvp.Value.HasAnyTag(banTags))
                     {
                         supportedEnemies = [];
                     }

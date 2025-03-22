@@ -190,6 +190,19 @@ namespace IntelOrca.Biohazard.BioRand
                 map.Items.Remove(51);
             }
 
+            // Ensure doors required for prologue cutscenes are not locked
+            if (!context.Configuration.GetValueOrDefault("cutscenes/disable", false))
+            {
+                var prologueDoors = map.Rooms.Values
+                    .SelectMany(x => x.Doors)
+                    .Where(x => x.HasTag(MapTags.Prologue))
+                    .ToArray();
+                foreach (var d in prologueDoors)
+                {
+                    d.AllowedLocks = [];
+                }
+            }
+
             const int GROUP_ALL = -1;
             const int GROUP_MANSION_1 = 1;
             const int GROUP_MANSION_2 = 2;
@@ -458,15 +471,7 @@ namespace IntelOrca.Biohazard.BioRand
             public int Key => key;
             public List<string> Tags { get; set; } = [];
 
-            public bool SupportsRoom(MapRoom room)
-            {
-                if (Tags.Count == 0)
-                    return true;
-
-                var roomTags = room.Tags ?? [];
-                return roomTags.Any(Tags.Contains);
-            }
-
+            public bool SupportsRoom(MapRoom room) => Tags.Count == 0 || room.HasAnyTag(Tags);
             public override string ToString() => $"Key = {Name} Tags = [{string.Join(", ", Tags)}]";
         }
 
