@@ -12,6 +12,7 @@ public:
 
     void Read(uint32_t address, void* buffer, size_t len);
     void Write(uint32_t address, const void* buffer, size_t len);
+    void Nop(uint32_t address, uint32_t addressEnd);
 
     template<typename T>
     T Read(uint32_t address)

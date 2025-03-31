@@ -4400,8 +4400,7 @@
             "item(61)"
           ],
           "lockId": 35,
-          "group": 8,
-          "optional": true // TODO get this working for Jill
+          "group": 8
         }
       ],
       "enemies": [

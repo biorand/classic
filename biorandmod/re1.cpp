@@ -77,6 +77,7 @@ public:
         FixNeptuneDamage();
         FixYawnPoison();
         UpdateMixes();
+        RemoveDrawerInkHack();
     }
 
 private:
@@ -157,6 +158,11 @@ private:
     {
         auto mixData = (const ITEM_MIX_TABLE**)0x4CCC08;
         mixData[mixNum] = table;
+    }
+
+    void RemoveDrawerInkHack()
+    {
+        _mm.Nop(0x4563C0, 0x4563F7);
     }
 };
 
