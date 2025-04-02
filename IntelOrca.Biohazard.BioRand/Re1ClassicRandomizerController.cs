@@ -131,27 +131,27 @@ namespace IntelOrca.Biohazard.BioRand
                 ]
             });
 
-            // page = definition.Pages.First(x => x.Label == "Inventory");
-            // var group = page.Groups.First(x => x.Label == "Main");
-            // group.Items.AddRange([
-            //     new RandomizerConfigurationDefinition.GroupItem()
-            //     {
-            //         Id = "inventory/special/lockpick",
-            //         Label = "Lockpick",
-            //         Description = "Allows you to open locked drawers and sword key doors. Default will leave Jill with lockpick, Chris without.",
-            //         Type = "dropdown",
-            //         Options = ["Default", "Random", "Never", "Always"],
-            //         Default = "Default"
-            //     },
-            //     new RandomizerConfigurationDefinition.GroupItem()
-            //     {
-            //         Id = "inventory/size",
-            //         Label = "Size",
-            //         Description = "Control how many inventory slots you have. Default will leave Chris with 6 slots, Jill with 8.",
-            //         Type = "dropdown",
-            //         Options = ["Default", "Random", "6", "8"],
-            //         Default = "Default"
-            //     }]);
+            page = definition.Pages.First(x => x.Label == "Inventory");
+            var group = page.Groups.First(x => x.Label == "Main");
+            group.Items.AddRange([
+                new RandomizerConfigurationDefinition.GroupItem()
+                {
+                    Id = "inventory/special/lockpick",
+                    Label = "Lockpick",
+                    Description = "Allows you to open locked drawers and sword key doors. Default will leave Jill with lockpick, Chris without.",
+                    Type = "dropdown",
+                    Options = ["Default", "Random", "Never", "Always"],
+                    Default = "Default"
+                },
+                new RandomizerConfigurationDefinition.GroupItem()
+                {
+                    Id = "inventory/size",
+                    Label = "Size",
+                    Description = "Control how many inventory slots you have. Default will leave Chris with 6 slots, Jill with 8.",
+                    Type = "dropdown",
+                    Options = ["Default", "Random", "6", "8"],
+                    Default = "Default"
+                }]);
         }
 
         public Variation GetVariation(IClassicRandomizerContext context, string name)
@@ -182,7 +182,8 @@ namespace IntelOrca.Biohazard.BioRand
             }
 
             // Lockpick, remove all sword key and small key requirements
-            if (playerIndex == 1)
+            var enableLockpick = context.Configuration.GetValueOrDefault("inventory/special/lockpick", "Always") == "Always";
+            if (enableLockpick)
             {
                 var allEdges = map.Rooms.SelectMany(x => x.Value.AllEdges).ToArray();
                 foreach (var edge in allEdges)
@@ -194,9 +195,6 @@ namespace IntelOrca.Biohazard.BioRand
                             .ToArray();
                     }
                 }
-
-                // Remove sword key item for Jill so lock rando doesn't try to use it
-                map.Items.Remove(51);
             }
 
             // Ensure doors required for prologue cutscenes are not locked
@@ -336,6 +334,7 @@ namespace IntelOrca.Biohazard.BioRand
                                 d.AllowedLocks = [];
                                 d.Requires2 = [$"item({mansion2key.Key})"];
                                 d.LockId = (byte)lockIds.Dequeue();
+                                d.LockKey = mansion2key.Key;
 
                                 var otherDoor = map.GetOtherSide(d);
                                 if (otherDoor != null)
@@ -343,6 +342,7 @@ namespace IntelOrca.Biohazard.BioRand
                                     otherDoor.AllowedLocks = [];
                                     otherDoor.Requires2 = d.Requires2;
                                     otherDoor.LockId = d.LockId;
+                                    otherDoor.LockKey = d.LockKey;
                                 }
                             }
                         }
@@ -860,6 +860,7 @@ namespace IntelOrca.Biohazard.BioRand
             if (rdt == null)
                 return;
 
+            var enableLockpick = context.Configuration.GetValueOrDefault("inventory/special/lockpick", "Always") == "Always";
             if (player == 0)
             {
                 rdt.AdditionalOpcodes.AddRange(
@@ -874,6 +875,7 @@ namespace IntelOrca.Biohazard.BioRand
                         Set(1, 167, 0), // Init. dining room emblem state
                         Set(1, 171, 0), // Wesker cutscene after Plant 42
                         Set(0, 101, 0), // Jill in cell cutscene
+                        Set(0, 124, (byte)(enableLockpick ? 0 : 1)), // Lockpick
                         Set(0, 127, 0), // Pick up radio
                         Set(0, 192, 0) // Rebecca not saved
                     ]));
@@ -937,7 +939,7 @@ namespace IntelOrca.Biohazard.BioRand
                 rdt.AdditionalOpcodes.AddRange(
                     ScdCondition.Parse("1:0").Generate(BioVersion.Biohazard1, [
                         Set(0, 101, 0), // Chris in cell cutscene
-                        Set(0, 124, 0), // Lockpick
+                        Set(0, 124, (byte)(enableLockpick ? 0 : 1)), // Lockpick
                         Set(0, 127, 0), // Pick up radio
                         Set(1, 0, 0), // 106 first cutscene
                         Set(1, 2, 0), // 104 first zombie found

@@ -600,6 +600,28 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
+        private static string UpdateConfigNeverAlways(
+            Rng rng,
+            RandomizerConfiguration config,
+            string key,
+            string defaultValueChris,
+            string defaultValueJill)
+        {
+            var value = config.GetValueOrDefault(key, "Default")!;
+            if (value == "Default")
+            {
+                value = config.GetValueOrDefault("variation", "Chris") == "Chris"
+                    ? defaultValueChris
+                    : defaultValueJill;
+            }
+            else if (value == "Random")
+            {
+                value = rng.NextOf("Never", "Always");
+            }
+            config[key] = value;
+            return value;
+        }
+
         public RandomizerOutput Randomize(RandomizerInput input)
         {
             var dataManager = GetDataManager();
@@ -607,21 +629,15 @@ namespace IntelOrca.Biohazard.BioRand
             var rng = new Rng(input.Seed);
 
             var modifiedConfig = input.Configuration.Clone();
-            var ink = modifiedConfig.GetValueOrDefault("ink/enable", "Default");
-            if (ink == "Default")
-            {
-                ink = modifiedConfig.GetValueOrDefault("variation", "Chris") == "Chris" ? "Always" : "Never";
-            }
-            else if (ink == "Random")
-            {
-                ink = rng.NextOf("Never", "Always");
-            }
+            var ink = UpdateConfigNeverAlways(rng, modifiedConfig, "ink/enable", "Always", "Never");
             if (ink != "Always")
             {
                 modifiedConfig["inventory/ink/min"] = 0;
                 modifiedConfig["inventory/ink/max"] = 0;
                 modifiedConfig["items/distribution/ink"] = 0;
             }
+
+            UpdateConfigNeverAlways(rng, modifiedConfig, "inventory/special/lockpick", "Never", "Always");
 
             var context = new Context(modifiedConfig, dataManager, gameDataManager, rng);
             var generatedVariation = Randomize(context);

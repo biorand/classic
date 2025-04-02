@@ -546,6 +546,7 @@
           "id": 1,
           "target": "102:0",
           "lockId": 10,
+          "lockKey": 52,
           "requires2": [
             "item(52)"
           ]
@@ -641,6 +642,7 @@
           "id": 4,
           "target": "10E:0",
           "lockId": 11,
+          "lockKey": 51,
           "requires2": [
             "item(51)"
           ]
@@ -673,6 +675,7 @@
           "id": 1,
           "target": "10F:0",
           "lockId": 6,
+          "lockKey": 51,
           "requires2": [
             "item(51)"
           ]
@@ -862,6 +865,7 @@
           "id": 1,
           "target": "111:0",
           "lockId": 5,
+          "lockKey": 52,
           "requires2": [
             "item(52)"
           ]
@@ -990,6 +994,7 @@
           "id": 1,
           "target": "108:0",
           "lockId": 9,
+          "lockKey": 51,
           "requires2": [
             "item(51)"
           ]
@@ -1060,6 +1065,7 @@
           "id": 1,
           "target": "114:0",
           "lockId": 4,
+          "lockKey": 52,
           "requires2": [
             "item(52)"
           ]
@@ -1128,6 +1134,7 @@
           "id": 2,
           "target": "119:0",
           "lockId": 24,
+          "lockKey": 54,
           "requires2": [
             "item(54)"
           ]
@@ -1515,6 +1522,7 @@
           "id": 1,
           "target": "11C:0",
           "lockId": 48,
+          "lockKey": 56,
           "requires2": [
             "item(56)"
           ]
@@ -1973,6 +1981,7 @@
           "id": 2,
           "target": "215:0",
           "lockId": 12,
+          "lockKey": 54,
           "requires2": [
             "item(54)"
           ]
@@ -2066,6 +2075,7 @@
           "id": 1,
           "target": "205:0",
           "lockId": 14,
+          "lockKey": 52,
           "requires2": [
             "item(52)"
           ]
@@ -2084,6 +2094,7 @@
           "id": 4,
           "target": "20D:0",
           "lockId": 13,
+          "lockKey": 52,
           "requires2": [
             "item(52)"
           ]
@@ -2170,6 +2181,7 @@
         {
           "id": 1,
           "target": "208:1",
+          "lockKey": 52,
           "requires2": [
             "item(52)"
           ]
@@ -2342,6 +2354,7 @@
           "id": 5,
           "target": "20C:0",
           "lockId": 25,
+          "lockKey": 54,
           "requires2": [
             "item(54)"
           ]
@@ -2477,6 +2490,8 @@
         {
           "id": 2,
           "target": "210:0",
+          "lockId": 7,
+          "lockKey": 53,
           "requires2": [
             "item(53)"
           ]
@@ -2540,7 +2555,8 @@
       "doors": [
         {
           "id": 0,
-          "target": "20E:2"
+          "target": "20E:2",
+          "lockId": 7
         }
       ],
       "items": [
@@ -4100,6 +4116,7 @@
           "id": 1,
           "target": "406:0",
           "lockId": 41,
+          "lockKey": 57,
           "requires2": [
             "item(57)"
           ]
@@ -4273,6 +4290,7 @@
           "id": 2,
           "target": "40A:0",
           "lockId": 42,
+          "lockKey": 58,
           "requires2": [
             "item(58)"
           ]
@@ -4549,6 +4567,7 @@
           "id": 3,
           "target": "411:0",
           "lockId": 43,
+          "lockKey": 59,
           "requires2": [
             "item(59)"
           ]
@@ -4687,6 +4706,7 @@
           "id": 0,
           "target": "501:0",
           "lockId": 28,
+          "lockKey": 55,
           "requires2": [
             "item(55)"
           ]
@@ -4926,6 +4946,7 @@
           "id": 4,
           "target": "50C:0",
           "lockId": 29,
+          "lockKey": 60,
           "requires2": [
             "item(60)"
           ]

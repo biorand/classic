@@ -228,6 +228,7 @@ namespace IntelOrca.Biohazard.BioRand
         public bool? Randomize { get; set; }
         public string? Lock { get; set; }
         public byte? LockId { get; set; }
+        public int? LockKey { get; set; }
         public bool NoReturn { get; set; }
         public bool NoUnlock { get; set; }
         public bool IsBridgeEdge { get; set; }

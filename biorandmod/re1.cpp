@@ -96,6 +96,7 @@ public:
         FixYawnPoison();
         UpdateMixes();
         RemoveDrawerInkHack();
+        EnableChrisLockpick();
         IncreaseLockLimit();
     }
 
@@ -223,6 +224,12 @@ private:
     void RemoveDrawerInkHack()
     {
         _mm.Nop(0x4563C0, 0x4563F7);
+    }
+
+    void EnableChrisLockpick()
+    {
+        _mm.Nop(0x455BA4, 0x455BAF); // Allow Chris to use lockpick
+        _mm.Nop(0x455BCB, 0x455BD5); // Allow Jill to use sword key
     }
 
     void IncreaseLockLimit()

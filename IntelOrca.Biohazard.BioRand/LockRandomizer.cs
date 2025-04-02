@@ -125,6 +125,7 @@ namespace IntelOrca.Biohazard.BioRand
                 {
                     door.Requires2 = [];
                     door.LockId = null;
+                    door.LockKey = null;
 
                     var doorInfo = doors.First(x => x.Door == door);
                     AssignDoorLock(context.ModBuilder, doorInfo, null);
@@ -197,15 +198,16 @@ namespace IntelOrca.Biohazard.BioRand
             if (doorLock == null)
             {
                 doorInfo.Door.LockId = null;
+                doorInfo.Door.LockKey = null;
                 doorInfo.Door.Requires2 = [];
             }
             else
             {
                 doorInfo.Door.LockId = (byte)doorLock.Value.Id;
-                if (doorLock.Value.KeyItemId == 255)
-                    doorInfo.Door.Requires2 = [];
-                else
-                    doorInfo.Door.Requires2 = [$"item({doorLock.Value.KeyItemId})"];
+                doorInfo.Door.LockKey = doorLock.Value.KeyItemId;
+                doorInfo.Door.Requires2 = doorInfo.Door.LockKey == 255
+                    ? ([])
+                    : ([$"item({doorInfo.Door.LockKey})"]);
             }
         }
 
@@ -238,12 +240,7 @@ namespace IntelOrca.Biohazard.BioRand
                 }
                 else
                 {
-                    var requirement = door.Requirements
-                        .Where(x => x.Kind == MapRequirementKind.Item)
-                        .Select(x => (int?)int.Parse(x.Value))
-                        .FirstOrDefault();
-
-                    if (requirement is int keyItemId)
+                    if (door.LockKey is int keyItemId)
                     {
                         doorLock = new DoorLock(doorLockId, keyItemId);
                     }
