@@ -96,6 +96,7 @@ public:
         FixYawnPoison();
         UpdateMixes();
         RemoveDrawerInkHack();
+        EnableChrisNoInk();
         EnableChrisLockpick();
         IncreaseLockLimit();
     }
@@ -224,6 +225,12 @@ private:
     void RemoveDrawerInkHack()
     {
         _mm.Nop(0x4563C0, 0x4563F7);
+    }
+
+    void EnableChrisNoInk()
+    {
+        _mm.Nop(0x456659, 0x45666B);
+        _mm.Nop(0x456A90, 0x456A9B);
     }
 
     void EnableChrisLockpick()

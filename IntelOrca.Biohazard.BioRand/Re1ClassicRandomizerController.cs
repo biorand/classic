@@ -539,14 +539,6 @@ namespace IntelOrca.Biohazard.BioRand
             var randomDoors = context.Configuration.GetValueOrDefault("doors/random", false);
             var randomItems = context.Configuration.GetValueOrDefault("items/random", false);
 
-            var ink = context.Configuration.GetValueOrDefault("ink/enable", "Never");
-            var value = (byte)(ink == "Always" ? 0 : 1);
-            if (value == 1 && player == 0)
-            {
-                throw new RandomizerUserException("Disabling ink ribbon requirement for Chris currently not implemented.");
-            }
-            gameData.GetRdt(RdtId.Parse("106"))?.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x05, [0, 123, value]));
-
             EnableMoreJillItems();
             DisableDogWindows();
             DisableDogBoiler();
@@ -861,6 +853,7 @@ namespace IntelOrca.Biohazard.BioRand
                 return;
 
             var enableLockpick = context.Configuration.GetValueOrDefault("inventory/special/lockpick", "Always") == "Always";
+            var enableInk = context.Configuration.GetValueOrDefault("ink/enable", "Always") == "Always";
             if (player == 0)
             {
                 rdt.AdditionalOpcodes.AddRange(
@@ -875,6 +868,7 @@ namespace IntelOrca.Biohazard.BioRand
                         Set(1, 167, 0), // Init. dining room emblem state
                         Set(1, 171, 0), // Wesker cutscene after Plant 42
                         Set(0, 101, 0), // Jill in cell cutscene
+                        Set(0, 123, (byte)(enableInk ? 0 : 1)), // Ink
                         Set(0, 124, (byte)(enableLockpick ? 0 : 1)), // Lockpick
                         Set(0, 127, 0), // Pick up radio
                         Set(0, 192, 0) // Rebecca not saved
@@ -939,6 +933,7 @@ namespace IntelOrca.Biohazard.BioRand
                 rdt.AdditionalOpcodes.AddRange(
                     ScdCondition.Parse("1:0").Generate(BioVersion.Biohazard1, [
                         Set(0, 101, 0), // Chris in cell cutscene
+                        Set(0, 123, (byte)(enableInk ? 0 : 1)), // Ink
                         Set(0, 124, (byte)(enableLockpick ? 0 : 1)), // Lockpick
                         Set(0, 127, 0), // Pick up radio
                         Set(1, 0, 0), // 106 first cutscene
