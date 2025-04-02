@@ -58,7 +58,24 @@ static const ITEM_MIX_TABLE _blueHerbMix[] = {
     }
 };
 
-class RE1
+constexpr const char* SAVEDATA_MAGIC = "BIORAND";
+constexpr uint32_t CURRENT_SAVEDATA_VERSION = 1;
+
+struct CustomDataHeader
+{
+    uint8_t magic[8];
+    uint32_t version;
+};
+
+struct CustomData
+{
+    CustomDataHeader header;
+    uint32_t flag_locks[8];
+};
+
+static CustomData _customData;
+
+class RE1 : public REBase
 {
 private:
     MemoryManager _mm;
@@ -71,6 +88,7 @@ public:
 
     void Apply()
     {
+        InitCustomData();
         DisableDemo();
         FixFlamethrowerCombine();
         FixWasteHeal();
@@ -78,9 +96,51 @@ public:
         FixYawnPoison();
         UpdateMixes();
         RemoveDrawerInkHack();
+        IncreaseLockLimit();
+    }
+
+    void LoadGame(const uint8_t* src, size_t pos, size_t size) override
+    {
+        CustomDataHeader header;
+        std::memset(&header, 0, sizeof(header));
+
+        const uint8_t* customData = src + pos;
+        size_t customDataLen = std::min(sizeof(_customData), size - pos);
+        if (customDataLen >= sizeof(header))
+        {
+            std::memcpy(&header, customData, sizeof(header));
+        }
+
+        InitCustomData();
+        if (std::memcmp(header.magic, SAVEDATA_MAGIC, 8) != 0)
+        {
+            BioRandMessageBox("BioRand", "Save data is incompatible with BioRand.");
+        }
+        else if (header.version > CURRENT_SAVEDATA_VERSION)
+        {
+            BioRandMessageBox("BioRand", "Save data is incompatible with this version of BioRand.");
+        }
+        else
+        {
+            std::memcpy(&_customData, customData, customDataLen);
+            _customData.header.version = CURRENT_SAVEDATA_VERSION;
+        }
+    }
+
+    void SaveGame(uint8_t*& dst, size_t& size) override
+    {
+        dst = reinterpret_cast<uint8_t*>(&_customData);
+        size = sizeof(_customData);
     }
 
 private:
+    static void InitCustomData()
+    {
+        memset(&_customData, 0, sizeof(_customData));
+        memcpy(_customData.header.magic, SAVEDATA_MAGIC, 8);
+        _customData.header.version = CURRENT_SAVEDATA_VERSION;
+    }
+
     void DisableDemo()
     {
         uint8_t data[] = { 0x90, 0x90, 0x90, 0x90, 0x90, 0x90, 0x90 };
@@ -164,10 +224,38 @@ private:
     {
         _mm.Nop(0x4563C0, 0x4563F7);
     }
+
+    void IncreaseLockLimit()
+    {
+        _mm.Write<uint8_t>(0x455B4C, 0); // Disable 0x40 bit check (Rebecca no entry)
+        _mm.Write<uint8_t>(0x455B73, 0xFF); // Make it so 0 means unlocked, not ~0x80
+        _mm.Nop(0x455B7A, 0x455B7D); // Mask to remove lock and Rebecca bits (for check)
+        _mm.Nop(0x455C81, 0x455C83); // Mask to remove lock and Rebecca bits (for set)
+
+        // Store flags in a new location
+        auto flagAddress = _customData.flag_locks;
+        _mm.Write(0x417F83, flagAddress);
+        _mm.Write(0x418066, flagAddress);
+        _mm.Write(0x4520B5, flagAddress);
+        _mm.Write(0x4520D4, flagAddress);
+        _mm.Write(0x455B83, flagAddress);
+        _mm.Write(0x455C87, flagAddress);
+        _mm.Write(0x455FDF, flagAddress);
+        _mm.Write(0x4562CB, flagAddress);
+        _mm.Write(0x456483, flagAddress);
+
+        _mm.HookJmp(0x48DB4A, PostGameInit);
+    }
+
+    static void PostGameInit()
+    {
+        InitCustomData();
+    }
 };
 
-void init_re1(const MemoryManager& mm)
+std::unique_ptr<REBase> init_re1(const MemoryManager& mm)
 {
-    RE1 re1(mm);
-    re1.Apply();
+    auto result = std::make_unique<RE1>(mm);
+    result->Apply();
+    return result;
 }

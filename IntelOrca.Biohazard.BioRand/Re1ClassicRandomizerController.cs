@@ -172,6 +172,15 @@ namespace IntelOrca.Biohazard.BioRand
             var map = context.DataManager.GetJson<Map>(BioVersion.Biohazard1, "rdt.json");
             map = map.For(new MapFilter(false, (byte)playerIndex, 0));
 
+            // All original locks had 0x80 (some had 0x40 but we can ignore those)
+            foreach (var d in map.Rooms.Values.SelectMany(x => x.Doors))
+            {
+                if (d.LockId is byte lockId)
+                {
+                    d.LockId = (byte)(0x80 | lockId);
+                }
+            }
+
             // Lockpick, remove all sword key and small key requirements
             if (playerIndex == 1)
             {

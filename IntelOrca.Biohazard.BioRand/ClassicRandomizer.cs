@@ -146,7 +146,7 @@ namespace IntelOrca.Biohazard.BioRand
                 Type = "percent",
                 Step = 0.01,
                 Min = 0,
-                Max = 0.5,
+                Max = 1,
                 Default = 0.25
             });
 
@@ -1817,7 +1817,7 @@ namespace IntelOrca.Biohazard.BioRand
                     }
                     else
                     {
-                        doorOpcode.LockId = (byte)(doorLock.Value.Id | 0x80);
+                        doorOpcode.LockId = (byte)doorLock.Value.Id;
                         doorOpcode.LockType = (byte)doorLock.Value.KeyItemId;
                     }
                 }

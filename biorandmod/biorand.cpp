@@ -327,7 +327,14 @@ static void ModMain(HMODULE hExecutable)
     */
 }
 
+void BioRandMessageBox(const char* title, const char* body)
+{
+    MessageBoxA(NULL, body, title, MB_OK | MB_ICONEXCLAMATION);
+}
+
 #define DLL_EXPORT EXTERN_C __declspec(dllexport)
+
+static std::unique_ptr<REBase> _rebase;
 
 DLL_EXPORT void Modsdk_post_init()
 {
@@ -336,7 +343,7 @@ DLL_EXPORT void Modsdk_post_init()
     if (checkByte == 0x66)
     {
         // RE 1
-        init_re1(mm);
+        _rebase = init_re1(mm);
     }
     else if (checkByte == 0xE8)
     {
@@ -348,15 +355,21 @@ DLL_EXPORT void Modsdk_post_init()
     }
 }
 
-/*
 DLL_EXPORT void Modsdk_load(uint8_t* src, size_t pos, size_t size)
 {
+    if (_rebase != NULL)
+    {
+        _rebase->LoadGame(src, pos, size);
+    }
 }
 
 DLL_EXPORT void Modsdk_save(uint8_t*& dst, size_t& size)
 {
+    if (_rebase != NULL)
+    {
+        _rebase->SaveGame(dst, size);
+    }
 }
-*/
 
 BOOL WINAPI DllMain(HMODULE hModule, DWORD dwReason, LPVOID lpReserved)
 {

@@ -152,7 +152,7 @@ namespace IntelOrca.Biohazard.BioRand
                 .Concat(itemLockIds)
                 .ToHashSet();
 
-            var availableLocks = Enumerable.Range(0, 63)
+            var availableLocks = Enumerable.Range(1, 254)
                 .Where(x => !reservedLockIds.Contains(x))
                 .ToQueue();
 
@@ -215,9 +215,6 @@ namespace IntelOrca.Biohazard.BioRand
             foreach (var doorInfo in doors)
             {
                 var door = doorInfo.Door;
-                if (door.NoUnlock)
-                    continue;
-
                 if (door.Id is not int doorId)
                     continue;
 
@@ -234,6 +231,10 @@ namespace IntelOrca.Biohazard.BioRand
                 else if (door.Kind == "locked")
                 {
                     doorLock = new DoorLock(doorLockId, 254);
+                }
+                else if (door.NoUnlock)
+                {
+                    doorLock = new DoorLock(doorLockId, 0);
                 }
                 else
                 {

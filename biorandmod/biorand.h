@@ -1,6 +1,9 @@
 #pragma once
 
+#define _CRT_SECURE_NO_WARNINGS
+
 #include <cstdint>
+#include <memory>
 
 class MemoryManager
 {
@@ -13,6 +16,7 @@ public:
     void Read(uint32_t address, void* buffer, size_t len);
     void Write(uint32_t address, const void* buffer, size_t len);
     void Nop(uint32_t address, uint32_t addressEnd);
+    void HookJmp(uint32_t address, void* fn);
 
     template<typename T>
     T Read(uint32_t address)
@@ -29,4 +33,20 @@ public:
     }
 };
 
-void init_re1(const MemoryManager&);
+class REBase
+{
+public:
+    virtual void LoadGame(const uint8_t* src, size_t pos, size_t size)
+    {
+    }
+
+    virtual void SaveGame(uint8_t*& dst, size_t& size)
+    {
+        dst = nullptr;
+        size = 0;
+    }
+};
+
+std::unique_ptr<REBase> init_re1(const MemoryManager&);
+
+void BioRandMessageBox(const char* title, const char* body);

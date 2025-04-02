@@ -27,3 +27,9 @@ void MemoryManager::Nop(uint32_t address, uint32_t addressEnd)
         Write<uint8_t>(a, 0x90);
     }
 }
+
+void MemoryManager::HookJmp(uint32_t address, void* fn)
+{
+    Write<uint8_t>(address, 0xE9);
+    Write<uint32_t>(address + 1, reinterpret_cast<uint32_t>(fn) - address - 5);
+}
