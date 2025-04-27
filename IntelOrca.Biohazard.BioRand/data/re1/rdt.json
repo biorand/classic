@@ -666,12 +666,6 @@
           "kind": "locked"
         },
         {
-          "id": 3,
-          "target": "105:0",
-          "tags": [ "prologue" ],
-          "randomize": false
-        },
-        {
           "id": 1,
           "target": "10F:0",
           "lockId": 6,
@@ -684,7 +678,13 @@
           "id": 2,
           "target": "110:0",
           "lockId": 19,
-          "kind": "blocked"
+          "kind": "locked"
+        },
+        {
+          "id": 3,
+          "target": "105:0",
+          "tags": [ "prologue" ],
+          "randomize": false
         }
       ],
       "items": [

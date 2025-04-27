@@ -733,16 +733,36 @@ namespace IntelOrca.Biohazard.BioRand
                 foreach (var rdtId in new[] { "115", "515" })
                 {
                     var rdt115 = gameData.GetRdt(RdtId.Parse(rdtId));
+                    if (rdt115 == null)
+                        continue;
+
                     if (player == 0)
                     {
-                        rdt115?.Patches.Add(new KeyValuePair<int, byte>(0x22BC + 2, 1));
-                        rdt115?.Patches.Add(new KeyValuePair<int, byte>(0x22DE + 2, 1));
+                        rdt115.Patches.Add(new KeyValuePair<int, byte>(0x22BC + 2 + 128, 1));
+                        rdt115.Patches.Add(new KeyValuePair<int, byte>(0x22DE + 2 + 128, 1));
                     }
                     else
                     {
-                        rdt115?.Nop(0x2342);
+                        rdt115.Nop(0x2342);
+                    }
+
+                    // Fix locks (due to increased lock limit)
+                    foreach (var opcode in rdt115.Opcodes)
+                    {
+                        if (opcode is UnknownOpcode unk && unk.Opcode == 5)
+                        {
+                            unk.Data[1] += 128;
+                        }
                     }
                 }
+
+                // Unlock doors when in hall or living room
+                var rdt109 = gameData.GetRdt(RdtId.Parse("109"));
+                var rdt609 = gameData.GetRdt(RdtId.Parse("609"));
+                rdt109?.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [2, 128, 0]));
+                rdt609?.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [2, 128, 0]));
+                rdt116?.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [2, 129, 0]));
+                rdt516?.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [2, 129, 0]));
             }
 
             void DisablePoisonChallenge()

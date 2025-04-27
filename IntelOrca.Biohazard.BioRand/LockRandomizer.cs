@@ -230,7 +230,7 @@ namespace IntelOrca.Biohazard.BioRand
                 {
                     doorLock = new DoorLock(doorLockId, 255);
                 }
-                else if (door.Kind == "locked")
+                else if (door.Kind == "unlock")
                 {
                     doorLock = new DoorLock(doorLockId, 254);
                 }
