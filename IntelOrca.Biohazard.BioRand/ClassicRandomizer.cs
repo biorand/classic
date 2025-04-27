@@ -1895,14 +1895,25 @@ namespace IntelOrca.Biohazard.BioRand
             }
 
             mdb.Heading(1, "Doors");
-            mdb.Table("RDT", "ID", "ROOM", "DOOR", "LOCK", "REQUIRES");
+            mdb.Table("RDT", "ID", "ROOM", "DOOR", "TARGET", "LOCK", "REQUIRES");
             foreach (var r in map.Rooms)
             {
                 foreach (var d in r.Value.Doors ?? [])
                 {
                     var rdt = r.Value.Rdts.FirstOrDefault();
                     var requires = string.Join(", ", (d.Requires2 ?? []).Select(GetRequiresString));
-                    mdb.TableRow(rdt, (object?)d.Id ?? "", r.Value.Name ?? "", d.Name ?? "", d.LockId ?? 0, requires);
+                    if (requires == "")
+                    {
+                        if (d.Kind == "locked")
+                        {
+                            requires = "(locked)";
+                        }
+                        else if (d.Kind == "unlock")
+                        {
+                            requires = "(unlock)";
+                        }
+                    }
+                    mdb.TableRow(rdt, (object?)d.Id ?? "", r.Value.Name ?? "", d.Name ?? "", d.Target ?? "", d.LockId ?? 0, requires);
                 }
             }
 
