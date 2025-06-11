@@ -523,6 +523,42 @@ namespace IntelOrca.Biohazard.BioRand
                 }
             }
 
+            page = result.CreatePage("Protagonist");
+            group = page.CreateGroup("");
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = $"protagonist/random",
+                Label = $"Randomize Protagonist",
+                Description = "Randomizes the protagonist to one of the enabled characters.",
+                Type = "switch",
+                Default = false
+            });
+
+            group = page.CreateGroup("Characters");
+            foreach (var basePath in dataManager.BasePaths)
+            {
+                foreach (var pl in new[] { "pld0", "pld1" })
+                {
+                    var pldDir = Path.Combine(basePath, "re1", pl);
+                    if (!Directory.Exists(pldDir))
+                        continue;
+
+                    foreach (var characterDir in Directory.GetDirectories(pldDir))
+                    {
+                        var character = Path.GetFileName(characterDir);
+                        group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+                        {
+                            Id = $"protagonist/character/{character}",
+                            Label = character.ToActorString(),
+                            Type = "switch",
+                            Default = true
+                        });
+                    }
+                }
+                group.Items = group.Items.OrderBy(x => x.Label).ToList();
+            }
+
+
             page = result.CreatePage("Music");
             group = page.CreateGroup("");
             group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()

@@ -1048,6 +1048,7 @@ namespace IntelOrca.Biohazard.BioRand
             AddMiscXml(context, crModBuilder);
             AddSoundXml(context, crModBuilder);
             AddInventoryXml(context, crModBuilder);
+            AddProtagonistSkin(context, crModBuilder);
             AddEnemySkins(context, crModBuilder);
             AddBackgroundTextures(context, crModBuilder);
             AddMusic(context, crModBuilder);
@@ -1344,6 +1345,98 @@ namespace IntelOrca.Biohazard.BioRand
                     }
                 }
                 return playerNode;
+            }
+        }
+
+        private void AddProtagonistSkin(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
+        {
+            var playerIndex = context.Variation.PlayerIndex;
+            var (character, charPath) = GetRandomCharacter();
+            var srcPlayer = charPath[3];
+            var emdData = context.DataManager.GetData(BioVersion.Biohazard1, $"{charPath}/CHAR1{srcPlayer}.EMD");
+            crModBuilder.SetFile($"ENEMY/CHAR1{playerIndex}.EMD", emdData);
+            for (var i = 0; i < 12; i++)
+            {
+                var emwData = context.DataManager.TryGetData(BioVersion.Biohazard1, $"{charPath}/W{srcPlayer}{i}.EMW");
+                if (emwData != null)
+                {
+                    crModBuilder.SetFile($"PLAYERS/W{playerIndex}{i}.EMW", emwData);
+                }
+            }
+
+            var hurtFiles = GetHurtFiles(character);
+            var hurtFileNames = new string[][]
+            {
+                ["chris", "ch_ef"],
+                ["jill", "jill_ef"],
+                [],
+                ["reb"]
+            };
+
+            var soundDir = "sound";
+            for (int i = 0; i < hurtFiles.Length; i++)
+            {
+                var waveformBuilder = new WaveformBuilder();
+                waveformBuilder.Append(hurtFiles[i]);
+                var arr = hurtFileNames[playerIndex];
+                foreach (var hurtFileName in arr)
+                {
+                    var soundPath = $"{soundDir}/{hurtFileName}{i + 1:00}.wav";
+                    crModBuilder.SetFile(soundPath, waveformBuilder.ToArray());
+                }
+            }
+            if (playerIndex <= 1)
+            {
+                var nom = playerIndex == 0 ? "ch_nom.wav" : "ji_nom.wav";
+                var sime = playerIndex == 0 ? "ch_sime.wav" : "ji_sime.wav";
+                crModBuilder.SetFile($"{soundDir}/{nom}", new WaveformBuilder()
+                    .Append(hurtFiles[3])
+                    .ToArray());
+                crModBuilder.SetFile($"{soundDir}/{sime}", new WaveformBuilder()
+                    .Append(hurtFiles[2])
+                    .ToArray());
+            }
+
+            (string path, string name) GetRandomCharacter()
+            {
+                var results = new List<(string, string)>();
+                foreach (var pld in new[] { "pld0", "pld1" })
+                {
+                    var directories = context.DataManager.GetDirectories(BioVersion.Biohazard1, pld);
+                    foreach (var dir in directories)
+                    {
+                        var charName = Path.GetFileName(dir);
+                        if (IsCharacterEnabled(charName))
+                        {
+                            results.Add((charName, $"{pld}/{charName}"));
+                        }
+                    }
+                }
+                return results.Shuffle(context.Rng).FirstOrDefault();
+            }
+
+            bool IsCharacterEnabled(string character)
+            {
+                return context.Configuration.GetValueOrDefault($"protagonist/character/{character}", true);
+            }
+
+            string[] GetHurtFiles(string character)
+            {
+                var allHurtFiles = context.DataManager.GetHurtFiles(character)
+                    .Where(x => x.EndsWith(".ogg", StringComparison.OrdinalIgnoreCase) || x.EndsWith(".wav", StringComparison.OrdinalIgnoreCase))
+                    .ToArray();
+                var hurtFiles = new string[4];
+                foreach (var hurtFile in allHurtFiles)
+                {
+                    if (int.TryParse(Path.GetFileNameWithoutExtension(hurtFile), out var i))
+                    {
+                        if (i < hurtFiles.Length)
+                        {
+                            hurtFiles[i] = hurtFile;
+                        }
+                    }
+                }
+                return hurtFiles;
             }
         }
 
