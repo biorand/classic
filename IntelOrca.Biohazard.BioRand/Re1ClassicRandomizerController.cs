@@ -1353,7 +1353,7 @@ namespace IntelOrca.Biohazard.BioRand
             var playerIndex = context.Variation.PlayerIndex;
             var (character, charPath) = GetRandomCharacter();
             var srcPlayer = charPath[3];
-            var emdData = context.DataManager.GetData(BioVersion.Biohazard1, $"{charPath}/CHAR1{srcPlayer}.EMD");
+            var emdData = context.DataManager.GetData(BioVersion.Biohazard1, $"{charPath}/char1{srcPlayer}.emd");
             crModBuilder.SetFile($"ENEMY/CHAR1{playerIndex}.EMD", emdData);
             for (var i = 0; i < 12; i++)
             {
