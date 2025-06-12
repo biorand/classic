@@ -535,29 +535,14 @@ namespace IntelOrca.Biohazard.BioRand
             });
 
             group = page.CreateGroup("Characters");
-            foreach (var basePath in dataManager.BasePaths)
-            {
-                foreach (var pl in new[] { "pld0", "pld1" })
+            group.Items.AddRange(GetProtagonists()
+                .Select(x => new RandomizerConfigurationDefinition.GroupItem()
                 {
-                    var pldDir = Path.Combine(basePath, "re1", pl);
-                    if (!Directory.Exists(pldDir))
-                        continue;
-
-                    foreach (var characterDir in Directory.GetDirectories(pldDir))
-                    {
-                        var character = Path.GetFileName(characterDir);
-                        group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
-                        {
-                            Id = $"protagonist/character/{character}",
-                            Label = character.ToActorString(),
-                            Type = "switch",
-                            Default = true
-                        });
-                    }
-                }
-                group.Items = group.Items.OrderBy(x => x.Label).ToList();
-            }
-
+                    Id = $"protagonist/character/{x}",
+                    Label = x.ToActorString(),
+                    Type = "switch",
+                    Default = true
+                }));
 
             page = result.CreatePage("Music");
             group = page.CreateGroup("");
@@ -636,26 +621,23 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
-        private static string UpdateConfigNeverAlways(
-            Rng rng,
-            RandomizerConfiguration config,
-            string key,
-            string defaultValueChris,
-            string defaultValueJill)
+        private string[] GetProtagonists()
         {
-            var value = config.GetValueOrDefault(key, "Default")!;
-            if (value == "Default")
+            var result = new List<string>();
+            var dataManager = GetDataManager();
+            foreach (var basePath in dataManager.BasePaths)
             {
-                value = config.GetValueOrDefault("variation", "Chris") == "Chris"
-                    ? defaultValueChris
-                    : defaultValueJill;
+                foreach (var pl in new[] { "pld0", "pld1" })
+                {
+                    var pldDir = Path.Combine(basePath, "re1", pl);
+                    foreach (var characterDir in dataManager.GetDirectories(pldDir))
+                    {
+                        result.Add(Path.GetFileName(characterDir));
+                    }
+                }
             }
-            else if (value == "Random")
-            {
-                value = rng.NextOf("Never", "Always");
-            }
-            config[key] = value;
-            return value;
+            result.Sort();
+            return result.ToArray();
         }
 
         public RandomizerOutput Randomize(RandomizerInput input)
@@ -663,19 +645,9 @@ namespace IntelOrca.Biohazard.BioRand
             var dataManager = GetDataManager();
             var gameDataManager = GetGameDataManager();
             var rng = new Rng(input.Seed);
+            var context = new Context(input.Configuration.Clone(), dataManager, gameDataManager, rng);
 
-            var modifiedConfig = input.Configuration.Clone();
-            var ink = UpdateConfigNeverAlways(rng, modifiedConfig, "ink/enable", "Always", "Never");
-            if (ink != "Always")
-            {
-                modifiedConfig["inventory/ink/min"] = 0;
-                modifiedConfig["inventory/ink/max"] = 0;
-                modifiedConfig["items/distribution/ink"] = 0;
-            }
-
-            UpdateConfigNeverAlways(rng, modifiedConfig, "inventory/special/lockpick", "Never", "Always");
-
-            var context = new Context(modifiedConfig, dataManager, gameDataManager, rng);
+            ApplyConfigModifications(context);
             var generatedVariation = Randomize(context);
             var crModBuilder = CreateCrModBuilder(input, generatedVariation);
 
@@ -701,6 +673,22 @@ namespace IntelOrca.Biohazard.BioRand
                 [.. assets],
                 "",
                 []);
+        }
+
+        private void ApplyConfigModifications(IClassicRandomizerContext context)
+        {
+            var config = context.Configuration;
+            var rng = context.Rng.NextFork();
+
+            if (config.GetValueOrDefault<bool>("protagonist/random"))
+            {
+                config["protagonist/primary"] = GetProtagonists()
+                    .Where(x => config.GetValueOrDefault($"protagonist/character/{x}", true))
+                    .Shuffle(rng)
+                    .FirstOrDefault();
+            }
+
+            controller.ApplyConfigModifications(context);
         }
 
         private IClassicRandomizerGeneratedVariation Randomize(IClassicRandomizerContext context)

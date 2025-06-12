@@ -1042,6 +1042,42 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
+        public void ApplyConfigModifications(IClassicRandomizerContext context)
+        {
+            var config = context.Configuration;
+            var ink = UpdateConfigNeverAlways(context.Rng, config, "ink/enable", "Always", "Never");
+            if (ink != "Always")
+            {
+                config["inventory/ink/min"] = 0;
+                config["inventory/ink/max"] = 0;
+                config["items/distribution/ink"] = 0;
+            }
+
+            UpdateConfigNeverAlways(context.Rng, config, "inventory/special/lockpick", "Never", "Always");
+        }
+
+        private static string UpdateConfigNeverAlways(
+            Rng rng,
+            RandomizerConfiguration config,
+            string key,
+            string defaultValueChris,
+            string defaultValueJill)
+        {
+            var value = config.GetValueOrDefault(key, "Default")!;
+            if (value == "Default")
+            {
+                value = config.GetValueOrDefault("variation", "Chris") == "Chris"
+                    ? defaultValueChris
+                    : defaultValueJill;
+            }
+            else if (value == "Random")
+            {
+                value = rng.NextOf("Never", "Always");
+            }
+            config[key] = value;
+            return value;
+        }
+
         public void Write(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
         {
             WriteRdts(context, crModBuilder);
@@ -1350,14 +1386,23 @@ namespace IntelOrca.Biohazard.BioRand
 
         private void AddProtagonistSkin(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
         {
+            var character = context.Configuration.GetValueOrDefault<string>("protagonist/primary");
+            if (character == null)
+                return;
+
+            var srcPlayer = 0;
+            var emdData = context.DataManager.GetData(BioVersion.Biohazard1, $"pld0/{character}/char10.emd");
+            if (emdData == null)
+            {
+                srcPlayer = 1;
+                emdData = context.DataManager.GetData(BioVersion.Biohazard1, $"pld1/{character}/char11.emd");
+            }
+
             var playerIndex = context.Variation.PlayerIndex;
-            var (character, charPath) = GetRandomCharacter();
-            var srcPlayer = charPath[3];
-            var emdData = context.DataManager.GetData(BioVersion.Biohazard1, $"{charPath}/char1{srcPlayer}.emd");
             crModBuilder.SetFile($"ENEMY/CHAR1{playerIndex}.EMD", emdData);
             for (var i = 0; i < 12; i++)
             {
-                var emwData = context.DataManager.TryGetData(BioVersion.Biohazard1, $"{charPath}/W{srcPlayer}{i}.EMW");
+                var emwData = context.DataManager.TryGetData(BioVersion.Biohazard1, $"pld{srcPlayer}/{character}/W{srcPlayer}{i}.EMW");
                 if (emwData != null)
                 {
                     crModBuilder.SetFile($"PLAYERS/W{playerIndex}{i}.EMW", emwData);
@@ -1395,29 +1440,6 @@ namespace IntelOrca.Biohazard.BioRand
                 crModBuilder.SetFile($"{soundDir}/{sime}", new WaveformBuilder()
                     .Append(hurtFiles[2])
                     .ToArray());
-            }
-
-            (string path, string name) GetRandomCharacter()
-            {
-                var results = new List<(string, string)>();
-                foreach (var pld in new[] { "pld0", "pld1" })
-                {
-                    var directories = context.DataManager.GetDirectories(BioVersion.Biohazard1, pld);
-                    foreach (var dir in directories)
-                    {
-                        var charName = Path.GetFileName(dir);
-                        if (IsCharacterEnabled(charName))
-                        {
-                            results.Add((charName, $"{pld}/{charName}"));
-                        }
-                    }
-                }
-                return results.Shuffle(context.Rng).FirstOrDefault();
-            }
-
-            bool IsCharacterEnabled(string character)
-            {
-                return context.Configuration.GetValueOrDefault($"protagonist/character/{character}", true);
             }
 
             string[] GetHurtFiles(string character)
