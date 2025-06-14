@@ -2,9 +2,12 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Text.Json;
+using System.Text.RegularExpressions;
 using IntelOrca.Biohazard.BioRand.Routing;
 using SixLabors.ImageSharp;
 
@@ -523,6 +526,20 @@ namespace IntelOrca.Biohazard.BioRand
                 }
             }
 
+            group = page.CreateGroup("Skins");
+            var enemySkins = GetEnemySkins();
+            foreach (var skinPath in enemySkins)
+            {
+                var skinName = Path.GetFileName(skinPath);
+                group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+                {
+                    Id = $"enemies/skin/{skinName}",
+                    Label = skinName.ToActorString(),
+                    Type = "switch",
+                    Default = true
+                });
+            }
+
             page = result.CreatePage("Protagonist");
             group = page.CreateGroup("");
             group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
@@ -538,11 +555,11 @@ namespace IntelOrca.Biohazard.BioRand
             group.Items.AddRange(GetProtagonists()
                 .Select(x => new RandomizerConfigurationDefinition.GroupItem()
                 {
-                    Id = $"protagonist/character/{x}",
-                    Label = x.ToActorString(),
+                    Id = $"protagonist/character/{Path.GetFileName(x)}",
+                    Label = Path.GetFileName(x).ToActorString(),
                     Type = "switch",
                     Default = true
-                }));
+                }).OrderBy(x => x.Label));
 
             page = result.CreatePage("Music");
             group = page.CreateGroup("");
@@ -621,7 +638,22 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
-        private string[] GetProtagonists()
+        private List<string> GetEnemySkins()
+        {
+            var result = new List<string>();
+            var dataManager = GetDataManager();
+            foreach (var basePath in dataManager.BasePaths)
+            {
+                var emdDir = Path.Combine(basePath, "re1", "emd");
+                foreach (var skinPath in dataManager.GetDirectories(emdDir))
+                {
+                    result.Add(skinPath);
+                }
+            }
+            return result;
+        }
+
+        private List<string> GetProtagonists()
         {
             var result = new List<string>();
             var dataManager = GetDataManager();
@@ -630,14 +662,13 @@ namespace IntelOrca.Biohazard.BioRand
                 foreach (var pl in new[] { "pld0", "pld1" })
                 {
                     var pldDir = Path.Combine(basePath, "re1", pl);
-                    foreach (var characterDir in dataManager.GetDirectories(pldDir))
+                    foreach (var characterPath in dataManager.GetDirectories(pldDir))
                     {
-                        result.Add(Path.GetFileName(characterDir));
+                        result.Add(characterPath);
                     }
                 }
             }
-            result.Sort();
-            return result.ToArray();
+            return result;
         }
 
         public RandomizerOutput Randomize(RandomizerInput input)
@@ -647,7 +678,7 @@ namespace IntelOrca.Biohazard.BioRand
             var rng = new Rng(input.Seed);
             var context = new Context(input.Configuration.Clone(), dataManager, gameDataManager, rng);
 
-            ApplyConfigModifications(context);
+            controller.ApplyConfigModifications(context);
             var generatedVariation = Randomize(context);
             var crModBuilder = CreateCrModBuilder(input, generatedVariation);
 
@@ -675,22 +706,6 @@ namespace IntelOrca.Biohazard.BioRand
                 []);
         }
 
-        private void ApplyConfigModifications(IClassicRandomizerContext context)
-        {
-            var config = context.Configuration;
-            var rng = context.Rng.NextFork();
-
-            if (config.GetValueOrDefault<bool>("protagonist/random"))
-            {
-                config["protagonist/primary"] = GetProtagonists()
-                    .Where(x => config.GetValueOrDefault($"protagonist/character/{x}", true))
-                    .Shuffle(rng)
-                    .FirstOrDefault();
-            }
-
-            controller.ApplyConfigModifications(context);
-        }
-
         private IClassicRandomizerGeneratedVariation Randomize(IClassicRandomizerContext context)
         {
             var chosenVariationName = context.Configuration.GetValueOrDefault("variation", controller.VariationNames[0]);
@@ -716,6 +731,14 @@ namespace IntelOrca.Biohazard.BioRand
                 var enemyRandomizer = new EnemyRandomizer();
                 enemyRandomizer.Randomize(generatedVariation);
             }
+            if (context.Configuration.GetValueOrDefault("protagonist/random", false))
+            {
+                generatedVariation.ModBuilder.Protagonist = GetProtagonists()
+                    .Where(x => context.Configuration.GetValueOrDefault($"protagonist/character/{Path.GetFileName(x)}", true))
+                    .Shuffle(context.Rng)
+                    .FirstOrDefault();
+            }
+            RandomizeEnemySkins(generatedVariation);
             if (context.Configuration.GetValueOrDefault("music/random", false))
             {
                 var musicRandomizer = new MusicRandomizer();
@@ -741,6 +764,9 @@ namespace IntelOrca.Biohazard.BioRand
             crModBuilder.SetFile(
                 $"log_{context.Variation.PlayerName.ToLowerInvariant()}.md",
                 context.ModBuilder.GetDump(context));
+            crModBuilder.SetFile(
+                $"generated.json",
+                context.ModBuilder.ToJson());
 
             controller.Write(context, crModBuilder);
             return crModBuilder;
@@ -770,6 +796,43 @@ namespace IntelOrca.Biohazard.BioRand
             public IClassicRandomizerContext Context => context;
             public Variation Variation => variation;
             public ModBuilder ModBuilder => modBuilder;
+        }
+
+        private void RandomizeEnemySkins(IClassicRandomizerGeneratedVariation context)
+        {
+            var emdRegex = new Regex("EM10([0-9A-F][0-9A-F]).EMD", RegexOptions.IgnoreCase);
+
+            var skins = ImmutableArray.CreateBuilder<string>();
+            var usedIds = new HashSet<byte>();
+
+            var skinPaths = GetEnemySkins().Shuffle(context.Rng);
+            foreach (var skinPath in skinPaths)
+            {
+                var skinName = Path.GetFileName(skinPath);
+                if (!context.Configuration.GetValueOrDefault($"enemies/skin/{skinName}", false))
+                    continue;
+
+                var ids = new List<byte>();
+                var files = Directory.GetFiles(skinPath);
+                foreach (var f in files)
+                {
+                    var fileName = Path.GetFileName(f);
+                    var match = emdRegex.Match(fileName);
+                    if (!match.Success)
+                        continue;
+
+                    var id = byte.Parse(match.Groups[1].Value, NumberStyles.HexNumber);
+                    ids.Add(id);
+                }
+
+                if (usedIds.Overlaps(ids))
+                    continue;
+
+                usedIds.AddRange(ids);
+                skins.Add(skinPath);
+            }
+
+            context.ModBuilder.EnemySkins = skins.ToImmutable();
         }
     }
 
@@ -1818,6 +1881,8 @@ namespace IntelOrca.Biohazard.BioRand
         public ImmutableArray<int> AssignedItemGlobalIds => [.. _itemMap.Keys];
         public ImmutableArray<EnemyPlacement> EnemyPlacements => [.. _enemyPlacements];
         public ImmutableDictionary<string, MusicSourceFile> Music => _music.ToImmutableDictionary();
+        public string? Protagonist { get; set; }
+        public ImmutableArray<string> EnemySkins { get; set; } = [];
 
         public void SetDoorTarget(RdtItemId doorIdentity, RdtItemId target)
         {
@@ -2025,6 +2090,26 @@ namespace IntelOrca.Biohazard.BioRand
             public Item Item => item;
             public MapItemDefinition? Definition => definition;
             public string Group => definition?.Kind.Split('/').First() ?? "";
+        }
+
+        public string ToJson()
+        {
+            var options = new JsonSerializerOptions
+            {
+                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+                WriteIndented = true
+            };
+            return JsonSerializer.Serialize(new
+            {
+                DoorsLocks = _doorLock.ToDictionary(x => x.Key.ToString(), x => new
+                {
+                    x.Value?.Id,
+                    x.Value?.KeyItemId
+                }),
+                EnemyPlacements = _enemyPlacements,
+                Items = _itemMap,
+                Music = _music
+            }, options);
         }
     }
 

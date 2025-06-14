@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
@@ -1386,30 +1387,31 @@ namespace IntelOrca.Biohazard.BioRand
 
         private void AddProtagonistSkin(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
         {
-            var character = context.Configuration.GetValueOrDefault<string>("protagonist/primary");
-            if (character == null)
+            var characterPath = context.ModBuilder.Protagonist;
+            if (characterPath == null)
                 return;
 
+            var characterName = Path.GetFileName(characterPath);
             var srcPlayer = 0;
-            var emdData = context.DataManager.GetData(BioVersion.Biohazard1, $"pld0/{character}/char10.emd");
+            var emdData = GetData($"{characterPath}/char10.emd");
             if (emdData == null)
             {
                 srcPlayer = 1;
-                emdData = context.DataManager.GetData(BioVersion.Biohazard1, $"pld1/{character}/char11.emd");
+                emdData = GetData($"{characterPath}/char11.emd");
             }
 
             var playerIndex = context.Variation.PlayerIndex;
             crModBuilder.SetFile($"ENEMY/CHAR1{playerIndex}.EMD", emdData);
             for (var i = 0; i < 12; i++)
             {
-                var emwData = context.DataManager.TryGetData(BioVersion.Biohazard1, $"pld{srcPlayer}/{character}/W{srcPlayer}{i}.EMW");
+                var emwData = GetData($"{characterPath}/W{srcPlayer}{i}.EMW");
                 if (emwData != null)
                 {
                     crModBuilder.SetFile($"PLAYERS/W{playerIndex}{i}.EMW", emwData);
                 }
             }
 
-            var hurtFiles = GetHurtFiles(character);
+            var hurtFiles = GetHurtFiles(characterName);
             var hurtFileNames = new string[][]
             {
                 ["chris", "ch_ef"],
@@ -1460,12 +1462,68 @@ namespace IntelOrca.Biohazard.BioRand
                 }
                 return hurtFiles;
             }
+
+            byte[]? GetData(string path)
+            {
+                if (!File.Exists(path))
+                    return null;
+                return File.ReadAllBytes(path);
+            }
         }
 
         private void AddEnemySkins(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
         {
-            var emd100B = context.DataManager.GetData(BioVersion.Biohazard1, "emd/orca/EM100B.EMD");
-            crModBuilder.SetFile($"ENEMY/EM1{context.Variation.PlayerIndex}0B.EMD", emd100B);
+            var skinPaths = context.ModBuilder.EnemySkins;
+            foreach (var skinPath in skinPaths)
+            {
+                var files = Directory.GetFiles(skinPath);
+                foreach (var f in files)
+                {
+                    var fileName = Path.GetFileName(f);
+                    var destination = GetDestination(fileName);
+                    if (destination == null)
+                        continue;
+
+                    var fileData = File.ReadAllBytes(f);
+                    if (fileData.Length == 0)
+                        continue;
+
+                    crModBuilder.SetFile(destination, fileData);
+                }
+            }
+
+            string? GetDestination(string fileName)
+            {
+                string[] voiceFileNamesForSoundFolder = [
+                    "V_JOLT.WAV",
+                    "v00d_02.wav",
+                    "V00D_02S.WAV",
+                    "V110_00.WAV",
+                    "VB00_31.WAV",
+                    "VB00_31A.WAV",
+                    "VB00_31B.WAV",
+                    "VB00_31C.WAV"
+                ];
+
+                if (fileName.EndsWith(".EMD", StringComparison.OrdinalIgnoreCase))
+                {
+                    var match = Regex.Match(fileName, "EM10([0-9A-F][0-9A-F]).EMD", RegexOptions.IgnoreCase);
+                    if (!match.Success)
+                        return null;
+
+                    var id = byte.Parse(match.Groups[1].Value, NumberStyles.HexNumber);
+                    return $"ENEMY/EM1{context.Variation.PlayerIndex}{id:X2}.EMD";
+                }
+                if (!fileName.EndsWith(".WAV", StringComparison.OrdinalIgnoreCase))
+                    return null;
+                if (voiceFileNamesForSoundFolder.Contains(fileName, StringComparer.OrdinalIgnoreCase))
+                    return $"SOUND/{fileName}";
+                if (fileName.StartsWith("VN_", StringComparison.OrdinalIgnoreCase))
+                    return $"SOUND/{fileName}";
+                if (fileName.StartsWith("V", StringComparison.OrdinalIgnoreCase))
+                    return $"VOICE/{fileName}";
+                return $"SOUND/{fileName}";
+            }
         }
 
         private void AddBackgroundTextures(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
