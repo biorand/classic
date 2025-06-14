@@ -1223,7 +1223,14 @@ namespace IntelOrca.Biohazard.BioRand
                     {
                         foreach (var e in rdt.Enemies.Where(x => x.Id == ep.Id))
                         {
-                            e.Type = (byte)ep.Type;
+                            var oldType = e.Type;
+                            var newType = (byte)ep.Type;
+
+                            e.Type = newType;
+                            if (newType == Re1EnemyIds.Snake)
+                            {
+                                e.State = 0;
+                            }
                         }
                     }
                     foreach (var esp in ep.Esp)
