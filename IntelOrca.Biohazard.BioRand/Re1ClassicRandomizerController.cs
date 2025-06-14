@@ -272,6 +272,9 @@ namespace IntelOrca.Biohazard.BioRand
                 var helipadRoom = map.Rooms["303"];
                 var helipadToFountainDoor = helipadRoom.Doors.First(x => x.Name == "DOOR TO FOUNTAIN");
                 helipadToFountainDoor.Kind = null;
+
+                var liftToLabDoor = helipadRoom.Doors.First(x => x.Name == "LIFT TO LAB");
+                liftToLabDoor.Target = null;
             }
 
             // Locks

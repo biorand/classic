@@ -1127,6 +1127,14 @@ namespace IntelOrca.Biohazard.BioRand
                             var targetKeyId = edge.Target.Split(':');
                             var target = roomNodes[targetKeyId[0]];
                             var requirements = GetRequirements(edge);
+
+                            // The graph library hates it when you have unblock[key] <--> [key]
+                            var oppositeEdge = map.GetOtherSide(edge);
+                            if (oppositeEdge?.Kind == "unblock")
+                            {
+                                requirements = [];
+                            }
+
                             _ = edge.Kind switch
                             {
                                 "oneway" => graphBuilder.OneWay(source, target, requirements),
