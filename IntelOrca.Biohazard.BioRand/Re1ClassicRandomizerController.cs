@@ -553,6 +553,7 @@ namespace IntelOrca.Biohazard.BioRand
             FixDrugStoreRoom();
             AllowRoughPassageDoorUnlock();
             ShotgunOnWallFix();
+            FixCrestDoor();
             DisablePoisonChallenge();
             DisableBarryEvesdrop();
             AllowPartnerItemBoxes();
@@ -767,6 +768,14 @@ namespace IntelOrca.Biohazard.BioRand
                 rdt609?.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [2, 128, 0]));
                 rdt116?.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [2, 129, 0]));
                 rdt516?.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [2, 129, 0]));
+            }
+
+            void FixCrestDoor()
+            {
+                // Due to our lock hack, we need to update the lock id set opcode
+                var rdt11A = gameData.GetRdt(RdtId.Parse("11A"));
+                rdt11A?.Patches.Add(new KeyValuePair<int, byte>(0x35DC + 2, 128 | 23));
+                rdt11A?.Patches.Add(new KeyValuePair<int, byte>(0x35F0 + 2, 128 | 23));
             }
 
             void DisablePoisonChallenge()
