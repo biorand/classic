@@ -14,6 +14,7 @@ namespace IntelOrca.Biohazard.BioRand
         public MapStartEnd[]? BeginEndRooms { get; set; }
         public Dictionary<int, MapItemDefinition> Items { get; set; } = [];
         public MapEnemyGroup[] Enemies { get; set; } = [];
+        public MapCharacter[] Characters { get; set; } = [];
         public Dictionary<string, MapRoom> Rooms { get; set; } = [];
 
         internal MapItemDefinition? GetItem(int type)
@@ -102,6 +103,7 @@ namespace IntelOrca.Biohazard.BioRand
                     .ToArray(),
                 Items = Items,
                 Enemies = Enemies,
+                Characters = Characters,
                 Rooms = Rooms
                     .Where(x => x.Value.IsIncludedInFilter(filter))
                     .ToDictionary(x => x.Key, x => x.Value.For(filter))
@@ -151,6 +153,14 @@ namespace IntelOrca.Biohazard.BioRand
         public string Name { get; set; } = "";
         public int[] Id { get; set; } = [];
         public int[]? Esp { get; set; }
+    }
+
+    public class MapCharacter
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = "";
+        public bool Playable { get; set; }
+        public bool Weapon { get; set; }
     }
 
     [DebuggerDisplay("{Name}")]

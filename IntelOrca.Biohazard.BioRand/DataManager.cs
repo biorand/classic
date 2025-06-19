@@ -56,6 +56,14 @@ namespace IntelOrca.Biohazard.BioRand
             return File.ReadAllBytes(fullPath);
         }
 
+        public byte[]? TryGetData(string path)
+        {
+            var fullPath = GetPath(path);
+            if (!File.Exists(fullPath))
+                return null;
+            return File.ReadAllBytes(fullPath);
+        }
+
         public byte[] GetData(BioVersion version, string path)
         {
             var fullPath = GetPath(version, path);

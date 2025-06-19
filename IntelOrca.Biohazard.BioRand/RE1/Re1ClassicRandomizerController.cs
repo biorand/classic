@@ -7,14 +7,13 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
-using IntelOrca.Biohazard.BioRand.RE1;
 using IntelOrca.Biohazard.Extensions;
 using IntelOrca.Biohazard.Room;
 using IntelOrca.Biohazard.Script;
 using IntelOrca.Biohazard.Script.Opcodes;
 using SixLabors.ImageSharp.PixelFormats;
 
-namespace IntelOrca.Biohazard.BioRand
+namespace IntelOrca.Biohazard.BioRand.RE1
 {
     internal class Re1ClassicRandomizerController : IClassicRandomizerController
     {
@@ -374,7 +373,7 @@ namespace IntelOrca.Biohazard.BioRand
                     var b = rng.Next(0, 0b1111);
                     for (var i = 0; i < 4; i++)
                     {
-                        if ((b & (1 << i)) != 0 && areaTags.Count > i)
+                        if ((b & 1 << i) != 0 && areaTags.Count > i)
                         {
                             l.Tags.AddRange(areaTags[i]);
                         }
@@ -1098,6 +1097,7 @@ namespace IntelOrca.Biohazard.BioRand
             AddSoundXml(context, crModBuilder);
             AddInventoryXml(context, crModBuilder);
             AddProtagonistSkin(context, crModBuilder);
+            AddNpcSkins(context, crModBuilder);
             AddEnemySkins(context, crModBuilder);
             AddBackgroundTextures(context, crModBuilder);
             AddMusic(context, crModBuilder);
@@ -1160,7 +1160,7 @@ namespace IntelOrca.Biohazard.BioRand
                     .Where(x => x != null)
                     .Select(x => x!)
                     .ToArray();
-                foreach (var item in (kvp.Value.Items ?? []))
+                foreach (var item in kvp.Value.Items ?? [])
                 {
                     if (item.GlobalId is not short globalId)
                         continue;
@@ -1406,7 +1406,11 @@ namespace IntelOrca.Biohazard.BioRand
 
         private void AddProtagonistSkin(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
         {
-            var characterPath = context.ModBuilder.Protagonist;
+            var characterReplacement = context.ModBuilder.Characters.FirstOrDefault(x => x.Id == 0);
+            if (characterReplacement == null)
+                return;
+
+            var characterPath = characterReplacement.Path;
             if (characterPath == null)
                 return;
 
@@ -1490,6 +1494,18 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
+        private void AddNpcSkins(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
+        {
+            var generator = new Re1CharacterGenerator(context, crModBuilder);
+            foreach (var ch in context.ModBuilder.Characters)
+            {
+                if (ch.Id < 2)
+                    continue;
+
+                generator.Generate(ch);
+            }
+        }
+
         private void AddEnemySkins(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
         {
             var skinPaths = context.ModBuilder.EnemySkins;
@@ -1565,7 +1581,7 @@ namespace IntelOrca.Biohazard.BioRand
                         for (int i = 0; i < accessor.Width; i++)
                         {
                             var c = row[i];
-                            var c4 = (ushort)((c.R / 8) | ((c.G / 8) << 5) | ((c.B / 8) << 10));
+                            var c4 = (ushort)(c.R / 8 | c.G / 8 << 5 | c.B / 8 << 10);
                             bw.Write(c4);
                         }
                     }

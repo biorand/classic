@@ -1,4 +1,5 @@
 ﻿using System;
+using IntelOrca.Biohazard.BioRand.RE1;
 
 namespace IntelOrca.Biohazard.BioRand
 {

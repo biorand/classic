@@ -501,6 +501,79 @@
       ]
     }
   ],
+  "characters": [
+    {
+      "id": 0,
+      "name": "Chris (Playable)",
+      "playable": true
+    },
+    {
+      "id": 1,
+      "name": "Rebecca (Playable)",
+      "playable": true
+    },
+    {
+      "id": 32,
+      "name": "Chris"
+    },
+    {
+      "id": 33,
+      "name": "Jill"
+    },
+    {
+      "id": 34,
+      "name": "Barry"
+    },
+    {
+      "id": 35,
+      "name": "Rebecca"
+    },
+    {
+      "id": 36,
+      "name": "Wesker"
+    },
+    {
+      "id": 37,
+      "name": "Kenneth"
+    },
+    {
+      "id": 38,
+      "name": "Forrest"
+    },
+    {
+      "id": 39,
+      "name": "Richard"
+    },
+    {
+      "id": 40,
+      "name": "Enrico",
+      "weapon": true
+    },
+    {
+      "id": 41,
+      "name": "Kenneth (2)"
+    },
+    {
+      "id": 42,
+      "name": "Barry (2)"
+    },
+    {
+      "id": 43,
+      "name": "Barry (Stars 2)"
+    },
+    {
+      "id": 44,
+      "name": "Rebecca (Stars 2)"
+    },
+    {
+      "id": 45,
+      "name": "Barry (3)"
+    },
+    {
+      "id": 46,
+      "name": "Wesker (Stars 2)"
+    }
+  ],
   "rooms": {
     "100": {
       "name": "1F WEST SAVE",
