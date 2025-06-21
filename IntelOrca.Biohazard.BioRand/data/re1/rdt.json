@@ -505,73 +505,90 @@
     {
       "id": 0,
       "name": "Chris (Playable)",
+      "actor": "chris",
       "playable": true
     },
     {
       "id": 1,
       "name": "Rebecca (Playable)",
+      "actor": "rebecca",
       "playable": true
     },
     {
       "id": 32,
-      "name": "Chris"
+      "name": "Chris",
+      "actor": "chris"
     },
     {
       "id": 33,
-      "name": "Jill"
+      "name": "Jill",
+      "actor": "jill"
     },
     {
       "id": 34,
-      "name": "Barry"
+      "name": "Barry",
+      "actor": "barry"
     },
     {
       "id": 35,
-      "name": "Rebecca"
+      "name": "Rebecca",
+      "actor": "rebecca"
     },
     {
       "id": 36,
-      "name": "Wesker"
+      "name": "Wesker",
+      "actor": "wesker"
     },
     {
       "id": 37,
-      "name": "Kenneth"
+      "name": "Kenneth",
+      "actor": "kenneth"
     },
     {
       "id": 38,
-      "name": "Forrest"
+      "name": "Forrest",
+      "actor": "forrest"
     },
     {
       "id": 39,
-      "name": "Richard"
+      "name": "Richard",
+      "actor": "richard"
     },
     {
       "id": 40,
       "name": "Enrico",
+      "actor": "enrico",
       "weapon": true
     },
     {
       "id": 41,
-      "name": "Kenneth (2)"
+      "name": "Kenneth (2)",
+      "actor": "kenneth"
     },
     {
       "id": 42,
-      "name": "Barry (2)"
+      "name": "Barry (2)",
+      "actor": "barry"
     },
     {
       "id": 43,
-      "name": "Barry (Stars 2)"
+      "name": "Barry (Stars 2)",
+      "actor": "barry"
     },
     {
       "id": 44,
-      "name": "Rebecca (Stars 2)"
+      "name": "Rebecca (Stars 2)",
+      "actor": "rebecca"
     },
     {
       "id": 45,
-      "name": "Barry (3)"
+      "name": "Barry (3)",
+      "actor": "barry"
     },
     {
       "id": 46,
-      "name": "Wesker (Stars 2)"
+      "name": "Wesker (Stars 2)",
+      "actor": "wesker"
     }
   ],
   "rooms": {
@@ -804,7 +821,7 @@
         {
           "id": 0,
           "globalId": 28,
-          "excludeTypes": [ 3, 4, 10 ]
+          "excludeTypes": [ 3, 4, 9, 10 ]
         }
       ],
       "npcs": []
@@ -907,15 +924,41 @@
           "player": 0
         }
       ],
-      "npcs": [
+      "cutscenes": [
         {
-          "includeOffsets": [ 164604, 164650, 164674 ],
-          "cutscene": 0
+          "id": 0,
+          "name": "first",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "globalId": "106-barry",
+              "name": "barry",
+              "character": 34,
+              "offsets": [ 164604, 164650, 164674 ]
+            }
+          ],
+          "player": 1
         },
         {
-          "includeOffsets": [ 164772 ],
-          "includeTypes": [ 32, 33, 34, 35, 36 ],
-          "cutscene": 1
+          "id": 1,
+          "name": "zombie walks in",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "globalId": "106-barry",
+              "name": "barry",
+              "character": 34,
+              "offsets": [ 164772 ],
+              "include": [ 32, 33, 34, 35, 36 ]
+            }
+          ],
+          "player": 1
         }
       ]
     },
@@ -1009,40 +1052,6 @@
           "player": 1
         }
       ],
-      "npcs": [
-        {
-          "cutscene": 0,
-          "player": 0
-        },
-        {
-          "cutscene": 1,
-          "player": 0
-        },
-        {
-          "includeOffsets": [ 196006, 196028 ], // Wesker, Barry (entrance)
-          "excludeTypes": [ 39, 40 ],
-          "cutscene": 0,
-          "player": 1
-        },
-        {
-          "includeOffsets": [ 195950 ], // Wesker (backtrack)
-          "excludeTypes": [ 39, 40 ],
-          "cutscene": 1,
-          "player": 1
-        },
-        {
-          "includeOffsets": [ 195772, 195858 ], // Barry (lockpick)
-          "excludeTypes": [ 39, 40 ],
-          "cutscene": 2,
-          "player": 1
-        },
-        {
-          "includeOffsets": [ 195696 ], // Barry (acid rounds)
-          "excludeTypes": [ 39, 40 ],
-          "cutscene": 3,
-          "player": 1
-        }
-      ],
       "enemies": [
         {
           "condition": "!1:0 && !1:2 && !1:3",
@@ -1050,6 +1059,149 @@
         },
         {
           "condition": "!1:5 && !7:13",
+          "player": 1
+        }
+      ],
+      "cutscenes": [
+        {
+          "id": 0,
+          "name": "intro",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "globalId": "106-wesker",
+              "name": "wesker",
+              "character": 36,
+              "offsets": [ "0x2FCDC" ]
+            },
+            {
+              "globalId": "106-jill",
+              "name": "jill",
+              "character": 33,
+              "offsets": [ "0x2FCF2" ]
+            },
+            {
+              "name": "jumpscare"
+            }
+          ],
+          "player": 0
+        },
+        {
+          "id": 1,
+          "name": "backtrack",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "globalId": "106-wesker",
+              "name": "wesker",
+              "character": 36,
+              "offsets": [ "0x2FD1E" ]
+            },
+            {
+              "globalId": "106-jill",
+              "name": "jill",
+              "character": 33,
+              "offsets": [ "0x2FD34" ]
+            }
+          ],
+          "player": 0
+        },
+        {
+          "id": 2,
+          "name": "return",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            }
+          ],
+          "player": 0
+        },
+        {
+          "id": 0,
+          "name": "intro",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "globalId": "106-wesker",
+              "name": "wesker",
+              "character": 36,
+              "offsets": [ 196006 ],
+              "exclude": [ 39, 40 ]
+            },
+            {
+              "globalId": "106-barry",
+              "name": "barry",
+              "character": 34,
+              "offsets": [ 196028 ],
+              "exclude": [ 39, 40 ]
+            },
+            {
+              "name": "jumpscare"
+            }
+          ],
+          "player": 1
+        },
+        {
+          "id": 1,
+          "name": "backtrack",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "globalId": "106-wesker",
+              "name": "wesker",
+              "character": 36,
+              "offsets": [ 195950 ],
+              "exclude": [ 39, 40 ]
+            }
+          ],
+          "player": 1
+        },
+        {
+          "id": 2,
+          "name": "lockpick",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "globalId": "106-barry",
+              "name": "barry",
+              "character": 34,
+              "offsets": [ 195772, 195858 ],
+              "exclude": [ 39, 40 ]
+            }
+          ],
+          "player": 1
+        },
+        {
+          "id": 3,
+          "name": "gift",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "name": "barry",
+              "character": 34,
+              "offsets": [ 195696 ],
+              "exclude": [ 39, 40 ]
+            }
+          ],
           "player": 1
         }
       ]

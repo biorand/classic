@@ -1100,6 +1100,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             AddNpcSkins(context, crModBuilder);
             AddEnemySkins(context, crModBuilder);
             AddBackgroundTextures(context, crModBuilder);
+            AddVoices(context, crModBuilder);
             AddMusic(context, crModBuilder);
         }
 
@@ -1127,6 +1128,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             {
                 ApplyEnemies(context, gameData);
             }
+            ApplyNpcs(context, gameData);
             foreach (var rrdt in gameData.Rdts)
             {
                 rrdt.Save();
@@ -1353,6 +1355,21 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             }
         }
 
+        private void ApplyNpcs(IClassicRandomizerGeneratedVariation context, GameData gameData)
+        {
+            foreach (var npc in context.ModBuilder.Npcs)
+            {
+                var rdt = gameData.GetRdt(npc.RdtId);
+                if (rdt == null)
+                    continue;
+
+                var em = rdt.Enemies.FirstOrDefault(x => x.Offset == npc.Offset);
+                if (em == null)
+                    continue;
+
+                em.Type = (byte)npc.Type;
+            }
+        }
         private void AddInventoryXml(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
         {
             var inventories = context.ModBuilder.Inventory;
@@ -1406,8 +1423,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
         private void AddProtagonistSkin(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
         {
-            var characterReplacement = context.ModBuilder.Characters.FirstOrDefault(x => x.Id == 0);
-            if (characterReplacement == null)
+            if (!context.ModBuilder.Characters.TryGetValue(0, out var characterReplacement))
                 return;
 
             var characterPath = characterReplacement.Path;
@@ -1497,12 +1513,12 @@ namespace IntelOrca.Biohazard.BioRand.RE1
         private void AddNpcSkins(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
         {
             var generator = new Re1CharacterGenerator(context, crModBuilder);
-            foreach (var ch in context.ModBuilder.Characters)
+            foreach (var kvp in context.ModBuilder.Characters)
             {
-                if (ch.Id < 2)
+                if (kvp.Key < 2)
                     continue;
 
-                generator.Generate(ch);
+                generator.Generate((byte)kvp.Key, kvp.Value);
             }
         }
 
@@ -1587,6 +1603,64 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     }
                 });
                 return ms.ToArray();
+            }
+        }
+
+        private void AddVoices(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
+        {
+            var voices = context.ModBuilder.Voices;
+            var groups = voices
+                .Select(x => (Key: VoiceTarget.Parse(x.Key), x.Value))
+                .Where(x => x.Key != null)
+                .Select(x => (Key: x.Key!.Value, x.Value))
+                .OrderBy(x => x.Key.Path)
+                .ThenBy(x => x.Key.Range)
+                .GroupBy(x => x.Key.Path);
+            foreach (var g in groups)
+            {
+                var destinationPath = g.Key;
+                var items = g.ToArray();
+                var wavBuilder = new WaveformBuilder();
+                var time = 0.0;
+                for (var i = 0; i < items.Length; i++)
+                {
+                    var (k, sourcePath) = items[i];
+                    var silenceDuration = k.Range.Start - time;
+                    var duration = k.Range.End == 0 ? double.NaN : k.Range.Length;
+                    wavBuilder.AppendSilence(silenceDuration);
+                    wavBuilder.Append(sourcePath, 0, duration);
+                    if (!double.IsNaN(duration))
+                    {
+                        var remaining = duration - wavBuilder.Duration;
+                        wavBuilder.AppendSilence(remaining);
+                    }
+                    time = k.Range.End;
+                }
+                crModBuilder.SetFile(destinationPath, wavBuilder.ToArray());
+            }
+        }
+
+        private readonly struct VoiceTarget(string path, AudioRange range = default)
+        {
+            public string Path => path;
+            public AudioRange Range => range;
+
+            public static VoiceTarget? Parse(string s)
+            {
+                var pattern = @"^(?<path>[^()]+)(?:\((?<start>\d+(?:\.\d+)?),(?<end>\d+(?:\.\d+)?)\))?$";
+                var match = Regex.Match(s, pattern);
+                if (!match.Success)
+                    return null;
+
+                var path = match.Groups["path"].Value;
+                if (match.Groups["start"].Success && match.Groups["end"].Success)
+                {
+                    var start = double.Parse(match.Groups["start"].Value);
+                    var end = double.Parse(match.Groups["end"].Value);
+                    var audioRange = new AudioRange(start, end);
+                    return new VoiceTarget(path, audioRange);
+                }
+                return new VoiceTarget(path);
             }
         }
 

@@ -2,9 +2,8 @@
 
 namespace IntelOrca.Biohazard.BioRand
 {
-    internal class CharacterReplacement(int id, string character, int weapon)
+    internal class CharacterReplacement(string character, int weapon)
     {
-        public int Id => id;
         public string Path => character;
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]

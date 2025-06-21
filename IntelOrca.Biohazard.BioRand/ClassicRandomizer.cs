@@ -753,6 +753,8 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 var npcRandomizer = new CharacterRandomizer();
                 npcRandomizer.Randomize(generatedVariation);
+                var cutsceneRandomizer = new CutsceneRandomizer();
+                cutsceneRandomizer.Randomize(generatedVariation);
             }
             RandomizeEnemySkins(generatedVariation);
             if (context.Configuration.GetValueOrDefault("music/random", false))

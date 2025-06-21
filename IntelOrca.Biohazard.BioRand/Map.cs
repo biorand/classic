@@ -85,6 +85,27 @@ namespace IntelOrca.Biohazard.BioRand
             return nop.ToArray();
         }
 
+        public static int[] ParseLiteralArray(JsonElement[]? input)
+        {
+            var result = new List<int>();
+            if (input != null)
+            {
+                foreach (var element in input)
+                {
+                    if (element.ValueKind == JsonValueKind.String)
+                    {
+                        var s = element.GetString()!;
+                        result.Add(ParseLiteral(s));
+                    }
+                    else
+                    {
+                        result.Add(element.GetInt32());
+                    }
+                }
+            }
+            return [.. result];
+        }
+
         public static int ParseLiteral(string s)
         {
             if (s.StartsWith("0x"))
@@ -159,6 +180,7 @@ namespace IntelOrca.Biohazard.BioRand
     {
         public int Id { get; set; }
         public string Name { get; set; } = "";
+        public string Actor { get; set; } = "";
         public bool Playable { get; set; }
         public bool Weapon { get; set; }
     }
@@ -175,6 +197,7 @@ namespace IntelOrca.Biohazard.BioRand
         public MapEdge[]? Flags { get; set; }
         public MapRoomEnemies[]? Enemies { get; set; }
         public MapRoomNpcs[]? Npcs { get; set; }
+        public MapRoomCutscene[]? Cutscenes { get; set; }
         public new DoorRandoSpec[]? DoorRando { get; set; }
 
         public IEnumerable<MapEdge> AllEdges
@@ -217,7 +240,8 @@ namespace IntelOrca.Biohazard.BioRand
                 Flags = Flags?.Where(x => x.IsIncludedInFilter(filter)).ToArray() ?? [],
                 DoorRando = DoorRando,
                 Enemies = Enemies?.Where(x => x.IsIncludedInFilter(filter)).ToArray() ?? [],
-                Npcs = Npcs
+                Npcs = Npcs?.Where(x => x.IsIncludedInFilter(filter)).ToArray() ?? [],
+                Cutscenes = Cutscenes?.Where(x => x.IsIncludedInFilter(filter)).ToArray() ?? []
             };
         }
     }
@@ -327,18 +351,33 @@ namespace IntelOrca.Biohazard.BioRand
         public bool? RandomPlacements { get; set; }
     }
 
-    public class MapRoomNpcs
+    public class MapRoomNpcs : MapFilterable
     {
+        public string? Name { get; set; }
         public int[]? IncludeOffsets { get; set; }
         public int[]? IncludeTypes { get; set; }
         public int[]? ExcludeTypes { get; set; }
-        public int? Player { get; set; }
-        public int? Scenario { get; set; }
-        public bool? DoorRando { get; set; }
         public int Cutscene { get; set; }
         public string? PlayerActor { get; set; }
         public bool? EmrScale { get; set; }
         public string? Use { get; set; }
+    }
+
+    public class MapRoomCutscene : MapFilterable
+    {
+        public int Id { get; set; }
+        public string Name { get; set; } = "";
+        public MapRoomCutsceneActor[] Actors { get; set; } = [];
+    }
+
+    public class MapRoomCutsceneActor
+    {
+        public string? GlobalId { get; set; }
+        public string Name { get; set; } = "";
+        public int? Character { get; set; }
+        public JsonElement[] Offsets { get; set; } = [];
+        public int[] Include { get; set; } = [];
+        public int[] Exclude { get; set; } = [];
     }
 
     public class DoorRandoSpec

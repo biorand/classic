@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 
 namespace IntelOrca.Biohazard.BioRand
@@ -17,8 +18,10 @@ namespace IntelOrca.Biohazard.BioRand
         public ImmutableArray<int> AssignedItemGlobalIds => [.. _itemMap.Keys];
         public ImmutableArray<EnemyPlacement> EnemyPlacements => [.. _enemyPlacements];
         public ImmutableDictionary<string, MusicSourceFile> Music => _music.ToImmutableDictionary();
-        public ImmutableArray<CharacterReplacement> Characters { get; set; }
+        public ImmutableDictionary<int, CharacterReplacement> Characters { get; set; } = ImmutableDictionary<int, CharacterReplacement>.Empty;
         public ImmutableArray<string> EnemySkins { get; set; } = [];
+        public ImmutableArray<NpcReplacement> Npcs { get; set; } = [];
+        public ImmutableDictionary<string, string> Voices { get; set; } = ImmutableDictionary<string, string>.Empty;
 
         public void SetDoorTarget(RdtItemId doorIdentity, RdtItemId target)
         {
@@ -233,7 +236,9 @@ namespace IntelOrca.Biohazard.BioRand
             var options = new JsonSerializerOptions
             {
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = true
+                WriteIndented = true,
+                Converters = { new RdtIdConverter() },
+                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
             };
             return JsonSerializer.Serialize(new
             {
@@ -243,8 +248,10 @@ namespace IntelOrca.Biohazard.BioRand
                     x.Value?.KeyItemId
                 }),
                 EnemyPlacements = _enemyPlacements,
+                Npcs,
                 Items = _itemMap,
                 Characters,
+                Voices,
                 Music = _music
             }, options);
         }

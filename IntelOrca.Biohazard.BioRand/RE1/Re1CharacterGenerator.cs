@@ -6,9 +6,8 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 {
     internal class Re1CharacterGenerator(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
     {
-        public void Generate(CharacterReplacement cr)
+        public void Generate(byte emdId, CharacterReplacement cr)
         {
-            var emdId = (byte)cr.Id;
             var char10path = Path.Combine(cr.Path, "char10.emd");
             var char11path = Path.Combine(cr.Path, "char11.emd");
             var playerIndex = File.Exists(char10path) ? 0 : 1;

@@ -10,7 +10,7 @@ namespace IntelOrca.Biohazard.BioRand
         public void Randomize(IClassicRandomizerGeneratedVariation context)
         {
             var rng = context.Rng.NextFork();
-            var characters = ImmutableArray.CreateBuilder<CharacterReplacement>();
+            var characters = ImmutableDictionary.CreateBuilder<int, CharacterReplacement>();
             RandomizeProtagonist();
             RandomizeNpcs();
             context.ModBuilder.Characters = characters.ToImmutable();
@@ -23,7 +23,7 @@ namespace IntelOrca.Biohazard.BioRand
                     if (!ch.Playable)
                         continue;
 
-                    characters.Add(new CharacterReplacement(ch.Id, enabledCharacters.Next(), 0));
+                    characters.Add(ch.Id, new CharacterReplacement(enabledCharacters.Next(), 0));
                 }
             }
 
@@ -43,7 +43,7 @@ namespace IntelOrca.Biohazard.BioRand
                     var weapon = ch.Weapon && weaponIds.Length != 0
                         ? rng.NextOf(weaponIds)
                         : 0;
-                    characters.Add(new CharacterReplacement(ch.Id, enabledCharacters.Next(), weapon));
+                    characters.Add(ch.Id, new CharacterReplacement(enabledCharacters.Next(), weapon));
                 }
             }
 
