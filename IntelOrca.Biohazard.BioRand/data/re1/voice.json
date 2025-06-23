@@ -270,15 +270,15 @@
       {
         "actor": "enrico",
         "split": 2,
-        "condition": "@chris"
+        "condition": "@chris",
+        "nameClipped": { "end": 1.15 }
       },
       {
         "actor": "chris",
         "split": 4
       },
       {
-        "actor": "enrico",
-        "nameClipped": { "start": 2.0 }
+        "actor": "enrico"
       }
     ]
   },
@@ -1012,7 +1012,8 @@
     "actors": [
       {
         "actor": "enrico",
-        "split": 1.2
+        "split": 1.2,
+        "condition": "@jill"
       },
       {
         "actor": "jill"
