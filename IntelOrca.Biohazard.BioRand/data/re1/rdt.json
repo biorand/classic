@@ -621,6 +621,32 @@
           "maxDifficulty": 0,
           "player": 1
         }
+      ],
+      "cutscenes": [
+        {
+          "id": 0,
+          "name": "all",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "name": "rebecca",
+              "character": 35,
+              "offsets": [
+                "10D2E",
+                "10D6E",
+                "10DAC",
+                "10E0C",
+                "10E24",
+                "10ED4",
+                "10F0E"
+              ]
+            }
+          ],
+          "player": 0
+        }
       ]
     },
     "101": {
@@ -823,8 +849,7 @@
           "globalId": 28,
           "excludeTypes": [ 3, 4, 9, 10 ]
         }
-      ],
-      "npcs": []
+      ]
     },
     "105": {
       "name": "1F DINING ROOM",
@@ -1196,6 +1221,7 @@
               "character": 0
             },
             {
+              "globalId": "203-barry",
               "name": "barry",
               "character": 34,
               "offsets": [ 195696 ],
@@ -1332,6 +1358,25 @@
           "condition": "!(!1:32 && 1:33)",
           "excludeTypes": [ 4, 12 ],
           "maxDifficulty": 0,
+          "player": 1
+        }
+      ],
+      "cutscenes": [
+        {
+          "id": 0,
+          "name": "almost sandwich",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "globalId": "109-barry",
+              "name": "barry",
+              "character": 34,
+              "offsets": [ "0x1CA92" ]
+            }
+          ],
           "player": 1
         }
       ]
@@ -1656,17 +1701,30 @@
           "group": 1
         }
       ],
-      "npcs": [
-        {
-          "includeTypes": [ 35 ],
-          "player": 0
-        }
-      ],
       "enemies": [
         {
           "excludeTypes": [ 3, 4, 7, 10 ],
           "maxDifficulty": 1,
           "player": 1
+        }
+      ],
+      "cutscenes": [
+        {
+          "id": 0,
+          "name": "piano",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "name": "rebecca",
+              "character": 35,
+              "offsets": [ "0x30BA4", "0x30BC2" ],
+              "include": [ 35 ]
+            }
+          ],
+          "player": 0
         }
       ]
     },
@@ -1926,6 +1984,24 @@
           "excludeTypes": [ 4 ],
           "maxDifficulty": 0,
           "player": 1
+        }
+      ],
+      "cutscenes": [
+        {
+          "id": 0,
+          "name": "jill becoming sandwich",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "globalId": "109-barry",
+              "name": "barry",
+              "character": 34,
+              "offsets": [ "0x22A6", "0x22BC" ]
+            }
+          ]
         }
       ]
     },
@@ -2279,13 +2355,26 @@
           "player": 1
         }
       ],
-      "npcs": [
+      "enemies": [],
+      "cutscenes": [
         {
-          "use": "106;0x2FC70",
+          "id": 0,
+          "name": "gift",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "globalId": "203-barry",
+              "name": "barry",
+              "character": 34,
+              "offsets": [ "0x236C8" ]
+            }
+          ],
           "player": 1
         }
-      ],
-      "enemies": []
+      ]
     },
     "204": {
       "name": "2F EAST C SHAPED CORRIDOR",
@@ -2564,6 +2653,24 @@
           "maxDifficulty": 0,
           "player": 1
         }
+      ],
+      "cutscenes": [
+        {
+          "id": 0,
+          "name": "page missing",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "name": "barry",
+              "character": 34,
+              "offsets": [ "0x17B2A" ]
+            }
+          ],
+          "player": 1
+        }
       ]
     },
     "20B": {
@@ -2625,8 +2732,21 @@
           "ignoreRatio": true
         }
       ],
-      "npcs": [
+      "cutscenes": [
         {
+          "id": 0,
+          "name": "rope",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "name": "barry",
+              "character": 43,
+              "offsets": [ "0x96BC" ]
+            }
+          ],
           "player": 1
         }
       ]
@@ -2685,19 +2805,48 @@
           "optional": true
         }
       ],
-      "npcs": [
+      "enemies": [],
+      "cutscenes": [
         {
-          "includeOffsets": [ 168024, 168170, 168194 ],
-          "includeTypes": [ 40, 42 ],
+          "id": 0,
+          "name":  "richard poison",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "name": "rebecca",
+              "character": 35,
+              "offsets": [ "0x29078", "0x29118" ]
+            },
+            {
+              "name": "richard",
+              "character": 39,
+              "offsets": [ "0x29058", "0x290EA", "0x29102" ],
+              "includeTypes": [ 40, 42 ]
+            }
+          ],
           "player": 0
         },
         {
-          "includeOffsets": [ 168034, 168098, 168126 ],
-          "includeTypes": [ 40, 42 ],
+          "id": 0,
+          "name": "richard poison",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "name": "richard",
+              "character": 39,
+              "offsets": [ "0x29062", "0x290A2", "0x290BE" ],
+              "includeTypes": [ 40, 42 ]
+            }
+          ],
           "player": 1
         }
-      ],
-      "enemies": []
+      ]
     },
     "20E": {
       "name": "2F EAST ATTIC CONNECTOR",
@@ -2873,10 +3022,22 @@
         }
       ],
       "enemies": [],
-      "npcs": [
+      "cutscenes": [
         {
-          "includeOffsets": [ 149348 ],
-          "excludeTypes": [ 39 ],
+          "id": 0,
+          "name": "forrest balcony",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "name": "barry",
+              "character": 34,
+              "offsets": [ "0x24764" ],
+              "exclude": [ 39 ]
+            }
+          ],
           "player": 1
         }
       ]
@@ -3704,12 +3865,6 @@
           "player": 1
         }
       ],
-      "npcs": [
-        {
-          "includeTypes": [ 42 ],
-          "player": 1
-        }
-      ],
       "enemies": [
         {
           "excludeTypes": [ 3, 4, 7, 10 ],
@@ -3718,6 +3873,25 @@
         {
           "condition": "!(!1:92 && !1:72)",
           "excludeTypes": [ 3, 4, 7, 10 ],
+          "player": 1
+        }
+      ],
+      "cutscenes": [
+        {
+          "id": 0,
+          "name": "caves entrance",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "name": "barry",
+              "character": 42,
+              "offsets": [ "0x3628E", "0x362B8" ],
+              "include": [ 42 ]
+            }
+          ],
           "player": 1
         }
       ]
@@ -3768,6 +3942,28 @@
           "excludeTypes": [ 4 ],
           "player": 1
         }
+      ],
+      "cutscenes": [
+        {
+          "id": 0,
+          "name": "caves",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "name": "barry",
+              "character": 34,
+              "offsets": [
+                "0x1AFF0",
+                "0x1B02A",
+                "0x1B046"
+              ]
+            }
+          ],
+          "player": 1
+        }
       ]
     },
     "309": {
@@ -3808,16 +4004,34 @@
           "group": 16
         }
       ],
-      "npcs": [
-        {
-          "includeTypes": [ 45 ],
-          "player": 1
-        }
-      ],
       "enemies": [
         {
           "excludeTypes": [ 4 ],
           "player": 0
+        }
+      ],
+      "cutscenes": [
+        {
+          "id": 0,
+          "name": "caves",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "name": "barry",
+              "character": 45,
+              "offsets": [
+                "0x2D768",
+                "0x2D786",
+                "0x2D79E",
+                "0x2D7FA"
+              ],
+              "include": [ 45 ]
+            }
+          ],
+          "player": 1
         }
       ]
     },
@@ -3865,26 +4079,63 @@
           "includeTypes": [ 6 ]
         }
       ],
-      "npcs": [
+      "cutscenes": [
         {
-          "includeTypes": [ 40 ],
+          "id": 0,
+          "name": "enrico",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "name": "enrico",
+              "character": 40,
+              "offsets": [ "0xAB0A", "0xAB22" ],
+              "include": [ 40 ]
+            }
+          ],
           "player": 0
         },
         {
-          "includeOffsets": [ 43940 ],
-          "includeTypes": [ 40 ],
-          "cutscene": 0,
+          "id": 0,
+          "name": "enrico (just jill)",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "globalId": "30A-enrico",
+              "name": "enrico",
+              "character": 40,
+              "offsets": [ "0xABA4" ],
+              "include": [ 40 ]
+            }
+          ],
           "player": 1
         },
         {
-          "includeOffsets": [ 43940 ],
-          "includeTypes": [ 40 ],
-          "cutscene": 1,
-          "player": 1
-        },
-        {
-          "includeOffsets": [ 43814, 43868 ],
-          "cutscene": 1,
+          "id": 1,
+          "name": "enrico (jill and barry)",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "name": "barry",
+              "character": 34,
+              "offsets": [ "0xAB26", "0xAB5C" ]
+            },
+            {
+              "globalId": "30A-enrico",
+              "name": "enrico",
+              "character": 40,
+              "offsets": [ "0xABA4" ],
+              "include": [ 40 ]
+            }
+          ],
           "player": 1
         }
       ]
@@ -4377,11 +4628,6 @@
           "group": 8
         }
       ],
-      "npcs": [
-        {
-          "includeTypes": [ 32, 33, 34, 35, 36 ]
-        }
-      ],
       "enemies": [
         {
           "id": 0,
@@ -4407,6 +4653,42 @@
         {
           "condition": "!(1:175 && !0:0)",
           "excludeTypes": [ 4 ],
+          "player": 1
+        }
+      ],
+      "cutscenes": [
+        {
+          "id": 0,
+          "name": "wesker",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "name": "wesker",
+              "character": 36,
+              "offsets": [ "0x194C6" ],
+              "include": [ 32, 33, 34, 35, 36 ]
+            }
+          ],
+          "player": 0
+        },
+        {
+          "id": 0,
+          "name": "wesker",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "name": "wesker",
+              "character": 36,
+              "offsets": [ "0x194DE" ],
+              "include": [ 32, 33, 34, 35, 36 ]
+            }
+          ],
           "player": 1
         }
       ]
@@ -4537,11 +4819,6 @@
           "group": 8
         }
       ],
-      "npcs": [
-        {
-          "excludeTypes": [ 39 ]
-        }
-      ],
       "enemies": [
         {
           "condition": "!(!0:0 && 1:61 && 1:170)",
@@ -4549,6 +4826,25 @@
         },
         {
           "player": 1
+        }
+      ],
+      "cutscenes": [
+        {
+          "id": 0,
+          "name": "rebecca after plant 42",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "name": "rebecca",
+              "character": 35,
+              "offsets": [ "0x30B9A" ],
+              "exclude": [ 39 ]
+            }
+          ],
+          "player": 0
         }
       ]
     },
@@ -4604,6 +4900,24 @@
           "excludeTypes": [ 4 ],
           "maxDifficulty": 0,
           "player": 1
+        }
+      ],
+      "cutscenes": [
+        {
+          "id": 0,
+          "name": "rebecca in store room",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "name": "rebecca",
+              "character": 35,
+              "offsets": [ "0x16862" ]
+            }
+          ],
+          "player": 0
         }
       ]
     },
@@ -4702,15 +5016,41 @@
           "group": 64
         }
       ],
-      "npcs": [
+      "enemies": [],
+      "cutscenes": [
         {
+          "id": 0,
+          "name": "plant 42 help",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "name": "rebecca",
+              "character": 35,
+              "offsets": [ "0x651E" ]
+            }
+          ],
           "player": 0
         },
         {
+          "id": 0,
+          "name": "plant 42 help",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "name": "barry",
+              "character": 43,
+              "offsets": [ "0x6514", "0x6658" ]
+            }
+          ],
           "player": 1
         }
-      ],
-      "enemies": []
+      ]
     },
     "40D": {
       "name": "GUARDHOUSE BOX PASSAGE",
@@ -5023,24 +5363,6 @@
           "target": "503:0"
         }
       ],
-      "npcs": [
-        {
-          "excludeTypes": [ 39 ],
-          "player": 0
-        },
-        {
-          "includeOffsets": [ 18776 ], // Barry (dying)
-          "includeTypes": [ 42 ],
-          "cutscene": 0,
-          "player": 1
-        },
-        {
-          "includeOffsets": [ 18798 ], // Chris (let's go)
-          "excludeTypes": [ 39 ],
-          "cutscene": 1,
-          "player": 1
-        }
-      ],
       "enemies": [
         {
           "condition": "1:75",
@@ -5048,6 +5370,61 @@
           "maxDifficulty": 1,
           "restricted": true,
           "player": 0
+        }
+      ],
+      "cutscenes": [
+        {
+          "id": 0,
+          "name": "jill escape",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "globalId": "508-jill",
+              "name": "jill",
+              "character": 33,
+              "offsets": [ "0x493A" ],
+              "exclude": [ 39 ]
+            }
+          ],
+          "player": 0
+        },
+        {
+          "id": 0,
+          "name": "barry dying",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "name": "barry",
+              "character": 42,
+              "offsets": [ "0x4958" ],
+              "include": [ 42 ]
+            }
+          ],
+          "player": 1
+        },
+        {
+          "id": 1,
+          "name": "chris escape",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "globalId": "508-chris",
+              "name": "chris",
+              "character": 32,
+              "offsets": [ "0x496E" ],
+              "exclude": [ 39 ]
+            }
+          ],
+          "player": 1
         }
       ]
     },
@@ -5334,15 +5711,39 @@
           "maxDifficulty": 2
         }
       ],
-      "npcs": [
+      "cutscenes": [
         {
-          "use": "502;0x493A",
-          "doorRando": false,
+          "id": 0,
+          "name": "escape npc",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "globalId": "508-jill",
+              "name": "jill",
+              "character": 33,
+              "offsets": [ "0x480" ]
+            }
+          ],
           "player": 0
         },
         {
-          "use": "502;0x496E",
-          "doorRando": false,
+          "id": 0,
+          "name": "escape npc",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "globalId": "508-chris",
+              "name": "chris",
+              "character": 32,
+              "offsets": [ "0x480" ]
+            }
+          ],
           "player": 1
         }
       ]
@@ -5450,7 +5851,43 @@
           "noUnlock": true
         }
       ],
-      "enemies": []
+      "enemies": [],
+      "cutscenes": [
+        {
+          "id": 0,
+          "name": "cell",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "globalId": "508-jill",
+              "name": "jill",
+              "character": 33,
+              "offsets": [ "0x14B44", "0x14B6A" ]
+            }
+          ],
+          "player": 0
+        },
+        {
+          "id": 0,
+          "name": "cell",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "globalId": "508-chris",
+              "name": "chris",
+              "character": 32,
+              "offsets": [ "0x14B44", "0x14B6A" ]
+            }
+          ],
+          "player": 1
+        }
+      ]
     },
     "50C": {
       "name": "LABORATORY B3 EAST CORRIDOR",
@@ -5493,6 +5930,40 @@
         {
           "condition": "0:45",
           "excludeTypes": [ 4 ]
+        }
+      ],
+      "cutscenes": [
+        {
+          "id": 0,
+          "name": "elevator to wesker",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "name": "rebecca",
+              "character": 35,
+              "offsets": [ "0xD80C" ]
+            }
+          ],
+          "player": 0
+        },
+        {
+          "id": 0,
+          "name": "elevator to wesker",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "name": "barry",
+              "character": 34,
+              "offsets": [ "0xD80C" ]
+            }
+          ],
+          "player": 1
         }
       ]
     },
@@ -5635,6 +6106,24 @@
           "excludeTypes": [ 4 ],
           "player": 1
         }
+      ],
+      "cutscenes": [
+        {
+          "id": 0,
+          "name": "rebecca operating machine",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "name": "rebecca",
+              "character": 35,
+              "offsets": [ "0x248AC" ]
+            }
+          ],
+          "player": 0
+        }
       ]
     },
     "512": {
@@ -5697,19 +6186,48 @@
           "includeTypes": [ 12 ]
         }
       ],
-      "npcs": [
+      "cutscenes": [
         {
-          "includeTypes": [ 46 ],
+          "id": 0,
+          "name": "tyrant",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "globalId": "513-wesker",
+              "name": "wesker",
+              "character": 46,
+              "offsets": [ "0x1C656", "0x1C6B0" ],
+              "include": [ 46 ]
+            }
+          ],
           "player": 0
         },
         {
-          "includeOffsets": [ 116516 ],
-          "includeTypes": [ 46 ],
-          "player": 1
-        },
-        {
-          "includeOffsets": [ 116458 ],
-          "includeTypes": [ 45 ],
+          "id": 0,
+          "name": "tyrant",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "globalId": "513-barry",
+              "name": "barry",
+              "character": 45,
+              "offsets": [ "0x1C6EA" ],
+              "include": [ 45 ]
+            },
+            {
+              "globalId": "513-wesker",
+              "name": "wesker",
+              "character": 46,
+              "offsets": [ "0x1C6B6", "0x1C724" ],
+              "include": [ 46 ]
+            }
+          ],
           "player": 1
         }
       ]
@@ -5732,37 +6250,58 @@
           "randomize": false
         }
       ],
-      "npcs": [
+      "enemies": [],
+      "cutscenes": [
         {
-          "includeOffsets": [ 61400 ],
-          "includeTypes": [ 36 ],
+          "id": 0,
+          "name": "betrayal",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "name": "rebecca",
+              "character": 35,
+              "offsets": [ "0xEFD8", "0xF020" ],
+              "include": [ 35 ]
+            },
+            {
+              "globalId": "513-wesker",
+              "name": "wesker",
+              "character": 36,
+              "offsets": [ "0xEFD8" ],
+              "include": [ 36 ]
+            }
+          ],
           "player": 0
         },
         {
-          "includeOffsets": [ 61428 ],
-          "includeTypes": [ 35 ],
-          "player": 0
-        },
-        {
-          "includeOffsets": [ 61472 ],
-          "player": 0
-        },
-        {
-          "includeOffsets": [ 61396 ],
-          "includeTypes": [ 36 ],
-          "player": 1
-        },
-        {
-          "includeOffsets": [ 61428 ],
-          "includeTypes": [ 32, 33, 34, 35, 36 ],
-          "player": 1
-        },
-        {
-          "includeOffsets": [ 61612 ],
+          "id": 0,
+          "name": "betrayal",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "globalId": "513-barry",
+              "name": "barry",
+              "character": 34,
+              "offsets": [ "0xEFF4", "0xF0AC" ],
+              "include": [ 32, 33, 34, 35, 36 ]
+            },
+            {
+              "globalId": "513-wesker",
+              "name": "wesker",
+              "character": 36,
+              "offsets": [ "0xEFD4" ],
+              "include": [ 36 ]
+            }
+          ],
           "player": 1
         }
-      ],
-      "enemies": []
+      ]
     },
     "515": {
       "name": "LABORATORY B4 ELEVATOR (CUTSCENE)",
