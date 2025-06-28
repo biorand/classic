@@ -31,7 +31,7 @@ namespace IntelOrca.Biohazard.BioRand
                 {
                     Id = ch.Id,
                     Actor = actor,
-                    Playable = ch.Playable
+                    IncludeInDefaultPool = !ch.Playable && ch.Flexible
                 });
             }
             return result.ToImmutable();
@@ -41,7 +41,7 @@ namespace IntelOrca.Biohazard.BioRand
         {
             var voices = VoiceTargetRepository.Load(context.DataManager, BioVersion.Biohazard1);
             var availableCharacters = GetAvailableCharacters(context);
-            var defaultCharacterPool = availableCharacters.Where(x => !x.Playable).ToImmutableArray();
+            var defaultCharacterPool = availableCharacters.Where(x => x.IncludeInDefaultPool).ToImmutableArray();
             var result = ImmutableArray.CreateBuilder<Cutscene>();
             var rooms = context.Variation.Map.Rooms;
             foreach (var room in rooms.Values)
@@ -214,7 +214,7 @@ namespace IntelOrca.Biohazard.BioRand
         {
             public int Id { get; set; }
             public required string Actor { get; set; }
-            public bool Playable { get; set; }
+            public bool IncludeInDefaultPool { get; set; }
         }
     }
 

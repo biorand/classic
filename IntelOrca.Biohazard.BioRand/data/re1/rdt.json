@@ -542,12 +542,14 @@
     {
       "id": 37,
       "name": "Kenneth",
-      "actor": "kenneth"
+      "actor": "kenneth",
+      "flexible": false
     },
     {
       "id": 38,
       "name": "Forrest",
-      "actor": "forrest"
+      "actor": "forrest",
+      "flexible": false
     },
     {
       "id": 39,
@@ -563,32 +565,38 @@
     {
       "id": 41,
       "name": "Kenneth (2)",
-      "actor": "kenneth"
+      "actor": "kenneth",
+      "flexible": false
     },
     {
       "id": 42,
       "name": "Barry (2)",
-      "actor": "barry"
+      "actor": "barry",
+      "flexible": false
     },
     {
       "id": 43,
       "name": "Barry (Stars 2)",
-      "actor": "barry"
+      "actor": "barry",
+      "flexible": false
     },
     {
       "id": 44,
       "name": "Rebecca (Stars 2)",
-      "actor": "rebecca"
+      "actor": "rebecca",
+      "flexible": false
     },
     {
       "id": 45,
       "name": "Barry (3)",
-      "actor": "barry"
+      "actor": "barry",
+      "flexible": false
     },
     {
       "id": 46,
       "name": "Wesker (Stars 2)",
-      "actor": "wesker"
+      "actor": "wesker",
+      "flexible": false
     }
   ],
   "rooms": {
@@ -881,7 +889,7 @@
         {
           "id": 0,
           "globalId": 28,
-          "excludeTypes": [ 3, 4, 9, 10 ]
+          "excludeTypes": [ 3, 4, 6, 9, 10 ]
         }
       ]
     },

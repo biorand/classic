@@ -183,6 +183,7 @@ namespace IntelOrca.Biohazard.BioRand
         public string Actor { get; set; } = "";
         public bool Playable { get; set; }
         public bool Weapon { get; set; }
+        public bool Flexible { get; set; } = true;
     }
 
     [DebuggerDisplay("{Name}")]
