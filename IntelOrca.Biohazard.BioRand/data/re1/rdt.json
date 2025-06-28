@@ -625,7 +625,7 @@
       "cutscenes": [
         {
           "id": 0,
-          "name": "all",
+          "name": "spray",
           "actors": [
             {
               "name": "chris",
@@ -637,10 +637,44 @@
               "offsets": [
                 "10D2E",
                 "10D6E",
-                "10DAC",
+                "10DAC"
+              ]
+            }
+          ],
+          "player": 0
+        },
+        {
+          "id": 1,
+          "name": "heal",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "name": "rebecca",
+              "character": 35,
+              "offsets": [
                 "10E0C",
+                "10ED4"
+              ]
+            }
+          ],
+          "player": 0
+        },
+        {
+          "id": 2,
+          "name": "after poison",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "name": "rebecca",
+              "character": 35,
+              "offsets": [
                 "10E24",
-                "10ED4",
                 "10F0E"
               ]
             }
@@ -1711,16 +1745,53 @@
       "cutscenes": [
         {
           "id": 0,
-          "name": "piano",
+          "name": "piano intro",
           "actors": [
             {
               "name": "chris",
               "character": 0
             },
             {
+              "globalId": "10F-rebecca",
               "name": "rebecca",
               "character": 35,
-              "offsets": [ "0x30BA4", "0x30BC2" ],
+              "offsets": [ "0x30BA4" ],
+              "include": [ 35 ]
+            }
+          ],
+          "player": 0
+        },
+        {
+          "id": 1,
+          "name": "piano progressing",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "globalId": "10F-rebecca",
+              "name": "rebecca",
+              "character": 35,
+              "offsets": [ "0x30BC2" ],
+              "include": [ 35 ]
+            }
+          ],
+          "player": 0
+        },
+        {
+          "id": 2,
+          "name": "piano complete",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "globalId": "10F-rebecca",
+              "name": "rebecca",
+              "character": 35,
+              "offsets": [ "0x30BC2" ],
               "include": [ 35 ]
             }
           ],
@@ -2001,7 +2072,8 @@
               "character": 34,
               "offsets": [ "0x22A6", "0x22BC" ]
             }
-          ]
+          ],
+          "player": 1
         }
       ]
     },
@@ -2809,7 +2881,29 @@
       "cutscenes": [
         {
           "id": 0,
-          "name":  "richard poison",
+          "name": "richard poison",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "name": "rebecca",
+              "character": 35,
+              "offsets": [ "0x29078", "0x29118" ]
+            },
+            {
+              "name": "richard",
+              "character": 39,
+              "offsets": [ "0x29058", "0x290EA", "0x29102" ],
+              "includeTypes": [ 40, 42 ]
+            }
+          ],
+          "player": 0
+        },
+        {
+          "id": 1,
+          "name": "richard poison",
           "actors": [
             {
               "name": "chris",
@@ -3953,6 +4047,7 @@
               "character": 0
             },
             {
+              "globalId": "308-barry",
               "name": "barry",
               "character": 34,
               "offsets": [
@@ -4020,6 +4115,7 @@
               "character": 0
             },
             {
+              "globalId": "308-barry",
               "name": "barry",
               "character": 45,
               "offsets": [
@@ -4124,6 +4220,7 @@
               "character": 0
             },
             {
+              "globalId": "308-barry",
               "name": "barry",
               "character": 34,
               "offsets": [ "0xAB26", "0xAB5C" ]
