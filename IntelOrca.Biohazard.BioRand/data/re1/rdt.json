@@ -635,9 +635,9 @@
               "name": "rebecca",
               "character": 35,
               "offsets": [
-                "10D2E",
-                "10D6E",
-                "10DAC"
+                "0x10D2E",
+                "0x10D6E",
+                "0x10DAC"
               ]
             }
           ],
@@ -655,8 +655,8 @@
               "name": "rebecca",
               "character": 35,
               "offsets": [
-                "10E0C",
-                "10ED4"
+                "0x10E0C",
+                "0x10ED4"
               ]
             }
           ],
@@ -674,8 +674,8 @@
               "name": "rebecca",
               "character": 35,
               "offsets": [
-                "10E24",
-                "10F0E"
+                "0x10E24",
+                "0x10F0E"
               ]
             }
           ],
