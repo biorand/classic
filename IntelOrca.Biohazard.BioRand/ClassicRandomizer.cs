@@ -9,8 +9,7 @@ using System.Text.RegularExpressions;
 
 namespace IntelOrca.Biohazard.BioRand
 {
-
-    internal class ClassicRandomizer(IClassicRandomizerController controller) : IRandomizer
+    internal class ClassicRandomizer(IClassicRandomizerController controller) : IClassicRandomizer
     {
         public RandomizerConfigurationDefinition ConfigurationDefinition => CreateConfigDefinition();
         public RandomizerConfiguration DefaultConfiguration => ConfigurationDefinition.GetDefault();
@@ -688,6 +687,17 @@ namespace IntelOrca.Biohazard.BioRand
             return result;
         }
 
+        public ModBuilder RandomizeToMod(RandomizerInput input)
+        {
+            var dataManager = GetDataManager();
+            var gameDataManager = GetGameDataManager();
+            var rng = new Rng(input.Seed);
+            var context = new Context(input.Configuration.Clone(), dataManager, gameDataManager, rng);
+            controller.ApplyConfigModifications(context);
+            var generatedVariation = Randomize(context);
+            return generatedVariation.ModBuilder;
+        }
+
         public RandomizerOutput Randomize(RandomizerInput input)
         {
             var dataManager = GetDataManager();
@@ -697,7 +707,7 @@ namespace IntelOrca.Biohazard.BioRand
 
             controller.ApplyConfigModifications(context);
             var generatedVariation = Randomize(context);
-            var crModBuilder = CreateCrModBuilder(input, generatedVariation);
+            var crModBuilder = CreateCrModBuilder(input, generatedVariation).Build();
 
             var assets = new List<RandomizerOutputAsset>();
             var debugEnv = Environment.GetEnvironmentVariable("BIORAND_DEBUG_OUTPUT");

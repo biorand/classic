@@ -4,7 +4,7 @@ using IntelOrca.Biohazard.Model;
 
 namespace IntelOrca.Biohazard.BioRand.RE1
 {
-    internal class Re1CharacterGenerator(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
+    internal class Re1CharacterGenerator(DataManager gameDataManager, ClassicRebirthModBuilder crModBuilder)
     {
         public void Generate(byte emdId, CharacterReplacement cr)
         {
@@ -88,7 +88,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     return new PlwFile(BioVersion.Biohazard1, plwPath);
                 }
 
-                var originalData = context.GameDataManager.TryGetData($"JPN/PLAYERS/{plwFileName}");
+                var originalData = gameDataManager.TryGetData($"JPN/PLAYERS/{plwFileName}");
                 if (originalData != null)
                 {
                     return new PlwFile(BioVersion.Biohazard1, new MemoryStream(originalData));
@@ -100,7 +100,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
         private ModelFile GetBaseEmd(byte id)
         {
-            var data = context.GameDataManager.GetData($"JPN/ENEMY/EM10{id:X2}.EMD");
+            var data = gameDataManager.GetData($"JPN/ENEMY/EM10{id:X2}.EMD");
             return new EmdFile(BioVersion.Biohazard1, new MemoryStream(data));
         }
 

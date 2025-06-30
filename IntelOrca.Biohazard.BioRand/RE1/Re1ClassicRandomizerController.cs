@@ -1586,7 +1586,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
         private void AddNpcSkins(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
         {
-            var generator = new Re1CharacterGenerator(context, crModBuilder);
+            var generator = new Re1CharacterGenerator(context.GameDataManager, crModBuilder);
             foreach (var kvp in context.ModBuilder.Characters)
             {
                 if (kvp.Key < 2)

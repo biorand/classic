@@ -1,6 +1,6 @@
 ﻿namespace IntelOrca.Biohazard.BioRand
 {
-    internal class EnemyPlacement
+    public class EnemyPlacement
     {
         public RdtId RdtId { get; set; }
         public int GlobalId { get; set; }

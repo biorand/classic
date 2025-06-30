@@ -7,13 +7,16 @@ using System.Text.Json;
 
 namespace IntelOrca.Biohazard.BioRand
 {
-    internal class ModBuilder
+    public class ModBuilder
     {
         private readonly Dictionary<RdtItemId, DoorLock?> _doorLock = new();
         private readonly Dictionary<int, Item> _itemMap = new();
         private readonly List<EnemyPlacement> _enemyPlacements = new();
         private readonly Dictionary<string, MusicSourceFile> _music = new(StringComparer.OrdinalIgnoreCase);
 
+        public string Name { get; set; } = "";
+        public string Description { get; set; } = "";
+        public ImmutableDictionary<string, object> General { get; set; } = ImmutableDictionary.Create<string, object>();
         public ImmutableArray<RandomInventory> Inventory { get; set; } = [];
         public ImmutableArray<int> AssignedItemGlobalIds => [.. _itemMap.Keys];
         public ImmutableArray<EnemyPlacement> EnemyPlacements => [.. _enemyPlacements];
@@ -76,7 +79,7 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
-        public string GetDump(IClassicRandomizerGeneratedVariation context)
+        internal string GetDump(IClassicRandomizerGeneratedVariation context)
         {
             var map = context.Variation.Map;
             var mdb = new MarkdownBuilder();
@@ -229,6 +232,11 @@ namespace IntelOrca.Biohazard.BioRand
             public Item Item => item;
             public MapItemDefinition? Definition => definition;
             public string Group => definition?.Kind.Split('/').First() ?? "";
+        }
+
+        public static ModBuilder FromJson(string json)
+        {
+            return new ModBuilder();
         }
 
         public string ToJson()

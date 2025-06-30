@@ -2,7 +2,7 @@
 
 namespace IntelOrca.Biohazard.BioRand
 {
-    internal class CharacterReplacement(string character, int weapon)
+    public class CharacterReplacement(string character, int weapon)
     {
         public string Path => character;
 
