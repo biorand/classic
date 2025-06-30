@@ -4062,7 +4062,8 @@
                 "0x1AFF0",
                 "0x1B02A",
                 "0x1B046"
-              ]
+              ],
+              "include": [ 45 ]
             }
           ],
           "player": 1
@@ -4231,7 +4232,8 @@
               "globalId": "308-barry",
               "name": "barry",
               "character": 34,
-              "offsets": [ "0xAB26", "0xAB5C" ]
+              "offsets": [ "0xAB26", "0xAB5C" ],
+              "include": [ 45 ]
             },
             {
               "globalId": "30A-enrico",
