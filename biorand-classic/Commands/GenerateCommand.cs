@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 using IntelOrca.Biohazard.BioRand.RE1;
@@ -34,7 +35,7 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
 
         public override ValidationResult Validate(CommandContext context, Settings settings)
         {
-            if (GetBioVersion(settings.Game) == null)
+            if (settings.InputPath == null && GetBioVersion(settings.Game) == null)
             {
                 return ValidationResult.Error($"Unknown game or not specified");
             }
@@ -48,7 +49,6 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
 
         public override Task<int> ExecuteAsync(CommandContext context, Settings settings)
         {
-            var game = GetBioVersion(settings.Game)!.Value;
             var input = new RandomizerInput();
             input.Seed = settings.Seed;
             if (!string.IsNullOrEmpty(settings.ConfigPath))
@@ -60,46 +60,59 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
             if (settings.InputPath == null)
             {
                 // Randomizer not generated
-                var randomizer = ClassicRandomizerFactory.Default.Create(game);
+                var version = GetBioVersion(settings.Game)!.Value;
+                var randomizer = ClassicRandomizerFactory.Default.Create(version);
                 var mod = randomizer.RandomizeToMod(input);
                 if (settings.NoMod)
                 {
+                    // Just generate mod JSON
                     File.WriteAllText(settings.OutputPath!, mod.ToJson());
                 }
                 else
                 {
+                    // Generate the mod too
+                    return Task.FromResult(GenerateMod(mod, settings.OutputPath!));
                 }
             }
             else
             {
-                // Randomizer pre-generated
-                var mod = ModBuilder.FromJson(File.ReadAllText(settings.InputPath));
-                var builder = ClassicRandomizerFactory.Default.CreateModBuilder(game);
-                if (builder is ICrModBuilder crModBuilder)
-                {
-                    var crMod = crModBuilder.Create(mod);
-                    File.WriteAllBytes("", crMod.Create7z());
-                }
+                // Randomizer pre-generated, just generate the mod
+                var mod = ClassicMod.FromJson(File.ReadAllText(settings.InputPath));
+                return Task.FromResult(GenerateMod(mod, settings.OutputPath!));
+            }
+            return Task.FromResult(0);
+        }
+
+        private static int GenerateMod(ClassicMod mod, string outputPath)
+        {
+            if (GetBioVersion(mod.Game) is not BioVersion version)
+            {
+                Console.Error.WriteLine("Unsupported or invalid game moniker.");
+                return 1;
             }
 
-            // var output = randomizer.Randomize(input);
-            // foreach (var asset in output.Assets)
-            // {
-            //     var assetPath = Path.Combine(settings.OutputPath!, asset.FileName);
-            //     File.WriteAllBytes(assetPath, asset.Data);
-            // }
-
-            return Task.FromResult(0);
+            var builder = ClassicRandomizerFactory.Default.CreateModBuilder(version);
+            if (builder is ICrModBuilder crModBuilder)
+            {
+                var crMod = crModBuilder.Create(mod);
+                File.WriteAllBytes(outputPath, crMod.Create7z());
+                return 0;
+            }
+            else
+            {
+                Console.Error.WriteLine("Failed to generate mod.");
+                return 1;
+            }
         }
 
         private static BioVersion? GetBioVersion(string? game)
         {
             return game?.ToLowerInvariant() switch
             {
-                "1" => BioVersion.Biohazard1,
-                "2" => BioVersion.Biohazard2,
-                "3" => BioVersion.Biohazard3,
-                "cv" => BioVersion.BiohazardCv,
+                "re1" => BioVersion.Biohazard1,
+                "re2" => BioVersion.Biohazard2,
+                "re3" => BioVersion.Biohazard3,
+                "recv" => BioVersion.BiohazardCv,
                 _ => null
             };
         }

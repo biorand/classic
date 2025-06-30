@@ -687,7 +687,7 @@ namespace IntelOrca.Biohazard.BioRand
             return result;
         }
 
-        public ModBuilder RandomizeToMod(RandomizerInput input)
+        public ClassicMod RandomizeToMod(RandomizerInput input)
         {
             var dataManager = GetDataManager();
             var gameDataManager = GetGameDataManager();
@@ -695,7 +695,21 @@ namespace IntelOrca.Biohazard.BioRand
             var context = new Context(input.Configuration.Clone(), dataManager, gameDataManager, rng);
             controller.ApplyConfigModifications(context);
             var generatedVariation = Randomize(context);
-            return generatedVariation.ModBuilder;
+
+            generatedVariation.ModBuilder.Game = "re1";
+            generatedVariation.ModBuilder.Name = $"BioRand | {input.ProfileName} | {input.Seed}";
+            generatedVariation.ModBuilder.Description =
+                $"""
+                BioRand 4.0 ({BuildVersion})
+                Profile: {input.ProfileName} by {input.ProfileAuthor}
+                Seed: {input.Seed}
+
+                {input.ProfileDescription}
+                """;
+            generatedVariation.ModBuilder.Seed = input.Seed;
+            generatedVariation.ModBuilder.Configuration = input.Configuration;
+
+            return generatedVariation.ModBuilder.Build();
         }
 
         public RandomizerOutput Randomize(RandomizerInput input)

@@ -487,4 +487,27 @@ namespace IntelOrca.Biohazard.BioRand
             writer.WriteStringValue(value.ToString());
         }
     }
+
+    internal class RdtItemIdConverter : JsonConverter<RdtItemId>
+    {
+        public override RdtItemId ReadAsPropertyName(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            return Read(ref reader, typeToConvert, options);
+        }
+
+        public override void WriteAsPropertyName(Utf8JsonWriter writer, RdtItemId value, JsonSerializerOptions options)
+        {
+            writer.WritePropertyName(value.ToString());
+        }
+
+        public override RdtItemId Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            return RdtItemId.Parse(reader.GetString() ?? "");
+        }
+
+        public override void Write(Utf8JsonWriter writer, RdtItemId value, JsonSerializerOptions options)
+        {
+            writer.WriteStringValue(value.ToString());
+        }
+    }
 }

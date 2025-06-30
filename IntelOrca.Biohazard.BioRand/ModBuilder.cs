@@ -14,6 +14,7 @@ namespace IntelOrca.Biohazard.BioRand
         private readonly List<EnemyPlacement> _enemyPlacements = new();
         private readonly Dictionary<string, MusicSourceFile> _music = new(StringComparer.OrdinalIgnoreCase);
 
+        public string Game { get; set; } = "";
         public string Name { get; set; } = "";
         public string Description { get; set; } = "";
         public ImmutableDictionary<string, object> General { get; set; } = ImmutableDictionary.Create<string, object>();
@@ -25,6 +26,8 @@ namespace IntelOrca.Biohazard.BioRand
         public ImmutableArray<string> EnemySkins { get; set; } = [];
         public ImmutableArray<NpcReplacement> Npcs { get; set; } = [];
         public ImmutableDictionary<string, string> Voices { get; set; } = ImmutableDictionary<string, string>.Empty;
+        public int? Seed { get; set; }
+        public RandomizerConfiguration? Configuration { get; set; }
 
         public void SetDoorTarget(RdtItemId doorIdentity, RdtItemId target)
         {
@@ -262,6 +265,77 @@ namespace IntelOrca.Biohazard.BioRand
                 Voices,
                 Music = _music
             }, options);
+        }
+
+        public ClassicMod Build()
+        {
+            return new ClassicMod()
+            {
+                Game = Game,
+                Name = Name,
+                Description = Description,
+                General = General,
+                Inventory = Inventory,
+                Doors = _doorLock.ToImmutableDictionary(),
+                Items = _itemMap.ToImmutableDictionary(),
+                EnemyPlacements = EnemyPlacements,
+                Music = Music,
+                Characters = Characters,
+                EnemySkins = EnemySkins,
+                Npcs = Npcs,
+                Voices = Voices,
+                Seed = Seed,
+                Configuration = Configuration
+            };
+        }
+    }
+
+    public sealed class ClassicMod
+    {
+        public string Game { get; init; } = "";
+        public string Name { get; init; } = "";
+        public string Description { get; init; } = "";
+        public ImmutableDictionary<string, object> General { get; init; } = ImmutableDictionary.Create<string, object>();
+        public ImmutableArray<RandomInventory> Inventory { get; init; } = [];
+        public ImmutableDictionary<RdtItemId, DoorLock?> Doors { get; init; } = ImmutableDictionary.Create<RdtItemId, DoorLock?>();
+        public ImmutableDictionary<int, Item> Items { get; init; } = ImmutableDictionary.Create<int, Item>();
+        public ImmutableArray<EnemyPlacement> EnemyPlacements { get; init; } = [];
+        public ImmutableDictionary<string, MusicSourceFile> Music { get; init; } = ImmutableDictionary<string, MusicSourceFile>.Empty;
+        public ImmutableDictionary<int, CharacterReplacement> Characters { get; init; } = ImmutableDictionary<int, CharacterReplacement>.Empty;
+        public ImmutableArray<string> EnemySkins { get; init; } = [];
+        public ImmutableArray<NpcReplacement> Npcs { get; init; } = [];
+        public ImmutableDictionary<string, string> Voices { get; init; } = ImmutableDictionary<string, string>.Empty;
+        public int? Seed { get; init; }
+        public RandomizerConfiguration? Configuration { get; init; }
+
+        public static ClassicMod FromJson(string json)
+        {
+            return JsonSerializer.Deserialize<ClassicMod>(json, JsonOptions)!;
+        }
+
+        public string ToJson()
+        {
+            return JsonSerializer.Serialize(this, JsonOptions);
+        }
+
+        private static JsonSerializerOptions JsonOptions { get; } = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
+            WriteIndented = true,
+            Converters = {
+                new RdtIdConverter(),
+                new RdtItemIdConverter(),
+                new RandomizerConfigurationJsonConverter2() },
+            Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
+        };
+    }
+
+    internal class RandomizerConfigurationJsonConverter2 : RandomizerConfigurationJsonConverter
+    {
+        public override RandomizerConfiguration? Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        {
+            var d = JsonSerializer.Deserialize(ref reader, typeof(Dictionary<string, object>)) as Dictionary<string, object>;
+            return RandomizerConfiguration.FromDictionary(d!);
         }
     }
 }

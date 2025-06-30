@@ -2,6 +2,6 @@
 {
     public interface IClassicRandomizer : IRandomizer
     {
-        ModBuilder RandomizeToMod(RandomizerInput input);
+        ClassicMod RandomizeToMod(RandomizerInput input);
     }
 }

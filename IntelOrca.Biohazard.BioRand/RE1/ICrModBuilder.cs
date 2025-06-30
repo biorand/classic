@@ -2,6 +2,6 @@
 {
     public interface ICrModBuilder
     {
-        ClassicRebirthMod Create(ModBuilder mod);
+        ClassicRebirthMod Create(ClassicMod mod);
     }
 }

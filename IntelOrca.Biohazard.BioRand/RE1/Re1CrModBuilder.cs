@@ -17,7 +17,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 {
     internal class Re1CrModBuilder : ICrModBuilder
     {
-        public ClassicRebirthMod Create(ModBuilder mod)
+        public ClassicRebirthMod Create(ClassicMod mod)
         {
             var session = new Session(mod);
             return session.Create();
@@ -27,11 +27,11 @@ namespace IntelOrca.Biohazard.BioRand.RE1
         {
             private readonly DataManager _dataManager = GetDataManager();
             private readonly DataManager _gameDataManager = GetGameDataManager();
-            private readonly ModBuilder _mod;
+            private readonly ClassicMod _mod;
             private readonly ClassicRebirthModBuilder _crModBuilder;
             private readonly Map _map;
 
-            public Session(ModBuilder mod)
+            public Session(ClassicMod mod)
             {
                 _mod = mod;
                 _crModBuilder = new ClassicRebirthModBuilder(mod.Name);
@@ -55,7 +55,10 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             public ClassicRebirthMod Create()
             {
                 _crModBuilder.Description = _mod.Description;
-                // __crModBuilder.SetFile("config.json", input.Configuration.ToJson(true));
+                if (_mod.Configuration is RandomizerConfiguration config)
+                {
+                    _crModBuilder.SetFile("config.json", config.ToJson(true));
+                }
 
                 _crModBuilder.Module = new ClassicRebirthModule("biorand.dll", _dataManager.GetData("biorand.dll"));
                 // __crModBuilder.SetFile("log.md", mod.GetDump(context));
@@ -121,14 +124,9 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     DisableCutscenes(gameData);
                 }
                 ApplyPostPatches(gameData);
-                foreach (var rrdt in gameData.Rdts)
-                {
-                    _mod.ApplyToRdt(rrdt);
-                }
-                if (RandomEnemies)
-                {
-                    ApplyEnemies(gameData);
-                }
+                ApplyDoors(gameData);
+                ApplyItems(gameData);
+                ApplyEnemies(gameData);
                 ApplyNpcs(gameData);
                 foreach (var rrdt in gameData.Rdts)
                 {
@@ -735,7 +733,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                         if (item.GlobalId is not short globalId)
                             continue;
 
-                        if (_mod.GetItem(globalId) is Item newItem && item.TypeOffsets != null)
+                        if (_mod.Items.GetValueOrDefault(globalId) is Item newItem && item.TypeOffsets != null)
                         {
                             foreach (var o in item.TypeOffsets)
                             {
@@ -750,8 +748,50 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 }
             }
 
+            private void ApplyDoors(GameData gameData)
+            {
+                foreach (var rrdt in gameData.Rdts)
+                {
+                    foreach (var doorOpcode in rrdt.Doors)
+                    {
+                        var doorIdentity = new RdtItemId(rrdt.RdtId, doorOpcode.Id);
+                        if (_mod.Doors.TryGetValue(doorIdentity, out var doorLock))
+                        {
+                            if (doorLock == null)
+                            {
+                                doorOpcode.LockId = 0;
+                                doorOpcode.LockType = 0;
+                            }
+                            else
+                            {
+                                doorOpcode.LockId = (byte)doorLock.Value.Id;
+                                doorOpcode.LockType = (byte)doorLock.Value.KeyItemId;
+                            }
+                        }
+                    }
+                }
+            }
+
+            private void ApplyItems(GameData gameData)
+            {
+                foreach (var rrdt in gameData.Rdts)
+                {
+                    foreach (var itemOpcode in rrdt.Items)
+                    {
+                        if (_mod.Items.TryGetValue(itemOpcode.GlobalId, out var item))
+                        {
+                            itemOpcode.Type = item.Type;
+                            itemOpcode.Amount = item.Amount;
+                        }
+                    }
+                }
+            }
+
             private void ApplyEnemies(GameData gameData)
             {
+                if (!RandomEnemies)
+                    return;
+
                 // Clear all enemies
                 foreach (var rdt in gameData.Rdts)
                 {

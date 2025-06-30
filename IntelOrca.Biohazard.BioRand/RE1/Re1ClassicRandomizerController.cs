@@ -1744,7 +1744,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             crModBuilder.SetFile("bgm_tbl.xml", bgmTable);
 
             var encoder = new BgmBatchEncoder();
-            encoder.Process(context.ModBuilder, crModBuilder);
+            encoder.Process(context.ModBuilder.Build(), crModBuilder);
         }
 
         private void AddMiscXml(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
