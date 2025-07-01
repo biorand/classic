@@ -50,7 +50,7 @@ namespace IntelOrca.Biohazard.BioRand
             string[] GetEnabledCharacters(string prefix)
             {
                 return GetCharacters()
-                    .Where(x => context.Configuration.GetValueOrDefault($"{prefix}character/{Path.GetFileName(x)}", true))
+                    .Where(x => context.Configuration.GetValueOrDefault($"{prefix}/character/{Path.GetFileName(x)}", true))
                     .Shuffle(rng);
             }
 
