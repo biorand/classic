@@ -123,12 +123,19 @@ namespace IntelOrca.Biohazard.BioRand
                 door.AllowedLocks = [];
                 if (door.LockId != null)
                 {
-                    door.Requires2 = [];
-                    door.LockId = null;
-                    door.LockKey = null;
-
                     var doorInfo = doors.First(x => x.Door == door);
                     AssignDoorLock(context.ModBuilder, doorInfo, null);
+                }
+
+                var otherSide = map.GetOtherSide(door);
+                if (otherSide != null)
+                {
+                    otherSide.AllowedLocks = [];
+                    if (otherSide.LockId != null)
+                    {
+                        var doorInfo = doors.First(x => x.Door == otherSide);
+                        AssignDoorLock(context.ModBuilder, doorInfo, null);
+                    }
                 }
             }
         }
