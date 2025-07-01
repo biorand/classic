@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
@@ -1092,6 +1093,8 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
         public void Write(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)
         {
+            crModBuilder.SetFile("biorand.dat", new byte[0]);
+
             WriteRdts(context, crModBuilder);
             AddMiscXml(context, crModBuilder);
             AddSoundXml(context, crModBuilder);
@@ -1483,6 +1486,8 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     .ToArray());
             }
 
+            FixWeaponHitScan(crModBuilder, $"{characterPath}/weapons.csv", srcPlayer, context.Variation.PlayerIndex);
+
             string[] GetHurtFiles(string character)
             {
                 var allHurtFiles = context.DataManager.GetHurtFiles(character)
@@ -1508,6 +1513,45 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     return null;
                 return File.ReadAllBytes(path);
             }
+        }
+
+        private void FixWeaponHitScan(ClassicRebirthModBuilder crModBuilder, string csvPath, int srcPlayer, int targetPlayer)
+        {
+            var table = new short[]
+            {
+                -2026, -1656, -2530, -2280, -2040, -1800,
+                -1917, -1617, -2190, -1940, -2003, -1720
+            };
+            var targetSpan = new Span<short>(table, targetPlayer * 6, 6);
+
+            if (File.Exists(csvPath))
+            {
+                var csv = File.ReadAllLines(csvPath)
+                    .Where(x => !string.IsNullOrWhiteSpace(x))
+                    .Select(x => x.Trim().Split(','))
+                    .ToArray();
+
+                for (var i = 0; i < targetSpan.Length; i++)
+                {
+                    targetSpan[i] = short.Parse(csv[i][0]);
+                }
+            }
+            else
+            {
+                var sourceSpan = new Span<short>(table, srcPlayer * 6, 6);
+                sourceSpan.CopyTo(targetSpan);
+            }
+
+            var ms = new MemoryStream();
+            var pw = new PatchWriter(ms);
+            pw.Begin(0x4AAD98);
+            var data = MemoryMarshal.Cast<short, byte>(new Span<short>(table));
+            foreach (var d in data)
+            {
+                pw.Write(d);
+            }
+            pw.End();
+            crModBuilder.SetFile("biorand.dat", ms.ToArray());
         }
 
         private void AddNpcSkins(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder)

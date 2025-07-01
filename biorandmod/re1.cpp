@@ -101,6 +101,7 @@ public:
         EnableChrisNoInk();
         EnableChrisLockpick();
         IncreaseLockLimit();
+        DoDynamicTweaks();
     }
 
     void LoadGame(const uint8_t* src, size_t pos, size_t size) override
@@ -138,6 +139,12 @@ public:
     }
 
 private:
+    static int LoadFile(const char* path, void* dst)
+    {
+        using LoadFileFunc = int(__cdecl*)(char*, void*, int);
+        return ((LoadFileFunc)0x43E970)(const_cast<char*>(path), dst, 32);
+    }
+
     static void InitCustomData()
     {
         memset(&_customData, 0, sizeof(_customData));
@@ -261,6 +268,38 @@ private:
         _mm.Write(0x456483, flagAddress);
 
         _mm.HookJmp(0x48DB4A, PostGameInit);
+    }
+
+    void DoDynamicTweaks()
+    {
+        auto maxCapacity = 8 * 1024 * 1024;
+        auto tempBuffer = std::malloc(maxCapacity); // 8 MiB
+        if (tempBuffer == nullptr)
+        {
+            BioRandMessageBox("BioRand", "Failed to allocate memory for dynamic tweaks.");
+            return;
+        }
+
+        auto len = LoadFile("d:\\horr\\jpn\\biorand.dat", tempBuffer);
+        if (len > maxCapacity)
+        {
+            BioRandMessageBox("BioRand", "Dynamic tweaks file too large.");
+            std::free(tempBuffer);
+            return;
+        }
+
+        auto ptr = (uint8_t*)tempBuffer;
+        auto end = ptr + len;
+        while (ptr < end)
+        {
+            uint32_t entryOffset, entryLength;
+            std::memcpy(&entryOffset, ptr, sizeof(uint32_t));
+            ptr += sizeof(uint32_t);
+            std::memcpy(&entryLength, ptr, sizeof(uint32_t));
+            ptr += sizeof(uint32_t);
+            _mm.Write(entryOffset, ptr, entryLength);
+            ptr += entryLength;
+        }
     }
 
     static void PostGameInit()
