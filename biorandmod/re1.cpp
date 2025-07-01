@@ -45,16 +45,18 @@ struct ITEM_MIX
 struct ITEM_MIX_TABLE
 {
     uint8_t count;
-    ITEM_MIX data[4];
+    ITEM_MIX data[6];
 };
 
 static const ITEM_MIX_TABLE _blueHerbMix[] = {
-    4,
+    6,
     {
         { ITEM_ID_HERB_B, ITEM_ID_HERB_G, ITEM_ID_NONE, MIX_COMMON },
         { ITEM_ID_HERB_G, ITEM_ID_HERB_GB, ITEM_ID_NONE, MIX_COMMON },
         { ITEM_ID_HERB_GR, ITEM_ID_HERB_GRB, ITEM_ID_NONE, MIX_COMMON },
-        { ITEM_ID_HERB_GG, ITEM_ID_HERB_GGB, ITEM_ID_NONE, MIX_COMMON }
+        { ITEM_ID_HERB_GG, ITEM_ID_HERB_GGB, ITEM_ID_NONE, MIX_COMMON },
+        { ITEM_ID_HERB_GB, ITEM_ID_HERB_GG, ITEM_ID_NONE, MIX_COMMON },
+        { ITEM_ID_HERB_GGB, ITEM_ID_HERB_GGG, ITEM_ID_NONE, MIX_COMMON }
     }
 };
 
