@@ -173,15 +173,6 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             var map = context.DataManager.GetJson<Map>(BioVersion.Biohazard1, "rdt.json");
             map = map.For(new MapFilter(false, (byte)playerIndex, 0));
 
-            // All original locks had 0x80 (some had 0x40 but we can ignore those)
-            foreach (var d in map.Rooms.Values.SelectMany(x => x.Doors))
-            {
-                if (d.LockId is byte lockId)
-                {
-                    d.LockId = (byte)(0x80 | lockId);
-                }
-            }
-
             // Lockpick, remove all sword key and small key requirements
             var enableLockpick = context.Configuration.GetValueOrDefault("inventory/special/lockpick", "Always") == "Always";
             if (enableLockpick)
@@ -539,7 +530,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
         private void ApplyRdtPatches(IClassicRandomizerGeneratedVariation context, GameData gameData, int player)
         {
-            const byte PassCodeDoorLockId = 209;
+            const byte PassCodeDoorLockId = 17;
             var randomDoors = context.Configuration.GetValueOrDefault("doors/random", false);
             var randomItems = context.Configuration.GetValueOrDefault("items/random", false);
 
@@ -553,7 +544,6 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             FixDrugStoreRoom();
             AllowRoughPassageDoorUnlock();
             ShotgunOnWallFix();
-            FixCrestDoor();
             DisablePoisonChallenge();
             DisableBarryEvesdrop();
             AllowPartnerItemBoxes();
@@ -605,7 +595,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                             Re1UnkB = 0,
                             Animation = 0,
                             Re1UnkC = 2,
-                            LockId = 21 | 0x80,
+                            LockId = 21,
                             Target = new RdtId(255, 0x06),
                             NextX = 9180,
                             NextY = 0,
@@ -663,7 +653,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     {
                         rdt.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x01, [0x0A]));
                         rdt.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x04, [0x01, 0x25, 0x00]));
-                        rdt.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x05, [0x02, PassCodeDoorLockId - 192, 0]));
+                        rdt.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x05, [0x02, PassCodeDoorLockId, 0]));
                         rdt.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x03, [0x00]));
                     }
 
@@ -741,12 +731,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     if (rdt115 == null)
                         continue;
 
-                    if (player == 0)
-                    {
-                        rdt115.Patches.Add(new KeyValuePair<int, byte>(0x22BC + 2 + 128, 1));
-                        rdt115.Patches.Add(new KeyValuePair<int, byte>(0x22DE + 2 + 128, 1));
-                    }
-                    else
+                    if (player == 1)
                     {
                         rdt115.Nop(0x2342);
                     }
@@ -756,7 +741,10 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     {
                         if (opcode is UnknownOpcode unk && unk.Opcode == 5)
                         {
-                            unk.Data[1] += 128;
+                            if (unk.Data[1] == 0)
+                                unk.Data[1] = 15;
+                            else if (unk.Data[1] == 1 || unk.Data[1] == 2)
+                                unk.Data[1] = 16;
                         }
                     }
                 }
@@ -764,18 +752,10 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 // Unlock doors when in hall or living room
                 var rdt109 = gameData.GetRdt(RdtId.Parse("109"));
                 var rdt609 = gameData.GetRdt(RdtId.Parse("609"));
-                rdt109?.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [2, 128, 0]));
-                rdt609?.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [2, 128, 0]));
-                rdt116?.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [2, 129, 0]));
-                rdt516?.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [2, 129, 0]));
-            }
-
-            void FixCrestDoor()
-            {
-                // Due to our lock hack, we need to update the lock id set opcode
-                var rdt11A = gameData.GetRdt(RdtId.Parse("11A"));
-                rdt11A?.Patches.Add(new KeyValuePair<int, byte>(0x35DC + 2, 128 | 23));
-                rdt11A?.Patches.Add(new KeyValuePair<int, byte>(0x35F0 + 2, 128 | 23));
+                rdt109?.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [2, 15, 0]));
+                rdt609?.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [2, 15, 0]));
+                rdt116?.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [2, 16, 0]));
+                rdt516?.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [2, 16, 0]));
             }
 
             void DisablePoisonChallenge()
