@@ -6378,7 +6378,7 @@
               "name": "wesker",
               "character": 36,
               "offsets": [ "0xEFD8" ],
-              "include": [ 36 ]
+              "include": [ 36, 46 ]
             }
           ],
           "player": 0
@@ -6396,14 +6396,14 @@
               "name": "barry",
               "character": 34,
               "offsets": [ "0xEFF4", "0xF0AC" ],
-              "include": [ 32, 33, 34, 35, 36 ]
+              "include": [ 32, 33, 34, 35, 36, 45 ]
             },
             {
               "globalId": "513-wesker",
               "name": "wesker",
               "character": 36,
               "offsets": [ "0xEFD4" ],
-              "include": [ 36 ]
+              "include": [ 36, 46 ]
             }
           ],
           "player": 1
