@@ -534,6 +534,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             var randomDoors = context.Configuration.GetValueOrDefault("doors/random", false);
             var randomItems = context.Configuration.GetValueOrDefault("items/random", false);
 
+            ConfigureOptions();
             EnableMoreJillItems();
             DisableDogWindows();
             DisableDogBoiler();
@@ -550,6 +551,39 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             AllowPartnerItemBoxes();
             EnableFountainHeliportDoors();
             ForceHelipadTyrant();
+
+            void ConfigureOptions()
+            {
+                var rdt = gameData.GetRdt(RdtId.Parse("106"));
+                if (rdt == null)
+                    return;
+
+                var enableLockpick = context.Configuration.GetValueOrDefault("inventory/special/lockpick", "Always") == "Always";
+                var enableInk = context.Configuration.GetValueOrDefault("ink/enable", "Always") == "Always";
+                if (player == 0)
+                {
+                    rdt.AdditionalOpcodes.AddRange(
+                        ScdCondition.Parse("1:0").Generate(BioVersion.Biohazard1, [
+                            Set(0, 123, (byte)(enableInk ? 0 : 1)), // Ink
+                            Set(0, 124, (byte)(enableLockpick ? 0 : 1)) // Lockpick
+                        ])
+                    );
+                }
+                else
+                {
+                    rdt.AdditionalOpcodes.AddRange(
+                        ScdCondition.Parse("1:0").Generate(BioVersion.Biohazard1, [
+                            Set(0, 123, (byte)(enableInk ? 0 : 1)), // Ink
+                            Set(0, 124, (byte)(enableLockpick ? 0 : 1)), // Lockpick
+                        ])
+                    );
+                }
+
+                static UnknownOpcode Set(byte group, byte index, byte value)
+                {
+                    return new UnknownOpcode(0, 0x05, [group, index, value]);
+                }
+            }
 
             void EnableMoreJillItems()
             {
@@ -883,8 +917,6 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             if (rdt == null)
                 return;
 
-            var enableLockpick = context.Configuration.GetValueOrDefault("inventory/special/lockpick", "Always") == "Always";
-            var enableInk = context.Configuration.GetValueOrDefault("ink/enable", "Always") == "Always";
             if (player == 0)
             {
                 rdt.AdditionalOpcodes.AddRange(
@@ -899,8 +931,6 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                         Set(1, 167, 0), // Init. dining room emblem state
                         Set(1, 171, 0), // Wesker cutscene after Plant 42
                         Set(0, 101, 0), // Jill in cell cutscene
-                        Set(0, 123, (byte)(enableInk ? 0 : 1)), // Ink
-                        Set(0, 124, (byte)(enableLockpick ? 0 : 1)), // Lockpick
                         Set(0, 127, 0), // Pick up radio
                         Set(0, 192, 0) // Rebecca not saved
                     ]));
@@ -964,8 +994,6 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 rdt.AdditionalOpcodes.AddRange(
                     ScdCondition.Parse("1:0").Generate(BioVersion.Biohazard1, [
                         Set(0, 101, 0), // Chris in cell cutscene
-                        Set(0, 123, (byte)(enableInk ? 0 : 1)), // Ink
-                        Set(0, 124, (byte)(enableLockpick ? 0 : 1)), // Lockpick
                         Set(0, 127, 0), // Pick up radio
                         Set(1, 0, 0), // 106 first cutscene
                         Set(1, 2, 0), // 104 first zombie found
