@@ -138,6 +138,10 @@ namespace IntelOrca.Biohazard.BioRand
                 {
                     allowedCharacters.IntersectWith(a.AllowedCharacters);
                 }
+                if (allowedCharacters.Count == 0)
+                {
+                    throw new Exception($"{group.Key} has no common character IDs");
+                }
 
                 var finalAllowedCharacters = ImmutableArray.Create(allowedCharacters
                     .Shuffle(rng)
