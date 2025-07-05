@@ -83,6 +83,24 @@ namespace IntelOrca.Biohazard.BioRand
                     });
                 }
             }
+
+            var roomlessTargets = voices.GetRoomlessTargets(context.Variation.PlayerIndex);
+            foreach (var target in roomlessTargets)
+            {
+                result.Add(new Cutscene()
+                {
+                    Name = $"Generated cutscene for {target.Path}",
+                    Rdts = [],
+                    Actors = [
+                        new CutsceneActor()
+                        {
+                            Name = target.Actor,
+                            VoiceClips = [target]
+                        }
+                    ]
+                });
+            }
+
             return result.ToImmutable();
         }
 
@@ -195,7 +213,7 @@ namespace IntelOrca.Biohazard.BioRand
         [DebuggerDisplay("{Name} = {Character}")]
         public class CutsceneActor
         {
-            public string? GlobalId { get; set; } = "";
+            public string? GlobalId { get; set; }
             public string Name { get; set; } = "";
             public AvailableCharacter? Character { get; set; }
             public ImmutableArray<AvailableCharacter> AllowedCharacters { get; set; } = [];
@@ -230,10 +248,17 @@ namespace IntelOrca.Biohazard.BioRand
     {
         public ImmutableArray<VoiceTarget> Targets => targets;
 
+        public ImmutableArray<VoiceTarget> GetRoomlessTargets(int player)
+        {
+            return Targets
+                .Where(x => (x.Player == null || x.Player == player) && x.Rdt == null)
+                .ToImmutableArray();
+        }
+
         public ImmutableArray<VoiceTarget> GetTargets(int player, RdtId[] rdtIds, int cutscene, string actor)
         {
             return Targets
-                .Where(x => (x.Player == null || x.Player == player) && rdtIds.Contains(x.Rdt) && x.Cutscene == cutscene && x.Actor == actor)
+                .Where(x => (x.Player == null || x.Player == player) && x.Rdt != null && rdtIds.Contains(x.Rdt.Value) && x.Cutscene == cutscene && x.Actor == actor)
                 .ToImmutableArray();
         }
 
@@ -245,7 +270,7 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 var path = kvp.Key;
                 var sample = kvp.Value;
-                var rdtId = sample.Rdt == null ? default : RdtId.Parse(sample.Rdt);
+                var rdtId = sample.Rdt == null ? (RdtId?)null : RdtId.Parse(sample.Rdt);
                 var slices = sample.Actors ?? [sample];
                 var time = 0.0;
                 foreach (var slice in slices)
@@ -285,7 +310,7 @@ namespace IntelOrca.Biohazard.BioRand
     internal record class VoiceTarget
     {
         public int? Player { get; set; }
-        public RdtId Rdt { get; set; }
+        public RdtId? Rdt { get; set; }
         public int Cutscene { get; set; }
         public required string Actor { get; set; }
         public required string Path { get; set; }
