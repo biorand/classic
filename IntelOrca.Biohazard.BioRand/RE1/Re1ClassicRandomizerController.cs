@@ -544,6 +544,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             FixDrugStoreRoom();
             AllowRoughPassageDoorUnlock();
             ShotgunOnWallFix();
+            DisableSerumDoorBlock();
             DisablePoisonChallenge();
             DisableBarryEvesdrop();
             AllowPartnerItemBoxes();
@@ -756,6 +757,23 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 rdt609?.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [2, 15, 0]));
                 rdt116?.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [2, 16, 0]));
                 rdt516?.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [2, 16, 0]));
+            }
+
+            void DisableSerumDoorBlock()
+            {
+                var rdt = gameData.GetRdt(RdtId.Parse("20D"));
+                if (rdt == null)
+                    return;
+
+                if (player == 0)
+                {
+                    rdt.Nop(0x2914C);
+                    rdt.Nop(0x29246);
+                }
+                else
+                {
+                    rdt.Nop(0x291AE);
+                }
             }
 
             void DisablePoisonChallenge()
