@@ -1701,7 +1701,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     wavBuilder.Append(sourcePath, 0, duration);
                     if (!double.IsNaN(duration))
                     {
-                        var remaining = duration - wavBuilder.Duration;
+                        var remaining = k.Range.End - wavBuilder.Duration;
                         wavBuilder.AppendSilence(remaining);
                     }
                     time = k.Range.End;

@@ -240,16 +240,18 @@ namespace IntelOrca.Biohazard.BioRand
             foreach (var kvp in voices)
             {
                 var path = kvp.Key;
-                var slices = kvp.Value.Actors ?? [kvp.Value];
+                var sample = kvp.Value;
+                var rdtId = sample.Rdt == null ? default : RdtId.Parse(sample.Rdt);
+                var slices = sample.Actors ?? [sample];
                 var time = 0.0;
                 foreach (var slice in slices)
                 {
                     targets.Add(new VoiceTarget()
                     {
                         Path = path,
-                        Rdt = kvp.Value.Rdt == null ? default : RdtId.Parse(kvp.Value.Rdt),
-                        Player = kvp.Value.Player,
-                        Cutscene = kvp.Value.Cutscene,
+                        Rdt = rdtId,
+                        Player = sample.Player,
+                        Cutscene = sample.Cutscene,
                         Actor = slice.Actor ?? "",
                         Range = new AudioRange(time, slice.Split),
                         Kind = slice.Kind
@@ -265,7 +267,6 @@ namespace IntelOrca.Biohazard.BioRand
             public string? Rdt { get; set; }
             public int Cutscene { get; set; }
             public int? Player { get; set; }
-            public bool Strict { get; set; }
             public VoiceSampleSlice[]? Actors { get; set; }
         }
 
