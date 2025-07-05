@@ -577,6 +577,10 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                             Set(0, 124, (byte)(enableLockpick ? 0 : 1)), // Lockpick
                         ])
                     );
+                    if (!enableLockpick)
+                    {
+                        rdt.Nop(0x31B02); // Disable Barry giving Jill the lockpick
+                    }
                 }
 
                 static UnknownOpcode Set(byte group, byte index, byte value)
