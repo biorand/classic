@@ -46,7 +46,7 @@ namespace IntelOrca.Biohazard.BioRand
             var rooms = context.Variation.Map.Rooms;
             foreach (var room in rooms.Values)
             {
-                var rdt = room.Rdts?.FirstOrDefault() ?? default;
+                var rdtIds = room.Rdts ?? [];
                 foreach (var cutscene in room.Cutscenes ?? [])
                 {
                     var actors = ImmutableArray.CreateBuilder<CutsceneActor>();
@@ -67,7 +67,7 @@ namespace IntelOrca.Biohazard.BioRand
                                     : actor.Exclude.Length != 0
                                         ? defaultCharacterPool.Where(x => !actor.Exclude.Contains(x.Id)).ToImmutableArray()
                                         : defaultCharacterPool,
-                            VoiceClips = voices.GetTargets(context.Variation.PlayerIndex, rdt, cutscene.Id, actor.Name)
+                            VoiceClips = voices.GetTargets(context.Variation.PlayerIndex, rdtIds, cutscene.Id, actor.Name)
                         });
                     }
 
@@ -201,12 +201,16 @@ namespace IntelOrca.Biohazard.BioRand
             public void RandomizeCharacter(Rng rng)
             {
                 if (Character == null)
-                    return;
-
-                Character = AllowedCharacters.Length == 1
-                    ? AllowedCharacters[0]
-                    : AllowedCharacters[rng.Next(0, AllowedCharacters.Length)];
-                Name = Character.Actor;
+                {
+                    Name = "";
+                }
+                else
+                {
+                    Character = AllowedCharacters.Length == 1
+                        ? AllowedCharacters[0]
+                        : AllowedCharacters[rng.Next(0, AllowedCharacters.Length)];
+                    Name = Character.Actor;
+                }
             }
         }
 
@@ -222,10 +226,10 @@ namespace IntelOrca.Biohazard.BioRand
     {
         public ImmutableArray<VoiceTarget> Targets => targets;
 
-        public ImmutableArray<VoiceTarget> GetTargets(int player, RdtId rdtId, int cutscene, string actor)
+        public ImmutableArray<VoiceTarget> GetTargets(int player, RdtId[] rdtIds, int cutscene, string actor)
         {
             return Targets
-                .Where(x => (x.Player == null || x.Player == player) && x.Rdt == rdtId && x.Cutscene == cutscene && x.Actor == actor)
+                .Where(x => (x.Player == null || x.Player == player) && rdtIds.Contains(x.Rdt) && x.Cutscene == cutscene && x.Actor == actor)
                 .ToImmutableArray();
         }
 
@@ -317,9 +321,9 @@ namespace IntelOrca.Biohazard.BioRand
         public static bool operator !=(AudioRange left, AudioRange right) => !(left == right);
     }
 
-    internal class VoiceSourceRepository()
+    internal class VoiceSourceRepository
     {
-        private ImmutableArray<VoiceSource> Sources { get; set; }
+        public ImmutableArray<VoiceSource> Sources { get; set; }
 
         public void Scan(DataManager dataManager)
         {
@@ -440,17 +444,30 @@ namespace IntelOrca.Biohazard.BioRand
                 .Where(x => x.Kind == kind)
                 .Where(x => x.Condition?.Evaluate(participants) ?? true)
                 .Shuffle(rng);
+            if (applicable.Length == 0)
+            {
+                applicable = pool
+                    .Where(x => x.Condition?.Evaluate(participants) ?? true)
+                    .Shuffle(rng);
+            }
             return applicable.FirstOrDefault();
         }
 
         private ImmutableArray<VoiceSource> GetPool(string actor)
         {
-            if (!_actorToVoiceMap.TryGetValue(actor, out var pool))
+            if (string.IsNullOrEmpty(actor))
             {
-                pool = repo.GetSourcesFor(actor);
-                _actorToVoiceMap[actor] = pool;
+                return repo.Sources;
             }
-            return pool;
+            else
+            {
+                if (!_actorToVoiceMap.TryGetValue(actor, out var pool))
+                {
+                    pool = repo.GetSourcesFor(actor);
+                    _actorToVoiceMap[actor] = pool;
+                }
+                return pool;
+            }
         }
     }
 

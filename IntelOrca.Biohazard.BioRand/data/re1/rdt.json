@@ -2889,61 +2889,84 @@
       "cutscenes": [
         {
           "id": 0,
-          "name": "richard poison",
+          "name": "richard poison (fetch)",
           "actors": [
             {
               "name": "chris",
               "character": 0
             },
             {
+              "globalId": "20D-rebecca",
               "name": "rebecca",
               "character": 35,
               "offsets": [ "0x29078", "0x29118" ]
             },
             {
+              "globalId": "20D-richard",
               "name": "richard",
               "character": 39,
               "offsets": [ "0x29058", "0x290EA", "0x29102" ],
-              "includeTypes": [ 40, 42 ]
+              "include": [ 39 ]
             }
           ],
           "player": 0
         },
         {
           "id": 1,
-          "name": "richard poison",
+          "name": "richard poison (retrieved)",
           "actors": [
             {
               "name": "chris",
               "character": 0
             },
             {
+              "globalId": "20D-rebecca",
               "name": "rebecca",
               "character": 35,
               "offsets": [ "0x29078", "0x29118" ]
             },
             {
+              "globalId": "20D-richard",
               "name": "richard",
               "character": 39,
               "offsets": [ "0x29058", "0x290EA", "0x29102" ],
-              "includeTypes": [ 40, 42 ]
+              "include": [ 39 ]
             }
           ],
           "player": 0
         },
         {
           "id": 0,
-          "name": "richard poison",
+          "name": "richard poison (fetch)",
           "actors": [
             {
               "name": "jill",
               "character": 0
             },
             {
+              "globalId": "20D-richard",
               "name": "richard",
               "character": 39,
               "offsets": [ "0x29062", "0x290A2", "0x290BE" ],
-              "includeTypes": [ 40, 42 ]
+              "include": [ 39 ]
+            }
+          ],
+          "player": 1
+        },
+        {
+          "id": 1,
+          "name": "richard poison (retrieved)",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "globalId": "20D-richard",
+              "name": "richard",
+              "character": 39,
+              "offsets": [ "0x29062", "0x290A2", "0x290BE" ],
+              "include": [ 39 ]
             }
           ],
           "player": 1
@@ -3772,6 +3795,38 @@
           "id": 0,
           "globalId": 89,
           "includeTypes": [ 16 ]
+        }
+      ],
+      "cutscenes": [
+        {
+          "id": 0,
+          "name": "brad rocket launcher",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "name": "brad",
+              "kind": "radio"
+            }
+          ],
+          "player": 0
+        },
+        {
+          "id": 0,
+          "name": "brad rocket launcher",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "name": "brad",
+              "kind": "radio"
+            }
+          ],
+          "player": 1
         }
       ]
     },
@@ -5437,7 +5492,145 @@
           "group": 32
         }
       ],
-      "enemies": []
+      "enemies": [],
+      "cutscenes": [
+        {
+          "id": 0,
+          "name": "escape (brad call)",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "name": "brad",
+              "kind": "radio"
+            }
+          ],
+          "player": 0
+        },
+        {
+          "id": 1,
+          "name": "escape (chris, jill)",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "name": "jill",
+              "character": 33,
+              "offsets": [ "0x1BDB0" ]
+            }
+          ],
+          "player": 0
+        },
+        {
+          "id": 2,
+          "name": "escape (chris, rebecca)",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "name": "rebecca",
+              "character": 35,
+              "offsets": [ "0x1BDD2" ]
+            }
+          ],
+          "player": 0
+        },
+        {
+          "id": 3,
+          "name": "escape (chris, jill, rebecca)",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "name": "jill",
+              "character": 33,
+              "offsets": [ "0x1BDB0" ]
+            },
+            {
+              "name": "rebecca",
+              "character": 35,
+              "offsets": [ "0x1BDD2" ]
+            }
+          ],
+          "player": 0
+        },
+        {
+          "id": 0,
+          "name": "escape (brad call)",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "name": "brad",
+              "kind": "radio"
+            }
+          ],
+          "player": 1
+        },
+        {
+          "id": 1,
+          "name": "escape (jill, chris)",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "name": "chris",
+              "character": 32,
+              "offsets": [ "0x1BDB0" ]
+            }
+          ],
+          "player": 1
+        },
+        {
+          "id": 2,
+          "name": "escape (jill, barry)",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "name": "barry",
+              "character": 34,
+              "offsets": [ "0x1BDD2" ]
+            }
+          ],
+          "player": 1
+        },
+        {
+          "id": 3,
+          "name": "escape (jill, chris, barry)",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "name": "chris",
+              "character": 32,
+              "offsets": [ "0x1BDB0" ]
+            },
+            {
+              "name": "barry",
+              "character": 34,
+              "offsets": [ "0x1BDD2" ]
+            }
+          ],
+          "player": 1
+        }
+      ]
     },
     "502": {
       "name": "LABORATORY B2 BOX",
@@ -6242,6 +6435,42 @@
           "id": 0,
           "target": "50B:1",
           "noUnlock": true
+        }
+      ],
+      "cutscenes": [
+        {
+          "id": 0,
+          "name": "reunion",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "globalId": "508-jill",
+              "name": "jill",
+              "character": 33,
+              "offsets": [ "0xAF52" ]
+            }
+          ],
+          "player": 0
+        },
+        {
+          "id": 0,
+          "name": "reunion",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "globalId": "508-chris",
+              "name": "chris",
+              "character": 32,
+              "offsets": [ "0xAF52" ]
+            }
+          ],
+          "player": 1
         }
       ]
     },
