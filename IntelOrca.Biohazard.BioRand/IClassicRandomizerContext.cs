@@ -4,7 +4,6 @@
     {
         RandomizerConfiguration Configuration { get; }
         DataManager DataManager { get; }
-        DataManager GameDataManager { get; }
         Rng Rng { get; }
     }
 

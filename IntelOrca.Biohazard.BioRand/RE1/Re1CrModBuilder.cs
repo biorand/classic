@@ -41,8 +41,8 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
             public int Player => _mod.General.GetValueOrDefault("player") as int? ?? 0;
             public bool RandomDoors => GetGeneralFlag("randomDoors");
-            public bool RandomEnemies => GetGeneralFlag("randomEnemies");
             public bool RandomItems => GetGeneralFlag("randomItems");
+            public bool RandomEnemies => GetGeneralFlag("randomEnemies");
             public bool CutscenesDisabled => GetGeneralFlag("cutscenesDisabled");
             public bool LockpickEnabled => GetGeneralFlag("lockpick");
             public bool InkEnabled => GetGeneralFlag("ink");
@@ -236,7 +236,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                         rdt.AdditionalOpcodes.AddRange(
                             ScdCondition.Parse("1:0").Generate(BioVersion.Biohazard1, [
                                 Set(0, 123, (byte)(InkEnabled ? 0 : 1)), // Ink
-                            Set(0, 124, (byte)(LockpickEnabled ? 0 : 1)) // Lockpick
+                                Set(0, 124, (byte)(LockpickEnabled ? 0 : 1)) // Lockpick
                             ])
                         );
                     }
@@ -245,7 +245,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                         rdt.AdditionalOpcodes.AddRange(
                             ScdCondition.Parse("1:0").Generate(BioVersion.Biohazard1, [
                                 Set(0, 123, (byte)(InkEnabled ? 0 : 1)), // Ink
-                            Set(0, 124, (byte)(LockpickEnabled ? 0 : 1)), // Lockpick
+                                Set(0, 124, (byte)(LockpickEnabled ? 0 : 1)), // Lockpick
                             ])
                         );
                         if (!LockpickEnabled)

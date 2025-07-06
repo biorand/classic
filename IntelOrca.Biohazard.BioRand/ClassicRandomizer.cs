@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
+using IntelOrca.Biohazard.BioRand.RE1;
 
 namespace IntelOrca.Biohazard.BioRand
 {
@@ -689,16 +690,22 @@ namespace IntelOrca.Biohazard.BioRand
 
         public ClassicMod RandomizeToMod(RandomizerInput input)
         {
-            var dataManager = GetDataManager();
-            var gameDataManager = GetGameDataManager();
-            var rng = new Rng(input.Seed);
-            var context = new Context(input.Configuration.Clone(), dataManager, gameDataManager, rng);
-            controller.ApplyConfigModifications(context);
-            var generatedVariation = Randomize(context);
+            var modBuilder = CreateModBuilder(input);
 
-            generatedVariation.ModBuilder.Game = "re1";
-            generatedVariation.ModBuilder.Name = $"BioRand | {input.ProfileName} | {input.Seed}";
-            generatedVariation.ModBuilder.Description =
+            var dataManager = GetDataManager();
+            var rng = new Rng(input.Seed);
+            var context = new Context(input.Configuration.Clone(), dataManager, rng);
+            controller.ApplyConfigModifications(context, modBuilder);
+            var generatedVariation = Randomize(context, modBuilder);
+            return generatedVariation.ModBuilder.Build();
+        }
+
+        private ModBuilder CreateModBuilder(RandomizerInput input)
+        {
+            var modBuilder = new ModBuilder();
+            modBuilder.Game = "re1";
+            modBuilder.Name = $"BioRand | {input.ProfileName} | {input.Seed}";
+            modBuilder.Description =
                 $"""
                 BioRand 4.0 ({BuildVersion})
                 Profile: {input.ProfileName} by {input.ProfileAuthor}
@@ -706,52 +713,43 @@ namespace IntelOrca.Biohazard.BioRand
 
                 {input.ProfileDescription}
                 """;
-            generatedVariation.ModBuilder.Seed = input.Seed;
-            generatedVariation.ModBuilder.Configuration = input.Configuration;
+            modBuilder.Seed = input.Seed;
+            modBuilder.Configuration = input.Configuration;
+            return modBuilder;
 
-            return generatedVariation.ModBuilder.Build();
         }
 
         public RandomizerOutput Randomize(RandomizerInput input)
         {
-            var dataManager = GetDataManager();
-            var gameDataManager = GetGameDataManager();
-            var rng = new Rng(input.Seed);
-            var context = new Context(input.Configuration.Clone(), dataManager, gameDataManager, rng);
-
-            controller.ApplyConfigModifications(context);
-            var generatedVariation = Randomize(context);
-            var crModBuilder = CreateCrModBuilder(input, generatedVariation).Build();
-
-            var assets = new List<RandomizerOutputAsset>();
-            var debugEnv = Environment.GetEnvironmentVariable("BIORAND_DEBUG_OUTPUT");
-            if (!string.IsNullOrEmpty(debugEnv))
+            var mod = RandomizeToMod(input);
+            var modBuilder = ClassicRandomizerFactory.Default.CreateModBuilder(BioVersion.Biohazard1);
+            if (modBuilder is ICrModBuilder crModBuilder)
             {
-                crModBuilder.Dump(debugEnv);
-            }
-            else
-            {
+                var crMod = crModBuilder.Create(mod);
                 var modFileName = $"mod_biorand_{input.Seed}.7z";
-                var archiveFile = crModBuilder.Create7z();
+                var archiveFile = crMod.Create7z();
                 var asset = new RandomizerOutputAsset(
                     "mod",
                     "Classic Rebirth Mod",
                     "Drop this in your RE 1 install folder.",
                     modFileName,
                     archiveFile);
-                assets.Add(asset);
+                return new RandomizerOutput(
+                    [asset],
+                    "",
+                    []);
             }
-            return new RandomizerOutput(
-                [.. assets],
-                "",
-                []);
+            else
+            {
+                throw new NotSupportedException("The mod builder for this game version is not supported.");
+            }
         }
 
-        private IClassicRandomizerGeneratedVariation Randomize(IClassicRandomizerContext context)
+        private IClassicRandomizerGeneratedVariation Randomize(IClassicRandomizerContext context, ModBuilder modBuilder)
         {
             var chosenVariationName = context.Configuration.GetValueOrDefault("variation", controller.VariationNames[0]);
             var variation = controller.GetVariation(context, chosenVariationName ?? "");
-            var generatedVariation = new GeneratedVariation(context, variation, new ModBuilder());
+            var generatedVariation = new GeneratedVariation(context, variation, modBuilder);
             if (context.Configuration.GetValueOrDefault("doors/random", true))
             {
                 throw new RandomizerUserException("Door randomizer not implemented yet.");
@@ -789,40 +787,13 @@ namespace IntelOrca.Biohazard.BioRand
             return generatedVariation;
         }
 
-        private ClassicRebirthModBuilder CreateCrModBuilder(RandomizerInput input, IClassicRandomizerGeneratedVariation context)
-        {
-            var crModBuilder = new ClassicRebirthModBuilder($"BioRand | {input.ProfileName} | {input.Seed}");
-            crModBuilder.Description =
-                $"""
-                BioRand 4.0 ({BuildVersion})
-                Profile: {input.ProfileName} by {input.ProfileAuthor}
-                Seed: {input.Seed}
-
-                {input.ProfileDescription}
-                """;
-            crModBuilder.SetFile("config.json", input.Configuration.ToJson(true));
-
-            crModBuilder.Module = new ClassicRebirthModule("biorand.dll", context.DataManager.GetData("biorand.dll"));
-            crModBuilder.SetFile(
-                $"log_{context.Variation.PlayerName.ToLowerInvariant()}.md",
-                context.ModBuilder.GetDump(context));
-            crModBuilder.SetFile(
-                $"generated.json",
-                context.ModBuilder.ToJson());
-
-            controller.Write(context, crModBuilder);
-            return crModBuilder;
-        }
-
         private sealed class Context(
             RandomizerConfiguration configuration,
             DataManager dataManager,
-            DataManager gameDataManager,
             Rng rng) : IClassicRandomizerContext
         {
             public RandomizerConfiguration Configuration => configuration;
             public DataManager DataManager => dataManager;
-            public DataManager GameDataManager => gameDataManager;
             public Rng Rng => rng;
         }
 
@@ -833,7 +804,6 @@ namespace IntelOrca.Biohazard.BioRand
         {
             public RandomizerConfiguration Configuration => context.Configuration;
             public DataManager DataManager => context.DataManager;
-            public DataManager GameDataManager => context.GameDataManager;
             public Rng Rng => context.Rng;
             public IClassicRandomizerContext Context => context;
             public Variation Variation => variation;

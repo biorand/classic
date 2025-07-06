@@ -8,8 +8,7 @@ namespace IntelOrca.Biohazard.BioRand
 
         void UpdateConfigDefinition(RandomizerConfigurationDefinition definition);
         Variation GetVariation(IClassicRandomizerContext context, string name);
-        void ApplyConfigModifications(IClassicRandomizerContext context);
-        void Write(IClassicRandomizerGeneratedVariation context, ClassicRebirthModBuilder crModBuilder);
+        void ApplyConfigModifications(IClassicRandomizerContext context, ModBuilder modBuilder);
     }
 
     public class Variation(int playerIndex, string playerName, Map map)
