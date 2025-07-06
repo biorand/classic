@@ -4,6 +4,7 @@ using System.Collections.Immutable;
 using System.Globalization;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Xml;
@@ -97,6 +98,8 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
             public void Write()
             {
+                _crModBuilder.SetFile("biorand.dat", new byte[0]);
+
                 WriteRdts();
                 AddMiscXml();
                 AddSoundXml();
@@ -204,6 +207,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 var randomDoors = RandomDoors;
                 var randomItems = RandomItems;
 
+                ConfigureOptions();
                 EnableMoreJillItems();
                 DisableDogWindows();
                 DisableDogBoiler();
@@ -214,12 +218,47 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 FixDrugStoreRoom();
                 AllowRoughPassageDoorUnlock();
                 ShotgunOnWallFix();
-                FixCrestDoor();
+                DisableSerumDoorBlock();
                 DisablePoisonChallenge();
                 DisableBarryEvesdrop();
                 AllowPartnerItemBoxes();
                 EnableFountainHeliportDoors();
                 ForceHelipadTyrant();
+
+                void ConfigureOptions()
+                {
+                    var rdt = gameData.GetRdt(RdtId.Parse("106"));
+                    if (rdt == null)
+                        return;
+
+                    if (player == 0)
+                    {
+                        rdt.AdditionalOpcodes.AddRange(
+                            ScdCondition.Parse("1:0").Generate(BioVersion.Biohazard1, [
+                                Set(0, 123, (byte)(InkEnabled ? 0 : 1)), // Ink
+                            Set(0, 124, (byte)(LockpickEnabled ? 0 : 1)) // Lockpick
+                            ])
+                        );
+                    }
+                    else
+                    {
+                        rdt.AdditionalOpcodes.AddRange(
+                            ScdCondition.Parse("1:0").Generate(BioVersion.Biohazard1, [
+                                Set(0, 123, (byte)(InkEnabled ? 0 : 1)), // Ink
+                            Set(0, 124, (byte)(LockpickEnabled ? 0 : 1)), // Lockpick
+                            ])
+                        );
+                        if (!LockpickEnabled)
+                        {
+                            rdt.Nop(0x31B02); // Disable Barry giving Jill the lockpick
+                        }
+                    }
+
+                    static UnknownOpcode Set(byte group, byte index, byte value)
+                    {
+                        return new UnknownOpcode(0, 0x05, [group, index, value]);
+                    }
+                }
 
                 void EnableMoreJillItems()
                 {
@@ -266,7 +305,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                                 Re1UnkB = 0,
                                 Animation = 0,
                                 Re1UnkC = 2,
-                                LockId = 21 | 0x80,
+                                LockId = 21,
                                 Target = new RdtId(255, 0x06),
                                 NextX = 9180,
                                 NextY = 0,
@@ -324,7 +363,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                         {
                             rdt.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x01, [0x0A]));
                             rdt.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x04, [0x01, 0x25, 0x00]));
-                            rdt.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x05, [0x02, PassCodeDoorLockId - 192, 0]));
+                            rdt.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x05, [0x02, PassCodeDoorLockId, 0]));
                             rdt.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x03, [0x00]));
                         }
 
@@ -402,12 +441,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                         if (rdt115 == null)
                             continue;
 
-                        if (player == 0)
-                        {
-                            rdt115.Patches.Add(new KeyValuePair<int, byte>(0x22BC + 2 + 128, 1));
-                            rdt115.Patches.Add(new KeyValuePair<int, byte>(0x22DE + 2 + 128, 1));
-                        }
-                        else
+                        if (player == 1)
                         {
                             rdt115.Nop(0x2342);
                         }
@@ -417,7 +451,10 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                         {
                             if (opcode is UnknownOpcode unk && unk.Opcode == 5)
                             {
-                                unk.Data[1] += 128;
+                                if (unk.Data[1] == 0)
+                                    unk.Data[1] = 15;
+                                else if (unk.Data[1] == 1 || unk.Data[1] == 2)
+                                    unk.Data[1] = 16;
                             }
                         }
                     }
@@ -425,18 +462,27 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     // Unlock doors when in hall or living room
                     var rdt109 = gameData.GetRdt(RdtId.Parse("109"));
                     var rdt609 = gameData.GetRdt(RdtId.Parse("609"));
-                    rdt109?.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [2, 128, 0]));
-                    rdt609?.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [2, 128, 0]));
-                    rdt116?.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [2, 129, 0]));
-                    rdt516?.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [2, 129, 0]));
+                    rdt109?.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [2, 15, 0]));
+                    rdt609?.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [2, 15, 0]));
+                    rdt116?.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [2, 16, 0]));
+                    rdt516?.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [2, 16, 0]));
                 }
 
-                void FixCrestDoor()
+                void DisableSerumDoorBlock()
                 {
-                    // Due to our lock hack, we need to update the lock id set opcode
-                    var rdt11A = gameData.GetRdt(RdtId.Parse("11A"));
-                    rdt11A?.Patches.Add(new KeyValuePair<int, byte>(0x35DC + 2, 128 | 23));
-                    rdt11A?.Patches.Add(new KeyValuePair<int, byte>(0x35F0 + 2, 128 | 23));
+                    var rdt = gameData.GetRdt(RdtId.Parse("20D"));
+                    if (rdt == null)
+                        return;
+
+                    if (player == 0)
+                    {
+                        rdt.Nop(0x2914C);
+                        rdt.Nop(0x29246);
+                    }
+                    else
+                    {
+                        rdt.Nop(0x291AE);
+                    }
                 }
 
                 void DisablePoisonChallenge()
@@ -546,8 +592,6 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 if (rdt == null)
                     return;
 
-                var enableLockpick = LockpickEnabled;
-                var enableInk = InkEnabled;
                 var player = Player;
                 if (player == 0)
                 {
@@ -563,8 +607,6 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                         Set(1, 167, 0), // Init. dining room emblem state
                         Set(1, 171, 0), // Wesker cutscene after Plant 42
                         Set(0, 101, 0), // Jill in cell cutscene
-                        Set(0, 123, (byte)(enableInk ? 0 : 1)), // Ink
-                        Set(0, 124, (byte)(enableLockpick ? 0 : 1)), // Lockpick
                         Set(0, 127, 0), // Pick up radio
                         Set(0, 192, 0) // Rebecca not saved
                         ]));
@@ -627,9 +669,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 {
                     rdt.AdditionalOpcodes.AddRange(
                         ScdCondition.Parse("1:0").Generate(BioVersion.Biohazard1, [
-                        Set(0, 101, 0), // Chris in cell cutscene
-                        Set(0, 123, (byte)(enableInk ? 0 : 1)), // Ink
-                        Set(0, 124, (byte)(enableLockpick ? 0 : 1)), // Lockpick
+                            Set(0, 101, 0), // Chris in cell cutscene
                         Set(0, 127, 0), // Pick up radio
                         Set(1, 0, 0), // 106 first cutscene
                         Set(1, 2, 0), // 104 first zombie found
@@ -716,7 +756,6 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     return new UnknownOpcode(0, 0x05, [group, index, value]);
                 }
             }
-
 
             private void ApplyPostPatches(GameData gameData)
             {
@@ -1091,6 +1130,8 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                         .ToArray());
                 }
 
+                FixWeaponHitScan($"{characterPath}/weapons.csv", srcPlayer);
+
                 string[] GetHurtFiles(string character)
                 {
                     var allHurtFiles = _dataManager.GetHurtFiles(character)
@@ -1116,6 +1157,45 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                         return null;
                     return File.ReadAllBytes(path);
                 }
+            }
+
+            private void FixWeaponHitScan(string csvPath, int srcPlayer)
+            {
+                var table = new short[]
+                {
+                    -2026, -1656, -2530, -2280, -2040, -1800,
+                    -1917, -1617, -2190, -1940, -2003, -1720
+                };
+                var targetSpan = new Span<short>(table, Player * 6, 6);
+
+                if (File.Exists(csvPath))
+                {
+                    var csv = File.ReadAllLines(csvPath)
+                        .Where(x => !string.IsNullOrWhiteSpace(x))
+                        .Select(x => x.Trim().Split(','))
+                        .ToArray();
+
+                    for (var i = 0; i < targetSpan.Length; i++)
+                    {
+                        targetSpan[i] = short.Parse(csv[i][0]);
+                    }
+                }
+                else
+                {
+                    var sourceSpan = new Span<short>(table, srcPlayer * 6, 6);
+                    sourceSpan.CopyTo(targetSpan);
+                }
+
+                var ms = new MemoryStream();
+                var pw = new PatchWriter(ms);
+                pw.Begin(0x4AAD98);
+                var data = MemoryMarshal.Cast<short, byte>(new Span<short>(table));
+                foreach (var d in data)
+                {
+                    pw.Write(d);
+                }
+                pw.End();
+                _crModBuilder.SetFile("biorand.dat", ms.ToArray());
             }
 
             private void AddNpcSkins()
@@ -1239,7 +1319,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                         wavBuilder.Append(sourcePath, 0, duration);
                         if (!double.IsNaN(duration))
                         {
-                            var remaining = duration - wavBuilder.Duration;
+                            var remaining = k.Range.End - wavBuilder.Duration;
                             wavBuilder.AppendSilence(remaining);
                         }
                         time = k.Range.End;

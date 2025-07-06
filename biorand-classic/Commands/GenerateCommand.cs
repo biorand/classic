@@ -95,7 +95,14 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
             if (builder is ICrModBuilder crModBuilder)
             {
                 var crMod = crModBuilder.Create(mod);
-                File.WriteAllBytes(outputPath, crMod.Create7z());
+                if (outputPath.EndsWith(".7z", StringComparison.OrdinalIgnoreCase))
+                {
+                    File.WriteAllBytes(outputPath, crMod.Create7z());
+                }
+                else
+                {
+                    crMod.Dump(outputPath);
+                }
                 return 0;
             }
             else
