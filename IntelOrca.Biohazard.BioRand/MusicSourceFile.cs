@@ -3,7 +3,7 @@
 namespace IntelOrca.Biohazard.BioRand
 {
     [DebuggerDisplay("[{Game}, {Tag}, {Path}]")]
-    internal class MusicSourceFile(string path, string game, string tag)
+    public class MusicSourceFile(string path, string game, string tag)
     {
         public string Path => path;
         public string Game => game;

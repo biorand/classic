@@ -2,7 +2,7 @@
 
 namespace IntelOrca.Biohazard.BioRand
 {
-    internal class RandomInventory
+    public class RandomInventory
     {
         public Entry[] Entries { get; } = [];
         public Entry? Special { get; } = null;

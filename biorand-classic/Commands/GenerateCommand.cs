@@ -1,6 +1,8 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
+using IntelOrca.Biohazard.BioRand.RE1;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
@@ -23,10 +25,20 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
 
             [CommandOption("-o|--output")]
             public string? OutputPath { get; init; }
+
+            [CommandOption("-n")]
+            public bool NoMod { get; init; }
+
+            [CommandOption("-g|--game")]
+            public string? Game { get; init; }
         }
 
         public override ValidationResult Validate(CommandContext context, Settings settings)
         {
+            if (settings.InputPath == null && GetBioVersion(settings.Game) == null)
+            {
+                return ValidationResult.Error($"Unknown game or not specified");
+            }
             if (settings.OutputPath == null)
             {
                 return ValidationResult.Error($"Output path not specified");
@@ -37,26 +49,79 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
 
         public override Task<int> ExecuteAsync(CommandContext context, Settings settings)
         {
-            var randomizer = GetRandomizer();
             var input = new RandomizerInput();
             input.Seed = settings.Seed;
-            input.GamePath = settings.InputPath;
             if (!string.IsNullOrEmpty(settings.ConfigPath))
             {
                 var configJson = File.ReadAllText(settings.ConfigPath);
                 input.Configuration = RandomizerConfiguration.FromJson(configJson);
             }
-            var output = randomizer.Randomize(input);
 
-            foreach (var asset in output.Assets)
+            if (settings.InputPath == null)
             {
-                var assetPath = Path.Combine(settings.OutputPath!, asset.FileName);
-                File.WriteAllBytes(assetPath, asset.Data);
+                // Randomizer not generated
+                var version = GetBioVersion(settings.Game)!.Value;
+                var randomizer = ClassicRandomizerFactory.Default.Create(version);
+                var mod = randomizer.RandomizeToMod(input);
+                if (settings.NoMod)
+                {
+                    // Just generate mod JSON
+                    File.WriteAllText(settings.OutputPath!, mod.ToJson());
+                }
+                else
+                {
+                    // Generate the mod too
+                    return Task.FromResult(GenerateMod(mod, settings.OutputPath!));
+                }
             }
-
+            else
+            {
+                // Randomizer pre-generated, just generate the mod
+                var mod = ClassicMod.FromJson(File.ReadAllText(settings.InputPath));
+                return Task.FromResult(GenerateMod(mod, settings.OutputPath!));
+            }
             return Task.FromResult(0);
         }
 
-        private IRandomizer GetRandomizer() => ClassicRandomizerFactory.Default.Create(BioVersion.Biohazard1);
+        private static int GenerateMod(ClassicMod mod, string outputPath)
+        {
+            if (GetBioVersion(mod.Game) is not BioVersion version)
+            {
+                Console.Error.WriteLine("Unsupported or invalid game moniker.");
+                return 1;
+            }
+
+            var builder = ClassicRandomizerFactory.Default.CreateModBuilder(version);
+            if (builder is ICrModBuilder crModBuilder)
+            {
+                var crMod = crModBuilder.Create(mod);
+                if (outputPath.EndsWith(".7z", StringComparison.OrdinalIgnoreCase))
+                {
+                    File.WriteAllBytes(outputPath, crMod.Create7z());
+                }
+                else
+                {
+                    crMod.Dump(outputPath);
+                }
+                return 0;
+            }
+            else
+            {
+                Console.Error.WriteLine("Failed to generate mod.");
+                return 1;
+            }
+        }
+
+        private static BioVersion? GetBioVersion(string? game)
+        {
+            return game?.ToLowerInvariant() switch
+            {
+                "re1" => BioVersion.Biohazard1,
+                "re2" => BioVersion.Biohazard2,
+                "re3" => BioVersion.Biohazard3,
+                "recv" => BioVersion.BiohazardCv,
+                _ => null
+            };
+        }
     }
 }

@@ -10,12 +10,12 @@ namespace IntelOrca.Biohazard.BioRand
 {
     internal class BgmBatchEncoder
     {
-        public void Process(ModBuilder modBuilder, ClassicRebirthModBuilder crModBuilder)
+        public void Process(ClassicMod mod, ClassicRebirthModBuilder crModBuilder)
         {
             if (FfmpegCommand.IsSupported())
             {
                 var tempConvertPath = GetOrCreateTempPath();
-                Parallel.ForEach(modBuilder.Music, kvp =>
+                Parallel.ForEach(mod.Music, kvp =>
                 {
                     var path = kvp.Key;
                     var music = kvp.Value;
@@ -43,7 +43,7 @@ namespace IntelOrca.Biohazard.BioRand
             }
             else
             {
-                Parallel.ForEach(modBuilder.Music, kvp =>
+                Parallel.ForEach(mod.Music, kvp =>
                 {
                     var path = kvp.Key;
                     var music = kvp.Value;

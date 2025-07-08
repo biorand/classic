@@ -7,12 +7,19 @@ namespace IntelOrca.Biohazard.BioRand
     {
         public static ClassicRandomizerFactory Default { get; } = new ClassicRandomizerFactory();
 
-        public IRandomizer Create(BioVersion version) => new ClassicRandomizer(GetController(version));
+        public IClassicRandomizer Create(BioVersion version) => new ClassicRandomizer(GetController(version));
 
         private static IClassicRandomizerController GetController(BioVersion version) =>
             version switch
             {
                 BioVersion.Biohazard1 => new Re1ClassicRandomizerController(),
+                _ => throw new NotImplementedException()
+            };
+
+        public object CreateModBuilder(BioVersion version) =>
+            version switch
+            {
+                BioVersion.Biohazard1 => new Re1CrModBuilder(),
                 _ => throw new NotImplementedException()
             };
     }

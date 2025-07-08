@@ -20,9 +20,6 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
             [Description("Seed to generate")]
             [CommandOption("-k|--key")]
             public required string ApiKey { get; init; }
-
-            [CommandOption("-i|--input")]
-            public required string InputPath { get; init; }
         }
 
         public override async Task<int> ExecuteAsync(CommandContext context, Settings settings)
@@ -34,7 +31,7 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
                 settings.Host,
                 settings.ApiKey,
                 gameId,
-                new RandomizerAgentHandler(settings.InputPath));
+                new RandomizerAgentHandler());
             var cts = new CancellationTokenSource();
             Console.CancelKeyPress += (sender, e) =>
             {
@@ -61,14 +58,7 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
 
         private class RandomizerAgentHandler : IRandomizerAgentHandler
         {
-            private readonly string _gamePath;
-
             public IRandomizer Randomizer { get; } = ClassicRandomizerFactory.Default.Create(BioVersion.Biohazard1);
-
-            public RandomizerAgentHandler(string gamePath)
-            {
-                _gamePath = gamePath;
-            }
 
             public Task<bool> CanGenerateAsync(RandomizerAgent.QueueResponseItem queueItem)
             {
@@ -77,7 +67,6 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
 
             public Task<RandomizerOutput> GenerateAsync(RandomizerAgent.QueueResponseItem queueItem, RandomizerInput input)
             {
-                input.GamePath = _gamePath;
                 return Task.FromResult(Randomizer.Randomize(input));
             }
 

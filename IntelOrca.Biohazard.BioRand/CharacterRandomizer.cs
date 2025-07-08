@@ -23,7 +23,10 @@ namespace IntelOrca.Biohazard.BioRand
                     if (!ch.Playable)
                         continue;
 
-                    characters.Add(ch.Id, new CharacterReplacement(enabledCharacters.Next(), 0));
+                    characters.Add(ch.Id, new CharacterReplacement()
+                    {
+                        Path = enabledCharacters.Next()
+                    });
                 }
             }
 
@@ -43,7 +46,11 @@ namespace IntelOrca.Biohazard.BioRand
                     var weapon = ch.Weapon && weaponIds.Length != 0
                         ? rng.NextOf(weaponIds)
                         : 0;
-                    characters.Add(ch.Id, new CharacterReplacement(enabledCharacters.Next(), weapon));
+                    characters.Add(ch.Id, new CharacterReplacement()
+                    {
+                        Path = enabledCharacters.Next(),
+                        Weapon = weapon
+                    });
                 }
             }
 

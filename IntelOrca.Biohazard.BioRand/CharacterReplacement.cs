@@ -2,11 +2,11 @@
 
 namespace IntelOrca.Biohazard.BioRand
 {
-    internal class CharacterReplacement(string character, int weapon)
+    public sealed class CharacterReplacement
     {
-        public string Path => character;
+        public string Path { get; init; } = "";
 
         [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingDefault)]
-        public int Weapon => weapon;
+        public int Weapon { get; init; }
     }
 }

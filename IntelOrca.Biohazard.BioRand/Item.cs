@@ -2,7 +2,7 @@
 
 namespace IntelOrca.Biohazard.BioRand
 {
-    internal readonly struct Item : IEquatable<Item>
+    public readonly struct Item : IEquatable<Item>
     {
         public byte Type { get; }
         public ushort Amount { get; }
