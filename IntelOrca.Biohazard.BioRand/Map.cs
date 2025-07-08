@@ -271,6 +271,7 @@ namespace IntelOrca.Biohazard.BioRand
         public string[]? RequiresRoom { get; set; }
         public string? Kind { get; set; }
         public int[]? AllowedLocks { get; set; }
+        public bool IgnoreInGraph { get; set; }
 
         public string? TargetRoom
         {

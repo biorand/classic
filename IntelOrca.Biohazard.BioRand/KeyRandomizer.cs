@@ -70,7 +70,7 @@ namespace IntelOrca.Biohazard.BioRand
                     {
                         foreach (var edge in room.Doors)
                         {
-                            if (edge.Target == null)
+                            if (edge.IgnoreInGraph || edge.Target == null)
                                 continue;
                             if (edge.Kind == "blocked" || edge.Kind == "locked")
                                 continue;

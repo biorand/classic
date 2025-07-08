@@ -231,6 +231,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 var helipadRoom = map.Rooms["303"];
                 var helipadDoor = helipadRoom.Doors.First(x => x.Name == "DOOR TO FOUNTAIN");
                 helipadDoor.Kind = "unlock";
+                helipadDoor.IgnoreInGraph = true;
                 fountainDoor.AllowedLocks = [];
             }
             else
