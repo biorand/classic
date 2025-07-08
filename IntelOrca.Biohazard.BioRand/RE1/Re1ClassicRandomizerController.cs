@@ -473,6 +473,9 @@ namespace IntelOrca.Biohazard.BioRand.RE1
         public void ApplyConfigModifications(IClassicRandomizerContext context, ModBuilder modBuilder)
         {
             var config = context.Configuration;
+            var player = config.GetValueOrDefault("variation", "Chris") == "Chris" ? 0 : 1;
+            modBuilder.General = modBuilder.General.SetItem("player", player);
+
             var ink = UpdateConfigNeverAlways(context.Rng, config, "ink/enable", "Always", "Never");
             if (ink != "Always")
             {
