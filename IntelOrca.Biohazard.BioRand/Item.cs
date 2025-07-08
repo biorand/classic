@@ -4,8 +4,8 @@ namespace IntelOrca.Biohazard.BioRand
 {
     public readonly struct Item : IEquatable<Item>
     {
-        public byte Type { get; }
-        public ushort Amount { get; }
+        public byte Type { get; init; }
+        public ushort Amount { get; init; }
 
         public Item(byte type, ushort amount)
         {

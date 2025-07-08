@@ -5,7 +5,11 @@ namespace IntelOrca.Biohazard.BioRand
     [DebuggerDisplay("Id = {Id} Key = {KeyItemId}")]
     public readonly struct DoorLock(int id, int keyItemId)
     {
-        public int Id => id;
-        public int KeyItemId => keyItemId;
+        public DoorLock() : this(0, 0)
+        {
+        }
+
+        public int Id { get; init; } = id;
+        public int KeyItemId { get; init; } = keyItemId;
     }
 }

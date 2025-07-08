@@ -65,7 +65,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 }
 
                 _crModBuilder.Module = new ClassicRebirthModule("biorand.dll", _dataManager.GetData("biorand.dll"));
-                // __crModBuilder.SetFile("log.md", mod.GetDump(context));
+                _crModBuilder.SetFile("log.md", _mod.GetDump(_map, Player == 0 ? "Chris" : "Jill"));
                 _crModBuilder.SetFile($"generated.json", _mod.ToJson());
 
                 Write();

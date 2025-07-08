@@ -4,8 +4,8 @@ namespace IntelOrca.Biohazard.BioRand
 {
     public class RandomInventory
     {
-        public Entry[] Entries { get; } = [];
-        public Entry? Special { get; } = null;
+        public Entry[] Entries { get; init; } = [];
+        public Entry? Special { get; init; } = null;
 
         public RandomInventory()
         {
@@ -27,9 +27,9 @@ namespace IntelOrca.Biohazard.BioRand
 
         public struct Entry
         {
-            public byte Type { get; }
-            public byte Count { get; }
-            public byte Part { get; }
+            public byte Type { get; init; }
+            public byte Count { get; init; }
+            public byte Part { get; init; }
 
             public Entry(byte type, byte count)
             {
