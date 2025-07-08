@@ -36,7 +36,10 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             {
                 _mod = mod;
                 _crModBuilder = new ClassicRebirthModBuilder(mod.Name);
-                _map = _dataManager.GetJson<Map>(BioVersion.Biohazard1, "rdt.json");
+
+                var player = _mod.General.GetValueOrDefault("player") as int? ?? 0;
+                _map = _dataManager.GetJson<Map>(BioVersion.Biohazard1, "rdt.json")
+                    .For(new MapFilter(false, (byte)player, 0));
             }
 
             public int Player => _mod.General.GetValueOrDefault("player") as int? ?? 0;
