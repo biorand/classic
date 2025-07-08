@@ -42,7 +42,7 @@
   },
   "voice/V001_04.wav": { "rdt": "106", "player": 0, "cutscene": 0, "actor": "jill", "condition": "@chris" },
   "voice/V001_05.wav": { "rdt": "106", "player": 0, "cutscene": 0, "actor": "jill" },
-  "voice/V001_06.wav": { "rdt": "106", "player": 0, "cutscene": 0, "actor": "wesker" },
+  "voice/V001_06.wav": { "rdt": "106", "cutscene": 0, "actor": "wesker" },
   "voice/V003_00.wav": { "rdt": "106", "player": 0, "cutscene": 2, "actor": "chris", "condition": "@Wesker && @Jill" },
   "voice/V003_01.wav": { "rdt": "106", "player": 0, "cutscene": 2, "actor": "chris", "condition": "!Wesker && !Jill" },
   "voice/V004_00.wav": { "rdt": "100", "player": 0, "cutscene": 0, "actor": "chris", "kind": "doom" },
