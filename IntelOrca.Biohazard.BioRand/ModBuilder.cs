@@ -17,7 +17,7 @@ namespace IntelOrca.Biohazard.BioRand
         public string Game { get; set; } = "";
         public string Name { get; set; } = "";
         public string Description { get; set; } = "";
-        public ImmutableDictionary<string, object> General { get; set; } = ImmutableDictionary.Create<string, object>();
+        public ImmutableDictionary<string, object?> General { get; set; } = ImmutableDictionary.Create<string, object?>();
         public ImmutableArray<RandomInventory> Inventory { get; set; } = [];
         public ImmutableArray<int> AssignedItemGlobalIds => [.. _itemMap.Keys];
         public ImmutableArray<EnemyPlacement> EnemyPlacements => [.. _enemyPlacements];
@@ -295,7 +295,7 @@ namespace IntelOrca.Biohazard.BioRand
         public string Game { get; init; } = "";
         public string Name { get; init; } = "";
         public string Description { get; init; } = "";
-        public ImmutableDictionary<string, object> General { get; init; } = ImmutableDictionary.Create<string, object>();
+        public ImmutableDictionary<string, object?> General { get; set; } = ImmutableDictionary.Create<string, object?>();
         public ImmutableArray<RandomInventory> Inventory { get; init; } = [];
         public ImmutableDictionary<RdtItemId, DoorLock?> Doors { get; init; } = ImmutableDictionary.Create<RdtItemId, DoorLock?>();
         public ImmutableDictionary<int, Item> Items { get; init; } = ImmutableDictionary.Create<int, Item>();
@@ -310,7 +310,22 @@ namespace IntelOrca.Biohazard.BioRand
 
         public static ClassicMod FromJson(string json)
         {
-            return JsonSerializer.Deserialize<ClassicMod>(json, JsonOptions)!;
+            var result = JsonSerializer.Deserialize<ClassicMod>(json, JsonOptions)!;
+            result.General = result.General.ToImmutableDictionary(
+                kvp => kvp.Key,
+                kvp => kvp.Value is JsonElement el
+                    ? el.ValueKind switch
+                    {
+                        JsonValueKind.String => el.GetString(),
+                        JsonValueKind.Number => el.TryGetInt32(out int i) ? (object)i : (object)el.GetDouble(),
+                        JsonValueKind.True => true,
+                        JsonValueKind.False => false,
+                        JsonValueKind.Null => null,
+                        _ => el.ToString()
+                    }
+                    : kvp.Value
+            );
+            return result;
         }
 
         public string ToJson()
