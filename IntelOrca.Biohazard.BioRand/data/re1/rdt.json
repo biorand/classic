@@ -4160,7 +4160,8 @@
           "globalId": 202,
           "type": 12,
           "amount": 7,
-          "group": 16
+          "group": 16,
+          "player": 0
         },
         {
           "name": "FIRST AID SPRAY",
@@ -4168,7 +4169,26 @@
           "globalId": 248,
           "type": 65,
           "amount": 1,
-          "group": 16
+          "group": 16,
+          "player": 0
+        },
+        {
+          "name": "EXPLOSIVE ROUNDS",
+          "id": 131,
+          "globalId": 45,
+          "type": 16,
+          "amount": 6,
+          "group": 16,
+          "player": 1
+        },
+        {
+          "name": "FIRST AID SPRAY",
+          "id": 132,
+          "globalId": 248,
+          "type": 65,
+          "amount": 1,
+          "group": 16,
+          "player": 1
         }
       ],
       "enemies": [
@@ -4339,7 +4359,7 @@
         {
           "name": "FLAME ROUNDS BEHIND BOULDER",
           "id": 2,
-          "globalId": 125,
+          "globalId": 126,
           "type": 18,
           "amount": 6,
           "group": 16,
