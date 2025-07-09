@@ -28,8 +28,19 @@ void MemoryManager::Nop(uint32_t address, uint32_t addressEnd)
     }
 }
 
+void MemoryManager::Call(uint32_t address, void* fn)
+{
+    Write<uint8_t>(address, 0xE8);
+    Write<uint32_t>(address + 1, reinterpret_cast<uint32_t>(fn) - address - 5);
+}
+
 void MemoryManager::HookJmp(uint32_t address, void* fn)
 {
     Write<uint8_t>(address, 0xE9);
     Write<uint32_t>(address + 1, reinterpret_cast<uint32_t>(fn) - address - 5);
+}
+
+void* MemoryManager::AllocExecutableMemory(size_t len)
+{
+    return VirtualAlloc(nullptr, len, MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 }

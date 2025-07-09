@@ -31,6 +31,10 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             private readonly ClassicMod _mod;
             private readonly ClassicRebirthModBuilder _crModBuilder;
             private readonly Map _map;
+            private readonly DynamicTweaksBuilder _tb = new();
+
+            private const int TWEAK_HITSCAN = 1;
+            private const int TWEAK_INVENTORY_SIZE = 2;
 
             public Session(ClassicMod mod)
             {
@@ -43,6 +47,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             }
 
             public int Player => _mod.General.GetValueOrDefault("player") as int? ?? 0;
+            public int InventorySize => _mod.General.GetValueOrDefault("inventorySize") as int? ?? 0;
             public bool RandomDoors => GetGeneralFlag("randomDoors");
             public bool RandomItems => GetGeneralFlag("randomItems");
             public bool RandomEnemies => GetGeneralFlag("randomEnemies");
@@ -101,8 +106,6 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
             public void Write()
             {
-                _crModBuilder.SetFile("biorand.dat", new byte[0]);
-
                 WriteRdts();
                 AddMiscXml();
                 AddSoundXml();
@@ -113,6 +116,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 AddBackgroundTextures();
                 AddVoices();
                 AddMusic();
+                AddDynamicTweaks();
             }
 
             private void WriteRdts()
@@ -1028,16 +1032,15 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 var doc = new XmlDocument();
                 var root = doc.CreateElement("Init");
 
-                var chris = CreateEmptyInventory(6);
+                var chrisRebecca = CreateEmptyInventory(12);
                 var jill = CreateEmptyInventory(8);
-                var rebecca = CreateEmptyInventory(6);
                 if (Player == 0)
-                    chris = inventories[0].WithSize(6);
+                    chrisRebecca = inventories[0].WithSize(12);
                 else
                     jill = inventories[0].WithSize(8);
 
-                root.AppendChild(CreatePlayerNode(doc, jill, new RandomInventory()));
-                root.AppendChild(CreatePlayerNode(doc, chris, rebecca));
+                root.AppendChild(CreatePlayerNode(doc, jill));
+                root.AppendChild(CreatePlayerNode(doc, chrisRebecca));
 
                 doc.AppendChild(root);
                 doc.Save(ms);
@@ -1054,18 +1057,15 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     return new RandomInventory([.. entries], null);
                 }
 
-                static XmlElement CreatePlayerNode(XmlDocument doc, RandomInventory main, RandomInventory partner)
+                static XmlElement CreatePlayerNode(XmlDocument doc, RandomInventory main)
                 {
                     var playerNode = doc.CreateElement("Player");
-                    foreach (var inv in new[] { main, partner })
+                    foreach (var entry in main.Entries)
                     {
-                        foreach (var entry in inv.Entries)
-                        {
-                            var entryNode = doc.CreateElement("Entry");
-                            entryNode.SetAttribute("id", entry.Type.ToString());
-                            entryNode.SetAttribute("count", entry.Count.ToString());
-                            playerNode.AppendChild(entryNode);
-                        }
+                        var entryNode = doc.CreateElement("Entry");
+                        entryNode.SetAttribute("id", entry.Type.ToString());
+                        entryNode.SetAttribute("count", entry.Count.ToString());
+                        playerNode.AppendChild(entryNode);
                     }
                     return playerNode;
                 }
@@ -1189,16 +1189,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     sourceSpan.CopyTo(targetSpan);
                 }
 
-                var ms = new MemoryStream();
-                var pw = new PatchWriter(ms);
-                pw.Begin(0x4AAD98);
-                var data = MemoryMarshal.Cast<short, byte>(new Span<short>(table));
-                foreach (var d in data)
-                {
-                    pw.Write(d);
-                }
-                pw.End();
-                _crModBuilder.SetFile("biorand.dat", ms.ToArray());
+                _tb.AddTweak(TWEAK_HITSCAN, MemoryMarshal.Cast<short, byte>(new Span<short>(table)));
             }
 
             private void AddNpcSkins()
@@ -1364,6 +1355,12 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 encoder.Process(_mod, _crModBuilder);
             }
 
+            private void AddDynamicTweaks()
+            {
+                _tb.AddTweak(TWEAK_INVENTORY_SIZE, [(byte)InventorySize]);
+                _crModBuilder.SetFile("biorand.dat", _tb.Build());
+            }
+
             private void AddMiscXml()
             {
                 var miscTable = _dataManager.GetData(BioVersion.Biohazard1, "misc.xml");
@@ -1485,6 +1482,30 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 RdtId.Parse("21B"),
                 RdtId.Parse("21C")
             ];
+        }
+    }
+
+    internal class DynamicTweaksBuilder
+    {
+        private readonly MemoryStream _ms = new MemoryStream();
+        private readonly BinaryWriter _bw;
+
+        public DynamicTweaksBuilder()
+        {
+            _bw = new BinaryWriter(_ms);
+        }
+
+        public void AddTweak(int kind, ReadOnlySpan<byte> data)
+        {
+            var bw = new BinaryWriter(_ms);
+            bw.Write(kind);
+            bw.Write(data.Length);
+            bw.Write(data);
+        }
+
+        public byte[] Build()
+        {
+            return _ms.ToArray();
         }
     }
 }

@@ -477,6 +477,17 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             var player = config.GetValueOrDefault("variation", "Chris") == "Chris" ? 0 : 1;
             modBuilder.General = modBuilder.General.SetItem("player", player);
 
+            // inventory/size
+            var inventorySizeSetting = config.GetValueOrDefault("inventory/size", "Default");
+            var inventorySize = inventorySizeSetting switch
+            {
+                "Random" => context.Rng.NextOf(6, 8),
+                "6" => 6,
+                "8" => 8,
+                _ => player == 0 ? 6 : 8
+            };
+            modBuilder.General = modBuilder.General.SetItem("inventorySize", inventorySize);
+
             var ink = UpdateConfigNeverAlways(context.Rng, config, "ink/enable", "Always", "Never");
             if (ink != "Always")
             {

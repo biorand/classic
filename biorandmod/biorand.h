@@ -16,7 +16,9 @@ public:
     void Read(uint32_t address, void* buffer, size_t len);
     void Write(uint32_t address, const void* buffer, size_t len);
     void Nop(uint32_t address, uint32_t addressEnd);
+    void Call(uint32_t address, void* fn);
     void HookJmp(uint32_t address, void* fn);
+    void* AllocExecutableMemory(size_t len);
 
     template<typename T>
     T Read(uint32_t address)

@@ -76,6 +76,7 @@ struct CustomData
 };
 
 static CustomData _customData;
+static uint8_t _inventorySize = 8;
 
 class RE1 : public REBase
 {
@@ -101,6 +102,7 @@ public:
         EnableChrisNoInk();
         EnableChrisLockpick();
         IncreaseLockLimit();
+        UpdateInventorySize();
         DoDynamicTweaks();
     }
 
@@ -270,6 +272,36 @@ private:
         _mm.HookJmp(0x48DB4A, PostGameInit);
     }
 
+    void UpdateInventorySize()
+    {
+        auto thunk = reinterpret_cast<uint8_t*>(_mm.AllocExecutableMemory(16));
+        if (thunk == nullptr)
+            return;
+
+        // Custom assembly so we don't overwrite any registers except eax
+        auto inventorySizeAddress = &_inventorySize;
+        thunk[0x00] = 0xB8;
+        std::memcpy(&thunk[0x01], &inventorySizeAddress, sizeof(inventorySizeAddress));
+        thunk[0x05] = 0x83; // cmp [eax], 8
+        thunk[0x06] = 0x38;
+        thunk[0x07] = 0x08;
+        thunk[0x08] = 0x31; // xor eax,eax
+        thunk[0x09] = 0xC0;
+        thunk[0x0A] = 0x7C; // jl 0x0D
+        thunk[0x0B] = 0x01;
+        thunk[0x0C] = 0x40; // inc eax
+        thunk[0x0D] = 0xC3; // ret
+        thunk[0x0E] = 0x90; // nop
+        thunk[0x0F] = 0x90; // nop
+
+        _mm.Call(0x40B461, thunk);
+        _mm.Call(0x40B476, thunk);
+        _mm.Call(0x40B483, thunk);
+        _mm.Call(0x414103, thunk);
+        _mm.Call(0x414022, thunk);
+        _mm.Call(0x4142CC, thunk);
+    }
+
     void DoDynamicTweaks()
     {
         auto maxCapacity = 8 * 1024 * 1024;
@@ -292,13 +324,32 @@ private:
         auto end = ptr + len;
         while (ptr < end)
         {
-            uint32_t entryOffset, entryLength;
-            std::memcpy(&entryOffset, ptr, sizeof(uint32_t));
+            uint32_t entryKind, entryLength;
+            std::memcpy(&entryKind, ptr, sizeof(uint32_t));
             ptr += sizeof(uint32_t);
             std::memcpy(&entryLength, ptr, sizeof(uint32_t));
             ptr += sizeof(uint32_t);
-            _mm.Write(entryOffset, ptr, entryLength);
+            DoDynamicTweak(entryKind, ptr, entryLength);
             ptr += entryLength;
+        }
+    }
+
+    void DoDynamicTweak(uint32_t kind, uint8_t* data, size_t len)
+    {
+        constexpr uint32_t KIND_NONE = 0;
+        constexpr uint32_t KIND_HITSCAN = 1;
+        constexpr uint32_t KIND_INVENTORY_SIZE = 2;
+
+        if (kind == KIND_HITSCAN)
+        {
+            _mm.Write(0x4AAD98, data, len);
+        }
+        else if (kind == KIND_INVENTORY_SIZE)
+        {
+            if (len >= 1)
+            {
+                _inventorySize = *data;
+            }
         }
     }
 
