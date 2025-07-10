@@ -40,30 +40,23 @@ namespace IntelOrca.Biohazard.BioRand
         private static ImmutableArray<MusicSourceFile> GetFullList(DataManager dataManager)
         {
             var files = ImmutableArray.CreateBuilder<MusicSourceFile>();
-            foreach (var basePath in dataManager.BasePaths)
+            foreach (var gameDir in dataManager.GetDirectories("bgm"))
             {
-                var bgmDir = Path.Combine(basePath, "bgm");
-                if (!Directory.Exists(bgmDir))
-                    continue;
-
-                foreach (var gameDir in Directory.GetDirectories(bgmDir))
+                var game = Path.GetFileName(gameDir);
+                foreach (var tagDir in dataManager.GetDirectories($"bgm/{gameDir}"))
                 {
-                    var game = Path.GetFileName(gameDir);
-                    foreach (var tagDir in Directory.GetDirectories(gameDir))
+                    var tag = Path.GetFileName(tagDir);
+
+                    var bgmFile = Directory.GetFiles(tagDir, "*", SearchOption.AllDirectories);
+                    foreach (var subFile in bgmFile)
                     {
-                        var tag = Path.GetFileName(tagDir);
+                        if (!SupportedMusicExtension(subFile))
+                            continue;
 
-                        var bgmFile = Directory.GetFiles(tagDir, "*", SearchOption.AllDirectories);
-                        foreach (var subFile in bgmFile)
-                        {
-                            if (!SupportedMusicExtension(subFile))
-                                continue;
-
-                            files.Add(new MusicSourceFile(subFile, game, tag));
-                        }
+                        files.Add(new MusicSourceFile(subFile, game, tag));
                     }
-
                 }
+
             }
             return files.ToImmutable();
         }

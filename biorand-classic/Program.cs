@@ -18,9 +18,15 @@ namespace IntelOrca.Biohazard.BioRand.Classic
                 config.AddCommand<AgentCommand>("agent")
                     .WithDescription("Runs a remote generator agent for generating randos")
                     .WithExample("agent", "localhost:8080", "-k", "nCF6UaetQJJ053QLwhXqUGR68U85Rcia");
+                config.AddCommand<DataCommand>("data")
+                    .WithDescription("Download or update the data to the latest version.")
+                    .WithExample("data", "-u");
                 config.AddCommand<GenerateCommand>("generate")
                     .WithDescription("Generates a new rando")
-                    .WithExample("generate", "-o", "mod_biorand-35825.7z", "--seed", "35825", "--config", "tough.json");
+                    .WithExample("generate", "-o", "mod_biorand-35825.7z", "-g", "re1", "--seed", "35825", "--config", "tough.json")
+                    .WithExample("generate", "-o", "mod_biorand", "-g", "re1", "--seed", "35825", "--config", "tough.json")
+                    .WithExample("generate", "-o", "mod.json", "-g", "re1", "--seed", "35825", "--config", "tough.json")
+                    .WithExample("generate", "-o", "mod_biorand-35825.7z", "--input", "mod.json");
             });
             return app.Run(args);
         }

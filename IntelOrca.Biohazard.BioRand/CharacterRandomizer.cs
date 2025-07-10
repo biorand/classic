@@ -65,15 +65,12 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 var result = new List<string>();
                 var dataManager = context.DataManager;
-                foreach (var basePath in dataManager.BasePaths)
+                foreach (var pl in new[] { "pld0", "pld1" })
                 {
-                    foreach (var pl in new[] { "pld0", "pld1" })
+                    var pldDir = Path.Combine("re1", pl);
+                    foreach (var characterPath in dataManager.GetDirectories(pldDir))
                     {
-                        var pldDir = Path.Combine(basePath, "re1", pl);
-                        foreach (var characterPath in dataManager.GetDirectories(pldDir))
-                        {
-                            result.Add(characterPath);
-                        }
+                        result.Add(characterPath);
                     }
                 }
                 return result;

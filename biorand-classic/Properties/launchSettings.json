@@ -2,8 +2,31 @@
   "profiles": {
     "generate": {
       "commandName": "Project",
-      "commandLineArgs": "generate -o . --seed 35825 --config config.json",
-      "workingDirectory": "M:\\apps\\biorand\\re1hd"
+      "commandLineArgs": "generate -g re1 -o mod_biorand_new --seed 35826 --config config.json",
+      "workingDirectory": "M:\\apps\\biorand\\re1hd",
+      "environmentVariables": {
+        "BIORAND_GAMEDATA_1": "M:\\apps\\biorand\\re1hd",
+        "BIORAND_DEBUG_SCRIPTS": "true"
+      }
+    },
+    "generate-semi": {
+      "commandName": "Project",
+      "commandLineArgs": "generate -g re1 -o mod.json --seed 35825 --config config.json",
+      "workingDirectory": "M:\\apps\\biorand\\re1hd",
+      "environmentVariables": {
+        "BIORAND_GAMEDATA_1": "M:\\apps\\biorand\\re1hd",
+        "BIORAND_DEBUG_SCRIPTS": "true"
+      }
+    },
+    "generate-final": {
+      "commandName": "Project",
+      "commandLineArgs": "generate -o mod_biorand_new --input mod_biorand_emily/generated.json",
+      "workingDirectory": "M:\\apps\\biorand\\re1hd",
+      "environmentVariables": {
+        "BIORAND_GAMEDATA_1": "M:\\apps\\biorand\\re1hd",
+        "BIORAND_DEBUG_OUTPUT": "M:\\apps\\biorand\\re1hd\\mod_biorand_new",
+        "BIORAND_DEBUG_SCRIPTS": "true"
+      }
     },
     "WSL": {
       "commandName": "WSL2",
@@ -11,7 +34,14 @@
     },
     "agent": {
       "commandName": "Project",
-      "commandLineArgs": "agent https://beta-api.biorand.net -k LAkcp9XbmFjo05ffk6ayH9b6DgDcuuXi"
+      "commandLineArgs": "agent https://beta-api.biorand.net -k LAkcp9XbmFjo05ffk6ayH9b6DgDcuuXi",
+      "environmentVariables": {
+        "BIORAND_GAMEDATA_1": "M:\\apps\\biorand\\re1hd"
+      }
+    },
+    "data": {
+      "commandName": "Project",
+      "commandLineArgs": "data -u"
     }
   }
 }

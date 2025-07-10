@@ -26,7 +26,6 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
         {
             var gameId = await GetGameIdAsync(settings.Host, "re1")
                 ?? throw new Exception("re1 game moniker not found.");
-            var randomizer = ClassicRandomizerFactory.Default.Create(BioVersion.Biohazard1);
             var agent = new RandomizerAgent(
                 settings.Host,
                 settings.ApiKey,
@@ -58,7 +57,7 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
 
         private class RandomizerAgentHandler : IRandomizerAgentHandler
         {
-            public IRandomizer Randomizer { get; } = ClassicRandomizerFactory.Default.Create(BioVersion.Biohazard1);
+            public IRandomizer Randomizer { get; } = ClassicRandomizerFactory.Default.Create(BioVersion.Biohazard1, new DataManager());
 
             public Task<bool> CanGenerateAsync(RandomizerAgent.QueueResponseItem queueItem)
             {

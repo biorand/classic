@@ -16,18 +16,18 @@ using SixLabors.ImageSharp.PixelFormats;
 
 namespace IntelOrca.Biohazard.BioRand.RE1
 {
-    internal class Re1CrModBuilder : ICrModBuilder
+    internal class Re1CrModBuilder(DataManager biorandData, DataManager gameData) : ICrModBuilder
     {
         public ClassicRebirthMod Create(ClassicMod mod)
         {
-            var session = new Session(mod);
+            var session = new Session(biorandData, gameData, mod);
             return session.Create();
         }
 
         private class Session
         {
-            private readonly DataManager _dataManager = GetDataManager();
-            private readonly DataManager _gameDataManager = GetGameDataManager();
+            private readonly DataManager _dataManager;
+            private readonly DataManager _gameDataManager;
             private readonly ClassicMod _mod;
             private readonly ClassicRebirthModBuilder _crModBuilder;
             private readonly Map _map;
@@ -36,8 +36,10 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             private const int TWEAK_HITSCAN = 1;
             private const int TWEAK_INVENTORY_SIZE = 2;
 
-            public Session(ClassicMod mod)
+            public Session(DataManager biorandData, DataManager gameData, ClassicMod mod)
             {
+                _dataManager = biorandData;
+                _gameDataManager = gameData;
                 _mod = mod;
                 _crModBuilder = new ClassicRebirthModBuilder(mod.Name);
 
@@ -75,33 +77,6 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
                 Write();
                 return _crModBuilder.Build();
-            }
-
-            private static DataManager GetDataManager()
-            {
-                var biorandDataPath = Environment.GetEnvironmentVariable("BIORAND_DATA");
-                if (biorandDataPath == null)
-                {
-                    throw new Exception("$BIORAND_DATA not set");
-                }
-
-                var paths = biorandDataPath
-                    .Split(Path.PathSeparator)
-                    .Select(x => Path.GetFullPath(x))
-                    .ToArray();
-                var dataManager = new DataManager(paths);
-                return dataManager;
-            }
-
-            private static DataManager GetGameDataManager()
-            {
-                var gameDataPath = Environment.GetEnvironmentVariable("BIORAND_GAMEDATA_1");
-                if (gameDataPath == null)
-                {
-                    throw new Exception("$BIORAND_GAMEDATA_1 not set");
-                }
-
-                return new DataManager(gameDataPath);
             }
 
             public void Write()
@@ -177,7 +152,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                             if (rdtPlayer == Player)
                             {
                                 var fileData = _gameDataManager.GetData(path);
-                                if (fileData.Length < 16)
+                                if (fileData == null || fileData.Length < 16)
                                     continue;
 
                                 var rdt = Rdt.FromData(BioVersion.Biohazard1, fileData);
@@ -1209,7 +1184,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 var skinPaths = _mod.EnemySkins;
                 foreach (var skinPath in skinPaths)
                 {
-                    var files = Directory.GetFiles(skinPath);
+                    var files = _dataManager.GetFiles(skinPath);
                     foreach (var f in files)
                     {
                         var fileName = Path.GetFileName(f);

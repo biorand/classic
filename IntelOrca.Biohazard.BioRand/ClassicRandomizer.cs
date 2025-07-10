@@ -10,7 +10,7 @@ using IntelOrca.Biohazard.BioRand.RE1;
 
 namespace IntelOrca.Biohazard.BioRand
 {
-    internal class ClassicRandomizer(IClassicRandomizerController controller) : IClassicRandomizer
+    internal class ClassicRandomizer(IClassicRandomizerController controller, DataManager dataManager) : IClassicRandomizer
     {
         public RandomizerConfigurationDefinition ConfigurationDefinition => CreateConfigDefinition();
         public RandomizerConfiguration DefaultConfiguration => ConfigurationDefinition.GetDefault();
@@ -38,36 +38,8 @@ namespace IntelOrca.Biohazard.BioRand
             return rev;
         }
 
-        private DataManager GetDataManager()
-        {
-            var biorandDataPath = Environment.GetEnvironmentVariable("BIORAND_DATA");
-            if (biorandDataPath == null)
-            {
-                throw new Exception("$BIORAND_DATA not set");
-            }
-
-            var paths = biorandDataPath
-                .Split(Path.PathSeparator)
-                .Select(x => Path.GetFullPath(x))
-                .ToArray();
-            var dataManager = new DataManager(paths);
-            return dataManager;
-        }
-
-        private DataManager GetGameDataManager()
-        {
-            var gameDataPath = Environment.GetEnvironmentVariable("BIORAND_GAMEDATA_1");
-            if (gameDataPath == null)
-            {
-                throw new Exception("$BIORAND_GAMEDATA_1 not set");
-            }
-
-            return new DataManager(gameDataPath);
-        }
-
         private RandomizerConfigurationDefinition CreateConfigDefinition()
         {
-            var dataManager = GetDataManager();
             var map = dataManager.GetJson<Map>(BioVersion.Biohazard1, "rdt.json");
 
             var result = new RandomizerConfigurationDefinition();
@@ -590,25 +562,18 @@ namespace IntelOrca.Biohazard.BioRand
             });
 
             group = page.CreateGroup("Games");
-            foreach (var basePath in dataManager.BasePaths)
+            foreach (var gameDir in dataManager.GetDirectories("bgm"))
             {
-                var bgmDir = Path.Combine(basePath, "bgm");
-                if (!Directory.Exists(bgmDir))
-                    continue;
-
-                foreach (var gameDir in Directory.GetDirectories(bgmDir))
+                var game = Path.GetFileName(gameDir);
+                group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
                 {
-                    var game = Path.GetFileName(gameDir);
-                    group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
-                    {
-                        Id = $"music/game/{game}",
-                        Label = game.ToUpper(),
-                        Type = "switch",
-                        Default = true
-                    });
-                }
-                group.Items = group.Items.OrderBy(x => x.Label).ToList();
+                    Id = $"music/game/{game}",
+                    Label = game.ToUpper(),
+                    Type = "switch",
+                    Default = true
+                });
             }
+            group.Items = group.Items.OrderBy(x => x.Label).ToList();
 
             controller.UpdateConfigDefinition(result);
             return result;
@@ -658,14 +623,9 @@ namespace IntelOrca.Biohazard.BioRand
         private List<string> GetEnemySkins()
         {
             var result = new List<string>();
-            var dataManager = GetDataManager();
-            foreach (var basePath in dataManager.BasePaths)
+            foreach (var skinPath in dataManager.GetDirectories("re1/emd"))
             {
-                var emdDir = Path.Combine(basePath, "re1", "emd");
-                foreach (var skinPath in dataManager.GetDirectories(emdDir))
-                {
-                    result.Add(skinPath);
-                }
+                result.Add(skinPath);
             }
             return result;
         }
@@ -673,16 +633,12 @@ namespace IntelOrca.Biohazard.BioRand
         private List<string> GetProtagonists()
         {
             var result = new List<string>();
-            var dataManager = GetDataManager();
-            foreach (var basePath in dataManager.BasePaths)
+            foreach (var pl in new[] { "pld0", "pld1" })
             {
-                foreach (var pl in new[] { "pld0", "pld1" })
+                var pldDir = Path.Combine("re1", pl);
+                foreach (var characterPath in dataManager.GetDirectories(pldDir))
                 {
-                    var pldDir = Path.Combine(basePath, "re1", pl);
-                    foreach (var characterPath in dataManager.GetDirectories(pldDir))
-                    {
-                        result.Add(characterPath);
-                    }
+                    result.Add(characterPath);
                 }
             }
             return result;
@@ -692,7 +648,6 @@ namespace IntelOrca.Biohazard.BioRand
         {
             var modBuilder = CreateModBuilder(input);
 
-            var dataManager = GetDataManager();
             var rng = new Rng(input.Seed);
             var context = new Context(input.Configuration.Clone(), dataManager, rng);
             controller.ApplyConfigModifications(context, modBuilder);
@@ -722,7 +677,7 @@ namespace IntelOrca.Biohazard.BioRand
         public RandomizerOutput Randomize(RandomizerInput input)
         {
             var mod = RandomizeToMod(input);
-            var modBuilder = ClassicRandomizerFactory.Default.CreateModBuilder(BioVersion.Biohazard1);
+            var modBuilder = ClassicRandomizerFactory.Default.CreateModBuilder(BioVersion.Biohazard1, dataManager, null);
             if (modBuilder is ICrModBuilder crModBuilder)
             {
                 var crMod = crModBuilder.Create(mod);
@@ -825,7 +780,7 @@ namespace IntelOrca.Biohazard.BioRand
                     continue;
 
                 var ids = new List<byte>();
-                var files = Directory.GetFiles(skinPath);
+                var files = dataManager.GetFiles($"re1/emd/{skinPath}");
                 foreach (var f in files)
                 {
                     var fileName = Path.GetFileName(f);

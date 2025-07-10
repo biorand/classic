@@ -88,7 +88,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     return new PlwFile(BioVersion.Biohazard1, plwPath);
                 }
 
-                var originalData = gameDataManager.TryGetData($"JPN/PLAYERS/{plwFileName}");
+                var originalData = gameDataManager.GetData($"JPN/PLAYERS/{plwFileName}");
                 if (originalData != null)
                 {
                     return new PlwFile(BioVersion.Biohazard1, new MemoryStream(originalData));
