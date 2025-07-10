@@ -4,16 +4,18 @@ using IntelOrca.Biohazard.Model;
 
 namespace IntelOrca.Biohazard.BioRand.RE1
 {
-    internal class Re1CharacterGenerator(DataManager gameDataManager, ClassicRebirthModBuilder crModBuilder)
+    internal class Re1CharacterGenerator(
+        DataManager biorandDataManager,
+        DataManager gameDataManager,
+        ClassicRebirthModBuilder crModBuilder)
     {
         public void Generate(byte emdId, CharacterReplacement cr)
         {
-            var char10path = Path.Combine(cr.Path, "char10.emd");
-            var char11path = Path.Combine(cr.Path, "char11.emd");
-            var playerIndex = File.Exists(char10path) ? 0 : 1;
-            var pldPath = playerIndex == 0 ? char10path : char11path;
-
-            var pldFile = ModelFile.FromFile(pldPath);
+            var char10data = biorandDataManager.GetData($"{cr.Path}/char10.emd");
+            var char11data = biorandDataManager.GetData($"{cr.Path}/char11.emd");
+            var charData = char10data ?? char11data;
+            var playerIndex = char10data != null ? 0 : 1;
+            var pldFile = new EmdFile(BioVersion.Biohazard1, new MemoryStream(charData));
             var emdFile = GetBaseEmd(emdId);
             var timFile = pldFile.GetTim(0);
 

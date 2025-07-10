@@ -1181,7 +1181,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
             private void AddNpcSkins()
             {
-                var generator = new Re1CharacterGenerator(_gameDataManager, _crModBuilder);
+                var generator = new Re1CharacterGenerator(_dataManager, _gameDataManager, _crModBuilder);
                 foreach (var kvp in _mod.Characters)
                 {
                     if (kvp.Key < 2)
@@ -1196,14 +1196,14 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 var skinPaths = _mod.EnemySkins;
                 foreach (var skinPath in skinPaths)
                 {
-                    var files = _dataManager.GetFiles(skinPath);
+                    var files = _dataManager.GetFiles($"re1/emd/{skinPath}");
                     foreach (var f in files)
                     {
                         var destination = GetDestination(f);
                         if (destination == null)
                             continue;
 
-                        var fileData = _dataManager.GetData($"{skinPath}/{f}");
+                        var fileData = _dataManager.GetData($"re1/emd/{skinPath}/{f}");
                         if (fileData == null || fileData.Length == 0)
                             continue;
 
