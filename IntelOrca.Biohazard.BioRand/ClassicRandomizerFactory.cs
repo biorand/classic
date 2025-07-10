@@ -7,8 +7,8 @@ namespace IntelOrca.Biohazard.BioRand
     {
         public static ClassicRandomizerFactory Default { get; } = new ClassicRandomizerFactory();
 
-        public IClassicRandomizer Create(BioVersion version, DataManager biorandData) =>
-            new ClassicRandomizer(GetController(version), biorandData);
+        public IClassicRandomizer Create(BioVersion version, DataManager biorandData, DataManager gameData) =>
+            new ClassicRandomizer(GetController(version), biorandData, gameData);
 
         private static IClassicRandomizerController GetController(BioVersion version) =>
             version switch

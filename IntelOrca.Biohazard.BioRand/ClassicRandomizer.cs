@@ -10,7 +10,7 @@ using IntelOrca.Biohazard.BioRand.RE1;
 
 namespace IntelOrca.Biohazard.BioRand
 {
-    internal class ClassicRandomizer(IClassicRandomizerController controller, DataManager dataManager) : IClassicRandomizer
+    internal class ClassicRandomizer(IClassicRandomizerController controller, DataManager dataManager, DataManager gameDataManager) : IClassicRandomizer
     {
         public RandomizerConfigurationDefinition ConfigurationDefinition => CreateConfigDefinition();
         public RandomizerConfiguration DefaultConfiguration => ConfigurationDefinition.GetDefault();
@@ -677,7 +677,7 @@ namespace IntelOrca.Biohazard.BioRand
         public RandomizerOutput Randomize(RandomizerInput input)
         {
             var mod = RandomizeToMod(input);
-            var modBuilder = ClassicRandomizerFactory.Default.CreateModBuilder(BioVersion.Biohazard1, dataManager, null);
+            var modBuilder = ClassicRandomizerFactory.Default.CreateModBuilder(BioVersion.Biohazard1, dataManager, gameDataManager);
             if (modBuilder is ICrModBuilder crModBuilder)
             {
                 var crMod = crModBuilder.Create(mod);

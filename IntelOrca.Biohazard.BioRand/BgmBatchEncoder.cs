@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace IntelOrca.Biohazard.BioRand
 {
-    internal class BgmBatchEncoder
+    internal class BgmBatchEncoder(DataManager dataManager)
     {
         public void Process(ClassicMod mod, ClassicRebirthModBuilder crModBuilder)
         {
@@ -19,25 +19,28 @@ namespace IntelOrca.Biohazard.BioRand
                 {
                     var path = kvp.Key;
                     var music = kvp.Value;
-                    var tempPath = Path.Combine(tempConvertPath, $"{Guid.NewGuid()}.wav");
+                    var tempInputPath = Path.Combine(tempConvertPath, $"{Guid.NewGuid()}{Path.GetExtension(music.Path)}");
+                    var tempOutputPath = Path.Combine(tempConvertPath, $"{Guid.NewGuid()}.wav");
                     try
                     {
+                        File.WriteAllBytes(tempInputPath, dataManager.GetData(music.Path));
                         var ffmpegCommand = new FfmpegCommand()
                         {
-                            Input = music.Path,
-                            Output = tempPath,
+                            Input = tempInputPath,
+                            Output = tempOutputPath,
                             Format = "pcm_u8",
                             Channels = 1,
                             SampleRate = 22050,
                             Duration = 3 * 60
                         };
                         ffmpegCommand.Go();
-                        var wavData = File.ReadAllBytes(tempPath);
+                        var wavData = File.ReadAllBytes(tempOutputPath);
                         crModBuilder.SetFile(path, wavData);
                     }
                     finally
                     {
-                        Delete(tempPath);
+                        Delete(tempInputPath);
+                        Delete(tempOutputPath);
                     }
                 });
             }

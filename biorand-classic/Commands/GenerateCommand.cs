@@ -1,7 +1,6 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
-using System.Reflection;
 using System.Threading.Tasks;
 using IntelOrca.Biohazard.BioRand.RE1;
 using Spectre.Console;
@@ -59,7 +58,7 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
             {
                 // Randomizer not generated
                 var version = GetBioVersion(settings.Game)!.Value;
-                var randomizer = ClassicRandomizerFactory.Default.Create(version, CreateDataManager());
+                var randomizer = Program.CreateClassicRandomizer(version);
                 var mod = randomizer.RandomizeToMod(input);
                 if (settings.OutputPath!.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
                 {
@@ -89,7 +88,7 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
                 return 1;
             }
 
-            var builder = ClassicRandomizerFactory.Default.CreateModBuilder(version, CreateDataManager(), CreateGameDataManager(version));
+            var builder = Program.CreateModBuilder(version);
             if (builder is ICrModBuilder crModBuilder)
             {
                 var crMod = crModBuilder.Create(mod);
@@ -120,62 +119,6 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
                 "recv" => BioVersion.BiohazardCv,
                 _ => null
             };
-        }
-
-        private static DataManager CreateDataManager()
-        {
-            var dataManager = new DataManager();
-            var env = Environment.GetEnvironmentVariable("BIORAND_DATA");
-            if (env == null)
-            {
-                var biorandDirectory = GetExecutableDirectory();
-                dataManager.AddFileSystem(GetCustomDataDirectory());
-                dataManager.AddFileSystem(Path.Combine(biorandDirectory, "data"));
-                dataManager.AddZip(Path.Combine(biorandDirectory, "data.zip"));
-                dataManager.AddFileSystem(Path.Combine(biorandDirectory, "meta"));
-            }
-            else
-            {
-                var paths = env.Split(Path.PathSeparator);
-                foreach (var p in paths)
-                {
-                    if (p.EndsWith(".zip"))
-                    {
-                        dataManager.AddZip(p, "data");
-                    }
-                    else
-                    {
-                        dataManager.AddFileSystem(p);
-                    }
-                }
-            }
-            return dataManager;
-        }
-
-        private static string GetCustomDataDirectory()
-        {
-            var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(appData, "biorand", "data");
-        }
-
-        private static DataManager CreateGameDataManager(BioVersion version)
-        {
-            var dataManager = new DataManager();
-            var env = Environment.GetEnvironmentVariable("BIORAND_GAMEDATA_1");
-            if (env != null)
-            {
-                dataManager.AddFileSystem(env);
-            }
-            return dataManager;
-        }
-
-        private static string GetExecutableDirectory()
-        {
-            var assemblyLocation = Assembly.GetEntryAssembly()?.Location;
-            if (assemblyLocation == null)
-                return Environment.CurrentDirectory;
-
-            return Path.GetDirectoryName(assemblyLocation) ?? Environment.CurrentDirectory;
         }
     }
 }

@@ -223,6 +223,7 @@ namespace IntelOrca.Biohazard.BioRand
         {
             private ZipArchive? _zip;
             private readonly string _basePath = "";
+            private readonly object _sync = new object();
 
             public ZipArea(string path, string basePath = "")
             {
@@ -248,10 +249,18 @@ namespace IntelOrca.Biohazard.BioRand
                 {
                     try
                     {
+
                         var entry = _zip.GetEntry(TransformFilePath(path));
                         if (entry != null)
                         {
-                            return entry.Open();
+                            var ms = new MemoryStream();
+                            lock (_sync)
+                            {
+                                using var compressedEntry = entry.Open();
+                                compressedEntry.CopyTo(ms);
+                            }
+                            ms.Position = 0;
+                            return ms;
                         }
                     }
                     catch

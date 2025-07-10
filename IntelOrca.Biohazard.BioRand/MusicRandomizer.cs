@@ -47,13 +47,13 @@ namespace IntelOrca.Biohazard.BioRand
                 {
                     var tag = Path.GetFileName(tagDir);
 
-                    var bgmFile = Directory.GetFiles(tagDir, "*", SearchOption.AllDirectories);
+                    var bgmFile = dataManager.GetFiles($"bgm/{gameDir}/{tagDir}");
                     foreach (var subFile in bgmFile)
                     {
                         if (!SupportedMusicExtension(subFile))
                             continue;
 
-                        files.Add(new MusicSourceFile(subFile, game, tag));
+                        files.Add(new MusicSourceFile($"bgm/{gameDir}/{tagDir}/{subFile}", game, tag));
                     }
                 }
 

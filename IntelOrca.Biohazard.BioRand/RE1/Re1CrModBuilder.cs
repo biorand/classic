@@ -1326,7 +1326,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 var bgmTable = _dataManager.GetData(BioVersion.Biohazard1, "bgm_tbl.xml");
                 _crModBuilder.SetFile("bgm_tbl.xml", bgmTable);
 
-                var encoder = new BgmBatchEncoder();
+                var encoder = new BgmBatchEncoder(_dataManager);
                 encoder.Process(_mod, _crModBuilder);
             }
 

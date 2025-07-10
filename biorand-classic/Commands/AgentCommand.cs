@@ -57,7 +57,7 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
 
         private class RandomizerAgentHandler : IRandomizerAgentHandler
         {
-            public IRandomizer Randomizer { get; } = ClassicRandomizerFactory.Default.Create(BioVersion.Biohazard1, new DataManager());
+            public IRandomizer Randomizer { get; } = Program.CreateClassicRandomizer(BioVersion.Biohazard1);
 
             public Task<bool> CanGenerateAsync(RandomizerAgent.QueueResponseItem queueItem)
             {
@@ -66,6 +66,11 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
 
             public Task<RandomizerOutput> GenerateAsync(RandomizerAgent.QueueResponseItem queueItem, RandomizerInput input)
             {
+                if (!queueItem.UserTags.Contains("re1:tester"))
+                {
+                    throw new RandomizerUserException("The RE 1 cloud randomizer is currently only available to testers.");
+                }
+
                 return Task.FromResult(Randomizer.Randomize(input));
             }
 
