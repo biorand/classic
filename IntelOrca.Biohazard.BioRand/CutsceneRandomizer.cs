@@ -359,11 +359,10 @@ namespace IntelOrca.Biohazard.BioRand
         {
             Sources = dataManager
                 .GetDirectories("voice")
-                .SelectMany(x =>
+                .SelectMany(actor =>
                 {
-                    var actor = Path.GetFileName(x);
-                    var files = Directory.GetFiles(x);
-                    return files.Select(y => (Actor: actor, Path: y));
+                    var files = dataManager.GetFiles($"voice/{actor}");
+                    return files.Select(y => (Actor: actor, Path: $"voice/{actor}/{y}"));
                 })
                 .AsParallel()
                 .Select(x => CreateSource(x.Actor, x.Path))

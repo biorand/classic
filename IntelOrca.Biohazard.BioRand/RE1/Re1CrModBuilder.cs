@@ -71,7 +71,11 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     _crModBuilder.SetFile("config.json", config.ToJson(true));
                 }
 
-                _crModBuilder.Module = new ClassicRebirthModule("biorand.dll", _dataManager.GetData("biorand.dll"));
+                var biorandModule = _dataManager.GetData("biorand.dll");
+                if (biorandModule != null)
+                {
+                    _crModBuilder.Module = new ClassicRebirthModule("biorand.dll", biorandModule);
+                }
                 _crModBuilder.SetFile("log.md", _mod.GetDump(_map, Player == 0 ? "Chris" : "Jill"));
                 _crModBuilder.SetFile($"generated.json", _mod.ToJson());
 
@@ -1057,18 +1061,18 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
                 var characterName = Path.GetFileName(characterPath);
                 var srcPlayer = 0;
-                var emdData = GetData($"{characterPath}/char10.emd");
+                var emdData = _dataManager.GetData($"{characterPath}/char10.emd");
                 if (emdData == null)
                 {
                     srcPlayer = 1;
-                    emdData = GetData($"{characterPath}/char11.emd");
+                    emdData = _dataManager.GetData($"{characterPath}/char11.emd");
                 }
 
                 var playerIndex = Player;
                 _crModBuilder.SetFile($"ENEMY/CHAR1{playerIndex}.EMD", emdData);
                 for (var i = 0; i < 12; i++)
                 {
-                    var emwData = GetData($"{characterPath}/W{srcPlayer}{i}.EMW");
+                    var emwData = _dataManager.GetData($"{characterPath}/W{srcPlayer}{i}.EMW");
                     if (emwData != null)
                     {
                         _crModBuilder.SetFile($"PLAYERS/W{playerIndex}{i}.EMW", emwData);
@@ -1087,28 +1091,42 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 var soundDir = "sound";
                 for (int i = 0; i < hurtFiles.Length; i++)
                 {
-                    var waveformBuilder = new WaveformBuilder();
-                    waveformBuilder.Append(hurtFiles[i]);
+                    var targetData = GetHurtWaveData(hurtFiles[i]);
                     var arr = hurtFileNames[playerIndex];
                     foreach (var hurtFileName in arr)
                     {
                         var soundPath = $"{soundDir}/{hurtFileName}{i + 1:00}.wav";
-                        _crModBuilder.SetFile(soundPath, waveformBuilder.ToArray());
+                        _crModBuilder.SetFile(soundPath, targetData);
                     }
                 }
                 if (playerIndex <= 1)
                 {
                     var nom = playerIndex == 0 ? "ch_nom.wav" : "ji_nom.wav";
                     var sime = playerIndex == 0 ? "ch_sime.wav" : "ji_sime.wav";
-                    _crModBuilder.SetFile($"{soundDir}/{nom}", new WaveformBuilder()
-                        .Append(hurtFiles[3])
-                        .ToArray());
-                    _crModBuilder.SetFile($"{soundDir}/{sime}", new WaveformBuilder()
-                        .Append(hurtFiles[2])
-                        .ToArray());
+                    Convert($"{soundDir}/{nom}", hurtFiles[3]);
+                    Convert($"{soundDir}/{sime}", hurtFiles[2]);
                 }
 
                 FixWeaponHitScan($"{characterPath}/weapons.csv", srcPlayer);
+
+                void Convert(string target, string source)
+                {
+                    var targetData = GetHurtWaveData(source);
+                    _crModBuilder.SetFile(target, targetData);
+                }
+
+                byte[]? GetHurtWaveData(string source)
+                {
+                    var data = _dataManager.GetData(source);
+                    if (data == null)
+                        return null;
+
+                    var stream = new MemoryStream(data);
+
+                    var waveformBuilder = new WaveformBuilder();
+                    waveformBuilder.Append(source, stream);
+                    return waveformBuilder.ToArray();
+                }
 
                 string[] GetHurtFiles(string character)
                 {
@@ -1128,13 +1146,6 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     }
                     return hurtFiles;
                 }
-
-                byte[]? GetData(string path)
-                {
-                    if (!File.Exists(path))
-                        return null;
-                    return File.ReadAllBytes(path);
-                }
             }
 
             private void FixWeaponHitScan(string csvPath, int srcPlayer)
@@ -1146,9 +1157,10 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 };
                 var targetSpan = new Span<short>(table, Player * 6, 6);
 
-                if (File.Exists(csvPath))
+                var csvText = _dataManager.GetText(csvPath);
+                if (csvText != null)
                 {
-                    var csv = File.ReadAllLines(csvPath)
+                    var csv = csvText.Split(['\n', '\r'], StringSplitOptions.RemoveEmptyEntries)
                         .Where(x => !string.IsNullOrWhiteSpace(x))
                         .Select(x => x.Trim().Split(','))
                         .ToArray();
@@ -1187,13 +1199,12 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     var files = _dataManager.GetFiles(skinPath);
                     foreach (var f in files)
                     {
-                        var fileName = Path.GetFileName(f);
-                        var destination = GetDestination(fileName);
+                        var destination = GetDestination(f);
                         if (destination == null)
                             continue;
 
-                        var fileData = File.ReadAllBytes(f);
-                        if (fileData.Length == 0)
+                        var fileData = _dataManager.GetData($"{skinPath}/{f}");
+                        if (fileData == null || fileData.Length == 0)
                             continue;
 
                         _crModBuilder.SetFile(destination, fileData);
@@ -1237,6 +1248,9 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             private void AddBackgroundTextures()
             {
                 var bgPng = _dataManager.GetData(BioVersion.Biohazard1, "bg.png");
+                if (bgPng == null)
+                    return;
+
                 var bgPix = PngToPix(bgPng);
                 _crModBuilder.SetFile("data/title.pix", bgPix);
                 _crModBuilder.SetFile("type.png", bgPng);
@@ -1282,10 +1296,11 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     for (var i = 0; i < items.Length; i++)
                     {
                         var (k, sourcePath) = items[i];
+                        var sourceStream = new MemoryStream(_dataManager.GetData(sourcePath));
                         var silenceDuration = k.Range.Start - time;
                         var duration = k.Range.End == 0 ? double.NaN : k.Range.Length;
                         wavBuilder.AppendSilence(silenceDuration);
-                        wavBuilder.Append(sourcePath, 0, duration);
+                        wavBuilder.Append(sourcePath, sourceStream, 0, duration);
                         if (!double.IsNaN(duration))
                         {
                             var remaining = k.Range.End - wavBuilder.Duration;

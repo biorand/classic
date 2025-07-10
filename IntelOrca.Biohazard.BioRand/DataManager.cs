@@ -69,10 +69,11 @@ namespace IntelOrca.Biohazard.BioRand
         }
 
         public byte[]? GetData(BioVersion version, string path) => GetData(GetPath(version, path));
+        public string? GetText(BioVersion version, string path) => GetText(GetPath(version, path));
 
-        public string? GetText(BioVersion version, string path)
+        public string? GetText(string path)
         {
-            var data = GetData(version, path);
+            var data = GetData(path);
             if (data != null)
             {
                 // Check for UTF-8 BOM
@@ -102,6 +103,9 @@ namespace IntelOrca.Biohazard.BioRand
             options.Converters.Add(new RdtIdConverter());
 
             var json = GetText(version, path);
+            if (json == null)
+                throw new Exception($"{path} not found");
+
             var map = JsonSerializer.Deserialize<T>(json, options)!;
             return map;
         }

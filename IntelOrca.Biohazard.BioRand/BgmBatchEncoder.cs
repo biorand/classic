@@ -51,7 +51,8 @@ namespace IntelOrca.Biohazard.BioRand
                     var path = kvp.Key;
                     var music = kvp.Value;
                     var builder = new WaveformBuilder(volume: 0.75f);
-                    builder.Append(music.Path, 0, 2.5 * 60);
+                    var inputStream = new MemoryStream(dataManager.GetData(music.Path));
+                    builder.Append(music.Path, inputStream, 0, 2.5 * 60);
                     var wavData = builder.ToArray();
                     crModBuilder.SetFile(path, wavData);
                 });
