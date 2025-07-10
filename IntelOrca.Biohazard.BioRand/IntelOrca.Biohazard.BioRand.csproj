@@ -30,13 +30,13 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-  <ItemGroup Condition="'$(Configuration)'=='Release'">
-    <None Update="data\**\*">
+  <ItemGroup>
+    <None Update="meta\**\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
   <Target Name="CopyDllModuleToData" BeforeTargets="Compile" Condition="'$(IsLinux)'!='true'">
-    <Copy SourceFiles="..\biorandmod\bin\biorand.dll" DestinationFolder="data" />
+    <Copy SourceFiles="..\biorandmod\bin\biorand.dll" DestinationFolder="meta" />
   </Target>
   <Target Name="SetSourceRevisionId" BeforeTargets="InitializeSourceControlInformation">
     <Exec Command="git describe --long --always --exclude=* --abbrev=7" ConsoleToMSBuild="True" IgnoreExitCode="False">
