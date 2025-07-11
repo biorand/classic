@@ -124,7 +124,7 @@ namespace IntelOrca.Biohazard.BioRand
                 if (door.LockId != null)
                 {
                     var doorInfo = doors.First(x => x.Door == door);
-                    AssignDoorLock(context.ModBuilder, doorInfo, null);
+                    AssignDoorLock(doorInfo, null);
                 }
 
                 var otherSide = map.GetOtherSide(door);
@@ -134,7 +134,7 @@ namespace IntelOrca.Biohazard.BioRand
                     if (otherSide.LockId != null)
                     {
                         var doorInfo = doors.First(x => x.Door == otherSide);
-                        AssignDoorLock(context.ModBuilder, doorInfo, null);
+                        AssignDoorLock(doorInfo, null);
                     }
                 }
             }
@@ -172,8 +172,8 @@ namespace IntelOrca.Biohazard.BioRand
                 var lockId = pair.LockId;
                 if (numLocks >= lockLimit)
                 {
-                    AssignDoorLock(modBuilder, pair.A, null);
-                    AssignDoorLock(modBuilder, pair.B, null);
+                    AssignDoorLock(pair.A, null);
+                    AssignDoorLock(pair.B, null);
                 }
                 else
                 {
@@ -193,14 +193,14 @@ namespace IntelOrca.Biohazard.BioRand
                     else if (pair.B.Door.Kind == "unblock")
                         doorLockA = new DoorLock(lockId.Value, 255);
 
-                    AssignDoorLock(modBuilder, pair.A, doorLockA);
-                    AssignDoorLock(modBuilder, pair.B, doorLockB);
+                    AssignDoorLock(pair.A, doorLockA);
+                    AssignDoorLock(pair.B, doorLockB);
                     numLocks++;
                 }
             }
         }
 
-        private void AssignDoorLock(ModBuilder modBuilder, DoorInfo doorInfo, DoorLock? doorLock)
+        private void AssignDoorLock(DoorInfo doorInfo, DoorLock? doorLock)
         {
             if (doorLock == null)
             {

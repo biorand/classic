@@ -158,6 +158,12 @@ namespace IntelOrca.Biohazard.BioRand
         public int Group { get; set; }
         public int? Amount { get; set; }
         public bool Discard { get; set; }
+
+        /// <summary>
+        /// The item is used as a lock, but no requirement is added for it.
+        /// This is useful for lockpick doors.
+        /// </summary>
+        public bool Implicit { get; set; }
     }
 
     public class MapEnemyGroup

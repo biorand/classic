@@ -165,16 +165,8 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             var enableLockpick = context.Configuration.GetValueOrDefault("inventory/special/lockpick", "Always") == "Always";
             if (enableLockpick)
             {
-                var allEdges = map.Rooms.SelectMany(x => x.Value.AllEdges).ToArray();
-                foreach (var edge in allEdges)
-                {
-                    if (edge.Requires2 != null)
-                    {
-                        edge.Requires2 = edge.Requires2
-                            .Where(x => x != "item(51)" && x != "item(61)")
-                            .ToArray();
-                    }
-                }
+                map.Items[51].Implicit = true;
+                map.Items[61].Implicit = true;
             }
 
             // Ensure doors required for prologue cutscenes are not locked

@@ -716,7 +716,7 @@ namespace IntelOrca.Biohazard.BioRand
             if (context.Configuration.GetValueOrDefault("items/random", false))
             {
                 var keyRandomizer = new KeyRandomizer();
-                keyRandomizer.RandomiseItems(generatedVariation);
+                keyRandomizer.Randomize(generatedVariation);
                 var itemRandomizer = new ItemRandomizer();
                 itemRandomizer.Randomize(generatedVariation);
             }

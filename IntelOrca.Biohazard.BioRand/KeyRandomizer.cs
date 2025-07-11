@@ -8,7 +8,7 @@ namespace IntelOrca.Biohazard.BioRand
 {
     internal class KeyRandomizer
     {
-        public void RandomiseItems(IClassicRandomizerGeneratedVariation context)
+        public void Randomize(IClassicRandomizerGeneratedVariation context)
         {
             var map = context.Variation.Map;
             var rng = context.Rng.NextFork();
@@ -196,14 +196,31 @@ namespace IntelOrca.Biohazard.BioRand
 
             Requirement[] GetRequirements(MapEdge e)
             {
-                return e.Requirements.Select(r =>
-                    r.Kind switch
+                return e.Requirements
+                    .Where(ShouldUseRequirement)
+                    .Select(r =>
+                        r.Kind switch
+                        {
+                            MapRequirementKind.Flag => new Requirement(GetOrCreateFlag(r.Value)),
+                            MapRequirementKind.Item => new Requirement(itemIdToKey[int.Parse(r.Value)]),
+                            MapRequirementKind.Room => new Requirement(roomNodes[r.Value]),
+                            _ => throw new NotImplementedException()
+                        })
+                    .ToArray();
+            }
+
+            bool ShouldUseRequirement(MapRequirement r)
+            {
+                if (r.Kind == MapRequirementKind.Item)
+                {
+                    var itemId = int.Parse(r.Value);
+                    var item = map.GetItem(itemId);
+                    if (item != null)
                     {
-                        MapRequirementKind.Flag => new Requirement(GetOrCreateFlag(r.Value)),
-                        MapRequirementKind.Item => new Requirement(itemIdToKey[int.Parse(r.Value)]),
-                        MapRequirementKind.Room => new Requirement(roomNodes[r.Value]),
-                        _ => throw new NotImplementedException()
-                    }).ToArray();
+                        return !item.Implicit;
+                    }
+                }
+                return true;
             }
 
             Node GetOrCreateFlag(string name)
