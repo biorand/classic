@@ -65,9 +65,9 @@ namespace IntelOrca.Biohazard.BioRand
                     {
                         // Clear room, add new enemies
                         var min = rwe.EnemyInfo.MinPerRoom;
-                        var max = rwe.EnemyInfo.MaxPerRoom + 1;
+                        var max = rwe.EnemyInfo.MaxPerRoom;
                         if (e.MaxDifficulty is int maxDifficulty)
-                            max = Math.Max(1, (int)Math.Round(max / (double)(4 - maxDifficulty)));
+                            max = Math.Min(max, Math.Max(1, (int)Math.Round(max / (double)(4 - maxDifficulty))));
 
                         var numEnemies = rng.Next(min, max + 1);
                         var positions = enemyPositions
