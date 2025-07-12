@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using IntelOrca.Biohazard.BioRand.RE1;
 using IntelOrca.Biohazard.BioRand.RE2;
@@ -979,18 +981,33 @@ namespace IntelOrca.Biohazard.BioRand
 
         public struct EnemyPosition : IEquatable<EnemyPosition>
         {
-            public RdtId RdtId { get; set; }
-            public int X { get; set; }
-            public int Y { get; set; }
-            public int Z { get; set; }
-            public int D { get; set; }
-            public int F { get; set; }
-
             public string? Room
             {
                 get => RdtId.ToString();
                 set => RdtId = value == null ? default(RdtId) : RdtId.Parse(value);
             }
+            public int X { get; set; }
+            public int Y { get; set; }
+            public int Z { get; set; }
+            public int D { get; set; }
+            public int F { get; set; }
+            public string Include
+            {
+                get => string.Join("|", IncludeTypes);
+                set { IncludeTypes = [.. value.Split(['|'], StringSplitOptions.RemoveEmptyEntries)]; }
+            }
+            public string Exclude
+            {
+                get => string.Join("|", ExcludeTypes);
+                set { ExcludeTypes = [.. value.Split(['|'], StringSplitOptions.RemoveEmptyEntries)]; }
+            }
+
+            [JsonIgnore]
+            public RdtId RdtId { get; set; }
+            [JsonIgnore]
+            public ImmutableArray<string> IncludeTypes { get; set; }
+            [JsonIgnore]
+            public ImmutableArray<string> ExcludeTypes { get; set; }
 
             public override bool Equals(object? obj)
             {

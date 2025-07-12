@@ -33,7 +33,7 @@ namespace IntelOrca.Biohazard.BioRand
             var enemyIdBag = allEnemyIds.ToEndlessBag(rng);
 
             // Create or set enemies
-            var enemyPositions = context.DataManager.GetJson<EnemyRandomiser.EnemyPosition[]>(BioVersion.Biohazard1, "enemy.json");
+            var enemyPositions = context.DataManager.GetCsv<EnemyRandomiser.EnemyPosition>(BioVersion.Biohazard1, "enemy.csv");
             foreach (var rwe in roomWithEnemies)
             {
                 var type = rng.NextOf(rwe.EnemyInfo.Type);
@@ -73,6 +73,7 @@ namespace IntelOrca.Biohazard.BioRand
                         var numEnemies = rng.Next(min, max + 1);
                         var positions = enemyPositions
                             .Where(x => rwe.Room.Rdts.Contains(RdtId.Parse(x.Room ?? "")))
+                            .Where(x => MeetsConditions(x, rwe.EnemyInfo.Entry.Key))
                             .ToEndlessBag(rng);
                         if (positions.Count == 0)
                             continue;
@@ -108,6 +109,19 @@ namespace IntelOrca.Biohazard.BioRand
                         }
                     }
                 }
+            }
+
+            bool MeetsConditions(EnemyRandomiser.EnemyPosition position, string key)
+            {
+                if (!position.IncludeTypes.IsDefaultOrEmpty)
+                {
+                    return position.IncludeTypes.Contains(key);
+                }
+                if (!position.ExcludeTypes.IsDefaultOrEmpty)
+                {
+                    return !position.ExcludeTypes.Contains(key);
+                }
+                return true;
             }
 
             int ChoosePose(EnemyInfo enemy)

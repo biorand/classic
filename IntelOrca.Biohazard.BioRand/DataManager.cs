@@ -93,6 +93,16 @@ namespace IntelOrca.Biohazard.BioRand
             return null;
         }
 
+        public T[] GetCsv<T>(BioVersion version, string path)
+        {
+            var csv = GetText(version, path);
+            if (csv == null)
+                throw new Exception($"{path} not found");
+
+            var result = Csv.Deserialize<T>(csv);
+            return result;
+        }
+
         public T GetJson<T>(BioVersion version, string path)
         {
             var options = new JsonSerializerOptions()
