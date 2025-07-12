@@ -90,7 +90,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     return new PlwFile(BioVersion.Biohazard1, plwPath);
                 }
 
-                var originalData = gameDataManager.GetData($"JPN/PLAYERS/{plwFileName}");
+                var originalData = gameDataManager.GetData($"PLAYERS/{plwFileName}");
                 if (originalData != null)
                 {
                     return new PlwFile(BioVersion.Biohazard1, new MemoryStream(originalData));
@@ -102,7 +102,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
         private ModelFile GetBaseEmd(byte id)
         {
-            var data = gameDataManager.GetData($"JPN/ENEMY/EM10{id:X2}.EMD");
+            var data = gameDataManager.GetData($"ENEMY/EM10{id:X2}.EMD");
             return new EmdFile(BioVersion.Biohazard1, new MemoryStream(data));
         }
 

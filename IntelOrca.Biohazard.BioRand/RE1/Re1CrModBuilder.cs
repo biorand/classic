@@ -145,7 +145,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 var result = new List<RandomizedRdt>();
                 for (var i = 1; i <= 7; i++)
                 {
-                    var files = _gameDataManager.GetFiles($"JPN/STAGE{i}");
+                    var files = _gameDataManager.GetFiles($"STAGE{i}");
                     foreach (var path in files)
                     {
                         var fileName = Path.GetFileName(path);
@@ -1109,6 +1109,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 }
 
                 FixWeaponHitScan($"{characterPath}/weapons.csv", srcPlayer);
+                FixInventoryFace($"{characterPath}/face.png", Player);
 
                 void Convert(string target, string source)
                 {
@@ -1147,6 +1148,27 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     }
                     return hurtFiles;
                 }
+            }
+
+            private void FixInventoryFace(string facePath, int pldIndex)
+            {
+                var facePng = _dataManager.GetData(facePath);
+                if (facePng == null)
+                    return;
+
+                var timPath = "DATA/STATFACE.TIM";
+                var timData = _gameDataManager.GetData(timPath);
+                if (timData == null)
+                    return;
+
+                var face32 = PngToBgra32(facePng);
+                var row = pldIndex / 2;
+                var col = pldIndex % 2;
+
+                var tim = new Tim(timData);
+                var timBuilder = tim.ToBuilder();
+                timBuilder.ImportPixels(col * 32, row * 32, 30, 30, face32, 0);
+                _crModBuilder.SetFile(timPath, timBuilder.GetBytes());
             }
 
             private void FixWeaponHitScan(string csvPath, int srcPlayer)
@@ -1468,6 +1490,49 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     Array.Resize(ref result, 16);
                     return result;
                 }
+            }
+
+            private static byte[] PngToPix(byte[] png)
+            {
+                using var img = SixLabors.ImageSharp.Image.Load<Rgba32>(png);
+                using var ms = new MemoryStream();
+                var bw = new BinaryWriter(ms);
+                img.ProcessPixelRows(accessor =>
+                {
+                    for (var y = 0; y < accessor.Height; y++)
+                    {
+                        var row = accessor.GetRowSpan(y);
+                        for (int i = 0; i < accessor.Width; i++)
+                        {
+                            var c = row[i];
+                            var c4 = (ushort)(c.R / 8 | c.G / 8 << 5 | c.B / 8 << 10);
+                            bw.Write(c4);
+                        }
+                    }
+                });
+                return ms.ToArray();
+            }
+
+            private static uint[] PngToBgra32(byte[] png)
+            {
+                using var img = SixLabors.ImageSharp.Image.Load<Rgba32>(png);
+                var result = new uint[img.Width * img.Height];
+                img.ProcessPixelRows(accessor =>
+                {
+                    var dst = result;
+                    var index = 0;
+                    for (var y = 0; y < accessor.Height; y++)
+                    {
+                        var row = accessor.GetRowSpan(y);
+                        for (int i = 0; i < accessor.Width; i++)
+                        {
+                            var c = row[i];
+                            dst[index] = (uint)(c.B | (c.G << 8) | (c.R << 16) | (c.A << 24));
+                            index++;
+                        }
+                    }
+                });
+                return result;
             }
 
             private static readonly RdtId[] g_missingRooms =
