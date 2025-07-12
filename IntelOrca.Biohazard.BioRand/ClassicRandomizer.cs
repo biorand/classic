@@ -5,8 +5,10 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using IntelOrca.Biohazard.BioRand.RE1;
+using IntelOrca.Biohazard.Extensions;
 
 namespace IntelOrca.Biohazard.BioRand
 {
@@ -749,7 +751,10 @@ namespace IntelOrca.Biohazard.BioRand
             public DataManager DataManager => dataManager;
             public Rng GetRng(string key)
             {
-                return new Rng(seed ^ key.GetHashCode());
+                var fnv1a = MemoryMarshal.AsBytes(key.AsSpan()).CalculateFnv1a();
+                var a = (int)(fnv1a & 0xFFFFFFFF);
+                var b = (int)(fnv1a >> 32);
+                return new Rng(seed ^ a ^ b);
             }
         }
 
