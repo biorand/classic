@@ -3968,7 +3968,8 @@
       ],
       "enemies": [
         {
-          "excludeTypes": [ 4 ]
+          "excludeTypes": [ 4 ],
+          "condition": "!(!0:0 && 0:24)"
         }
       ],
       "cutscenes": [
