@@ -56,6 +56,15 @@ namespace IntelOrca.Biohazard.BioRand
                 Options = [.. controller.VariationNames],
                 Default = controller.VariationNames[0]
             });
+            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "title/call/random",
+                Label = "Random Title Call",
+                Description = "Set whether to randomize the title sound that says \"RESIDENT EVIL\".",
+                Type = "switch",
+                Default = true
+            });
+
             group = page.CreateGroup("Door Randomizer");
             group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
             {
@@ -739,6 +748,7 @@ namespace IntelOrca.Biohazard.BioRand
                 var musicRandomizer = new MusicRandomizer();
                 musicRandomizer.Randomize(generatedVariation);
             }
+            RandomizeTitleSound(generatedVariation);
             return generatedVariation;
         }
 
@@ -806,6 +816,30 @@ namespace IntelOrca.Biohazard.BioRand
             }
 
             context.ModBuilder.EnemySkins = skins.ToImmutable();
+        }
+
+        private void RandomizeTitleSound(IClassicRandomizerGeneratedVariation context)
+        {
+            if (!context.Configuration.GetValueOrDefault<bool>("title/call/random", true))
+                return;
+
+            var rng = context.GetRng("titlesound");
+            var files = context.DataManager
+                .GetFiles("title")
+                .Where(SupportedSoundExtension)
+                .ToArray();
+            if (files.Length == 0)
+                return;
+
+            var chosenFile = rng.NextOf(files);
+            var chosenFilePath = $"title/{chosenFile}";
+            context.ModBuilder.SetGeneral("titleSound", chosenFilePath);
+        }
+
+        private static bool SupportedSoundExtension(string fileName)
+        {
+            return fileName.EndsWith(".ogg", StringComparison.OrdinalIgnoreCase) ||
+                   fileName.EndsWith(".wav", StringComparison.OrdinalIgnoreCase);
         }
     }
 }

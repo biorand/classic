@@ -95,6 +95,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 AddBackgroundTextures();
                 AddVoices();
                 AddMusic();
+                AddTitleCall();
                 AddDynamicTweaks();
             }
 
@@ -1343,6 +1344,20 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
                 var encoder = new BgmBatchEncoder(_dataManager);
                 encoder.Process(_mod, _crModBuilder);
+            }
+
+            private void AddTitleCall()
+            {
+                if (_mod.General.GetValueOrDefault("titleSound") is not string titleSound)
+                    return;
+
+                var stream = new MemoryStream(_dataManager.GetData(titleSound));
+                var waveform = new WaveformBuilder();
+                waveform.Append(titleSound, stream);
+                var waveData = waveform.ToArray();
+
+                _crModBuilder.SetFile("SOUND/BIO01.WAV", waveData);
+                _crModBuilder.SetFile("SOUND/EVIL01.WAV", waveData);
             }
 
             private void AddDynamicTweaks()

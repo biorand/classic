@@ -29,6 +29,12 @@ namespace IntelOrca.Biohazard.BioRand
         public int? Seed { get; set; }
         public RandomizerConfiguration? Configuration { get; set; }
 
+        public ModBuilder SetGeneral(string key, object? value)
+        {
+            General = General.SetItem(key, value);
+            return this;
+        }
+
         public void SetDoorTarget(RdtItemId doorIdentity, RdtItemId target)
         {
         }
