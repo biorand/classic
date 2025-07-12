@@ -75,7 +75,7 @@ namespace IntelOrca.Biohazard.BioRand.Classic
             var env = Environment.GetEnvironmentVariable("BIORAND_DATA");
             if (env == null)
             {
-                var biorandDirectory = GetExecutableDirectory();
+                var biorandDirectory = AppContext.BaseDirectory;
                 dataManager.AddFileSystem(GetCustomDataDirectory());
                 dataManager.AddFileSystem(Path.Combine(biorandDirectory, "data"));
                 dataManager.AddZip(Path.Combine(biorandDirectory, "data.zip"), "data");
@@ -114,15 +114,6 @@ namespace IntelOrca.Biohazard.BioRand.Classic
                 dataManager.AddFileSystem(env);
             }
             return dataManager;
-        }
-
-        private static string GetExecutableDirectory()
-        {
-            var assemblyLocation = Assembly.GetEntryAssembly()?.Location;
-            if (assemblyLocation == null)
-                return Environment.CurrentDirectory;
-
-            return Path.GetDirectoryName(assemblyLocation) ?? Environment.CurrentDirectory;
         }
     }
 }

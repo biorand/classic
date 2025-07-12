@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.Json;
 
@@ -194,9 +195,10 @@ namespace IntelOrca.Biohazard.BioRand
 
             public Stream? GetData(string path)
             {
-                var fullPath = Path.Combine(basePath, path);
-                if (!File.Exists(fullPath))
+                var fullPath = ResolvePathCaseInsensitive(basePath, path);
+                if (fullPath == null)
                     return null;
+
                 return new FileStream(fullPath, FileMode.Open, FileAccess.Read);
             }
 
@@ -204,8 +206,8 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 try
                 {
-                    var fullPath = Path.Combine(basePath, path);
-                    if (Directory.Exists(fullPath))
+                    var fullPath = ResolvePathCaseInsensitive(basePath, path);
+                    if (fullPath != null)
                     {
                         return Directory.GetDirectories(fullPath);
                     }
@@ -220,8 +222,8 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 try
                 {
-                    var fullPath = Path.Combine(basePath, path);
-                    if (Directory.Exists(fullPath))
+                    var fullPath = ResolvePathCaseInsensitive(basePath, path);
+                    if (fullPath != null)
                     {
                         return Directory.GetFiles(fullPath);
                     }
@@ -230,6 +232,39 @@ namespace IntelOrca.Biohazard.BioRand
                 {
                 }
                 return [];
+            }
+
+            private static string? ResolvePathCaseInsensitive(string basePath, string path)
+            {
+                if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
+                {
+                    var fullPath = Path.Combine(basePath, path);
+                    if (File.Exists(fullPath) || Directory.Exists(fullPath))
+                        return fullPath;
+
+                    return null;
+                }
+
+                var segments = path.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                var currentPath = basePath;
+
+                foreach (var segment in segments)
+                {
+                    if (!Directory.Exists(currentPath))
+                        return null;
+
+                    var entries = Directory.GetFileSystemEntries(currentPath);
+                    var match = entries
+                        .Select(Path.GetFileName)
+                        .FirstOrDefault(name => name?.Equals(segment, StringComparison.OrdinalIgnoreCase) == true);
+
+                    if (match == null)
+                        return null;
+
+                    currentPath = Path.Combine(currentPath, match);
+                }
+
+                return currentPath;
             }
         }
 
