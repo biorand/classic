@@ -154,7 +154,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
         public Map GetMap(IClassicRandomizerContext context, int playerIndex)
         {
-            var rng = context.Rng.NextFork();
+            var rng = context.GetRng("re1map");
             var config = context.Configuration;
 
             // Apply player, scenario filter
@@ -465,6 +465,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
         public void ApplyConfigModifications(IClassicRandomizerContext context, ModBuilder modBuilder)
         {
+            var rng = context.GetRng("re1config");
             var config = context.Configuration;
             var player = config.GetValueOrDefault("variation", "Chris") == "Chris" ? 0 : 1;
             modBuilder.General = modBuilder.General.SetItem("player", player);
@@ -473,14 +474,14 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             var inventorySizeSetting = config.GetValueOrDefault("inventory/size", "Default");
             var inventorySize = inventorySizeSetting switch
             {
-                "Random" => context.Rng.NextOf(6, 8),
+                "Random" => rng.NextOf(6, 8),
                 "6" => 6,
                 "8" => 8,
                 _ => player == 0 ? 6 : 8
             };
             modBuilder.General = modBuilder.General.SetItem("inventorySize", inventorySize);
 
-            var ink = UpdateConfigNeverAlways(context.Rng, config, "ink/enable", "Always", "Never");
+            var ink = UpdateConfigNeverAlways(rng, config, "ink/enable", "Always", "Never");
             if (ink != "Always")
             {
                 config["inventory/ink/min"] = 0;
@@ -493,7 +494,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 modBuilder.General = modBuilder.General.SetItem("ink", true);
             }
 
-            var lockpick = UpdateConfigNeverAlways(context.Rng, config, "inventory/special/lockpick", "Never", "Always");
+            var lockpick = UpdateConfigNeverAlways(rng, config, "inventory/special/lockpick", "Never", "Always");
             modBuilder.General = modBuilder.General.SetItem("lockpick", lockpick == "Always");
 
             if (config.TryGetValue("doors/random", out var randomDoors))

@@ -9,7 +9,7 @@ namespace IntelOrca.Biohazard.BioRand
     {
         public void Randomize(IClassicRandomizerGeneratedVariation context)
         {
-            var rng = context.Rng.NextFork();
+            var rng = context.GetRng("enemy");
 
             // Decide what room is going to have what enemy type
             var roomWithEnemies = GetRoomSelection();

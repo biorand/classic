@@ -12,7 +12,7 @@ namespace IntelOrca.Biohazard.BioRand
         {
             var config = context.Configuration;
             var map = context.Variation.Map;
-            var rng = context.Rng.NextFork();
+            var rng = context.GetRng("item");
             var modBuilder = context.ModBuilder;
 
             var documentPriority = config.GetValueOrDefault("items/documents", false)

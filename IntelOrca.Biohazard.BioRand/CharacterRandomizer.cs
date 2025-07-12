@@ -9,7 +9,7 @@ namespace IntelOrca.Biohazard.BioRand
     {
         public void Randomize(IClassicRandomizerGeneratedVariation context)
         {
-            var rng = context.Rng.NextFork();
+            var rng = context.GetRng("character");
             var characters = ImmutableDictionary.CreateBuilder<int, CharacterReplacement>();
             RandomizeProtagonist();
             RandomizeNpcs();

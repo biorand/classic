@@ -11,7 +11,7 @@ namespace IntelOrca.Biohazard.BioRand
         public void Randomize(IClassicRandomizerGeneratedVariation context)
         {
             var map = context.Variation.Map;
-            var rng = context.Rng.NextFork();
+            var rng = context.GetRng("key");
             var seed = rng.Next(0, int.MaxValue);
             var modBuilder = context.ModBuilder;
 

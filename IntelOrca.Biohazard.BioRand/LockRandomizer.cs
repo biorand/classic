@@ -25,7 +25,7 @@ namespace IntelOrca.Biohazard.BioRand
 
             if (context.Configuration.GetValueOrDefault("locks/random", false))
             {
-                var rng = context.Rng.NextFork();
+                var rng = context.GetRng("lock");
                 KeepBoxRouteClear(context, rng, doors);
                 RandomizeLocks(context, rng, pairs);
             }

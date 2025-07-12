@@ -10,7 +10,7 @@ namespace IntelOrca.Biohazard.BioRand
     {
         public void Randomize(IClassicRandomizerGeneratedVariation context)
         {
-            var rng = context.Rng.NextFork();
+            var rng = context.GetRng("music");
             var modBuilder = context.ModBuilder;
             var config = context.Configuration;
             var fullList = GetFullList(context.DataManager);

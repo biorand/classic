@@ -647,9 +647,7 @@ namespace IntelOrca.Biohazard.BioRand
         public ClassicMod RandomizeToMod(RandomizerInput input)
         {
             var modBuilder = CreateModBuilder(input);
-
-            var rng = new Rng(input.Seed);
-            var context = new Context(input.Configuration.Clone(), dataManager, rng);
+            var context = new Context(input.Configuration.Clone(), dataManager, input.Seed);
             controller.ApplyConfigModifications(context, modBuilder);
             var generatedVariation = Randomize(context, modBuilder);
             return generatedVariation.ModBuilder.Build();
@@ -745,11 +743,14 @@ namespace IntelOrca.Biohazard.BioRand
         private sealed class Context(
             RandomizerConfiguration configuration,
             DataManager dataManager,
-            Rng rng) : IClassicRandomizerContext
+            int seed) : IClassicRandomizerContext
         {
             public RandomizerConfiguration Configuration => configuration;
             public DataManager DataManager => dataManager;
-            public Rng Rng => rng;
+            public Rng GetRng(string key)
+            {
+                return new Rng(seed ^ key.GetHashCode());
+            }
         }
 
         private sealed class GeneratedVariation(
@@ -759,7 +760,7 @@ namespace IntelOrca.Biohazard.BioRand
         {
             public RandomizerConfiguration Configuration => context.Configuration;
             public DataManager DataManager => context.DataManager;
-            public Rng Rng => context.Rng;
+            public Rng GetRng(string key) => context.GetRng(key);
             public IClassicRandomizerContext Context => context;
             public Variation Variation => variation;
             public ModBuilder ModBuilder => modBuilder;
@@ -772,7 +773,7 @@ namespace IntelOrca.Biohazard.BioRand
             var skins = ImmutableArray.CreateBuilder<string>();
             var usedIds = new HashSet<byte>();
 
-            var skinPaths = GetEnemySkins().Shuffle(context.Rng);
+            var skinPaths = GetEnemySkins().Shuffle(context.GetRng("enemyskin"));
             foreach (var skinPath in skinPaths)
             {
                 var skinName = Path.GetFileName(skinPath);

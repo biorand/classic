@@ -4,7 +4,8 @@
     {
         RandomizerConfiguration Configuration { get; }
         DataManager DataManager { get; }
-        Rng Rng { get; }
+
+        Rng GetRng(string hash);
     }
 
     internal interface IClassicRandomizerGeneratedVariation : IClassicRandomizerContext

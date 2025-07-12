@@ -10,7 +10,7 @@ namespace IntelOrca.Biohazard.BioRand
         public void Randomize(IClassicRandomizerGeneratedVariation context)
         {
             var config = context.Configuration;
-            var rng = context.Rng.NextFork();
+            var rng = context.GetRng("inventory");
 
             var inventorySizeMin = config.GetValueOrDefault("inventory/min", 0);
             var inventorySizeMax = config.GetValueOrDefault("inventory/max", 8);

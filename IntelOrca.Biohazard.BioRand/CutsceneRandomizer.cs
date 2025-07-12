@@ -12,8 +12,8 @@ namespace IntelOrca.Biohazard.BioRand
         public void Randomize(IClassicRandomizerGeneratedVariation context)
         {
             var cutscenes = GetCutscenes(context);
-            context.ModBuilder.Npcs = RandomizeCharacterSwaps(cutscenes, context.Rng.NextFork());
-            context.ModBuilder.Voices = RandomizeVoiceClips(context.DataManager, cutscenes, context.Rng.NextFork());
+            context.ModBuilder.Npcs = RandomizeCharacterSwaps(cutscenes, context.GetRng("npc"));
+            context.ModBuilder.Voices = RandomizeVoiceClips(context.DataManager, cutscenes, context.GetRng("voice"));
         }
 
         private ImmutableArray<AvailableCharacter> GetAvailableCharacters(IClassicRandomizerGeneratedVariation context)
