@@ -2317,6 +2317,30 @@
           "excludeTypes": [ 4 ],
           "maxDifficulty": 1
         }
+      ],
+      "cutscenes": [
+        {
+          "id": 0,
+          "name": "radio found",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            }
+          ],
+          "player": 0
+        },
+        {
+          "id": 0,
+          "name": "radio found",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            }
+          ],
+          "player": 1
+        }
       ]
     },
     "11B": {
@@ -3945,6 +3969,23 @@
       "enemies": [
         {
           "excludeTypes": [ 4 ]
+        }
+      ],
+      "cutscenes": [
+        {
+          "id": 0,
+          "name": "radio contact",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "name": "brad",
+              "kind": "radio"
+            }
+          ],
+          "player": 0
         }
       ]
     },
