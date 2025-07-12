@@ -3664,12 +3664,12 @@
         {
           "id": 0,
           "globalId": 107,
-          "excludeTypes": [ 4 ]
+          "excludeTypes": [ 4, 6 ]
         },
         {
           "id": 1,
           "globalId": 108,
-          "excludeTypes": [ 4 ]
+          "excludeTypes": [ 4, 6 ]
         }
       ]
     },
