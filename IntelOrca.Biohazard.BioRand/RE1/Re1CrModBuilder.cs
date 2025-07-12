@@ -145,10 +145,10 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 var result = new List<RandomizedRdt>();
                 for (var i = 1; i <= 7; i++)
                 {
-                    var files = _gameDataManager.GetFiles($"STAGE{i}");
-                    foreach (var path in files)
+                    var stageFolder = $"STAGE{i}";
+                    var files = _gameDataManager.GetFiles(stageFolder);
+                    foreach (var fileName in files)
                     {
-                        var fileName = Path.GetFileName(path);
                         var match = Regex.Match(fileName, @"^ROOM([0-9A-F]{3})(0|1).RDT$", RegexOptions.IgnoreCase);
                         if (match.Success)
                         {
@@ -156,7 +156,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                             var rdtPlayer = int.Parse(match.Groups[2].Value);
                             if (rdtPlayer == Player)
                             {
-                                var fileData = _gameDataManager.GetData(path);
+                                var fileData = _gameDataManager.GetData($"{stageFolder}/{fileName}");
                                 if (fileData == null || fileData.Length < 16)
                                     continue;
 
@@ -172,7 +172,10 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 {
                     var mansion2 = new RdtId(missingRoom.Stage + 5, missingRoom.Room);
                     var rrdt2 = result.FirstOrDefault(x => x.RdtId == mansion2);
-                    result.Add(new RandomizedRdt(rrdt2.RdtFile, missingRoom));
+                    if (rrdt2 != null)
+                    {
+                        result.Add(new RandomizedRdt(rrdt2.RdtFile, missingRoom));
+                    }
                 }
 
                 foreach (var rrdt in result)

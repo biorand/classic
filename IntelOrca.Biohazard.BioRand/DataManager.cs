@@ -209,7 +209,9 @@ namespace IntelOrca.Biohazard.BioRand
                     var fullPath = ResolvePathCaseInsensitive(basePath, path);
                     if (fullPath != null)
                     {
-                        return Directory.GetDirectories(fullPath);
+                        return Directory.GetDirectories(fullPath)
+                            .Select(x => Path.GetFileName(x))
+                            .ToArray();
                     }
                 }
                 catch
@@ -225,7 +227,9 @@ namespace IntelOrca.Biohazard.BioRand
                     var fullPath = ResolvePathCaseInsensitive(basePath, path);
                     if (fullPath != null)
                     {
-                        return Directory.GetFiles(fullPath);
+                        return Directory.GetFiles(fullPath)
+                            .Select(x => Path.GetFileName(x))
+                            .ToArray();
                     }
                 }
                 catch
