@@ -3664,12 +3664,12 @@
         {
           "id": 0,
           "globalId": 107,
-          "excludeTypes": [ 4, 6 ]
+          "excludeTypes": [ 4 ]
         },
         {
           "id": 1,
           "globalId": 108,
-          "excludeTypes": [ 4, 6 ]
+          "excludeTypes": [ 4 ]
         }
       ]
     },
@@ -4356,13 +4356,11 @@
         },
         {
           "id": 1,
-          "globalId": 80,
-          "includeTypes": [ 6 ]
+          "globalId": 80
         },
         {
           "id": 2,
-          "globalId": 81,
-          "includeTypes": [ 6 ]
+          "globalId": 81
         }
       ],
       "cutscenes": [
@@ -4468,12 +4466,12 @@
         {
           "id": 0,
           "globalId": 122,
-          "includeTypes": [ 6 ]
+          "excludeTypes": [ 2, 3, 10 ]
         },
         {
           "id": 1,
           "globalId": 123,
-          "includeTypes": [ 6 ]
+          "excludeTypes": [ 2, 3, 10 ]
         }
       ]
     },
