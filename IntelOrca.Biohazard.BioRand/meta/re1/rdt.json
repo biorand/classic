@@ -375,7 +375,29 @@
           "key": "zombie",
           "name": "Zombie",
           "id": [ 0, 1, 17 ],
-          "esp": [ 3, 4 ]
+          "esp": [ 3, 4 ],
+          "poses": [
+            {
+              "name": "Walking",
+              "pose": 0,
+              "probability": 0.4
+            },
+            {
+              "name": "Standing",
+              "pose": 1,
+              "probability": 0.4
+            },
+            {
+              "name": "Crawling",
+              "pose": 2,
+              "probability": 0.1
+            },
+            {
+              "name": "Faking",
+              "pose": 3,
+              "probability": 0.1
+            }
+          ]
         }
       ]
     },
@@ -388,7 +410,19 @@
           "key": "cerberus",
           "name": "Cerberus",
           "id": [ 2 ],
-          "esp": [ 4 ]
+          "esp": [ 4 ],
+          "poses": [
+            {
+              "name": "Walking",
+              "pose": 0,
+              "probability": 0.8
+            },
+            {
+              "name": "Resting",
+              "pose": 8,
+              "probability": 0.2
+            }
+          ]
         }
       ]
     },
@@ -484,7 +518,29 @@
           "key": "neptune",
           "name": "Neptune",
           "id": [ 11 ],
-          "esp": [ 23, 37 ]
+          "esp": [ 23, 37 ],
+          "poses": [
+            {
+              "name": "Adult (Swimming)",
+              "pose": 0,
+              "probability": 0.64
+            },
+            {
+              "name": "Adult (Flipping)",
+              "pose": 1,
+              "probability": 0.16
+            },
+            {
+              "name": "Calf (Swimming)",
+              "pose": 2,
+              "probability": 0.16
+            },
+            {
+              "name": "Calf (Flipping)",
+              "pose": 3,
+              "probability": 0.04
+            }
+          ]
         }
       ]
     },

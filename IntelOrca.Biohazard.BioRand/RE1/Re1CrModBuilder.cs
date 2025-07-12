@@ -914,7 +914,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                         Length = 22,
                         Opcode = (byte)OpcodeV1.SceEmSet,
                         Type = (byte)ep.Type,
-                        State = 0,
+                        State = (byte)ep.Pose,
                         KillId = (byte)ep.GlobalId,
                         Re1Unk04 = 1,
                         Re1Unk05 = 2,

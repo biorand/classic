@@ -180,6 +180,14 @@ namespace IntelOrca.Biohazard.BioRand
         public string Name { get; set; } = "";
         public int[] Id { get; set; } = [];
         public int[]? Esp { get; set; }
+        public MapEnemyPose[] Poses { get; set; } = [];
+    }
+
+    public class MapEnemyPose
+    {
+        public string Name { get; set; } = "";
+        public int Pose { get; set; }
+        public double Probability { get; set; } = 1.0;
     }
 
     public class MapCharacter

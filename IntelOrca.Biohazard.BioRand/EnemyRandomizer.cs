@@ -56,6 +56,7 @@ namespace IntelOrca.Biohazard.BioRand
                                 GlobalId = e.GlobalId ?? 0,
                                 Id = e.Id ?? 0,
                                 Type = type,
+                                Pose = ChoosePose(rwe.EnemyInfo),
                                 Esp = rwe.EnemyInfo.Entry.Esp ?? []
                             };
                             context.ModBuilder.AddEnemy(placement);
@@ -94,6 +95,7 @@ namespace IntelOrca.Biohazard.BioRand
                                     GlobalId = globalId,
                                     Id = id,
                                     Type = type,
+                                    Pose = ChoosePose(rwe.EnemyInfo),
                                     X = p.X,
                                     Y = p.Y,
                                     Z = p.Z,
@@ -106,6 +108,24 @@ namespace IntelOrca.Biohazard.BioRand
                         }
                     }
                 }
+            }
+
+            int ChoosePose(EnemyInfo enemy)
+            {
+                var poses = enemy.Entry.Poses;
+                var totalProbability = poses.Sum(x => x.Probability);
+                if (totalProbability == 0)
+                    return 0;
+
+                var n = rng.NextDouble(0, totalProbability);
+                var c = 0.0;
+                foreach (var p in poses)
+                {
+                    if (n <= c + p.Probability)
+                        return p.Pose;
+                    c += p.Probability;
+                }
+                return 0;
             }
 
             RoomWithEnemies[] GetRoomSelection()
