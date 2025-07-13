@@ -1352,9 +1352,9 @@
   "voice/V11B_04.wav": { "rdt": "502", "player": 1, "actor": "barry" },
   "voice/V11B_07.wav": { "rdt": "502", "player": 1, "actor": "chris" },
   "voice/V11B_08.wav": { "rdt": "502", "player": 1, "actor": "jill" },
-  "voice/VA00_00.wav": { "rdt": "000", "player": 1, "actor": "rebecca" },
+  "voice/VA00_00.wav": { "rdt": "600", "player": 1, "actor": "rebecca" },
   "voice/VA00_01.wav": {
-    "rdt": "000",
+    "rdt": "309",
     "player": 1,
     "actors": [
       {

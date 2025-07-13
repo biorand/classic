@@ -4201,7 +4201,7 @@
           "player": 0
         },
         {
-          "condition": "!(!1:88 && 1:72 && !1:93)",
+          "condition": "!(1:72 && 1:75)",
           "excludeTypes": [ 4 ],
           "player": 1
         }
@@ -4293,6 +4293,15 @@
         {
           "excludeTypes": [ 4 ],
           "player": 0
+        },
+        {
+          "id": 1,
+          "kind": "npc"
+        },
+        {
+          "excludeTypes": [ 4 ],
+          "condition": "!1:72",
+          "player": 1
         }
       ],
       "cutscenes": [
