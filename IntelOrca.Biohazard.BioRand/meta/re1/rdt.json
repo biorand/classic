@@ -4747,7 +4747,8 @@
           "globalId": 100,
           "type": 61,
           "amount": 1,
-          "group": 8
+          "group": 8,
+          "player": 0
         },
         {
           "name": "LOCKED DRAWER",
