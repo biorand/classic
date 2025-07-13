@@ -368,6 +368,7 @@ namespace IntelOrca.Biohazard.BioRand
                 .Select(x => CreateSource(x.Actor, x.Path))
                 .Where(x => x != null)
                 .Select(x => x!)
+                .OrderBy(x => x)
                 .ToImmutableArray();
         }
 
@@ -390,7 +391,6 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 Path = path,
                 Actor = actor,
-                Range = default,
                 Kind = GetThingsFromFileName(fileName, '_').FirstOrDefault(),
                 Condition = GetConditionsFromFileName(fileName)
             };
@@ -453,13 +453,17 @@ namespace IntelOrca.Biohazard.BioRand
         }
     }
 
-    internal record class VoiceSource
+    internal record class VoiceSource : IComparable<VoiceSource>
     {
         public required string Path { get; set; }
         public required string Actor { get; set; }
-        public AudioRange Range { get; set; }
         public required string Kind { get; set; }
         public IVoiceCondition? Condition { get; set; }
+
+        public int CompareTo(VoiceSource other)
+        {
+            return StringComparer.OrdinalIgnoreCase.Compare(Path, other.Path);
+        }
     }
 
     internal class VoiceBag(VoiceSourceRepository repo, Rng rng)
