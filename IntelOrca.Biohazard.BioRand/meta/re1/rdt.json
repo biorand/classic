@@ -2803,13 +2803,13 @@
       ],
       "enemies": [
         {
-          "excludeTypes": [ 3, 4, 7, 10 ],
+          "excludeTypes": [ 3, 4, 7, 9, 10 ],
           "maxDifficulty": 0,
           "player": 0
         },
         {
           "condition": "!(1:8 && 1:98 && 1:7)",
-          "excludeTypes": [ 3, 4, 7, 10 ],
+          "excludeTypes": [ 3, 4, 7, 9, 10 ],
           "maxDifficulty": 0,
           "player": 1
         }
