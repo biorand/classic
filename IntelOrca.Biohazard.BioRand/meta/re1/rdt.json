@@ -5117,7 +5117,7 @@
       ],
       "enemies": [
         {
-          "condition": "!(!0:0 && 1:61 && 1:170)",
+          "condition": "!(!0:0 && 1:170)",
           "player": 0
         },
         {
@@ -5187,7 +5187,7 @@
       ],
       "enemies": [
         {
-          "conditions": "!(1:61 && !0:0 && 1:58)",
+          "condition": "!(!0:0 && 1:58)",
           "excludeTypes": [ 4 ],
           "maxDifficulty": 0,
           "player": 0

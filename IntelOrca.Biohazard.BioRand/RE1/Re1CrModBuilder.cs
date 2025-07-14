@@ -206,6 +206,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 FixDoorToWardrobe();
                 FixPassCodeDoor();
                 FixDrugStoreRoom();
+                FixChrisPlant42();
                 AllowRoughPassageDoorUnlock();
                 ShotgunOnWallFix();
                 DisableSerumDoorBlock();
@@ -382,6 +383,29 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     var rdt = gameData.GetRdt(RdtId.Parse("409"));
                     rdt?.Nop(0x166D4, 0x16742);
                     rdt?.Nop(0x168AA, 0x16918);
+                }
+
+                void FixChrisPlant42()
+                {
+                    if (player != 0)
+                        return;
+
+                    // Disable switch to Rebecca
+                    var rdt40C = gameData.GetRdt(RdtId.Parse("40C"));
+                    rdt40C?.Nop(0x66DC, 0x6712);
+
+                    // Fix V-JOLT switch back
+                    var rdt40F = gameData.GetRdt(RdtId.Parse("40F"));
+                    rdt40F?.Nop(0x1F782);
+
+                    // Force Rebecca cutscene
+                    var rdt408 = gameData.GetRdt(RdtId.Parse("408"));
+                    rdt408?.Nop(0x30B4E);
+                    rdt408?.Nop(0x30B90);
+
+                    // Force Rebecca in drug store room
+                    var rdt409 = gameData.GetRdt(RdtId.Parse("409"));
+                    rdt409?.Nop(0x16856);
                 }
 
                 void AllowRoughPassageDoorUnlock()
