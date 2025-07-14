@@ -3882,7 +3882,7 @@
         {
           "id": 0,
           "globalId": 89,
-          "includeTypes": [ 16 ]
+          "kind": "npc"
         }
       ],
       "cutscenes": [
@@ -5312,7 +5312,33 @@
           "group": 64
         }
       ],
-      "enemies": [],
+      "enemies": [
+        {
+          "globalId": 96,
+          "id": 0,
+          "kind": "npc"
+        },
+        {
+          "id": 1,
+          "kind": "npc"
+        },
+        {
+          "id": 2,
+          "kind": "npc"
+        },
+        {
+          "id": 3,
+          "kind": "npc"
+        },
+        {
+          "id": 4,
+          "kind": "npc"
+        },
+        {
+          "id": 5,
+          "kind": "npc"
+        }
+      ],
       "cutscenes": [
         {
           "id": 0,
@@ -6660,7 +6686,7 @@
         {
           "id": 1,
           "globalId": 112,
-          "includeTypes": [ 12 ]
+          "kind": "npc"
         }
       ],
       "cutscenes": [
