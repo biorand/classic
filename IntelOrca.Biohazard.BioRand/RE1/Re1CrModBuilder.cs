@@ -1178,7 +1178,8 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
                 string[] GetHurtFiles(string character)
                 {
-                    var allHurtFiles = _dataManager.GetHurtFiles(character)
+                    var hurtDir = $"hurt/{character}";
+                    var allHurtFiles = _dataManager.GetFiles(hurtDir)
                         .Where(x => x.EndsWith(".ogg", StringComparison.OrdinalIgnoreCase) || x.EndsWith(".wav", StringComparison.OrdinalIgnoreCase))
                         .ToArray();
                     var hurtFiles = new string[4];
@@ -1188,7 +1189,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                         {
                             if (i < hurtFiles.Length)
                             {
-                                hurtFiles[i] = hurtFile;
+                                hurtFiles[i] = $"{hurtDir}/{hurtFile}";
                             }
                         }
                     }
