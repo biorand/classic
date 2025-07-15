@@ -202,6 +202,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 FixMapsAsItems();
                 DisableDogWindows();
                 DisableDogBoiler();
+                DisableHunterAmbushes();
                 AddDoor207();
                 FixDoor104();
                 FixDoorToWardrobe();
@@ -376,6 +377,21 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 {
                     var rdt114 = gameData.GetRdt(RdtId.Parse("114"));
                     rdt114?.Nop(0x24B80, 0x24C1C);
+                }
+
+                void DisableHunterAmbushes()
+                {
+                    if (!RandomEnemies)
+                        return;
+
+                    var rdt603 = gameData.GetRdt(RdtId.Parse("603"));
+                    rdt603?.Nop(0x1ABA2, 0x1ABD4);
+
+                    var rdt609 = gameData.GetRdt(RdtId.Parse("609"));
+                    if (player == 0)
+                        rdt609?.Nop(0x1CB8E, 0x1CBC0);
+                    else
+                        rdt609?.Nop(0x1CB52, 0x1CB84);
                 }
 
                 void AddDoor207()
