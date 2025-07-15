@@ -363,6 +363,34 @@
       "name": "Herb (GGB)",
       "kind": "health/ggb",
       "max": 1
+    },
+    "78": {
+      "name": "Map (Mansion)",
+      "kind": "map"
+    },
+    "80": {
+      "name": "Map (Courtyard)",
+      "kind": "map"
+    },
+    "81": {
+      "name": "Map (Caves)",
+      "kind": "map"
+    },
+    "82": {
+      "name": "Map (Guardhouse)",
+      "kind": "map"
+    },
+    "97": {
+      "name": "Document (Keeper's Diary)",
+      "kind": "document"
+    },
+    "98": {
+      "name": "Document (Orders)",
+      "kind": "document"
+    },
+    "103": {
+      "name": "Document (Security System)",
+      "kind": "document"
     }
   },
   "enemies": [
@@ -1351,6 +1379,15 @@
       ],
       "items": [
         {
+          "name": "MAP IN STATUE",
+          "id": 2,
+          "globalId": 145,
+          "type": 78,
+          "amount": 1,
+          "document": true,
+          "group": 1
+        },
+        {
           "name": "SHELF ROUND CORNER",
           "id": 131,
           "globalId": 39,
@@ -1717,6 +1754,15 @@
           "globalId": 5,
           "type": 12,
           "amount": 7,
+          "group": 1
+        },
+        {
+          "name": "DIARY ON DESK",
+          "id": 3,
+          "globalId": 4,
+          "type": 97,
+          "amount": 1,
+          "document": true,
           "group": 1
         }
       ],
@@ -2854,6 +2900,18 @@
       ],
       "items": [
         {
+          "name": "MAP ABOVE FIREPLACE",
+          "id": 4,
+          "globalId": 17,
+          "type": 0,
+          "amount": 1,
+          "document": true,
+          "group": 1,
+          "requires2": [
+            "item(48)"
+          ]
+        },
+        {
           "name": "GREEN HERB",
           "id": 3,
           "globalId": 162,
@@ -3374,6 +3432,15 @@
           "group": 2
         },
         {
+          "name": "DOCUMENT ON TABLE",
+          "id": 4,
+          "globalId": 116,
+          "type": 98,
+          "amount": 1,
+          "document": true,
+          "group": 2
+        },
+        {
           "name": "DEER EYE",
           "id": 5,
           "globalId": 30,
@@ -3695,6 +3762,15 @@
         }
       ],
       "items": [
+        {
+          "name": "MAP ON WALL",
+          "id": 4,
+          "globalId": 79,
+          "type": 80,
+          "amount": 1,
+          "document": true,
+          "group": 4
+        },
         {
           "name": "GREEN HERB/1",
           "id": 6,
@@ -4613,6 +4689,15 @@
       ],
       "items": [
         {
+          "name": "MAP BEHIND BOULDER",
+          "id": 4,
+          "globalId": 118,
+          "type": 81,
+          "amount": 1,
+          "document": true,
+          "group": 16
+        },
+        {
           "name": "MO DISK BEHIND BOULDER",
           "id": 5,
           "globalId": 251,
@@ -5031,6 +5116,15 @@
           "amount": 1,
           "document": true,
           "group": 8
+        },
+        {
+          "name": "MAP ON WALL",
+          "id": 8,
+          "globalId": 135,
+          "type": 82,
+          "amount": 1,
+          "document": true,
+          "group": 8
         }
       ],
       "enemies": [
@@ -5161,28 +5255,32 @@
           "id": 1,
           "globalId": 60,
           "type": 19,
-          "amount": 1
+          "amount": 1,
+          "group": 8
         },
         {
           "name": "EMPTY BOTTLE/2",
           "id": 2,
           "globalId": 61,
           "type": 19,
-          "amount": 1
+          "amount": 1,
+          "group": 8
         },
         {
           "name": "EMPTY BOTTLE/3",
           "id": 3,
           "globalId": 62,
           "type": 19,
-          "amount": 1
+          "amount": 1,
+          "group": 8
         },
         {
           "name": "EMPTY BOTTLE/4",
           "id": 4,
           "globalId": 63,
           "type": 19,
-          "amount": 1
+          "amount": 1,
+          "group": 8
         }
       ],
       "enemies": [
@@ -5243,6 +5341,18 @@
         }
       ],
       "items": [
+        {
+          "name": "V-JOLT BOOK IN BOOKCASE",
+          "id": 3,
+          "globalId": 78,
+          "type": 105,
+          "amount": 1,
+          "document": true,
+          "group": 8,
+          "typeOffsets": [
+            "0x39383"
+          ]
+        },
         {
           "name": "LOCKED DRAWER",
           "id": 8,
@@ -5968,7 +6078,7 @@
           "group": 32
         },
         {
-          "name": "DOCUMENT IN BOOKCASE",
+          "name": "MAP IN BOOKCASE",
           "id": 2,
           "globalId": 136,
           "type": 103,

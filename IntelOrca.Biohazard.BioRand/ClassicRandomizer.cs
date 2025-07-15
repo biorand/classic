@@ -292,7 +292,7 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 Id = "items/documents",
                 Label = "Replace documents",
-                Description = "Documents will be replaced with items.",
+                Description = "Documents & maps will be replaced with items.",
                 Type = "switch",
                 Default = true
             });
@@ -300,7 +300,7 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 Id = "items/documents/keys",
                 Label = "Documents can be Keys",
-                Description = "Documents can be keys or weapons if replaced with items.",
+                Description = "Documents & maps can be keys or weapons if replaced with items.",
                 Type = "switch",
                 Default = true
             });

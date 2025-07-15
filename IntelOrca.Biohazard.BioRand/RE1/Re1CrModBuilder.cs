@@ -199,6 +199,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
                 ConfigureOptions();
                 EnableMoreJillItems();
+                FixMapsAsItems();
                 DisableDogWindows();
                 DisableDogBoiler();
                 AddDoor207();
@@ -263,6 +264,106 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     // gameData.GetRdt(RdtId.Parse("106"))?.Patches.Add(new KeyValuePair<int, byte>(0x2FFBC + 3, 0));
                     // gameData.GetRdt(RdtId.Parse("106"))?.Nop(0x2FFC0);
                     // gameData.GetRdt(RdtId.Parse("106"))?.Nop(0x31862);
+                }
+
+                void FixMapsAsItems()
+                {
+                    if (_mod.Items.ContainsKey(145))
+                    {
+                        // 107 mansion 1F map
+                        foreach (var rdtId in new string[] { "107", "607" })
+                        {
+                            var rdt = gameData.GetRdt(RdtId.Parse(rdtId));
+                            if (rdt != null)
+                            {
+                                // Set item aot coordinates
+                                SetItemAot(rdt, 0x347DE, 0x347FE);
+
+                                // Change enabled/disabled of the item aot instead of the event aot
+                                rdt.Patches.Add(new KeyValuePair<int, byte>(0x349C4 + 1, 0x02));
+                                rdt.Patches.Add(new KeyValuePair<int, byte>(0x349C4 + 2, 0x04));
+                                rdt.Patches.Add(new KeyValuePair<int, byte>(0x349CA + 1, 0x02));
+                                rdt.Patches.Add(new KeyValuePair<int, byte>(0x349CA + 2, 0x04));
+                            }
+                        }
+                    }
+
+                    if (_mod.Items.TryGetValue(17, out var item))
+                    {
+                        // 20B mansion 2F map
+                        foreach (var rdtId in new string[] { "20B", "70B" })
+                        {
+                            var rdt = gameData.GetRdt(RdtId.Parse(rdtId));
+                            if (rdt != null)
+                            {
+                                rdt.AdditionalOpcodes.Add(new ItemAotSetOpcode()
+                                {
+                                    Opcode = 0x18,
+                                    Id = 4,
+                                    X = 5050,
+                                    Y = 1400,
+                                    W = 500,
+                                    H = 1800,
+                                    Type = item.Type,
+                                    Amount = item.Amount,
+                                    Re1Unk0C = 1,
+                                    Re1Unk14 = 0,
+                                    Re1Unk15 = 0,
+                                    GlobalId = 17,
+                                    Re1Unk17 = 129,
+                                    TakeAnimation = 0,
+                                    Re1Unk19 = 0
+                                });
+                                rdt.Nop(0xCD68);
+                                rdt.Nop(0xCE52);
+                            }
+                        }
+                    }
+
+                    if (_mod.Items.ContainsKey(79))
+                    {
+                        // 300 courtyard map
+                        var rdt = gameData.GetRdt(RdtId.Parse("300"));
+                        rdt?.Nop(0x15E66, 0x15E78);
+                    }
+
+                    if (_mod.Items.ContainsKey(118))
+                    {
+                        // 30F caves map
+                        var rdt = gameData.GetRdt(RdtId.Parse("30F"));
+                        if (rdt != null)
+                        {
+                            SetItemAot(rdt, 0x3589E, 0x35A18);
+                            rdt.Nop(0x35B04);
+                        }
+                    }
+
+                    if (_mod.Items.ContainsKey(135))
+                    {
+                        // 406 guardhouse map
+                        var rdt = gameData.GetRdt(RdtId.Parse("406"));
+                        if (rdt != null)
+                        {
+                            SetItemAot(rdt, 0x24F88, 0x24F26);
+                        }
+                    }
+
+                    static void SetItemAot(RandomizedRdt rdt, int targetOffset, int sourceOffset)
+                    {
+                        var targetAot = rdt.Opcodes.OfType<ItemAotSetOpcode>().FirstOrDefault(x => x.Offset == targetOffset);
+                        var sourceAot = rdt.Opcodes.OfType<AotSetOpcode>().FirstOrDefault(x => x.Offset == sourceOffset);
+                        if (targetAot == null || sourceAot == null)
+                            return;
+
+                        targetAot.X = sourceAot.X;
+                        targetAot.Y = sourceAot.Z;
+                        targetAot.W = (short)sourceAot.W;
+                        targetAot.H = (short)sourceAot.D;
+                        sourceAot.X = 0;
+                        sourceAot.Z = 0;
+                        sourceAot.W = 0;
+                        sourceAot.D = 0;
+                    }
                 }
 
                 void DisableDogWindows()
@@ -843,12 +944,30 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             {
                 foreach (var rrdt in gameData.Rdts)
                 {
+                    var aotOnOpcodes = rrdt.Opcodes
+                        .OfType<UnknownOpcode>()
+                        .Where(x => x.Opcode == 0x13 || x.Opcode == 0x24) // aot_delete / aot_on
+                        .ToArray();
+
                     foreach (var itemOpcode in rrdt.Items)
                     {
                         if (_mod.Items.TryGetValue(itemOpcode.GlobalId, out var item))
                         {
                             itemOpcode.Type = item.Type;
                             itemOpcode.Amount = item.Amount;
+
+                            // Fix any aot_on opcodes that reference this item
+                            foreach (var aotOnOpCode in aotOnOpcodes)
+                            {
+                                if (aotOnOpCode.Data[0] == itemOpcode.Id)
+                                {
+                                    // If item was a document, change SCE to item
+                                    if (aotOnOpCode.Data[1] == 0x0D)
+                                    {
+                                        aotOnOpCode.Data[1] = 0x04;
+                                    }
+                                }
+                            }
                         }
                     }
                 }
