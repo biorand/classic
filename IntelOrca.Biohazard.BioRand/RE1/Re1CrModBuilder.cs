@@ -215,6 +215,8 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 DisablePoisonChallenge();
                 DisableBarryEvesdrop();
                 ClearEnemies309();
+                ClearEnemies601();
+                ClearEnemies706();
                 AllowPartnerItemBoxes();
                 EnableFountainHeliportDoors();
                 ForceHelipadTyrant();
@@ -659,6 +661,30 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     rdt?.Nop(0x2D83C);
                     rdt?.Nop(0x2D852);
                 }
+
+                void ClearEnemies601()
+                {
+                    if (player != 0 || !RandomEnemies)
+                        return;
+
+                    var rdt = gameData.GetRdt(RdtId.Parse("601"));
+                    rdt?.Nop(0x24D0A);
+                    rdt?.Nop(0x24DB6);
+                    rdt?.Nop(0x24DCC);
+                    rdt?.Nop(0x24DEA);
+                    rdt?.Nop(0x24E00);
+                }
+
+                void ClearEnemies706()
+                {
+                    if (player != 0 || !RandomEnemies)
+                        return;
+
+                    var rdt = gameData.GetRdt(RdtId.Parse("706"));
+                    rdt?.Nop(0x3792A);
+                    rdt?.Nop(0x37954);
+                }
+
 
                 void AllowPartnerItemBoxes()
                 {

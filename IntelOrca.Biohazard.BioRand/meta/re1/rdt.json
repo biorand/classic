@@ -805,7 +805,43 @@
       ],
       "enemies": [
         {
-          "excludeTypes": [ 4 ]
+          "id": 0,
+          "kind": "npc",
+          "player": 0
+        },
+        {
+          "id": 1,
+          "globalId": 103,
+          "kind": "npc",
+          "player": 0
+        },
+        {
+          "condition": "!(!1:34 && 1:35 && !1:51)",
+          "excludeTypes": [ 4 ],
+          "player": 0
+        },
+        {
+          "excludeTypes": [ 4 ],
+          "player": 1
+        }
+      ],
+      "cutscenes": [
+        {
+          "id": 0,
+          "name": "hunter attack",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "name": "rebecca",
+              "character": 44,
+              "offsets": [ "0x24CD6", "0x24D2C", "0x24D76" ],
+              "include": [ 44 ]
+            }
+          ],
+          "player": 0
         }
       ]
     },
@@ -2683,7 +2719,43 @@
       ],
       "enemies": [
         {
-          "maxDifficulty": 1
+          "id": 0,
+          "kind": "npc",
+          "player": 0
+        },
+        {
+          "id": 1,
+          "globalId": 96,
+          "kind": "npc",
+          "player": 0
+        },
+        {
+          "condition": "1:103 && 1:104",
+          "maxDifficulty": 1,
+          "player": 0
+        },
+        {
+          "maxDifficulty": 1,
+          "player": 1
+        }
+      ],
+      "cutscenes": [
+        {
+          "id": 0,
+          "name": "hunter attack",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "name": "rebecca",
+              "character": 44,
+              "offsets": [ "0x37898", "0x378BA", "0x378F2" ],
+              "include": [ 44 ]
+            }
+          ],
+          "player": 0
         }
       ]
     },
