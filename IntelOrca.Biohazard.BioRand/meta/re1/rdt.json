@@ -4319,7 +4319,8 @@
         {
           "id": 2,
           "target": "30B:0",
-          "lockId": 39
+          "lockId": 39,
+          "noUnlock": true
         }
       ]
     },
@@ -4591,7 +4592,8 @@
         {
           "id": 0,
           "target": "307/BACK",
-          "lockId": 39
+          "lockId": 39,
+          "noUnlock": true
         },
         {
           "id": 1,
@@ -4683,7 +4685,8 @@
         {
           "id": 2,
           "target": "30F:2",
-          "lockId": 47
+          "lockId": 47,
+          "noUnlock": true
         }
       ],
       "enemies": [
@@ -4756,7 +4759,8 @@
         {
           "id": 2,
           "target": "30D:2",
-          "lockId": 47
+          "lockId": 47,
+          "noUnlock": true
         }
       ],
       "items": [
