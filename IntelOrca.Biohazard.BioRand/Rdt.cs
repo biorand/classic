@@ -364,6 +364,11 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
+        public void Patch(int offset, byte value)
+        {
+            Patches.Add(new KeyValuePair<int, byte>(offset, value));
+        }
+
         public IDoorAotSetOpcode ConvertToDoor(byte id, byte texture, byte? key, byte? lockId)
         {
             var aotSet = Opcodes.OfType<IAotSetOpcode>().LastOrDefault(x => x.Id == id);

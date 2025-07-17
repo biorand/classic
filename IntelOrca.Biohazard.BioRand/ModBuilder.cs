@@ -164,6 +164,15 @@ namespace IntelOrca.Biohazard.BioRand
         public int? Seed { get; init; }
         public RandomizerConfiguration? Configuration { get; init; }
 
+        public T? GetGeneralValue<T>(string name, T? defaultValue = default)
+        {
+            if (General.TryGetValue(name, out var value) && value is T typedValue)
+            {
+                return typedValue;
+            }
+            return defaultValue;
+        }
+
         public static ClassicMod FromJson(string json)
         {
             var result = JsonSerializer.Deserialize<ClassicMod>(json, JsonOptions)!;
