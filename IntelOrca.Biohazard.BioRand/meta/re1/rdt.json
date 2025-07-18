@@ -6327,7 +6327,8 @@
           "id": 0,
           "target": "505",
           "lockId": 45,
-          "kind": "unlock"
+          "kind": "unlock",
+          "allowedLocks": []
         }
       ],
       "items": [
