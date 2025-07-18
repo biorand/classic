@@ -380,6 +380,14 @@
       "name": "Map (Guardhouse)",
       "kind": "map"
     },
+    "95": {
+      "name": "Document (Researcher's Will 1)",
+      "kind": "document"
+    },
+    "96": {
+      "name": "Document (Researcher's Will 2)",
+      "kind": "document"
+    },
     "97": {
       "name": "Document (Keeper's Diary)",
       "kind": "document"
@@ -2899,6 +2907,29 @@
           "amount": 7,
           "group": 1,
           "player": 0
+        },
+        {
+          "name": "DOCUMENT ON DESK",
+          "id": 8,
+          "globalId": 16,
+          "type": 95,
+          "amount": 1,
+          "document": true,
+          "hidden": true,
+          "group": 1,
+          "player": 0
+        },
+        {
+          "name": "DOCUMENT ON DESK",
+          "id": 8,
+          "globalId": 16,
+          "type": 95,
+          "amount": 1,
+          "document": true,
+          "hidden": true,
+          "optional": true,
+          "group": 1,
+          "player": 1
         },
         {
           "name": "BEHIND BOOKCASE",

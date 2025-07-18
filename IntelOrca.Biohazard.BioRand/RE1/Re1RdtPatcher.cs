@@ -168,22 +168,25 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 // 406 guardhouse map
                 SetItemAot(rdt406, 0x24F88, 0x24F26);
             }
+        }
 
-            static void SetItemAot(RandomizedRdt rdt, int targetOffset, int sourceOffset)
+        [Patch(BothMansions = true)]
+        public void FixDocuments(RandomizedRdt rdt20A)
+        {
+            if (mod.Items.ContainsKey(16))
             {
-                var targetAot = rdt.Opcodes.OfType<ItemAotSetOpcode>().FirstOrDefault(x => x.Offset == targetOffset);
-                var sourceAot = rdt.Opcodes.OfType<AotSetOpcode>().FirstOrDefault(x => x.Offset == sourceOffset);
-                if (targetAot == null || sourceAot == null)
-                    return;
-
-                targetAot.X = sourceAot.X;
-                targetAot.Y = sourceAot.Z;
-                targetAot.W = (short)sourceAot.W;
-                targetAot.H = (short)sourceAot.D;
-                sourceAot.X = 0;
-                sourceAot.Z = 0;
-                sourceAot.W = 0;
-                sourceAot.D = 0;
+                // 20A fish tank document on desk
+                if (Player == 0)
+                {
+                    SetItemAot(rdt20A, 0x179EC, 0x17948, clearSource: false);
+                    SetItemAot(rdt20A, 0x17A18, 0x17948, clearSource: true);
+                }
+                else
+                {
+                    SetItemAot(rdt20A, 0x179EC, 0x17948, clearSource: false);
+                    SetItemAot(rdt20A, 0x17A1E, 0x17948, clearSource: false);
+                    SetItemAot(rdt20A, 0x17A4A, 0x17948, clearSource: true);
+                }
             }
         }
 
@@ -507,6 +510,26 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             if (HelipadTyrantForced)
             {
                 rdt303.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [0, 43, 0]));
+            }
+        }
+
+        private static void SetItemAot(RandomizedRdt rdt, int targetOffset, int sourceOffset, bool clearSource = true)
+        {
+            var targetAot = rdt.Opcodes.OfType<ItemAotSetOpcode>().FirstOrDefault(x => x.Offset == targetOffset);
+            var sourceAot = rdt.Opcodes.OfType<AotSetOpcode>().FirstOrDefault(x => x.Offset == sourceOffset);
+            if (targetAot == null || sourceAot == null)
+                return;
+
+            targetAot.X = sourceAot.X;
+            targetAot.Y = sourceAot.Z;
+            targetAot.W = (short)sourceAot.W;
+            targetAot.H = (short)sourceAot.D;
+            if (clearSource)
+            {
+                sourceAot.X = 0;
+                sourceAot.Z = 0;
+                sourceAot.W = 0;
+                sourceAot.D = 0;
             }
         }
 
