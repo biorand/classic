@@ -6878,18 +6878,8 @@
           "globalId": 95,
           "type": 55,
           "amount": 2,
-          "group": 512,
-          "doorRando": false
-        },
-        {
-          "name": "MASTER KEY",
-          "id": 2,
-          "globalId": 95,
-          "type": 55,
-          "amount": 2,
           "optional": true,
-          "group": 512,
-          "doorRando": true
+          "group": 32
         },
         {
           "name": "CLIP NEAR DOOR",
@@ -6897,7 +6887,7 @@
           "globalId": 207,
           "type": 11,
           "amount": 15,
-          "group": 32
+          "group": 512
         }
       ],
       "enemies": [
