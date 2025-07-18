@@ -4350,8 +4350,7 @@
         {
           "id": 2,
           "target": "30B:0",
-          "lockId": 39,
-          "noUnlock": true
+          "lockId": 39
         }
       ]
     },
@@ -4790,8 +4789,7 @@
         {
           "id": 2,
           "target": "30D:2",
-          "lockId": 47,
-          "noUnlock": true
+          "lockId": 47
         }
       ],
       "items": [
