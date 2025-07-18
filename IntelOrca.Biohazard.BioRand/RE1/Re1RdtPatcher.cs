@@ -415,6 +415,20 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             rdt305.Nop(0x194A2);
         }
 
+        [Patch(Player = 0)]
+        public void ChangeEnemies101(RandomizedRdt rdt101)
+        {
+            // This is a really silly hack to get round that ids 0 and 1 are
+            // reserved for hunter/Rebecca in 601 and therefore get left
+            if (RandomEnemies)
+            {
+                foreach (var em in rdt101.Enemies)
+                {
+                    em.Id += 2;
+                }
+            }
+        }
+
         [Patch(Player = 1)]
         public void ClearEnemies309(RandomizedRdt rdt309)
         {

@@ -824,7 +824,7 @@
           "player": 0
         },
         {
-          "condition": "!(!1:34 && 1:35 && !1:51)",
+          "condition": "!(!1:34 && 1:35)",
           "excludeTypes": [ 4 ],
           "player": 0
         },
