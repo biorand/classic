@@ -30,6 +30,35 @@ namespace IntelOrca.Biohazard.BioRand
 
         public OpcodeBase[] Generate1(IEnumerable<OpcodeBase> children)
         {
+            // We might need to split the children into multiple blocks if they are too large
+            // IF / ELSE jumps only stored as a byte
+            const int maxBlockSize = 256 - 64; // 64 bytes reserved for the IF AND CK opcodes
+
+            var total = new List<OpcodeBase>();
+            var childrenArray = children.ToArray();
+            var blockSize = 0;
+            var block = new List<OpcodeBase>();
+            for (var i = 0; i < childrenArray.Length; i++)
+            {
+                var opcode = childrenArray[i];
+                if (blockSize + opcode.Length > maxBlockSize)
+                {
+                    total.AddRange(Generate1Split(block));
+                    block.Clear();
+                    blockSize = 0;
+                }
+                block.Add(opcode);
+                blockSize += opcode.Length;
+            }
+            if (block.Count != 0)
+            {
+                total.AddRange(Generate1Split(block));
+            }
+            return total.ToArray();
+        }
+
+        private OpcodeBase[] Generate1Split(IEnumerable<OpcodeBase> children)
+        {
             var result = new List<OpcodeBase>();
 
             var ifOpcode = new UnknownOpcode(0, (byte)OpcodeV1.IfelCk, new byte[] { 0x00 });
