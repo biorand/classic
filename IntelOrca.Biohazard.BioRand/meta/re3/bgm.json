@@ -22,11 +22,9 @@
     "MAIN1D",
     "MAIN2D",
     "MAIN3A",
-
     "MAIN32", // SMOOTH
     "MAIN33", // SMOOTH
     "MAIN38", // OPTIONS
-
     "SBB_00", // NEMESIS HUNTING
     "SBB_02",
     "SBB_03",
@@ -47,7 +45,6 @@
     "SBB_35",
     "SBB_39",
     "SBB_3F"
-
     // "SBB_41" // too short
     // "SBB_0A", // too short
     // "SBB_12", // too short
@@ -56,7 +53,6 @@
     // "SBB_38_0" // too short
     // "SBB_38_1" // too short
     // "SBB_38_2" // too short
-
     // "MAIN00",    // RAIN & THUNDER INSIDE
     // "MAIN05"     // OUTSIDE WIND AMBIENCE
     // "MAIN08"     // ALARM
@@ -132,12 +128,19 @@
     // "SBB_09", // too short?
   ],
   "boss": [
-    "*MAIN39",
     "MAIN3B",
     "SBB_29",
     "SBB_37",
     "SBB_3B",
     "*SBB_2A",
     "*SBB_2B"
+  ],
+  "heroic": [
+    "MAIN39"
+  ],
+  "sting": [
+    "SBB_38_0",
+    "SBB_38_1",
+    "SBB_38_2"
   ]
 }

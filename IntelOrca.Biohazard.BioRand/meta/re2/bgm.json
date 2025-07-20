@@ -4,8 +4,10 @@
   ],
   "countdown": [
     "*main11",
-    "*main23",
-    "*main34"
+    "*main23", // train sound
+    "*main34",
+    "*sub3e",
+    "*sub43" // dog birkin countdown sound when entering room
   ],
   "safe": [
     "main0C"
@@ -47,7 +49,6 @@
     "sub36",
     "sub42",
     "sub44",
-
     // Ambient
     "*main04",
     "*main0f",
@@ -69,7 +70,6 @@
     "sub24",
     "sub30",
     "main38",
-
     // Alarm
     "*sub33",
     "*sub34"
@@ -79,6 +79,7 @@
     "main1d",
     "main1e",
     "main21",
+    "main28",
     "main33",
     "main35",
     "main36",
@@ -102,5 +103,11 @@
     "main12",
     "main15",
     "sub2d"
+  ],
+  "sting": [
+    "sub0a",
+    "sub1c",
+    "sub15",
+    "sub23"
   ]
 }

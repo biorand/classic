@@ -287,7 +287,8 @@
       }
     ]
   },
-  "voice/V00D_02.wav": { "rdt": "30A", "player": 0, "actor": "chris" },
+  "sound/V00D_02.wav": { "rdt": "30A", "player": 0, "actor": "chris" },
+  "sound/v00d_02s.wav": { "rdt": "30A", "player": 0, "actor": "chris" },
   "voice/V00D_03.wav": { "rdt": "30A", "player": 0, "actor": "chris" },
   "voice/V00D_04.wav": { "rdt": "30A", "player": 0, "actor": "enrico", "kind": "death" },
   "voice/V00D_05.wav": { "rdt": "30A", "player": 0, "actor": "chris" },
