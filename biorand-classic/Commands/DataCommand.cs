@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using System.IO.Compression;
 using System.Net.Http;
 using System.Reflection;
 using System.Text.Json;
@@ -16,6 +17,9 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
             [Description("Update data")]
             [CommandOption("-u|--update")]
             public required bool Update { get; init; }
+
+            [CommandOption("-f|--force")]
+            public required bool Force { get; init; }
         }
 
         public override async Task<int> ExecuteAsync(CommandContext context, Settings settings)
@@ -29,15 +33,23 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
             var outputDirectory = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location) ?? "";
             var outputPath = Path.Combine(outputDirectory, "data.zip");
 
-            Console.WriteLine("Getting latest download URL...");
-            var downloadUrl = await GetLatestZipDownloadAsync();
+            var currentVersion = GetDataVersion(outputPath);
 
-            Console.WriteLine($"Downloading data...");
-            await DownloadAsync(downloadUrl, outputPath);
+            Console.WriteLine("Getting latest download URL...");
+            var releaseInfo = await GetLatestZipDownloadAsync();
+            if (releaseInfo.Version > currentVersion || settings.Force)
+            {
+                Console.WriteLine($"Downloading {releaseInfo.DownloadUrl}...");
+                await DownloadAsync(releaseInfo.DownloadUrl, outputPath);
+            }
+            else
+            {
+                Console.WriteLine($"Data already up to date. Use -f to override.");
+            }
             return 0;
         }
 
-        private static async Task<string> GetLatestZipDownloadAsync()
+        private static async Task<GitHubReleaseInfo> GetLatestZipDownloadAsync()
         {
             var apiUrl = "https://api.github.com/repos/biorand/classic-data/releases/latest";
             using var httpClient = new HttpClient();
@@ -45,6 +57,10 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
 
             var json = await httpClient.GetStringAsync(apiUrl);
             using var doc = JsonDocument.Parse(json);
+            var tagName = doc.RootElement.GetProperty("tag_name").GetString();
+            if (!Version.TryParse(tagName?[1..], out var tagVersion))
+                tagVersion = new Version(1, 0);
+
             var assets = doc.RootElement.GetProperty("assets");
             foreach (var asset in assets.EnumerateArray())
             {
@@ -53,7 +69,9 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
                 {
                     var downloadUrl = asset.GetProperty("browser_download_url").GetString();
                     if (downloadUrl != null)
-                        return downloadUrl;
+                    {
+                        return new GitHubReleaseInfo(tagVersion, downloadUrl);
+                    }
                 }
             }
 
@@ -92,6 +110,35 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
                     Console.Write($"\rDownloaded {mib:0.0} MiB...");
                 }
             }
+        }
+
+        private static Version GetDataVersion(string zipPath)
+        {
+            try
+            {
+                using var zipFile = ZipFile.OpenRead(zipPath);
+                var versionEntry = zipFile.GetEntry("VERSION");
+                if (versionEntry != null)
+                {
+                    using var stream = versionEntry.Open();
+                    var textReader = new StreamReader(stream);
+                    var versionText = textReader.ReadToEnd().Trim();
+                    if (Version.TryParse(versionText, out var result))
+                    {
+                        return result;
+                    }
+                }
+            }
+            catch
+            {
+            }
+            return new Version(1, 0);
+        }
+
+        private class GitHubReleaseInfo(Version version, string downloadUrl)
+        {
+            public Version Version { get; } = version;
+            public string DownloadUrl { get; } = downloadUrl;
         }
     }
 }
