@@ -5244,6 +5244,24 @@
           "maxDifficulty": 1,
           "player": 1
         }
+      ],
+      "cutscenes": [
+        {
+          "id": 0,
+          "name": "Talk with Barry",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "name": "barry",
+              "character": 34,
+              "offsets": [ "0x2506A" ]
+            }
+          ],
+          "player": 1
+        }
       ]
     },
     "407": {
