@@ -5155,7 +5155,7 @@
               "name": "wesker",
               "character": 36,
               "offsets": [ "0x194C6" ],
-              "include": [ 32, 33, 34, 35, 36 ]
+              "include": [ 32, 34, 35, 36 ]
             }
           ],
           "player": 0
@@ -5172,7 +5172,7 @@
               "name": "wesker",
               "character": 36,
               "offsets": [ "0x194DE" ],
-              "include": [ 32, 33, 34, 35, 36 ]
+              "include": [ 32, 34, 35, 36 ]
             }
           ],
           "player": 1
