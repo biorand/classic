@@ -292,7 +292,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                             .Select(x => (int)x.LockId!.Value)
                             .Concat(itemLockIds)
                             .ToHashSet();
-                        var lockIds = Enumerable.Range(0, 63)
+                        var lockIds = Enumerable.Range(1, 254)
                             .Except(usedLockIds)
                             .ToQueue();
 
