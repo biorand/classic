@@ -378,78 +378,81 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 }
             }
 
-            // Restrict items, set no return points
-            var keys = map.Items!.Values;
-            var items = map.Rooms!.Values.SelectMany(x => x.Items).ToArray();
-            var guardhouseKeys = keys.Where(x => x.Group == 8).ToArray();
-            var guardhouseItems = items.Where(x => x.Group == GROUP_GUARDHOUSE).ToArray();
-            var mansion2Items = items.Where(x => x.Group == GROUP_MANSION_2).ToArray();
-            var labItems = items.Where(x => x.Group == GROUP_LAB).ToArray();
-            var tyrantItems = items.Where(x => x.Group == GROUP_LAB_TYRANT).ToArray();
-
-            foreach (var item in items)
-                item.Group = GROUP_ALL;
-
-            if (config.GetValueOrDefault("progression/guardhouse", true) &&
-                config.GetValueOrDefault("progression/guardhouse/segmented", false))
+            if (!config.GetValueOrDefault("doors/random", false))
             {
-                if (context.Configuration.GetValueOrDefault("locks/random", false))
+                // Restrict items, set no return points
+                var keys = map.Items!.Values;
+                var items = map.Rooms!.Values.SelectMany(x => x.Items).ToArray();
+                var guardhouseKeys = keys.Where(x => x.Group == 8).ToArray();
+                var guardhouseItems = items.Where(x => x.Group == GROUP_GUARDHOUSE).ToArray();
+                var mansion2Items = items.Where(x => x.Group == GROUP_MANSION_2).ToArray();
+                var labItems = items.Where(x => x.Group == GROUP_LAB).ToArray();
+                var tyrantItems = items.Where(x => x.Group == GROUP_LAB_TYRANT).ToArray();
+
+                foreach (var item in items)
+                    item.Group = GROUP_ALL;
+
+                if (config.GetValueOrDefault("progression/guardhouse", true) &&
+                    config.GetValueOrDefault("progression/guardhouse/segmented", false))
                 {
-                    throw new RandomizerUserException("Segmented guardhouse with lock randomizer not implemented yet.");
+                    if (context.Configuration.GetValueOrDefault("locks/random", false))
+                    {
+                        throw new RandomizerUserException("Segmented guardhouse with lock randomizer not implemented yet.");
+                    }
+
+                    // Only guardhouse can contain guardhouse keys
+                    foreach (var item in items)
+                        item.Group &= ~GROUP_GUARDHOUSE;
+                    foreach (var item in guardhouseItems)
+                        item.Group = GROUP_GUARDHOUSE | GROUP_SMALL_KEY;
                 }
 
-                // Only guardhouse can contain guardhouse keys
-                foreach (var item in items)
-                    item.Group &= ~GROUP_GUARDHOUSE;
-                foreach (var item in guardhouseItems)
-                    item.Group = GROUP_GUARDHOUSE | GROUP_SMALL_KEY;
-            }
+                if (config.GetValueOrDefault("progression/mansion/split", false))
+                {
+                    // Mansion 2 (helmet key in plant 42)
+                    foreach (var item in items)
+                        item.Group &= ~GROUP_PLANT_42;
+                    var plant42item = map.Rooms!["40C"].Items.First(x => x.Name == "KEY IN FIREPLACE");
+                    plant42item.Group = GROUP_PLANT_42;
+                    map.Items[mansion2keyType].Group = GROUP_PLANT_42;
 
-            if (config.GetValueOrDefault("progression/mansion/split", false))
-            {
-                // Mansion 2 (helmet key in plant 42)
-                foreach (var item in items)
-                    item.Group &= ~GROUP_PLANT_42;
-                var plant42item = map.Rooms!["40C"].Items.First(x => x.Name == "KEY IN FIREPLACE");
-                plant42item.Group = GROUP_PLANT_42;
-                map.Items[mansion2keyType].Group = GROUP_PLANT_42;
+                    // Battery restricted to mansion 2 (and lab obviously)
+                    foreach (var item in items)
+                        item.Group &= ~GROUP_BATTERY;
+                    map.Items[39].Group = GROUP_BATTERY;
+                    foreach (var item in mansion2Items)
+                        item.Group |= GROUP_BATTERY;
+                    foreach (var item in labItems)
+                        item.Group |= GROUP_BATTERY;
+                }
 
-                // Battery restricted to mansion 2 (and lab obviously)
-                foreach (var item in items)
-                    item.Group &= ~GROUP_BATTERY;
-                map.Items[39].Group = GROUP_BATTERY;
-                foreach (var item in mansion2Items)
-                    item.Group |= GROUP_BATTERY;
-                foreach (var item in labItems)
-                    item.Group |= GROUP_BATTERY;
-            }
+                if (config.GetValueOrDefault("progression/lab", true) &&
+                    config.GetValueOrDefault("progression/lab/tyrant", false))
+                {
+                    // To ensure player has to fight tyrant, place flare there
+                    map.Items[42].Group = GROUP_LAB_TYRANT;
+                    foreach (var item in items)
+                        item.Group &= ~GROUP_LAB_TYRANT;
+                    foreach (var item in tyrantItems)
+                        item.Group = GROUP_LAB_TYRANT;
+                }
 
-            if (config.GetValueOrDefault("progression/lab", true) &&
-                config.GetValueOrDefault("progression/lab/tyrant", false))
-            {
-                // To ensure player has to fight tyrant, place flare there
-                map.Items[42].Group = GROUP_LAB_TYRANT;
-                foreach (var item in items)
-                    item.Group &= ~GROUP_LAB_TYRANT;
-                foreach (var item in tyrantItems)
-                    item.Group = GROUP_LAB_TYRANT;
-            }
+                if (config.GetValueOrDefault("progression/caves/segmented", false))
+                {
+                    var caveDoor = map.Rooms!["302"].Doors.First(x => x.Name == "LADDER TO CAVES");
+                    caveDoor.Kind = "noreturn";
 
-            if (config.GetValueOrDefault("progression/caves/segmented", false))
-            {
-                var caveDoor = map.Rooms!["302"].Doors.First(x => x.Name == "LADDER TO CAVES");
-                caveDoor.Kind = "noreturn";
+                    map.GetOtherSide(caveDoor)!.Kind = "blocked";
+                }
 
-                map.GetOtherSide(caveDoor)!.Kind = "blocked";
-            }
+                if (config.GetValueOrDefault("progression/lab", true) &&
+                    config.GetValueOrDefault("progression/lab/segmented", false))
+                {
+                    var labDoor = map.Rooms!["305"].Doors.First(x => x.Name == "FOUNTAIN STAIRS");
+                    labDoor.Kind = "noreturn";
 
-            if (config.GetValueOrDefault("progression/lab", true) &&
-                config.GetValueOrDefault("progression/lab/segmented", false))
-            {
-                var labDoor = map.Rooms!["305"].Doors.First(x => x.Name == "FOUNTAIN STAIRS");
-                labDoor.Kind = "noreturn";
-
-                map.GetOtherSide(labDoor)!.Kind = "blocked";
+                    map.GetOtherSide(labDoor)!.Kind = "blocked";
+                }
             }
 
             return map;

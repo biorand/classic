@@ -39,6 +39,11 @@ namespace IntelOrca.Biohazard.BioRand
             return value;
         }
 
+        internal string GetRoomKey(MapRoom room)
+        {
+            return Rooms.First(x => x.Value == room).Key;
+        }
+
         internal MapRoom[] GetRoomsContaining(RdtId id)
         {
             if (Rooms == null)

@@ -808,7 +808,8 @@
         {
           "id": 3,
           "target": "201:3",
-          "noUnlock": true
+          "noUnlock": true,
+          "randomize": false
         }
       ],
       "enemies": [
@@ -1160,7 +1161,7 @@
     "106": {
       "name": "1F MAIN HALL",
       "rdts": [ "106", "606" ],
-      "tags": [ "mansion", "save" ],
+      "tags": [ "mansion", "save", "begin" ],
       "doors": [
         {
           "id": 2,
@@ -2390,6 +2391,7 @@
         },
         {
           "id": 1,
+          "tags": [ "segment-end" ],
           "target": "11B:0",
           "lockId": 23,
           "requires2": [
@@ -2398,8 +2400,7 @@
             "item(45)",
             "item(46)"
           ],
-          "noUnlock": true,
-          "segmentEnd": true
+          "noUnlock": true
         }
       ],
       "enemies": [
@@ -3041,8 +3042,10 @@
           "lockId": 25
         },
         {
+          "tags": [ "segment-end" ],
           "target": "20C/GRAVE",
-          "kind": "oneway"
+          "kind": "oneway",
+          "randomize": false
         }
       ],
       "enemies": [
@@ -4018,7 +4021,8 @@
           "name": "LIFT TO LAB",
           "id": 0,
           "target": "50D:1",
-          "noUnlock": true
+          "noUnlock": true,
+          "randomize": false
         },
         {
           "name": "DOOR TO FOUNTAIN",
@@ -4191,6 +4195,7 @@
         {
           "name": "FOUNTAIN STAIRS",
           "id": 1,
+          "tags": [ "segment-end" ],
           "target": "310:0",
           "kind": "unblock",
           "requires2": [
@@ -4198,7 +4203,6 @@
             "item(64)"
           ],
           "noUnlock": true,
-          "segmentEnd": true,
           "randomize": false
         },
         {
@@ -4291,7 +4295,8 @@
           "kind": "unblock",
           "requires2": [
             "item(30)"
-          ]
+          ],
+          "randomize": false
         }
       ],
       "items": [
@@ -4345,7 +4350,8 @@
       "doors": [
         {
           "target": "307",
-          "kind": "blocked"
+          "kind": "blocked",
+          "randomize": false
         },
         {
           "id": 2,
@@ -5645,7 +5651,8 @@
         },
         {
           "target": "40D/EXIT",
-          "kind": "unblock"
+          "kind": "unblock",
+          "randomize": false
         }
       ],
       "enemies": [
@@ -5661,7 +5668,8 @@
       "doors": [
         {
           "target": "40D",
-          "kind": "blocked"
+          "kind": "blocked",
+          "randomize": false
         },
         {
           "id": 1,
@@ -5883,7 +5891,7 @@
     },
     "501": {
       "name": "LABORATORY B1 ESCAPE",
-      "tags": [ "lab" ],
+      "tags": [ "lab", "end" ],
       "rdts": [ "501" ],
       "doors": [
         {
@@ -6720,6 +6728,7 @@
       "rdts": [ "50E" ],
       "doors": [
         {
+          "id": 0,
           "target": "50C:0"
         }
       ],
