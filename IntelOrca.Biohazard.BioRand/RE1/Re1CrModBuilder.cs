@@ -371,7 +371,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                         if (item.GlobalId is not short globalId)
                             continue;
 
-                        if (_mod.Items.GetValueOrDefault(globalId) is Item newItem && item.TypeOffsets != null)
+                        if (_mod.Items.TryGetValue(globalId, out var newItem) && item.TypeOffsets != null)
                         {
                             foreach (var o in item.TypeOffsets)
                             {
