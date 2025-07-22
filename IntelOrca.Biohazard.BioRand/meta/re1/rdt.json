@@ -4350,7 +4350,13 @@
         {
           "id": 2,
           "target": "30B:0",
-          "lockId": 39
+          "lockId": 39,
+          "player": 0
+        },
+        {
+          "id": 2,
+          "target": "30B:0",
+          "player": 1
         }
       ]
     },
@@ -4623,7 +4629,13 @@
           "id": 0,
           "target": "307/BACK",
           "lockId": 39,
-          "noUnlock": true
+          "noUnlock": true,
+          "player": 0
+        },
+        {
+          "id": 0,
+          "target": "307/BACK",
+          "player": 1
         },
         {
           "id": 1,
@@ -4716,7 +4728,13 @@
           "id": 2,
           "target": "30F:2",
           "lockId": 47,
-          "noUnlock": true
+          "noUnlock": true,
+          "player": 0
+        },
+        {
+          "id": 2,
+          "target": "30F:2",
+          "player": 1
         }
       ],
       "enemies": [
@@ -4789,7 +4807,13 @@
         {
           "id": 2,
           "target": "30D:2",
-          "lockId": 47
+          "lockId": 47,
+          "player": 0
+        },
+        {
+          "id": 2,
+          "target": "30D:2",
+          "player": 1
         }
       ],
       "items": [
