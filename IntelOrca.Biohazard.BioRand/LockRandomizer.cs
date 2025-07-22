@@ -27,6 +27,7 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 var rng = context.GetRng("lock");
                 KeepBoxRouteClear(context, rng, doors);
+                KeepRouteItemful(context, rng);
                 RandomizeLocks(context, rng, pairs);
             }
             SetDoorLocks(context, doors);
@@ -137,6 +138,121 @@ namespace IntelOrca.Biohazard.BioRand
                         AssignDoorLock(doorInfo, null);
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Very crude algorithm that forces a few early doors to be unlocked to ensure we have a few
+        /// items we can pick up in order to unlock doors.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="rng"></param>
+        /// <param name="doors"></param>
+        private void KeepRouteItemful(IClassicRandomizerGeneratedVariation context, Rng rng)
+        {
+            var map = context.Variation.Map;
+
+            // Get first room of randomizer
+            var beginEnd = map.BeginEndRooms.FirstOrDefault();
+            var startRoom = map.GetRoom(beginEnd.Start ?? "");
+            if (startRoom == null)
+                return;
+
+            // Get all the rooms at the start of a segment
+            var startingRooms = new List<MapRoom> { startRoom };
+            foreach (var room in map.Rooms.Values)
+            {
+                foreach (var door in room.Doors ?? [])
+                {
+                    if (door.Kind != "noreturn")
+                        continue;
+
+                    var targetRoom = map.GetRoom(door.TargetRoom ?? "");
+                    if (targetRoom != null)
+                        startingRooms.Add(targetRoom);
+                }
+            }
+
+            var requiredItemsBeforeBail = 2;
+            var forceUnlockedDoors = new List<MapRoomDoor>();
+            foreach (var startingRoom in startingRooms)
+            {
+                var visited = new HashSet<MapRoom>();
+                var queue = new Queue<MapRoom>();
+                var itemSpotsRemaining = 0;
+                var candidateDoors = new List<MapRoomDoor>();
+                queue.Enqueue(startingRoom);
+                while (queue.Count != 0)
+                {
+                    var room = queue.Dequeue();
+                    if (visited.Add(room))
+                    {
+                        // If we find our target number of items we can bail
+                        itemSpotsRemaining += CountItems(room);
+                        if (itemSpotsRemaining >= requiredItemsBeforeBail)
+                            break;
+
+                        foreach (var door in room.Doors ?? [])
+                        {
+                            if (door.Kind == "noreturn")
+                                continue;
+                            if (door.Kind == "blocked")
+                                continue;
+
+                            // Skip locked / puzzle doors
+                            if (door.AllowedLocks?.Length == 0)
+                            {
+                                if ((door.Requires2 ?? []).Length != 0)
+                                {
+                                    continue;
+                                }
+                            }
+                            else
+                            {
+                                candidateDoors.Add(door);
+                                continue;
+                            }
+
+                            var nextRoom = map.GetRoom(door.TargetRoom ?? "");
+                            if (nextRoom == null)
+                                continue;
+
+                            queue.Enqueue(nextRoom);
+                        }
+                    }
+
+                    // Pick a random lock randomizable door to go through and force unlocked
+                    while (queue.Count == 0 && candidateDoors.Count != 0)
+                    {
+                        var randomCandidateIndex = rng.Next(0, candidateDoors.Count);
+                        var randomCandidate = candidateDoors[randomCandidateIndex];
+                        candidateDoors.RemoveAt(randomCandidateIndex);
+
+                        var nextRoom = map.GetRoom(randomCandidate.TargetRoom ?? "");
+                        if (nextRoom == null)
+                            continue;
+
+                        if (visited.Contains(nextRoom))
+                            continue;
+
+                        randomCandidate.AllowedLocks = [];
+                        forceUnlockedDoors.Add(randomCandidate);
+
+                        var otherSide = map.GetOtherSide(randomCandidate);
+                        if (otherSide != null)
+                        {
+                            otherSide.AllowedLocks = [];
+                            forceUnlockedDoors.Add(otherSide);
+                        }
+
+                        queue.Enqueue(nextRoom);
+                    }
+                }
+            }
+
+            static int CountItems(MapRoom room)
+            {
+                return (room.Items ?? []).Count(x => (x.Requires2?.Length ?? 0) == 0 && x.Optional != true);
             }
         }
 
