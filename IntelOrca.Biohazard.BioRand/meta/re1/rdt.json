@@ -4550,11 +4550,13 @@
         },
         {
           "id": 1,
-          "globalId": 80
+          "globalId": 80,
+          "excludeTypes": [ 9 ]
         },
         {
           "id": 2,
-          "globalId": 81
+          "globalId": 81,
+          "excludeTypes": [ 9 ]
         }
       ],
       "cutscenes": [
@@ -6429,6 +6431,7 @@
       ],
       "enemies": [
         {
+          "condition": "!(1:172 && !1:75)",
           "excludeTypes": [ 4 ],
           "maxDifficulty": 2
         }
