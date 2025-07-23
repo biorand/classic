@@ -347,6 +347,9 @@ namespace IntelOrca.Biohazard.BioRand.RE1
         {
             if (RandomItems)
             {
+                // Prevent overwriting item quantity
+                rdt116.Nop(0x1FE16);
+
                 // Prevent placing shotgun
                 for (var i = 2; i < 2 + 8; i++)
                 {
