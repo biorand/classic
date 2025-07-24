@@ -424,10 +424,8 @@ namespace IntelOrca.Biohazard.BioRand
                 get
                 {
                     return Tail.Doors
-                        .Where(x => !x.NoUnlock || x.LockId == null)
-                        .Select(x => (map.GetRoom(x.TargetRoom ?? ""), x))
-                        .Where(x => x.Item1 != null)
-                        .Select(x => (x.Item1!, x.Item2))
+                        .Where(x => (x.Requires2?.Length ?? 0) == 0)
+                        .Select(x => (map.GetRoom(x.TargetRoom ?? "")!, x))
                         .ToImmutableArray();
                 }
             }
@@ -443,7 +441,7 @@ namespace IntelOrca.Biohazard.BioRand
                         var n = q.Dequeue();
                         foreach (var d in n.Doors ?? [])
                         {
-                            if (!d.NoUnlock || d.LockId != null)
+                            if ((d.Requires2?.Length ?? 0) != 0)
                                 continue;
 
                             var conn = map.GetRoom(d.TargetRoom ?? "");
