@@ -499,16 +499,18 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                             {
                                 var oldType = e.Type;
                                 var newType = (byte)ep.Type;
-
-                                e.Type = newType;
-                                if (newType == Re1EnemyIds.Snake ||
-                                    newType == Re1EnemyIds.WebSpinner)
+                                if (oldType != newType)
                                 {
-                                    e.State = 0;
-                                }
-                                else
-                                {
-                                    e.State = (byte)(e.State & 0x80);
+                                    e.Type = newType;
+                                    if (newType == Re1EnemyIds.Snake ||
+                                        newType == Re1EnemyIds.WebSpinner)
+                                    {
+                                        e.State = 0;
+                                    }
+                                    else
+                                    {
+                                        e.State = (byte)(e.State & 0x80);
+                                    }
                                 }
                             }
                         }
