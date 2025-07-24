@@ -161,6 +161,38 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             var map = context.DataManager.GetJson<Map>(BioVersion.Biohazard1, "rdt.json");
             map = map.For(new MapFilter(false, (byte)playerIndex, 0));
 
+            // Copy door entrances from CSV
+            var doorEntrances = context.DataManager.GetCsv<CsvDoorEntrance>(BioVersion.Biohazard1, "doors.csv");
+            foreach (var de in doorEntrances)
+            {
+                var doorIdentity = RdtItemId.Parse(de.Target);
+                foreach (var room in map.GetRoomsContaining(doorIdentity.Rdt))
+                {
+                    foreach (var door in room.Doors ?? [])
+                    {
+                        if (door.Id != doorIdentity.Id)
+                            continue;
+
+                        door.Entrance = new MapRoomDoorEntrance()
+                        {
+                            X = de.X,
+                            Y = de.Y,
+                            Z = de.Z,
+                            D = de.D
+                        };
+                    }
+                }
+            }
+
+            // Remove mansion 2 RDTs for door rando
+            if (context.Configuration.GetValueOrDefault("doors/random", false))
+            {
+                foreach (var room in map.Rooms.Values)
+                {
+                    room.Rdts = room.Rdts.RemoveAll(x => x.Stage >= 5);
+                }
+            }
+
             // Lockpick, remove all sword key and small key requirements
             var enableLockpick = context.Configuration.GetValueOrDefault("inventory/special/lockpick", "Always") == "Always";
             if (enableLockpick)
@@ -217,12 +249,12 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             {
                 var fountainRoom = map.Rooms["305"];
                 var fountainDoor = fountainRoom.Doors.First(x => x.Name == "DOOR TO HELIPORT");
-                fountainDoor.Kind = "locked";
+                fountainDoor.Kind = DoorKinds.Locked;
                 fountainDoor.AllowedLocks = [];
 
                 var helipadRoom = map.Rooms["303"];
                 var helipadDoor = helipadRoom.Doors.First(x => x.Name == "DOOR TO FOUNTAIN");
-                helipadDoor.Kind = "unlock";
+                helipadDoor.Kind = DoorKinds.Unlock;
                 helipadDoor.IgnoreInGraph = true;
                 fountainDoor.AllowedLocks = [];
             }
@@ -251,8 +283,53 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
             // Locks
             var mansion2keyType = (int)Re1ItemIds.HelmetKey;
+            if (context.Configuration.GetValueOrDefault("doors/random", false))
+            {
+                foreach (var room in map.Rooms.Values)
+                {
+                    foreach (var door in room.Doors ?? [])
+                    {
+                        if (door.Kind == DoorKinds.Locked || door.Kind == DoorKinds.Unlock)
+                        {
+                            door.Kind = null;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                var softlockSafeDoors = map.Rooms.Values.SelectMany(x => x.Doors).Where(x => x.HasTag("softlock-safe")).ToArray();
+                foreach (var door in softlockSafeDoors)
+                {
+                    door.AllowedLocks = [];
+
+                    var opposite = map.GetOtherSide(door);
+                    if (opposite != null)
+                        opposite.AllowedLocks = [];
+                }
+            }
+
             if (context.Configuration.GetValueOrDefault("locks/random", false))
             {
+                if (!context.Configuration.GetValueOrDefault("locks/preserve", false))
+                {
+                    // Remove all vanilla locks that can be randomized
+                    foreach (var door in map.Rooms.Values.SelectMany(x => x.Doors ?? []))
+                    {
+                        if (door.AllowedLocks == null)
+                        {
+                            if (door.Kind == DoorKinds.Locked || door.Kind == DoorKinds.Unlock)
+                            {
+                                door.Kind = null;
+                            }
+                            if (door.LockId != null)
+                            {
+                                door.LockId = null;
+                            }
+                        }
+                    }
+                }
+
                 var genericKeys = map.Items.Where(x => x.Value.Discard).Shuffle(rng);
                 if (context.Configuration.GetValueOrDefault("locks/preserve", false))
                 {
@@ -378,7 +455,14 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 }
             }
 
-            if (!config.GetValueOrDefault("doors/random", false))
+            if (config.GetValueOrDefault("doors/random", false))
+            {
+                // All items can go anywhere
+                var items = map.Rooms!.Values.SelectMany(x => x.Items).ToArray();
+                foreach (var item in items)
+                    item.Group = GROUP_ALL;
+            }
+            else
             {
                 // Restrict items, set no return points
                 var keys = map.Items!.Values;
@@ -440,18 +524,18 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 if (config.GetValueOrDefault("progression/caves/segmented", false))
                 {
                     var caveDoor = map.Rooms!["302"].Doors.First(x => x.Name == "LADDER TO CAVES");
-                    caveDoor.Kind = "noreturn";
+                    caveDoor.Kind = DoorKinds.NoReturn;
 
-                    map.GetOtherSide(caveDoor)!.Kind = "blocked";
+                    map.GetOtherSide(caveDoor)!.Kind = DoorKinds.Blocked;
                 }
 
                 if (config.GetValueOrDefault("progression/lab", true) &&
                     config.GetValueOrDefault("progression/lab/segmented", false))
                 {
                     var labDoor = map.Rooms!["305"].Doors.First(x => x.Name == "FOUNTAIN STAIRS");
-                    labDoor.Kind = "noreturn";
+                    labDoor.Kind = DoorKinds.NoReturn;
 
-                    map.GetOtherSide(labDoor)!.Kind = "blocked";
+                    map.GetOtherSide(labDoor)!.Kind = DoorKinds.Blocked;
                 }
             }
 
@@ -538,6 +622,15 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             }
             config[key] = value;
             return value;
+        }
+
+        private class CsvDoorEntrance
+        {
+            public string Target { get; init; } = "";
+            public int X { get; init; }
+            public int Y { get; init; }
+            public int Z { get; init; }
+            public int D { get; init; }
         }
     }
 }

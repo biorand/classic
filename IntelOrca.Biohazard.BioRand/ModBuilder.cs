@@ -4,12 +4,13 @@ using System.Collections.Immutable;
 using System.Linq;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace IntelOrca.Biohazard.BioRand
 {
     public class ModBuilder
     {
-        private readonly Dictionary<RdtItemId, DoorLock?> _doorLock = new();
+        private readonly Dictionary<RdtItemId, DoorTargetLock> _doors = new();
         private readonly Dictionary<int, Item> _itemMap = new();
         private readonly List<EnemyPlacement> _enemyPlacements = new();
         private readonly Dictionary<string, MusicSourceFile> _music = new(StringComparer.OrdinalIgnoreCase);
@@ -35,13 +36,16 @@ namespace IntelOrca.Biohazard.BioRand
             return this;
         }
 
-        public void SetDoorTarget(RdtItemId doorIdentity, RdtItemId target)
+        public void SetDoorTarget(RdtItemId doorIdentity, DoorTarget target)
         {
+            _doors.TryGetValue(doorIdentity, out var info);
+            _doors[doorIdentity] = info with { Target = target };
         }
 
         public void SetDoorLock(RdtItemId doorIdentity, DoorLock? doorLock)
         {
-            _doorLock.Add(doorIdentity, doorLock);
+            _doors.TryGetValue(doorIdentity, out var info);
+            _doors[doorIdentity] = info with { Lock = doorLock };
         }
 
         public Item? GetItem(int globalId)
@@ -59,35 +63,6 @@ namespace IntelOrca.Biohazard.BioRand
             _enemyPlacements.Add(placement);
         }
 
-        public void ApplyToRdt(RandomizedRdt rrdt)
-        {
-            foreach (var doorOpcode in rrdt.Doors)
-            {
-                var doorIdentity = new RdtItemId(rrdt.RdtId, doorOpcode.Id);
-                if (_doorLock.TryGetValue(doorIdentity, out var doorLock))
-                {
-                    if (doorLock == null)
-                    {
-                        doorOpcode.LockId = 0;
-                        doorOpcode.LockType = 0;
-                    }
-                    else
-                    {
-                        doorOpcode.LockId = (byte)doorLock.Value.Id;
-                        doorOpcode.LockType = (byte)doorLock.Value.KeyItemId;
-                    }
-                }
-            }
-            foreach (var itemOpcode in rrdt.Items)
-            {
-                if (_itemMap.TryGetValue(itemOpcode.GlobalId, out var item))
-                {
-                    itemOpcode.Type = item.Type;
-                    itemOpcode.Amount = item.Amount;
-                }
-            }
-        }
-
         public void SetMusic(string path, MusicSourceFile music)
         {
             _music[path] = music;
@@ -96,31 +71,6 @@ namespace IntelOrca.Biohazard.BioRand
         public static ModBuilder FromJson(string json)
         {
             return new ModBuilder();
-        }
-
-        public string ToJson()
-        {
-            var options = new JsonSerializerOptions
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = true,
-                Converters = { new RdtIdConverter() },
-                Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping
-            };
-            return JsonSerializer.Serialize(new
-            {
-                DoorsLocks = _doorLock.ToDictionary(x => x.Key.ToString(), x => new
-                {
-                    x.Value?.Id,
-                    x.Value?.KeyItemId
-                }),
-                EnemyPlacements = _enemyPlacements,
-                Npcs,
-                Items = _itemMap,
-                Characters,
-                Voices,
-                Music = _music
-            }, options);
         }
 
         public ClassicMod Build()
@@ -132,7 +82,7 @@ namespace IntelOrca.Biohazard.BioRand
                 Description = Description,
                 General = General,
                 Inventory = Inventory,
-                Doors = _doorLock.ToImmutableDictionary(),
+                Doors = _doors.ToImmutableDictionary(),
                 Items = _itemMap.ToImmutableDictionary(),
                 EnemyPlacements = EnemyPlacements,
                 Music = Music,
@@ -153,7 +103,7 @@ namespace IntelOrca.Biohazard.BioRand
         public string Description { get; init; } = "";
         public ImmutableDictionary<string, object?> General { get; set; } = ImmutableDictionary.Create<string, object?>();
         public ImmutableArray<RandomInventory> Inventory { get; init; } = [];
-        public ImmutableDictionary<RdtItemId, DoorLock?> Doors { get; init; } = ImmutableDictionary.Create<RdtItemId, DoorLock?>();
+        public ImmutableDictionary<RdtItemId, DoorTargetLock> Doors { get; init; } = ImmutableDictionary.Create<RdtItemId, DoorTargetLock>();
         public ImmutableDictionary<int, Item> Items { get; init; } = ImmutableDictionary.Create<int, Item>();
         public ImmutableArray<EnemyPlacement> EnemyPlacements { get; init; } = [];
         public ImmutableDictionary<string, MusicSourceFile> Music { get; init; } = ImmutableDictionary<string, MusicSourceFile>.Empty;
@@ -264,11 +214,11 @@ namespace IntelOrca.Biohazard.BioRand
                     var requires = string.Join(", ", (d.Requires2 ?? []).Select(GetRequiresString));
                     if (requires == "")
                     {
-                        if (d.Kind == "locked")
+                        if (d.Kind == DoorKinds.Locked)
                         {
                             requires = "(locked)";
                         }
-                        else if (d.Kind == "unlock")
+                        else if (d.Kind == DoorKinds.Unlock)
                         {
                             requires = "(unlock)";
                         }
@@ -338,7 +288,7 @@ namespace IntelOrca.Biohazard.BioRand
                 if (room.Items == null)
                     continue;
 
-                var rdt = room.Rdts?.FirstOrDefault() ?? new RdtId();
+                var rdt = room.Rdts.FirstOrDefault();
                 foreach (var item in room.Items)
                 {
                     if (item.GlobalId == globalId)
@@ -367,5 +317,24 @@ namespace IntelOrca.Biohazard.BioRand
             var d = JsonSerializer.Deserialize(ref reader, typeof(Dictionary<string, object>)) as Dictionary<string, object>;
             return RandomizerConfiguration.FromDictionary(d!);
         }
+    }
+
+    public readonly struct DoorTargetLock
+    {
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public DoorTarget? Target { get; init; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public DoorLock? Lock { get; init; }
+    }
+
+    public readonly struct DoorTarget
+    {
+        public RdtId Room { get; init; }
+        public int X { get; init; }
+        public int Y { get; init; }
+        public int Z { get; init; }
+        public int D { get; init; }
+        [JsonIgnore(Condition = JsonIgnoreCondition.WhenWritingNull)]
+        public int? Cut { get; init; }
     }
 }

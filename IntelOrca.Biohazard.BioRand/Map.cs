@@ -49,7 +49,7 @@ namespace IntelOrca.Biohazard.BioRand
             if (Rooms == null)
                 return [];
             return Rooms.Values
-                .Where(x => (x.Rdts ?? []).Contains(id))
+                .Where(x => x.Rdts.Contains(id))
                 .ToArray();
         }
 
@@ -210,7 +210,7 @@ namespace IntelOrca.Biohazard.BioRand
     {
         public string? Name { get; set; }
         public string? LinkedRoom { get; set; }
-        public RdtId[]? Rdts { get; set; }
+        public ImmutableArray<RdtId> Rdts { get; set; } = [];
         public int[]? Requires { get; set; }
         public MapRoomDoor[]? Doors { get; set; }
         public MapRoomItem[]? Items { get; set; }

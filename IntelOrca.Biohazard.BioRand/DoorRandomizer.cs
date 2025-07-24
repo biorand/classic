@@ -54,6 +54,7 @@ namespace IntelOrca.Biohazard.BioRand
             // Add rest of the rooms
             var remainingRoomCount = numRooms - _includedRooms.Count;
             Distribute(headSegment, _allRooms
+                .Where(x => !x.IsSegmentEnd)
                 .Shuffle(rng)
                 .Take(remainingRoomCount));
 
@@ -91,7 +92,8 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 if (door.IsSegmentEnd)
                 {
-                    door.Door.Kind = "noreturn";
+                    door.Door.Kind = DoorKinds.NoReturn;
+                    door.Target!.Door.Kind = DoorKinds.Blocked;
                 }
 
                 if (door.Target == null)
@@ -108,17 +110,50 @@ namespace IntelOrca.Biohazard.BioRand
                 door.Door.Target = $"{targetRoom}:{targetId}";
             }
 
+            // Remove doors with room constraints
+            foreach (var room in map.Rooms.Values)
+            {
+                foreach (var door in room.Doors ?? [])
+                {
+                    if (door.Requirements.Any(x => x.Kind == MapRequirementKind.Room || x.Kind == MapRequirementKind.Flag))
+                    {
+                        door.Requires2 = [];
+                    }
+                }
+            }
+
             // Remove items with room constraints
             foreach (var room in map.Rooms.Values)
             {
                 foreach (var item in room.Items ?? [])
                 {
-                    if (item.Requirements.Any(x => x.Kind == MapRequirementKind.Room))
+                    if (item.Requirements.Any(x => x.Kind == MapRequirementKind.Room || x.Kind == MapRequirementKind.Flag))
                     {
                         item.Requires2 = [];
                         item.Optional = true;
                     }
                 }
+            }
+
+            // Apply door targets
+            foreach (var door in allDoors)
+            {
+                var sourceRdtId = door.Identifier;
+                var targetRdtId = door.Target?.Identifier ?? sourceRdtId;
+                var entrance = door.Target == null
+                    ? door.Door.Entrance
+                    : door.Target.Door.Entrance;
+                if (entrance == null)
+                    throw new Exception($"No door entrance found");
+
+                context.ModBuilder.SetDoorTarget(sourceRdtId, new DoorTarget()
+                {
+                    Room = targetRdtId.Rdt,
+                    X = entrance.X,
+                    Y = entrance.Y,
+                    Z = entrance.Z,
+                    D = entrance.D
+                });
             }
         }
 
@@ -333,7 +368,7 @@ namespace IntelOrca.Biohazard.BioRand
                             if (door.IsConnected)
                                 continue;
 
-                            if (door.Door.Requirements.Any(x => x.Kind == MapRequirementKind.Room))
+                            if (door.Door.Requirements.Any())
                                 continue;
 
                             yield return door;
@@ -384,7 +419,7 @@ namespace IntelOrca.Biohazard.BioRand
 
             public bool IsConnected => Target != null;
             public bool IsSegmentEnd => Door.HasTag(MapTags.SegmentEnd);
-            public string Identifier => $"{Room.Rdts![0]}:{Door.Id}";
+            public RdtItemId Identifier => new(Room.Rdts![0], (byte)(Door.Id ?? 0));
 
             public void Connect(RoomPieceDoor target)
             {
@@ -395,7 +430,7 @@ namespace IntelOrca.Biohazard.BioRand
                 target.Target = this;
             }
 
-            public override string ToString() => $"{Identifier} -> {Target?.Identifier ?? "(null)"}";
+            public override string ToString() => $"{Identifier} -> {Target?.Identifier.ToString() ?? "(null)"}";
         }
     }
 }

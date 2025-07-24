@@ -808,6 +808,7 @@
         {
           "id": 3,
           "target": "201:3",
+          "allowedLocks": [],
           "noUnlock": true,
           "randomize": false
         }
@@ -1185,6 +1186,7 @@
         {
           "id": 4,
           "target": "203:0",
+          "allowedLocks": [],
           "noUnlock": true,
           "randomize": false
         },
@@ -1193,7 +1195,6 @@
           "id": 3,
           "texture": 3,
           "special": 6,
-          "target": "100",
           "doorRando": true,
           "entrance": {
             "x": 17200,
@@ -1508,8 +1509,7 @@
         {
           "id": 3,
           "target": "115:0",
-          "lockId": 15,
-          "noUnlock": true
+          "lockId": 15
         }
       ],
       "items": [
@@ -1615,6 +1615,7 @@
         {
           "id": 1,
           "target": "207:3",
+          "allowedLocks": [],
           "noUnlock": true
         },
         {
@@ -1646,13 +1647,16 @@
       "doors": [
         {
           "id": 0,
-          "target": "103:0"
+          "target": "103:2"
         },
         {
           "target": "10C/BACK",
+          "kind": "unblock",
           "requires2": [
             "item(38)"
-          ]
+          ],
+          "allowedLocks": [],
+          "randomize": false
         }
       ],
       "enemies": []
@@ -1663,7 +1667,9 @@
       "tags": [ "mansion" ],
       "doors": [
         {
-          "target": "10C"
+          "target": "10C",
+          "kind": "blocked",
+          "randomize": false
         }
       ],
       "items": [
@@ -1961,15 +1967,14 @@
       "doors": [
         {
           "id": 0,
+          "tags": [ "softlock-safe" ],
           "target": "104:2",
           "lockId": 19,
-          "kind": "unlock",
-          "noUnlock": true // To prevent softlock in lock rando
+          "kind": "unlock"
         },
         {
           "id": 1,
-          "target": "21C:2",
-          "noUnlock": true // To prevent softlock in lock rando
+          "target": "21C:2"
         }
       ],
       "enemies": []
@@ -2178,14 +2183,17 @@
         {
           "id": 0,
           "target": "109:3",
+          "kind": "dynamic",
           "lockId": 15,
-          "noUnlock": true
+          "allowedLocks": []
         },
         {
           "id": 1,
           "target": "116:0",
+          "kind": "dynamic",
           "lockId": 16,
-          "noUnlock": true
+          "allowedLocks": [],
+          "randomize": false
         }
       ],
       "enemies": [
@@ -2240,8 +2248,10 @@
         {
           "id": 0,
           "target": "115:1",
+          "kind": "dynamic",
           "lockId": 16,
-          "noUnlock": true
+          "allowedLocks": [],
+          "randomize": false
         }
       ],
       "items": [
@@ -2393,6 +2403,7 @@
           "id": 1,
           "tags": [ "segment-end" ],
           "target": "11B:0",
+          "kind": "unblock",
           "lockId": 23,
           "requires2": [
             "item(41)",
@@ -2400,7 +2411,7 @@
             "item(45)",
             "item(46)"
           ],
-          "noUnlock": true
+          "allowedLocks": []
         }
       ],
       "enemies": [
@@ -2519,14 +2530,14 @@
           "id": 1,
           "target": "214:1",
           "lockId": 17,
-          "kind": "blocked",
+          "kind": "locked",
           "player": 0
         },
         {
           "id": 1,
           "target": "214:5",
           "lockId": 17,
-          "kind": "blocked",
+          "kind": "locked",
           "player": 1
         },
         {
@@ -2541,6 +2552,7 @@
         {
           "id": 3,
           "target": "101:3",
+          "allowedLocks": [],
           "noUnlock": true
         }
       ],
@@ -2579,6 +2591,7 @@
         {
           "id": 0,
           "target": "106:4",
+          "allowedLocks": [],
           "randomize": false
         },
         {
@@ -2794,6 +2807,7 @@
         {
           "id": 3,
           "target": "10B:1",
+          "allowedLocks": [],
           "noUnlock": true
         },
         {
@@ -2990,7 +3004,7 @@
       "doors": [
         {
           "id": 0,
-          "target": "207:3"
+          "target": "207:2"
         },
         {
           "id": 5,
@@ -3042,9 +3056,9 @@
           "lockId": 25
         },
         {
-          "tags": [ "segment-end" ],
           "target": "20C/GRAVE",
           "kind": "oneway",
+          "allowedLocks": [],
           "randomize": false
         }
       ],
@@ -3082,8 +3096,10 @@
       "doors": [
         {
           "id": 1,
+          "tags": [ "segment-end" ],
           "target": "21A:0",
-          "noUnlock": true
+          "kind": "unblock",
+          "allowedLocks": []
         }
       ]
     },
@@ -3733,12 +3749,13 @@
         {
           "id": 0,
           "target": "20C/GRAVE:1",
+          "allowedLocks": [],
           "noUnlock": true
         },
         {
           "id": 1,
-          "target": "21B:0",
-          "noUnlock": true // To prevent softlock in lock rando
+          "tags": [ "softlock-safe" ],
+          "target": "21B:0"
         }
       ],
       "items": [
@@ -3764,15 +3781,14 @@
       "doors": [
         {
           "id": 0,
-          "target": "21A:1",
-          "noUnlock": true // To prevent softlock in lock rando
+          "target": "21A:1"
         },
         {
           "id": 1,
+          "tags": [ "softlock-safe" ],
           "target": "21C:1",
           "lockId": 27,
-          "kind": "unlock",
-          "noUnlock": true // To prevent softlock in lock rando
+          "kind": "unlock"
         }
       ],
       "items": [
@@ -3811,14 +3827,13 @@
         {
           "id": 1,
           "target": "21B:1",
-          "lockId": 27,
           "kind": "locked",
-          "noUnlock": true // To prevent softlock in lock rando
+          "lockId": 27
         },
         {
           "id": 2,
-          "target": "110:1",
-          "noUnlock": true // To prevent softlock in lock rando
+          "tags": [ "softlock-safe" ],
+          "target": "110:1"
         }
       ],
       "items": [
@@ -3859,7 +3874,7 @@
           "id": 1,
           "target": "302:0",
           "kind": "blocked",
-          "noUnlock": true,
+          "allowedLocks": [],
           "randomize": false
         },
         {
@@ -3949,18 +3964,30 @@
           "target": "300:0"
         },
         {
-          "id": 1,
-          "target": "302:1",
+          "target": "301/END",
           "kind": "unblock",
           "requires2": [
             "item(29)"
           ],
-          "noUnlock": true
+          "allowedLocks": []
         }
       ],
       "enemies": [
         {
           "excludeTypes": [ 3, 4, 7, 10 ]
+        }
+      ]
+    },
+    "301/END": {
+      "name": "COURTYARD RESERVOIR",
+      "rdts": [ "301" ],
+      "tags": [ "courtyard" ],
+      "doors": [
+        {
+          "id": 1,
+          "target": "302:1",
+          "allowedLocks": [],
+          "noUnlock": true
         }
       ]
     },
@@ -3977,12 +4004,13 @@
             "flag(COURTYARD_LIFT_POWER)"
           ],
           "kind": "unblock",
+          "allowedLocks": [],
           "noUnlock": true
         },
         {
           "id": 1,
-          "target": "301:1",
-          "kind": "blocked",
+          "target": "301/END:1",
+          "allowedLocks": [],
           "noUnlock": true
         },
         {
@@ -3997,6 +4025,7 @@
           "requires2": [
             "flag(COURTYARD_LIFT_POWER)"
           ],
+          "allowedLocks": [],
           "noUnlock": true
         }
       ],
@@ -4021,6 +4050,7 @@
           "name": "LIFT TO LAB",
           "id": 0,
           "target": "50D:1",
+          "allowedLocks": [],
           "noUnlock": true,
           "randomize": false
         },
@@ -4195,19 +4225,19 @@
         {
           "name": "FOUNTAIN STAIRS",
           "id": 1,
-          "tags": [ "segment-end" ],
           "target": "310:0",
           "kind": "unblock",
           "requires2": [
             "item(63)",
             "item(64)"
           ],
-          "noUnlock": true,
+          "allowedLocks": [],
           "randomize": false
         },
         {
           "id": 2,
           "target": "30F:0",
+          "allowedLocks": [],
           "noUnlock": true
         }
       ],
@@ -4284,6 +4314,7 @@
         {
           "id": 0,
           "target": "302:3",
+          "allowedLocks": [],
           "noUnlock": true
         },
         {
@@ -4296,6 +4327,7 @@
           "requires2": [
             "item(30)"
           ],
+          "allowedLocks": [],
           "randomize": false
         }
       ],
@@ -4351,6 +4383,7 @@
         {
           "target": "307",
           "kind": "blocked",
+          "allowedLocks": [],
           "randomize": false
         },
         {
@@ -4377,13 +4410,11 @@
         },
         {
           "id": 1,
-          "target": "309:0",
-          "noUnlock": true
+          "target": "309:0"
         },
         {
           "id": 2,
-          "target": "309:1",
-          "noUnlock": true
+          "target": "309:1"
         }
       ],
       "enemies": [
@@ -4429,13 +4460,11 @@
       "doors": [
         {
           "id": 0,
-          "target": "308:1",
-          "noUnlock": true
+          "target": "308:1"
         },
         {
           "id": 1,
-          "target": "308:2",
-          "noUnlock": true
+          "target": "308:2"
         },
         {
           "id": 2,
@@ -4635,19 +4664,21 @@
       "doors": [
         {
           "id": 0,
-          "target": "307/BACK",
+          "target": "307/BACK:2",
+          "kind": "dynamic",
           "lockId": 39,
+          "allowedLocks": [],
           "noUnlock": true,
           "player": 0
         },
         {
           "id": 0,
-          "target": "307/BACK",
+          "target": "307/BACK:2",
           "player": 1
         },
         {
           "id": 1,
-          "target": "30C",
+          "target": "30C:0",
           "kind": "unblock"
         }
       ],
@@ -4735,7 +4766,9 @@
         {
           "id": 2,
           "target": "30F:2",
+          "kind": "dynamic",
           "lockId": 47,
+          "allowedLocks": [],
           "noUnlock": true,
           "player": 0
         },
@@ -4803,6 +4836,7 @@
         {
           "id": 0,
           "target": "305:2",
+          "allowedLocks": [],
           "noUnlock": true
         },
         {
@@ -4810,7 +4844,9 @@
           "kind": "unblock",
           "requires2": [
             "item(30)"
-          ]
+          ],
+          "allowedLocks": [],
+          "randomize": false
         },
         {
           "id": 2,
@@ -4856,7 +4892,8 @@
       "doors": [
         {
           "target": "30F",
-          "kind": "blocked"
+          "kind": "blocked",
+          "randomize": false
         },
         {
           "id": 1,
@@ -4872,12 +4909,15 @@
         {
           "id": 0,
           "target": "305:1",
+          "allowedLocks": [],
           "noUnlock": true,
           "randomize": false
         },
         {
           "id": 1,
+          "tags": [ "segment-end" ],
           "target": "500:1",
+          "allowedLocks": [],
           "noUnlock": true
         }
       ]
@@ -5025,7 +5065,7 @@
       "doors": [
         {
           "id": 0,
-          "target": "400:0"
+          "target": "400:2"
         }
       ],
       "items": [
@@ -5229,6 +5269,7 @@
           "id": 2,
           "target": "40D:0",
           "kind": "unblock",
+          "allowedLocks": [],
           "noUnlock": true
         }
       ],
@@ -5336,6 +5377,7 @@
           "id": 1,
           "target": "409:0",
           "kind": "unblock",
+          "allowedLocks": [],
           "noUnlock": true
         },
         {
@@ -5400,8 +5442,7 @@
       "doors": [
         {
           "id": 0,
-          "target": "408:1",
-          "noUnlock": true
+          "target": "408:1"
         }
       ],
       "items": [
@@ -5487,12 +5528,12 @@
         {
           "id": 2,
           "target": "40C",
-          "kind": "oneway",
+          "kind": "unblock",
           "requires2": [
             "item(62)"
           ],
-          "noUnlock": true,
-          "doorRando": false
+          "allowedLocks": [],
+          "noUnlock": true
         }
       ],
       "items": [
@@ -5647,11 +5688,13 @@
         {
           "id": 0,
           "target": "406:2",
+          "allowedLocks": [],
           "noUnlock": true
         },
         {
           "target": "40D/EXIT",
           "kind": "unblock",
+          "allowedLocks": [],
           "randomize": false
         }
       ],
@@ -5669,6 +5712,7 @@
         {
           "target": "40D",
           "kind": "blocked",
+          "allowedLocks": [],
           "randomize": false
         },
         {
@@ -5715,6 +5759,7 @@
           "requires2": [
             "room(411)"
           ],
+          "allowedLocks": [],
           "noUnlock": true
         },
         {
@@ -5780,8 +5825,7 @@
         {
           "id": 0,
           "target": "40E:2",
-          "lockId": 36,
-          "noUnlock": true
+          "lockId": 36
         }
       ],
       "items": [
@@ -5868,11 +5912,12 @@
         {
           "id": 1,
           "target": "310:1",
-          "noUnlock": true
+          "allowedLocks": []
         },
         {
           "id": 2,
-          "target": "502",
+          "target": "502:0",
+          "allowedLocks": [],
           "noUnlock": true
         }
       ],
@@ -5905,6 +5950,7 @@
           "requires2": [
             "item(39)"
           ],
+          "allowedLocks": [],
           "noUnlock": true,
           "randomize": false
         }
@@ -6071,12 +6117,14 @@
         {
           "id": 0,
           "target": "500:2",
+          "allowedLocks": [],
           "noUnlock": true,
           "player": 0
         },
         {
           "id": 0,
           "target": "500:2",
+          "allowedLocks": [],
           "noUnlock": true,
           "player": 1,
           "doorRando": false
@@ -6085,6 +6133,7 @@
           "id": 0,
           "target": "500:2",
           "kind": "unblock",
+          "allowedLocks": [],
           "noUnlock": true,
           "player": 1,
           "doorRando": true
@@ -6174,11 +6223,13 @@
           "requires2": [
             "flag(506_COMPUTER_MOLE)"
           ],
+          "allowedLocks": [],
           "noUnlock": true
         },
         {
           "id": 2,
           "target": "505:0",
+          "allowedLocks": [],
           "noUnlock": true
         }
       ],
@@ -6221,8 +6272,7 @@
       "doors": [
         {
           "id": 0,
-          "target": "503:1",
-          "noUnlock": true
+          "target": "503:1"
         }
       ],
       "items": [
@@ -6259,6 +6309,7 @@
         {
           "id": 0,
           "target": "503:2",
+          "allowedLocks": [],
           "noUnlock": true
         },
         {
@@ -6341,7 +6392,9 @@
       "doors": [
         {
           "target": "507/STORE",
-          "kind": "oneway"
+          "kind": "oneway",
+          "allowedLocks": [],
+          "randomize": false
         },
         {
           "id": 1,
@@ -6375,9 +6428,9 @@
       "doors": [
         {
           "id": 0,
-          "target": "505",
-          "lockId": 45,
+          "target": "505:2",
           "kind": "unlock",
+          "lockId": 45,
           "allowedLocks": []
         }
       ],
@@ -6420,6 +6473,7 @@
           "requires2": [
             "flag(506_COMPUTER_JOHNADA)"
           ],
+          "allowedLocks": [],
           "noUnlock": true
         },
         {
@@ -6434,6 +6488,7 @@
             "flag(MO_DISC_509)",
             "flag(MO_DISC_510)"
           ],
+          "allowedLocks": [],
           "noUnlock": true
         }
       ],
@@ -6488,8 +6543,7 @@
       "doors": [
         {
           "id": 0,
-          "target": "508:1",
-          "noUnlock": true
+          "target": "508:1"
         }
       ],
       "items": [
@@ -6573,8 +6627,7 @@
       "doors": [
         {
           "id": 0,
-          "target": "508:3",
-          "noUnlock": true
+          "target": "508:3"
         },
         {
           "id": 1,
@@ -6652,6 +6705,7 @@
             "room(50F)",
             "room(511)"
           ],
+          "allowedLocks": [],
           "noUnlock": true,
           "randomize": false
         }
@@ -6711,12 +6765,14 @@
         {
           "id": 0,
           "target": "501:1",
+          "allowedLocks": [],
           "noUnlock": true,
           "randomize": false
         },
         {
           "id": 1,
           "target": "303:0",
+          "allowedLocks": [],
           "noUnlock": true,
           "randomize": false
         }
@@ -6870,8 +6926,7 @@
       "doors": [
         {
           "id": 0,
-          "target": "50B:1",
-          "noUnlock": true
+          "target": "50B:1"
         }
       ],
       "cutscenes": [
@@ -6919,6 +6974,7 @@
         {
           "id": 0,
           "target": "514:0",
+          "allowedLocks": [],
           "noUnlock": true,
           "randomize": false
         }
@@ -7003,12 +7059,14 @@
         {
           "id": 0,
           "target": "513:0",
+          "allowedLocks": [],
           "noUnlock": true,
           "randomize": false
         },
         {
           "id": 1,
           "target": "515:1",
+          "allowedLocks": [],
           "noUnlock": true,
           "randomize": false
         }
@@ -7075,12 +7133,14 @@
         {
           "id": 0,
           "target": "50C:4",
+          "allowedLocks": [],
           "noUnlock": true,
           "randomize": false
         },
         {
           "id": 1,
           "target": "514:1",
+          "allowedLocks": [],
           "noUnlock": true,
           "randomize": false
         }

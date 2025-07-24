@@ -716,13 +716,13 @@ namespace IntelOrca.Biohazard.BioRand
             var generatedVariation = new GeneratedVariation(context, variation, modBuilder);
             var inventoryRandomizer = new InventoryRandomizer();
             inventoryRandomizer.Randomize(generatedVariation);
-            var lockRandomizer = new LockRandomizer();
-            lockRandomizer.Randomise(generatedVariation);
             if (context.Configuration.GetValueOrDefault("doors/random", false))
             {
                 var doorRandomizer = new DoorRandomizer();
                 doorRandomizer.Randomize(generatedVariation);
             }
+            var lockRandomizer = new LockRandomizer();
+            lockRandomizer.Randomise(generatedVariation);
             if (context.Configuration.GetValueOrDefault("items/random", false))
             {
                 var keyRandomizer = new KeyRandomizer();

@@ -98,6 +98,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 {
                     DecompileGameData(gameData, Player, "scripts/");
                 }
+                DumpDoors(gameData);
                 ApplyRdtPatches(gameData);
                 if (CutscenesDisabled)
                 {
@@ -117,6 +118,48 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 {
                     DecompileGameData(gameData, Player, "scripts_modded/");
                 }
+            }
+
+            private void DumpDoors(GameData gameData)
+            {
+#if false
+                var map = _dataManager.GetJson<Map>(BioVersion.Biohazard1, "rdt.json");
+                var data = new List<object[]>();
+                for (var stage = 0; stage < 5; stage++)
+                {
+                    for (var room = 0; room < 64; room++)
+                    {
+                        var rdt = gameData.GetRdt(new RdtId(stage, room));
+                        if (rdt == null)
+                            continue;
+
+                        var mapRoom = map.GetRoomsContaining(rdt.RdtId).FirstOrDefault();
+                        foreach (var door in rdt.Doors)
+                        {
+                            var mapDoor = mapRoom.Doors.FirstOrDefault(x => x.Id == door.Id);
+                            if (mapDoor == null)
+                                continue;
+
+                            var doorIdentity = new RdtItemId(rdt.RdtId, door.Id);
+                            var target = door.Target;
+                            if (target.Stage == 255)
+                                target = new RdtId(rdt.RdtId.Stage, target.Room);
+                            var realTarget = new RdtItemId(target, (byte)(mapDoor?.TargetId ?? 255));
+                            if (realTarget.Id == 255)
+                            {
+                            }
+                            if (realTarget.ToString() == "40C:1")
+                            {
+                            }
+                            var p = new object[] { realTarget, door.NextX, door.NextY, door.NextZ, door.NextD };
+                            data.Add(p);
+                        }
+                    }
+                }
+                data = data.OrderBy(x => x[0]).ToList();
+                foreach (var d in data)
+                    Console.WriteLine(string.Join(",", d));
+#endif
             }
 
             private void DecompileGameData(GameData gameData, int player, string prefix)
@@ -393,17 +436,25 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     foreach (var doorOpcode in rrdt.Doors)
                     {
                         var doorIdentity = new RdtItemId(rrdt.RdtId, doorOpcode.Id);
-                        if (_mod.Doors.TryGetValue(doorIdentity, out var doorLock))
+                        if (_mod.Doors.TryGetValue(doorIdentity, out var doorInfo))
                         {
-                            if (doorLock == null)
+                            if (doorInfo.Target is DoorTarget target)
                             {
-                                doorOpcode.LockId = 0;
-                                doorOpcode.LockType = 0;
+                                doorOpcode.Target = target.Room;
+                                doorOpcode.NextX = (short)target.X;
+                                doorOpcode.NextY = (short)target.Y;
+                                doorOpcode.NextZ = (short)target.Z;
+                                doorOpcode.NextD = (short)target.D;
+                            }
+                            if (doorInfo.Lock is DoorLock doorLock)
+                            {
+                                doorOpcode.LockId = (byte)doorLock.Id;
+                                doorOpcode.LockType = (byte)doorLock.Type;
                             }
                             else
                             {
-                                doorOpcode.LockId = (byte)doorLock.Value.Id;
-                                doorOpcode.LockType = (byte)doorLock.Value.KeyItemId;
+                                doorOpcode.LockId = 0;
+                                doorOpcode.LockType = 0;
                             }
                         }
                     }
