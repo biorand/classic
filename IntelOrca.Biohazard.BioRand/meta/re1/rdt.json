@@ -4410,11 +4410,13 @@
         },
         {
           "id": 1,
-          "target": "309:0"
+          "target": "309:0",
+          "allowedLocks": []
         },
         {
           "id": 2,
-          "target": "309:1"
+          "target": "309:1",
+          "allowedLocks": []
         }
       ],
       "enemies": [
@@ -4460,11 +4462,13 @@
       "doors": [
         {
           "id": 0,
-          "target": "308:1"
+          "target": "308:1",
+          "allowedLocks": []
         },
         {
           "id": 1,
-          "target": "308:2"
+          "target": "308:2",
+          "allowedLocks": []
         },
         {
           "id": 2,
