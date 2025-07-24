@@ -250,7 +250,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             }
 
             // Locks
-            var mansion2keyType = 54;
+            var mansion2keyType = (int)Re1ItemIds.HelmetKey;
             if (context.Configuration.GetValueOrDefault("locks/random", false))
             {
                 var genericKeys = map.Items.Where(x => x.Value.Discard).Shuffle(rng);
@@ -271,9 +271,11 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
                     if (config.GetValueOrDefault("progression/mansion/split", false))
                     {
-                        var mansion2key = genericKeys.FirstOrDefault();
+                        var mansion2key = enableLockpick
+                            ? genericKeys.FirstOrDefault(x => x.Key != Re1ItemIds.SwordKey)
+                            : genericKeys.FirstOrDefault();
                         mansion2keyType = mansion2key.Key;
-                        genericKeys = genericKeys.Skip(1).ToArray();
+                        genericKeys = genericKeys.Except([mansion2key]).ToArray();
 
                         var mansion2rooms = map.Rooms.Values
                             .Where(x => x.HasTag("mansion2able"))
