@@ -405,7 +405,7 @@ namespace IntelOrca.Biohazard.BioRand
             public bool IsBegin => Rooms.Any(x => x.HasTag(MapTags.Begin));
             public bool IsEnd => Rooms.Any(x => x.HasTag(MapTags.End));
             public bool IsSegmentEnd => Doors.Any(y => y.IsSegmentEnd);
-            public bool IsBoxRoom => Rooms.Any(x => x.HasTag(MapTags.SegmentEnd));
+            public bool IsBoxRoom => Rooms.Any(x => x.HasTag(MapTags.Box));
             public string Name => Rooms[0].Name ?? "???";
             public override string ToString() => Name;
         }

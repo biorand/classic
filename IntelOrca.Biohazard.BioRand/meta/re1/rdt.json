@@ -809,8 +809,7 @@
           "id": 3,
           "target": "201:3",
           "allowedLocks": [],
-          "noUnlock": true,
-          "randomize": false
+          "noUnlock": true
         }
       ],
       "enemies": [
@@ -5801,6 +5800,7 @@
         },
         {
           "id": 1,
+          "tags": [ "connect-out" ],
           "target": "40E:0"
         }
       ],
@@ -6516,11 +6516,24 @@
       "rdts": [ "507" ],
       "doors": [
         {
+          "target": "507/TABLE",
+          "kind": "blocked",
+          "allowedLocks": [],
+          "randomize": false
+        },
+        {
           "id": 0,
           "target": "505:2",
           "kind": "unlock",
           "lockId": 45,
-          "allowedLocks": []
+          "allowedLocks": [],
+          "doorRando": false
+        },
+        {
+          "id": 0,
+          "tags": [ "connect-out" ],
+          "target": "505:2",
+          "doorRando": true
         }
       ],
       "items": [
