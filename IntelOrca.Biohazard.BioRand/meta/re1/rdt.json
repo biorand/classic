@@ -6012,6 +6012,7 @@
               "character": 0
             },
             {
+              "globalId": "501-rebecca",
               "name": "rebecca",
               "character": 35,
               "offsets": [ "0x1BDD2" ]
@@ -6034,6 +6035,7 @@
               "offsets": [ "0x1BDB0" ]
             },
             {
+              "globalId": "501-rebecca",
               "name": "rebecca",
               "character": 35,
               "offsets": [ "0x1BDD2" ]
@@ -6082,6 +6084,7 @@
               "character": 0
             },
             {
+              "globalId": "501-barry",
               "name": "barry",
               "character": 34,
               "offsets": [ "0x1BDD2" ]
@@ -6104,6 +6107,7 @@
               "offsets": [ "0x1BDB0" ]
             },
             {
+              "globalId": "501-barry",
               "name": "barry",
               "character": 34,
               "offsets": [ "0x1BDD2" ]
