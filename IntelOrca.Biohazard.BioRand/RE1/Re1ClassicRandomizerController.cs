@@ -227,59 +227,62 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             const int GROUP_BATTERY = 256;
             const int GROUP_LAB_TYRANT = 512;
 
-            // Enable / disable guardhouse rooms
-            if (!config.GetValueOrDefault("progression/guardhouse", false))
+            if (!randomDoors)
             {
-                if (config.GetValueOrDefault("progression/mansion/split", false))
+                // Enable / disable guardhouse rooms
+                if (!config.GetValueOrDefault("progression/guardhouse", false))
                 {
-                    throw new RandomizerUserException("Split mansion requires guardhouse to be enabled.");
+                    if (config.GetValueOrDefault("progression/mansion/split", false))
+                    {
+                        throw new RandomizerUserException("Split mansion requires guardhouse to be enabled.");
+                    }
+
+                    var guardhouseRooms = map.Rooms.Where(x => x.Value.HasTag("guardhouse")).ToArray();
+                    foreach (var r in guardhouseRooms)
+                    {
+                        map.Rooms.Remove(r.Key);
+                    }
+                    var courtyardRoom = map.Rooms["302"];
+                    var gate = courtyardRoom.Doors.First(x => x.Name == "GATE TO GUARDHOUSE");
+                    gate.Target = null;
                 }
 
-                var guardhouseRooms = map.Rooms.Where(x => x.Value.HasTag("guardhouse")).ToArray();
-                foreach (var r in guardhouseRooms)
+                // Enable / disable lab rooms
+                if (config.GetValueOrDefault("progression/lab", false))
                 {
-                    map.Rooms.Remove(r.Key);
+                    var fountainRoom = map.Rooms["305"];
+                    var fountainDoor = fountainRoom.Doors.First(x => x.Name == "DOOR TO HELIPORT");
+                    fountainDoor.Kind = DoorKinds.Locked;
+                    fountainDoor.AllowedLocks = [];
+
+                    var helipadRoom = map.Rooms["303"];
+                    var helipadDoor = helipadRoom.Doors.First(x => x.Name == "DOOR TO FOUNTAIN");
+                    helipadDoor.Kind = DoorKinds.Unlock;
+                    helipadDoor.IgnoreInGraph = true;
+                    fountainDoor.AllowedLocks = [];
                 }
-                var courtyardRoom = map.Rooms["302"];
-                var gate = courtyardRoom.Doors.First(x => x.Name == "GATE TO GUARDHOUSE");
-                gate.Target = null;
-            }
-
-            // Enable / disable lab rooms
-            if (config.GetValueOrDefault("progression/lab", false))
-            {
-                var fountainRoom = map.Rooms["305"];
-                var fountainDoor = fountainRoom.Doors.First(x => x.Name == "DOOR TO HELIPORT");
-                fountainDoor.Kind = DoorKinds.Locked;
-                fountainDoor.AllowedLocks = [];
-
-                var helipadRoom = map.Rooms["303"];
-                var helipadDoor = helipadRoom.Doors.First(x => x.Name == "DOOR TO FOUNTAIN");
-                helipadDoor.Kind = DoorKinds.Unlock;
-                helipadDoor.IgnoreInGraph = true;
-                fountainDoor.AllowedLocks = [];
-            }
-            else
-            {
-                var labRooms = map.Rooms.Where(x => x.Value.HasTag("lab")).ToArray();
-                foreach (var r in labRooms)
+                else
                 {
-                    map.Rooms.Remove(r.Key);
+                    var labRooms = map.Rooms.Where(x => x.Value.HasTag("lab")).ToArray();
+                    foreach (var r in labRooms)
+                    {
+                        map.Rooms.Remove(r.Key);
+                    }
+                    var fountainRoom = map.Rooms["305"];
+                    var fountainDoor = fountainRoom.Doors.First(x => x.Name == "FOUNTAIN STAIRS");
+                    fountainDoor.Target = null;
+                    fountainDoor.Requires2 = [];
+
+                    var fountainToHeliportDoor = fountainRoom.Doors.First(x => x.Name == "DOOR TO HELIPORT");
+                    fountainToHeliportDoor.Kind = null;
+
+                    var helipadRoom = map.Rooms["303"];
+                    var helipadToFountainDoor = helipadRoom.Doors.First(x => x.Name == "DOOR TO FOUNTAIN");
+                    helipadToFountainDoor.Kind = null;
+
+                    var liftToLabDoor = helipadRoom.Doors.First(x => x.Name == "LIFT TO LAB");
+                    liftToLabDoor.Target = null;
                 }
-                var fountainRoom = map.Rooms["305"];
-                var fountainDoor = fountainRoom.Doors.First(x => x.Name == "FOUNTAIN STAIRS");
-                fountainDoor.Target = null;
-                fountainDoor.Requires2 = [];
-
-                var fountainToHeliportDoor = fountainRoom.Doors.First(x => x.Name == "DOOR TO HELIPORT");
-                fountainToHeliportDoor.Kind = null;
-
-                var helipadRoom = map.Rooms["303"];
-                var helipadToFountainDoor = helipadRoom.Doors.First(x => x.Name == "DOOR TO FOUNTAIN");
-                helipadToFountainDoor.Kind = null;
-
-                var liftToLabDoor = helipadRoom.Doors.First(x => x.Name == "LIFT TO LAB");
-                liftToLabDoor.Target = null;
             }
 
             // Locks

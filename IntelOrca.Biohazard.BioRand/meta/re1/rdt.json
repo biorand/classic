@@ -1666,6 +1666,7 @@
         {
           "target": "10C",
           "kind": "blocked",
+          "allowedLocks": [],
           "randomize": false
         }
       ],
@@ -2505,12 +2506,14 @@
         {
           "id": 0,
           "target": "213:1",
-          "noUnlock": true
+          "noUnlock": true,
+          "doorRando": false
         },
         {
           "id": 1,
           "target": "21C:0",
-          "noUnlock": true
+          "noUnlock": true,
+          "doorRando": false
         }
       ]
     },
@@ -3483,26 +3486,54 @@
         {
           "id": 0,
           "target": "213:3",
-          "player": 0
+          "player": 0,
+          "entrance": {
+            "x": 22800,
+            "y": 0,
+            "z": 6300,
+            "d": 2048,
+            "cut": 0
+          }
         },
         {
           "id": 1,
           "target": "213:3",
-          "player": 1
+          "player": 1,
+          "entrance": {
+            "x": 22800,
+            "y": 0,
+            "z": 6300,
+            "d": 2048,
+            "cut": 0
+          }
         },
         {
           "id": 1,
           "target": "201:1",
           "lockId": 17,
           "kind": "unlock",
-          "player": 0
+          "player": 0,
+          "entrance": {
+            "x": 11200,
+            "y": 0,
+            "z": 28000,
+            "d": 3072,
+            "cut": 4
+          }
         },
         {
           "id": 5,
           "target": "201:1",
           "lockId": 17,
           "kind": "unlock",
-          "player": 1
+          "player": 1,
+          "entrance": {
+            "x": 11200,
+            "y": 0,
+            "z": 28000,
+            "d": 3072,
+            "cut": 4
+          }
         }
       ],
       "items": [
@@ -3879,7 +3910,15 @@
           "target": "302:0",
           "kind": "blocked",
           "allowedLocks": [],
-          "randomize": false
+          "noUnlock": true,
+          "doorRando": false
+        },
+        {
+          "id": 1,
+          "target": "302:0",
+          "allowedLocks": [],
+          "noUnlock": true,
+          "doorRando": true
         },
         {
           "id": 2,
@@ -3973,7 +4012,8 @@
           "requires2": [
             "item(29)"
           ],
-          "allowedLocks": []
+          "allowedLocks": [],
+          "randomize": false
         }
       ],
       "enemies": [
@@ -3988,7 +4028,14 @@
       "tags": [ "courtyard" ],
       "doors": [
         {
+          "target": "301",
+          "kind": "blocked",
+          "allowedLocks": [],
+          "randomize": false
+        },
+        {
           "id": 1,
+          "tags": [ "connect-out" ],
           "target": "302:1",
           "allowedLocks": [],
           "noUnlock": true
@@ -4059,20 +4106,33 @@
         },
         {
           "name": "DOOR TO FOUNTAIN",
-          "create": true,
           "id": 8,
           "target": "305:0",
           "kind": "locked",
           "lockId": 2,
-          "texture": 3,
-          "special": 6,
           "entrance": {
             "x": 28350,
             "y": 0,
             "z": 5700,
             "d": 0,
             "cut": 4
-          }
+          },
+          "doorRando": false
+        },
+        {
+          "name": "DOOR TO FOUNTAIN",
+          "id": 8,
+          "target": "305:0",
+          "kind": "blocked",
+          "lockId": 2,
+          "entrance": {
+            "x": 28350,
+            "y": 0,
+            "z": 5700,
+            "d": 0,
+            "cut": 4
+          },
+          "doorRando": true
         }
       ],
       "flags": [
@@ -5399,8 +5459,13 @@
         {
           "id": 3,
           "target": "40C:0",
-          "kind": "locked",
-          "noUnlock": true
+          "kind": "blocked",
+          "doorRando": false
+        },
+        {
+          "id": 3,
+          "target": "40C:0",
+          "doorRando": true
         }
       ],
       "items": [
@@ -5611,8 +5676,20 @@
         {
           "id": 0,
           "target": "408:3",
-          "kind": "unlock",
-          "noUnlock": true
+          "kind": "unblock",
+          "allowedLocks": [],
+          "noUnlock": true,
+          "doorRando": false
+        },
+        {
+          "id": 0,
+          "tags": [ "segment-end" ],
+          "target": "408:3",
+          "doorRando": true
+        },
+        {
+          "id": 1,
+          "target": "40A:2"
         }
       ],
       "items": [

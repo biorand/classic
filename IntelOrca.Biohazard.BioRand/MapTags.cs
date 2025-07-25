@@ -9,5 +9,11 @@
         public const string SegmentEnd = "segment-end";
         public const string Begin = "begin";
         public const string End = "end";
+
+        /// <summary>
+        /// Door must be connected out from this room. i.e. this door
+        /// can't be used to first access this room.
+        /// </summary>
+        public const string ConnectOut = "connect-out";
     }
 }

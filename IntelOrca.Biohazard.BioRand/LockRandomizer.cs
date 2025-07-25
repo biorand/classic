@@ -119,6 +119,9 @@ namespace IntelOrca.Biohazard.BioRand
 
             // Choose one and make sure all doors in route are never locked
             var chosen = final.FirstOrDefault();
+            if (chosen == null)
+                return;
+
             foreach (var door in chosen.Doors)
             {
                 door.AllowedLocks = [];
@@ -360,18 +363,15 @@ namespace IntelOrca.Biohazard.BioRand
                 {
                     doorLock = new DoorLock(doorLockId, 254);
                 }
-                else if (door.Kind == DoorKinds.Unblock || door.Kind == DoorKinds.Dynamic)
-                {
-                    if (doorLockId != 0)
-                    {
-                        doorLock = new DoorLock(doorLockId, 0);
-                    }
-                }
-                else
+                else if (doorLockId != 0)
                 {
                     if (door.LockKey is int keyItemId)
                     {
                         doorLock = new DoorLock(doorLockId, keyItemId);
+                    }
+                    else
+                    {
+                        doorLock = new DoorLock(doorLockId, 0);
                     }
                 }
 
@@ -428,7 +428,9 @@ namespace IntelOrca.Biohazard.BioRand
                 {
                     return Tail.Doors
                         .Where(x => (x.Requires2?.Length ?? 0) == 0)
-                        .Select(x => (map.GetRoom(x.TargetRoom ?? "")!, x))
+                        .Select(x => (map.GetRoom(x.TargetRoom ?? ""), x))
+                        .Where(x => x.Item1 != null)
+                        .Select(x => (x.Item1!, x.Item2))
                         .ToImmutableArray();
                 }
             }

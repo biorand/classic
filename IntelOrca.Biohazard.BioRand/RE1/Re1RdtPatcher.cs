@@ -340,6 +340,43 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             rdt409.Nop(0x168AA, 0x16918);
         }
 
+        [Patch]
+        public void FixDoorPlant42(
+            RandomizedRdt rdt408,
+            RandomizedRdt rdt40A,
+            RandomizedRdt rdt40C)
+        {
+            // Keep bookcase open
+            rdt40A.Nop(0x393BC);
+
+            // Change aot_set to door_aot_set
+            var door = (DoorAotSeOpcode)rdt40C.ConvertToDoor(1, 5, null, null);
+            door.Special = 0;
+            door.NextStage = 0xFF;
+            door.NextRoom = 0x0A;
+            door.NextX = 14300;
+            door.NextY = 0;
+            door.NextZ = 5200;
+            door.NextD = 2048;
+
+            if (RandomDoors)
+            {
+                // Don't block the double doors in nest room
+                rdt408.Nop(0x30ACC, 0x30ACE);
+                rdt408.Nop(0x30AEC, 0x30AEE);
+
+                // Do not switch to mansion 2
+                if (Player == 0)
+                {
+                    rdt40C.Nop(0x676C);
+                }
+                else
+                {
+                    rdt40C.Nop(0x66AC);
+                }
+            }
+        }
+
         [Patch(Player = 0)]
         public void FixChrisPlant42(
             RandomizedRdt rdt408,

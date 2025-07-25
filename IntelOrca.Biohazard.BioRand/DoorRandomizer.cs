@@ -87,7 +87,7 @@ namespace IntelOrca.Biohazard.BioRand
             }
 
             // Update door targets in map
-            var allDoors = headSegment.All.SelectMany(x => x.AllDoors).Distinct().ToArray();
+            var allDoors = headSegment.All.SelectMany(x => x.Doors).Distinct().ToArray();
             foreach (var door in allDoors)
             {
                 if (door.IsSegmentEnd)
@@ -248,15 +248,32 @@ namespace IntelOrca.Biohazard.BioRand
 
         private void RandomizeSegment(Segment segment)
         {
+            if (segment.Start == null || segment.End == null)
+                throw new Exception($"Segment does not have a start or end room");
+
+            segment.UseRoom(segment.Start);
             while (ConnectAnotherDoor(segment))
             {
             }
 
-            var doorToEnd = segment.UnconnectedDoors.Shuffle(_rng).FirstOrDefault();
-            if (doorToEnd != null)
+            var doorToEnd = segment.UnconnectedDoors.Shuffle(_rng).FirstOrDefault()
+                ?? throw new Exception("Segment could not be connected up to the end room");
+            var target = segment.End.Doors
+                .Where(x => x.IsConnectable && !x.IsSegmentEnd)
+                .Shuffle(_rng)
+                .First();
+            doorToEnd.Connect(target);
+            segment.UseRoom(segment.End);
+
+            // This is so that any doors on the segment end can also be connected up
+            while (ConnectAnotherDoor(segment))
             {
-                var target = segment.End!.Doors.Where(x => !x.IsSegmentEnd).Shuffle(_rng).First();
-                doorToEnd.Connect(target);
+            }
+
+            // Now seal all remaining doors
+            foreach (var door in segment.UnconnectedDoors)
+            {
+                door.Seal();
             }
         }
 
@@ -268,7 +285,7 @@ namespace IntelOrca.Biohazard.BioRand
                 foreach (var targetDoor in segment.AvailableDoors.Shuffle(_rng))
                 {
                     var targetRoom = targetDoor.Owner;
-                    var targetRoomUnconnectedDoors = targetRoom.Doors.Count(x => !x.IsConnected);
+                    var targetRoomUnconnectedDoors = targetRoom.Doors.Count(x => !x.IsSealed);
                     if (targetRoomUnconnectedDoors <= 1)
                     {
                         if (unconnected.Length == 1)
@@ -285,15 +302,6 @@ namespace IntelOrca.Biohazard.BioRand
             return false;
         }
 
-        private RoomPieceDoor? GetRandomDoor(Segment segment)
-        {
-            foreach (var door in segment.AvailableDoors.Shuffle(_rng))
-            {
-                return door;
-            }
-            return null;
-        }
-
         private class Segment
         {
             public RoomPiece? Start { get; set; }
@@ -305,7 +313,8 @@ namespace IntelOrca.Biohazard.BioRand
 
             public void UseRoom(RoomPiece room)
             {
-                if (Unused.Remove(room))
+                Unused.Remove(room);
+                if (!Used.Contains(room))
                 {
                     Used.Add(room);
                 }
@@ -324,29 +333,18 @@ namespace IntelOrca.Biohazard.BioRand
                 }
             }
 
-            public IEnumerable<RoomPiece> AllUsedRooms
-            {
-                get
-                {
-                    if (Start != null)
-                        yield return Start;
-                    foreach (var room in Used)
-                        yield return room;
-                    if (End != null)
-                        yield return End;
-                }
-            }
-
-            public IEnumerable<RoomPieceDoor> AllDoors => AllUsedRooms.SelectMany(x => x.Doors);
+            public IEnumerable<RoomPieceDoor> Doors => Used.SelectMany(x => x.Doors);
 
             public IEnumerable<RoomPieceDoor> UnconnectedDoors
             {
                 get
                 {
-                    IEnumerable<RoomPiece> enumerable = Start == null ? Used : [Start, .. Used];
-                    foreach (var door in enumerable.SelectMany(x => x.Doors))
+                    foreach (var door in Doors)
                     {
-                        if (door.IsConnected)
+                        if (!door.IsConnectable)
+                            continue;
+
+                        if (door.IsSegmentEnd && door.Owner != Start)
                             continue;
 
                         if (door.Door.Requirements.Any(x => x.Kind == MapRequirementKind.Room))
@@ -365,10 +363,13 @@ namespace IntelOrca.Biohazard.BioRand
                     {
                         foreach (var door in room.Doors)
                         {
-                            if (door.IsConnected)
+                            if (!door.IsConnectable)
                                 continue;
 
                             if (door.Door.Requirements.Any())
+                                continue;
+
+                            if (door.Door.HasTag(MapTags.ConnectOut))
                                 continue;
 
                             yield return door;
@@ -417,6 +418,7 @@ namespace IntelOrca.Biohazard.BioRand
 
             public RoomPieceDoor? Target { get; private set; }
 
+            public bool IsSealed { get; private set; }
             public bool IsConnected => Target != null;
             public bool IsSegmentEnd => Door.HasTag(MapTags.SegmentEnd);
             public RdtItemId Identifier => new(Room.Rdts![0], (byte)(Door.Id ?? 0));
@@ -428,6 +430,32 @@ namespace IntelOrca.Biohazard.BioRand
 
                 Target = target;
                 target.Target = this;
+                Seal();
+                target.Seal();
+            }
+
+            public void Seal()
+            {
+                if (IsSealed)
+                    throw new InvalidOperationException("Door is already sealed");
+                IsSealed = true;
+            }
+
+            public bool IsConnectable
+            {
+                get
+                {
+                    if (IsSealed)
+                        return false;
+
+                    if (Door.Randomize == false)
+                        return false;
+
+                    if (Door.Kind == DoorKinds.Blocked)
+                        return false;
+
+                    return true;
+                }
             }
 
             public override string ToString() => $"{Identifier} -> {Target?.Identifier.ToString() ?? "(null)"}";
