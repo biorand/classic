@@ -316,7 +316,8 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     // Remove all vanilla locks that can be randomized
                     foreach (var door in map.Rooms.Values.SelectMany(x => x.Doors ?? []))
                     {
-                        if (door.AllowedLocks == null)
+                        var opposite = map.GetOtherSide(door);
+                        if (door.AllowedLocks == null && opposite?.AllowedLocks == null)
                         {
                             if (door.Kind == DoorKinds.Locked || door.Kind == DoorKinds.Unlock)
                             {

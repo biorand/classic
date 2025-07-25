@@ -6327,8 +6327,9 @@
         {
           "id": 2,
           "target": "507/STORE:0",
+          "kind": "locked",
           "lockId": 45,
-          "kind": "locked"
+          "allowedLocks": []
         },
         {
           "id": 3,
