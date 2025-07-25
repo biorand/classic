@@ -1191,19 +1191,16 @@
           "randomize": false
         },
         {
-          "create": true,
           "id": 3,
-          "texture": 3,
-          "special": 6,
-          "doorRando": true,
+          "target": "106:3",
           "entrance": {
             "x": 17200,
             "y": 0,
             "z": 3000,
             "d": -1024,
-            "floor": 0,
             "cut": 0
-          }
+          },
+          "doorRando": true
         }
       ],
       "items": [
@@ -3059,7 +3056,14 @@
           "target": "20C/GRAVE",
           "kind": "oneway",
           "allowedLocks": [],
-          "randomize": false
+          "randomize": false,
+          "doorRando": false
+        },
+        {
+          "target": "20C/GRAVE",
+          "allowedLocks": [],
+          "randomize": false,
+          "doorRando": true
         }
       ],
       "enemies": [
@@ -3999,7 +4003,6 @@
         {
           "id": 0,
           "target": "300:1",
-          "randomize": false,
           "requires2": [
             "flag(COURTYARD_LIFT_POWER)"
           ],

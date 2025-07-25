@@ -156,10 +156,11 @@ namespace IntelOrca.Biohazard.BioRand.RE1
         {
             var rng = context.GetRng("re1map");
             var config = context.Configuration;
+            var randomDoors = context.Configuration.GetValueOrDefault("doors/random", false);
 
             // Apply player, scenario filter
             var map = context.DataManager.GetJson<Map>(BioVersion.Biohazard1, "rdt.json");
-            map = map.For(new MapFilter(false, (byte)playerIndex, 0));
+            map = map.For(new MapFilter(randomDoors, (byte)playerIndex, 0));
 
             // Copy door entrances from CSV
             var doorEntrances = context.DataManager.GetCsv<CsvDoorEntrance>(BioVersion.Biohazard1, "doors.csv");
@@ -185,7 +186,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             }
 
             // Remove mansion 2 RDTs for door rando
-            if (context.Configuration.GetValueOrDefault("doors/random", false))
+            if (randomDoors)
             {
                 foreach (var room in map.Rooms.Values)
                 {
@@ -283,7 +284,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
             // Locks
             var mansion2keyType = (int)Re1ItemIds.HelmetKey;
-            if (context.Configuration.GetValueOrDefault("doors/random", false))
+            if (randomDoors)
             {
                 foreach (var room in map.Rooms.Values)
                 {
@@ -456,7 +457,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 }
             }
 
-            if (config.GetValueOrDefault("doors/random", false))
+            if (randomDoors)
             {
                 // All items can go anywhere
                 var items = map.Rooms!.Values.SelectMany(x => x.Items).ToArray();

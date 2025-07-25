@@ -347,7 +347,10 @@ namespace IntelOrca.Biohazard.BioRand
                 var doorLock = (DoorLock?)null;
                 if (door.Target == null)
                 {
-                    doorLock = new DoorLock(255, 255);
+                    if (!door.NoUnlock)
+                    {
+                        doorLock = new DoorLock(255, 255);
+                    }
                 }
                 else if (door.Kind == DoorKinds.Locked)
                 {
@@ -357,7 +360,7 @@ namespace IntelOrca.Biohazard.BioRand
                 {
                     doorLock = new DoorLock(doorLockId, 254);
                 }
-                else if (door.Kind == DoorKinds.Unblock || door.Kind == DoorKinds.Dynamic || door.NoUnlock)
+                else if (door.Kind == DoorKinds.Unblock || door.Kind == DoorKinds.Dynamic)
                 {
                     if (doorLockId != 0)
                     {

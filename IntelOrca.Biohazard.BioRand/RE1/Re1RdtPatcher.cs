@@ -251,6 +251,45 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             door.NextZ = 3300;
         }
 
+        [Patch]
+        public void FixDoor106(RandomizedRdt rdt106)
+        {
+            if (Player == 0)
+            {
+                rdt106.Nop(0x2FBD4, 0x2FBD6);
+                rdt106.Nop(0x2FBF4, 0x2FBF6);
+
+                var frontDoor = (DoorAotSeOpcode)rdt106.Doors.First(x => x.Id == 3);
+                frontDoor.Animation = 3;
+                frontDoor.Special = 6;
+            }
+            else
+            {
+                rdt106.Nop(0x2FBD4);
+                rdt106.AdditionalOpcodes.Add(new DoorAotSeOpcode()
+                {
+                    Opcode = 0x0C,
+                    Id = 3,
+                    X = 14600,
+                    Z = 800,
+                    W = 5200,
+                    D = 2200,
+                    Special = 6,
+                    Re1UnkB = 0,
+                    Animation = 3,
+                    Re1UnkC = 1,
+                    LockId = 0,
+                    Target = new RdtId(255, 0x06),
+                    NextX = 0,
+                    NextY = 0,
+                    NextZ = 0,
+                    NextD = 0,
+                    LockType = 0,
+                    Free = 129
+                });
+            }
+        }
+
         [Patch(BothMansions = true)]
         public void FixDoorToWardrobe(RandomizedRdt rdt112)
         {
@@ -413,9 +452,9 @@ namespace IntelOrca.Biohazard.BioRand.RE1
         }
 
         [Patch(Player = 1)]
-        public void DisableBarryEvesdrop(RandomizedRdt rdt305)
+        public void DisableBarryEvesdrop(RandomizedRdt rdt405)
         {
-            rdt305.Nop(0x194A2);
+            rdt405.Nop(0x194A2);
         }
 
         [Patch(Player = 0)]
@@ -527,6 +566,28 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             if (HelipadTyrantForced)
             {
                 rdt303.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [0, 43, 0]));
+            }
+        }
+
+        [Patch]
+        public void ForceLift302(RandomizedRdt rdt300, RandomizedRdt rdt301, RandomizedRdt rdt302)
+        {
+            if (RandomDoors)
+            {
+                // Set lifts to raised state
+                rdt301.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [0, 48, 1]));
+                rdt300.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [0, 49, 0]));
+
+                // Set lifts to lowered state
+                rdt302.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [0, 48, 0]));
+                rdt302.AdditionalOpcodes.Add(new UnknownOpcode(0, 5, [0, 49, 1]));
+
+                // Remove these odd change player opcodes
+                rdt302.Nop(0x192C4);
+                rdt302.Nop(0x192D0);
+                rdt302.Nop(0x192DC);
+                rdt302.Nop(0x1944A);
+                rdt302.Nop(0x19450);
             }
         }
 
