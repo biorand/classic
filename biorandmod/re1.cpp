@@ -300,6 +300,12 @@ private:
         _mm.Call(0x414103, thunk);
         _mm.Call(0x414022, thunk);
         _mm.Call(0x4142CC, thunk);
+
+        // There is a Classic Rebirth patch at 0x4063A0, but I don't know why
+        // It prevents flamethrower from being removed when placing it on latch in caves when in
+        // slot 7/8 for Chris. So let's remove the patch and run OG code for now.
+        uint8_t data[] = { 0x53, 0xA0, 0xF6, 0x86, 0xC3 };
+        _mm.Write(0x4063A0, data, sizeof(data));
     }
 
     void DoDynamicTweaks()
