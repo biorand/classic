@@ -240,17 +240,18 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     rdt.AdditionalOpcodes.AddRange(
                         ScdCondition.Parse("1:0").Generate(BioVersion.Biohazard1, [
                             Set(1, 0, 0), // First cutscene
-                        Set(1, 2, 0), // First zombie found
-                        Set(1, 3, 0), // Second cutscene (Jill? Wesker?)
-                        Set(1, 36, 0), // First Rebecca save room cutscene
-                        Set(1, 69, 0), // Brad call cutscene in final lab room
-                        Set(1, 72, 0), // Enrico cutscene
-                        Set(1, 100, 0), // Prevent Plant 42 Rebecca switch
-                        Set(1, 167, 0), // Init. dining room emblem state
-                        Set(1, 171, 0), // Wesker cutscene after Plant 42
-                        Set(0, 101, 0), // Jill in cell cutscene
-                        Set(0, 127, 0), // Pick up radio
-                        Set(0, 192, 0) // Rebecca not saved
+                            Set(1, 2, 0), // First zombie found
+                            Set(1, 3, 0), // Second cutscene (Jill? Wesker?)
+                            Set(1, 36, 0), // First Rebecca save room cutscene
+                            Set(1, 69, 0), // Brad call cutscene in final lab room
+                            Set(1, 72, 0), // Enrico cutscene
+                            Set(1, 100, 0), // Prevent Plant 42 Rebecca switch
+                            Set(1, 167, 0), // Init. dining room emblem state
+                            Set(1, 170, 0), // Rebecca cutscene
+                            Set(1, 171, 0), // Wesker cutscene after Plant 42
+                            Set(0, 101, 0), // Jill in cell cutscene
+                            Set(0, 127, 0), // Pick up radio
+                            Set(0, 192, 0) // Rebecca not saved
                         ]));
 
                     // Disable hunter / rebecca scream
@@ -312,23 +313,23 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     rdt.AdditionalOpcodes.AddRange(
                         ScdCondition.Parse("1:0").Generate(BioVersion.Biohazard1, [
                             Set(0, 101, 0), // Chris in cell cutscene
-                        Set(0, 127, 0), // Pick up radio
-                        Set(1, 0, 0), // 106 first cutscene
-                        Set(1, 2, 0), // 104 first zombie found
-                        Set(1, 3, 0), // 106 Wesker search cutscene
-                        Set(1, 5, 0), // 106/203 Wesker search complete
-                        Set(1, 7, 0), // 106/203 Barry gift cutscene (also disables 115 sandwich rescue and 20A cutscene)
-                        Set(1, 69, 0), // Brad call cutscene in final lab room
-                        Set(1, 72, 0), // Enrico cutscene
-                        Set(1, 86, 0), // 20E Yawn poison partner recovery
-                        Set(1, 97, 0), // 20D Richard receives serum
-                        Set(1, 103, 0), // 212 Forrest cutscene
-                        Set(1, 161, 0), // 105 first dining room cutscene
-                        Set(1, 170, 0), // Init. dining room emblem state
-                        Set(1, 172, 0), // 104 visted
-                        Set(1, 173, 0), // 105 zombie cutscene
-                        Set(1, 175, 0), // Wesker cutscene after Plant 42
-                        Set(1, 192, 0) // Barry not saved
+                            Set(0, 127, 0), // Pick up radio
+                            Set(1, 0, 0), // 106 first cutscene
+                            Set(1, 2, 0), // 104 first zombie found
+                            Set(1, 3, 0), // 106 Wesker search cutscene
+                            Set(1, 5, 0), // 106/203 Wesker search complete
+                            Set(1, 7, 0), // 106/203 Barry gift cutscene (also disables 115 sandwich rescue and 20A cutscene)
+                            Set(1, 69, 0), // Brad call cutscene in final lab room
+                            Set(1, 72, 0), // Enrico cutscene
+                            Set(1, 86, 0), // 20E Yawn poison partner recovery
+                            Set(1, 97, 0), // 20D Richard receives serum
+                            Set(1, 103, 0), // 212 Forrest cutscene
+                            Set(1, 161, 0), // 105 first dining room cutscene
+                            Set(1, 170, 0), // Init. dining room emblem state
+                            Set(1, 172, 0), // 104 visted
+                            Set(1, 173, 0), // 105 zombie cutscene
+                            Set(1, 175, 0), // Wesker cutscene after Plant 42
+                            Set(1, 192, 0) // Barry not saved
                         ]));
 
                     // Disable Plant 42 Barry
