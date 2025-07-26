@@ -4654,12 +4654,12 @@
         {
           "id": 1,
           "globalId": 80,
-          "excludeTypes": [ 9 ]
+          "excludeTypes": [ 3, 9 ]
         },
         {
           "id": 2,
           "globalId": 81,
-          "excludeTypes": [ 9 ]
+          "excludeTypes": [ 3, 9 ]
         }
       ],
       "cutscenes": [
