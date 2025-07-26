@@ -6587,6 +6587,7 @@
         },
         {
           "id": 3,
+          "tags": [ "segment-end" ],
           "target": "50B:0",
           "requires2": [
             "flag(MO_DISC_507)",
