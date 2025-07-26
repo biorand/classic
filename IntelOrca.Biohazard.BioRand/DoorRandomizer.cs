@@ -9,6 +9,7 @@ namespace IntelOrca.Biohazard.BioRand
     {
         private Rng _rng = new Rng();
         private List<RoomPiece> _allRooms = [];
+        private GroupDictionary<RoomPiece> _roomDependencies = new();
         private List<RoomPiece> _includedRooms = [];
         private Queue<int> _lockIds = [];
 
@@ -29,23 +30,37 @@ namespace IntelOrca.Biohazard.BioRand
                 .ToQueue();
 
             _allRooms.AddRange(GetPieces(map));
+
             var numRoomsRatio = context.Configuration.GetValueOrDefault("doors/rooms", 0.5);
             var numRooms = Math.Max(0, Math.Min((int)Math.Round(_allRooms.Count * numRoomsRatio), _allRooms.Count));
             var numSegments = Math.Max(1, context.Configuration.GetValueOrDefault("doors/segments", 2));
-            var headSegment = CreateSegments(numSegments);
 
-            // Segment ends
-            var segmentEnders = _allRooms
-                .Where(x => x.IsSegmentEnd)
-                .Shuffle(rng)
-                .Take(numSegments - 1)
-                .ToQueue();
+            // Take segment enders (remove unused ones)
+            var segmentEnders = _allRooms.Where(x => x.IsSegmentEnd).Shuffle(rng);
+            var usedSegmentEnders = segmentEnders.Take(numSegments).ToQueue();
+            var unusedSegmentEnders = segmentEnders.Skip(numSegments).ToArray();
+            var allUnusedRooms = unusedSegmentEnders.ToList();
+            _allRooms.RemoveMany(unusedSegmentEnders);
+
+            // Create room groupings based on dependencies
+            foreach (var room in _allRooms)
+            {
+                var dependencies = _allRooms
+                    .Where(x => room.IsCoupled(x, map))
+                    .ToImmutableArray();
+                _roomDependencies.Add(dependencies);
+            }
+
+            // Create segments
+            var headSegment = CreateSegments(numSegments);
             var segment = headSegment;
             while (segment != null)
             {
                 if (segment.End == null)
                 {
-                    segment.End = TakeRoom(segmentEnders.Dequeue());
+                    var endRoom = usedSegmentEnders.Dequeue();
+                    segment.Unused.AddRange(TakeRoom(endRoom).Except([endRoom]));
+                    segment.End = endRoom;
                     if (segment.Next != null)
                         segment.Next.Start = segment.End;
                 }
@@ -88,13 +103,10 @@ namespace IntelOrca.Biohazard.BioRand
                 segment = segment.Next;
             }
 
-            var allUnusedRooms = _allRooms
-                .SelectMany(x => x.Rooms)
-                .ToArray();
-            foreach (var room in allUnusedRooms)
+            allUnusedRooms.AddRange(_allRooms);
+            foreach (var room in allUnusedRooms.SelectMany(x => x.Rooms))
             {
-                var roomKey = map.GetRoomKey(room);
-                map.Rooms.Remove(roomKey);
+                map.Rooms.Remove(room.Key);
             }
 
             // Update door targets in map
@@ -113,7 +125,7 @@ namespace IntelOrca.Biohazard.BioRand
                     continue;
                 }
 
-                var targetRoom = map.GetRoomKey(door.Target.Room);
+                var targetRoom = door.Target.Room.Key;
                 var targetId = door.Target.Door.Id;
                 if (targetId == null)
                     continue;
@@ -126,7 +138,7 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 foreach (var door in room.Doors ?? [])
                 {
-                    if (door.Requirements.Any(x => x.Kind == MapRequirementKind.Room || x.Kind == MapRequirementKind.Flag))
+                    if (door.Target == null)
                     {
                         door.Requires2 = [];
                     }
@@ -225,11 +237,15 @@ namespace IntelOrca.Biohazard.BioRand
 
                 if (i == 0)
                 {
-                    segment.Start = TakeRoom(_allRooms.FirstOrDefault(x => x.IsBegin));
+                    var startRoom = _allRooms.FirstOrDefault(x => x.IsBegin);
+                    segment.Unused.AddRange(TakeRoom(startRoom).Except([startRoom]));
+                    segment.Start = startRoom;
                 }
                 else if (i == numSegments - 1)
                 {
-                    segment.End = TakeRoom(_allRooms.FirstOrDefault(x => x.IsEnd));
+                    var endRoom = _allRooms.FirstOrDefault(x => x.IsEnd);
+                    segment.Unused.AddRange(TakeRoom(endRoom).Except([endRoom]));
+                    segment.End = endRoom;
                 }
                 last = segment;
             }
@@ -242,19 +258,24 @@ namespace IntelOrca.Biohazard.BioRand
             var shuffled = rooms.Shuffle(_rng);
             for (var i = 0; i < shuffled.Length; i++)
             {
+                var roomGroup = TakeRoom(shuffled[i]);
+                if (roomGroup.IsDefaultOrEmpty)
+                    continue;
+
                 var segment = segmentBag.Next();
-                segment.Unused.Add(TakeRoom(shuffled[i]));
+                segment.Unused.AddRange(roomGroup);
             }
         }
 
-        private RoomPiece TakeRoom(RoomPiece room)
+        private ImmutableArray<RoomPiece> TakeRoom(RoomPiece room)
         {
-            if (!_allRooms.Contains(room))
-                throw new ArgumentException("Room was already taken", nameof(room));
+            var roomGroup = _roomDependencies[room];
+            if (roomGroup.Any(x => !_allRooms.Contains(x)))
+                return default;
 
-            _allRooms.Remove(room);
-            _includedRooms.Add(room);
-            return room;
+            _allRooms.RemoveMany(roomGroup);
+            _includedRooms.AddRange(roomGroup);
+            return roomGroup;
         }
 
         private void RandomizeSegment(Segment segment)
@@ -424,7 +445,7 @@ namespace IntelOrca.Biohazard.BioRand
                         if (door.IsSegmentEnd && door.Owner != Start)
                             continue;
 
-                        if (door.Door.Requirements.Any(x => x.Kind == MapRequirementKind.Room))
+                        if (!AreRequirementsMet(door.Door))
                             continue;
 
                         yield return door;
@@ -443,6 +464,10 @@ namespace IntelOrca.Biohazard.BioRand
                             if (!door.IsConnectable)
                                 continue;
 
+                            // Unblock assumes connect out
+                            if (door.Door.Kind == DoorKinds.Unblock)
+                                continue;
+
                             if (door.Door.Requirements.Any())
                                 continue;
 
@@ -453,6 +478,32 @@ namespace IntelOrca.Biohazard.BioRand
                         }
                     }
                 }
+            }
+
+            private bool AreRequirementsMet(MapEdge edge)
+            {
+                foreach (var r in edge.Requirements)
+                {
+                    if (r.Kind == MapRequirementKind.Room)
+                    {
+                        if (!Used.SelectMany(x => x.Rooms).Any(x => x.Key == r.Value))
+                        {
+                            return false;
+                        }
+                    }
+                    else if (r.Kind == MapRequirementKind.Flag)
+                    {
+                        var hasFlag = Used
+                            .SelectMany(x => x.Rooms)
+                            .SelectMany(x => x.Flags)
+                            .Any(x => x.Name == r.Value && AreRequirementsMet(x));
+                        if (!hasFlag)
+                        {
+                            return false;
+                        }
+                    }
+                }
+                return true;
             }
 
             public override string ToString()
@@ -484,6 +535,42 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 if (this == other) return true;
                 return Doors.Any(x => x.Target?.Owner == other);
+            }
+
+            public bool IsCoupled(RoomPiece other, Map map)
+            {
+                if (this == other)
+                    return true;
+
+                var allRequirements = Rooms
+                    .SelectMany(x => x.AllEdges ?? [])
+                    .SelectMany(x => x.Requirements)
+                    .Distinct()
+                    .ToArray();
+                foreach (var r in allRequirements)
+                {
+                    if (r.Kind == MapRequirementKind.Room)
+                    {
+                        foreach (var room in other.Rooms)
+                        {
+                            if (r.Value == room.Key)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                    else if (r.Kind == MapRequirementKind.Flag)
+                    {
+                        foreach (var flag in other.Rooms.SelectMany(x => x.Flags ?? []))
+                        {
+                            if (r.Value == flag.Name)
+                            {
+                                return true;
+                            }
+                        }
+                    }
+                }
+                return false;
             }
 
             public bool IsBegin => Rooms.Any(x => x.HasTag(MapTags.Begin));
@@ -557,6 +644,71 @@ namespace IntelOrca.Biohazard.BioRand
             }
 
             public override string ToString() => $"{Identifier} -> {Target?.Identifier.ToString() ?? "(null)"}";
+        }
+
+        private class GroupDictionary<T> where T : notnull
+        {
+            private readonly Dictionary<T, ImmutableArray<T>> _map = [];
+
+            public IEnumerable<ImmutableArray<T>> Groups => _map.Values.Distinct();
+
+            public void Add(IEnumerable<T> items)
+            {
+                var count = items.Count();
+                if (count <= 1)
+                    return;
+
+                var first = items.First();
+                foreach (var next in items.Skip(1))
+                {
+                    Add(first, next);
+                }
+            }
+
+            public void Add(T itemA, T itemB)
+            {
+                _map.TryGetValue(itemA, out var groupA);
+                _map.TryGetValue(itemB, out var groupB);
+
+                if (groupA != null && groupB != null)
+                {
+                    if (!groupA.Equals(groupB))
+                    {
+                        var merged = groupA.Concat(groupB)
+                                           .Distinct()
+                                           .ToImmutableArray();
+
+                        foreach (var item in merged)
+                            _map[item] = merged;
+                    }
+                }
+                else if (groupA != null)
+                {
+                    var extended = groupA.Contains(itemB)
+                        ? groupA
+                        : groupA.Add(itemB);
+
+                    foreach (var item in extended)
+                        _map[item] = extended;
+                }
+                else if (groupB != null)
+                {
+                    var extended = groupB.Contains(itemA)
+                        ? groupB
+                        : groupB.Add(itemA);
+
+                    foreach (var item in extended)
+                        _map[item] = extended;
+                }
+                else
+                {
+                    var newGroup = ImmutableArray.Create(itemA, itemB);
+                    _map[itemA] = newGroup;
+                    _map[itemB] = newGroup;
+                }
+            }
+
+            public ImmutableArray<T> this[T item] => _map.TryGetValue(item, out var group) ? group : [item];
         }
     }
 }

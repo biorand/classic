@@ -11,11 +11,24 @@ namespace IntelOrca.Biohazard.BioRand
 {
     public class Map
     {
+        private Dictionary<string, MapRoom> _rooms;
+
         public MapStartEnd[]? BeginEndRooms { get; set; }
         public Dictionary<int, MapItemDefinition> Items { get; set; } = [];
         public MapEnemyGroup[] Enemies { get; set; } = [];
         public MapCharacter[] Characters { get; set; } = [];
-        public Dictionary<string, MapRoom> Rooms { get; set; } = [];
+        public Dictionary<string, MapRoom> Rooms
+        {
+            get => _rooms;
+            set
+            {
+                _rooms = value;
+                foreach (var kvp in value)
+                {
+                    kvp.Value.Key = kvp.Key;
+                }
+            }
+        }
 
         internal MapItemDefinition? GetItem(int type)
         {
@@ -37,11 +50,6 @@ namespace IntelOrca.Biohazard.BioRand
                 return null;
             Rooms.TryGetValue(key, out var value);
             return value;
-        }
-
-        internal string GetRoomKey(MapRoom room)
-        {
-            return Rooms.First(x => x.Value == room).Key;
         }
 
         internal MapRoom[] GetRoomsContaining(RdtId id)
@@ -208,6 +216,7 @@ namespace IntelOrca.Biohazard.BioRand
     [DebuggerDisplay("{Name}")]
     public class MapRoom : MapFilterable
     {
+        public string Key { get; set; } = "";
         public string? Name { get; set; }
         public string? LinkedRoom { get; set; }
         public ImmutableArray<RdtId> Rdts { get; set; } = [];
@@ -417,7 +426,7 @@ namespace IntelOrca.Biohazard.BioRand
         public MapRequirement[] Requirements => Requires2?.Select(MapRequirement.Parse).ToArray() ?? new MapRequirement[0];
     }
 
-    public readonly struct MapRequirement
+    public readonly struct MapRequirement : IEquatable<MapRequirement>
     {
         public MapRequirementKind Kind { get; }
         public string Value { get; }
@@ -448,6 +457,15 @@ namespace IntelOrca.Biohazard.BioRand
             }
             result = default;
             return false;
+        }
+
+        public override int GetHashCode() => (Value.GetHashCode() * 13) ^ (Kind.GetHashCode() * 23);
+        public override bool Equals(object obj) => obj is MapRequirement other && Equals(other);
+        public bool Equals(MapRequirement other) => Kind == other.Kind && Value == other.Value;
+
+        public override string ToString()
+        {
+            return $"{Kind.ToString().ToLowerInvariant()}({Value})";
         }
     }
 

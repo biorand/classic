@@ -5705,6 +5705,14 @@
           "group": 64
         }
       ],
+      "flags": [
+        {
+          "name": "PLANT_42_WEAK",
+          "requires2": [
+            "flag(VJOLT_ROOTS)"
+          ]
+        }
+      ],
       "enemies": [
         {
           "globalId": 96,
@@ -6729,9 +6737,11 @@
         {
           "id": 1,
           "target": "512:0",
+          "kind": "unblock",
           "requires2": [
             "room(513)"
           ],
+          "allowedLocks": [],
           "noUnlock": true
         }
       ],
