@@ -107,10 +107,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
         [Patch(BothMansions = true)]
         public void FixMapsAsItems(
             RandomizedRdt rdt107,
-            RandomizedRdt rdt20B,
-            RandomizedRdt rdt300,
-            RandomizedRdt rdt30F,
-            RandomizedRdt rdt406)
+            RandomizedRdt rdt20B)
         {
             if (mod.Items.ContainsKey(145))
             {
@@ -149,7 +146,14 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 rdt20B.Nop(0xCD68);
                 rdt20B.Nop(0xCE52);
             }
+        }
 
+        [Patch]
+        public void FixMapsAsItems(
+            RandomizedRdt rdt300,
+            RandomizedRdt rdt30F,
+            RandomizedRdt rdt406)
+        {
             if (mod.Items.ContainsKey(79))
             {
                 // 300 courtyard map
