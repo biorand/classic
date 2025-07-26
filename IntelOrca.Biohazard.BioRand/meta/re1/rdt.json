@@ -4450,12 +4450,14 @@
         },
         {
           "id": 2,
+          "tags": [ "connect-out" ],
           "target": "30B:0",
           "lockId": 39,
           "player": 0
         },
         {
           "id": 2,
+          "tags": [ "connect-out" ],
           "target": "30B:0",
           "player": 1
         }
@@ -4744,6 +4746,7 @@
         },
         {
           "id": 1,
+          "tags": [ "connect-out" ],
           "target": "30C:0",
           "kind": "unblock"
         }
@@ -4963,6 +4966,7 @@
         },
         {
           "id": 1,
+          "tags": [ "connect-out" ],
           "target": "306:0"
         }
       ]
@@ -6214,20 +6218,11 @@
           "target": "500:2",
           "allowedLocks": [],
           "noUnlock": true,
-          "player": 1,
-          "doorRando": false
-        },
-        {
-          "id": 0,
-          "target": "500:2",
-          "kind": "unblock",
-          "allowedLocks": [],
-          "noUnlock": true,
-          "player": 1,
-          "doorRando": true
+          "player": 1
         },
         {
           "id": 1,
+          "tags": [ "connect-out" ], // This prevents a cutscene softlock for Jill
           "target": "503:0"
         }
       ],
@@ -6531,7 +6526,7 @@
         },
         {
           "id": 0,
-          "tags": [ "connect-out" ],
+          "tags": [ "connect-back" ],
           "target": "505:2",
           "doorRando": true
         }

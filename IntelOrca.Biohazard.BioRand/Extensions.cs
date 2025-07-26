@@ -231,5 +231,29 @@ namespace IntelOrca.Biohazard.BioRand
             }
             return sb.ToString();
         }
+
+        public static IEnumerable<TResult> Choose<TSource, TResult>(
+            this IEnumerable<TSource> source,
+            Func<TSource, TResult?> selector) where TResult : class
+        {
+            foreach (var item in source)
+            {
+                var result = selector(item);
+                if (result != null)
+                    yield return result;
+            }
+        }
+
+        public static IEnumerable<TResult> Choose<TSource, TResult>(
+            this IEnumerable<TSource> source,
+            Func<TSource, TResult?> selector) where TResult : struct
+        {
+            foreach (var item in source)
+            {
+                var result = selector(item);
+                if (result.HasValue)
+                    yield return result.Value;
+            }
+        }
     }
 }

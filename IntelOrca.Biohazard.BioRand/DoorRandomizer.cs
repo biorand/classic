@@ -10,6 +10,7 @@ namespace IntelOrca.Biohazard.BioRand
         private Rng _rng = new Rng();
         private List<RoomPiece> _allRooms = [];
         private List<RoomPiece> _includedRooms = [];
+        private Queue<int> _lockIds = [];
 
         public void Randomize(IClassicRandomizerGeneratedVariation context)
         {
@@ -17,6 +18,16 @@ namespace IntelOrca.Biohazard.BioRand
 
             // Clear all the door targets that can be randomized
             var map = context.Variation.Map;
+
+            var reservedLockIds = map.Rooms.Values
+                .SelectMany(x => x.Doors)
+                .Choose(x => (int?)x.LockId)
+                .ToArray();
+            _lockIds = Enumerable
+                .Range(1, 254)
+                .Except(reservedLockIds)
+                .ToQueue();
+
             _allRooms.AddRange(GetPieces(map));
             var numRoomsRatio = context.Configuration.GetValueOrDefault("doors/rooms", 0.5);
             var numRooms = Math.Max(0, Math.Min((int)Math.Round(_allRooms.Count * numRoomsRatio), _allRooms.Count));
@@ -294,12 +305,62 @@ namespace IntelOrca.Biohazard.BioRand
                         }
                     }
 
+                    // Connect back check
+                    if (!ConnectBackDoors(segment, door, targetRoom))
+                        continue;
+
                     door.Connect(targetDoor);
                     segment.UseRoom(targetRoom);
                     return true;
                 }
             }
             return false;
+        }
+
+        private bool ConnectBackDoors(Segment segment, RoomPieceDoor sourceDoor, RoomPiece targetRoom)
+        {
+            // Get all doors that need to connect back
+            var connectBackDoors = targetRoom.Doors
+                .Where(x => x.Door.HasTag(MapTags.ConnectBack))
+                .ToArray();
+
+            if (connectBackDoors.Length == 0)
+                return true;
+
+            // Find all suitable doors that we can connect back to
+            var suitableDoors = FindConnectBackDoors(segment.Start!, sourceDoor).Shuffle(_rng);
+            if (suitableDoors.Length < connectBackDoors.Length)
+                return false;
+
+            // Connect back to them
+            for (var i = 0; i < connectBackDoors.Length; i++)
+            {
+                connectBackDoors[i].Connect(suitableDoors[i], lockId: _lockIds.Dequeue());
+            }
+            return true;
+        }
+
+        private static RoomPieceDoor[] FindConnectBackDoors(RoomPiece head, RoomPieceDoor tail)
+        {
+            var result = new List<RoomPieceDoor>();
+            var curr = tail.Owner;
+            while (curr != null)
+            {
+                foreach (var d in curr.Doors)
+                {
+                    if (d.IsConnectable && d != tail)
+                    {
+                        result.Add(d);
+                    }
+                }
+                if (curr == head)
+                {
+                    // Reached start of segment
+                    break;
+                }
+                curr = curr.Parent;
+            }
+            return result.ToArray();
         }
 
         private class Segment
@@ -369,7 +430,7 @@ namespace IntelOrca.Biohazard.BioRand
                             if (door.Door.Requirements.Any())
                                 continue;
 
-                            if (door.Door.HasTag(MapTags.ConnectOut))
+                            if (door.Door.HasAnyTag([MapTags.ConnectOut, MapTags.ConnectBack]))
                                 continue;
 
                             yield return door;
@@ -391,6 +452,7 @@ namespace IntelOrca.Biohazard.BioRand
         {
             public ImmutableArray<MapRoom> Rooms { get; }
             public ImmutableArray<RoomPieceDoor> Doors { get; }
+            public RoomPiece? Parent { get; set; }
 
             public RoomPiece(IEnumerable<MapRoom> rooms)
             {
@@ -423,7 +485,7 @@ namespace IntelOrca.Biohazard.BioRand
             public bool IsSegmentEnd => Door.HasTag(MapTags.SegmentEnd);
             public RdtItemId Identifier => new(Room.Rdts![0], (byte)(Door.Id ?? 0));
 
-            public void Connect(RoomPieceDoor target)
+            public void Connect(RoomPieceDoor target, int? lockId = null)
             {
                 if (Target != null || target.Target != null)
                     throw new Exception("Door or target door already connected");
@@ -432,6 +494,20 @@ namespace IntelOrca.Biohazard.BioRand
                 target.Target = this;
                 Seal();
                 target.Seal();
+                if (target.Owner.Parent == null)
+                {
+                    target.Owner.Parent = Owner;
+                }
+
+                if (lockId != null)
+                {
+                    Door.Kind = DoorKinds.Unlock;
+                    Door.LockId = (byte)lockId.Value;
+                    Door.AllowedLocks = [];
+                    Target.Door.Kind = DoorKinds.Locked;
+                    Target.Door.LockId = (byte)lockId.Value;
+                    Target.Door.AllowedLocks = [];
+                }
             }
 
             public void Seal()

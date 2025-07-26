@@ -15,5 +15,12 @@
         /// can't be used to first access this room.
         /// </summary>
         public const string ConnectOut = "connect-out";
+
+        /// <summary>
+        /// Door must connect back to a room with shared ancestor.
+        /// Used after a one way door, and we need to ensure that the player can return
+        /// without to pick up items.
+        /// </summary>
+        public const string ConnectBack = "connect-back";
     }
 }
