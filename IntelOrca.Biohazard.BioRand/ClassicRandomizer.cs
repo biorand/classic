@@ -84,7 +84,7 @@ namespace IntelOrca.Biohazard.BioRand
                     " Once a segment is complete, no key items are required from a previous segment.",
                 Type = "range",
                 Min = 1,
-                Max = 5,
+                Max = 6,
                 Default = 3
             });
             group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
