@@ -281,6 +281,22 @@ namespace IntelOrca.Biohazard.BioRand
             {
             }
 
+            // Now connect doors back to other doors
+            foreach (var door in segment.UnconnectedDoors.Shuffle(_rng))
+            {
+                if (!door.IsConnectable)
+                    continue;
+
+                var potential = segment.UnconnectedDoors
+                    .Where(x => x != door)
+                    .Where(x => !x.Owner.IsConnectedTo(door.Owner))
+                    .FirstOrDefault();
+                if (potential != null)
+                {
+                    door.Connect(potential, _lockIds.Dequeue());
+                }
+            }
+
             // Now seal all remaining doors
             foreach (var door in segment.UnconnectedDoors)
             {
@@ -462,6 +478,12 @@ namespace IntelOrca.Biohazard.BioRand
                         .Where(x => x.Randomize != false)
                         .Select(d => new RoomPieceDoor(this, r, d)))
                     .ToImmutableArray();
+            }
+
+            public bool IsConnectedTo(RoomPiece other)
+            {
+                if (this == other) return true;
+                return Doors.Any(x => x.Target?.Owner == other);
             }
 
             public bool IsBegin => Rooms.Any(x => x.HasTag(MapTags.Begin));
