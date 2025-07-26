@@ -258,6 +258,9 @@ namespace IntelOrca.Biohazard.BioRand.RE1
         [Patch]
         public void FixDoor106(RandomizedRdt rdt106)
         {
+            if (!RandomDoors)
+                return;
+
             if (Player == 0)
             {
                 rdt106.Nop(0x2FBD4, 0x2FBD6);
