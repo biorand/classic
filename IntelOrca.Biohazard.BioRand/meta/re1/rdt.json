@@ -4122,21 +4122,6 @@
             "cut": 4
           },
           "doorRando": false
-        },
-        {
-          "name": "DOOR TO FOUNTAIN",
-          "id": 8,
-          "target": "305:0",
-          "kind": "blocked",
-          "lockId": 2,
-          "entrance": {
-            "x": 28350,
-            "y": 0,
-            "z": 5700,
-            "d": 0,
-            "cut": 4
-          },
-          "doorRando": true
         }
       ],
       "flags": [

@@ -456,13 +456,10 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                         if (otherDoor == null || otherDoor.NoUnlock || otherDoor.AllowedLocks != null)
                             continue;
 
-                        d.Kind = null;
                         d.AllowedLocks = locks
                             .Where(x => x.SupportsRoom(r))
                             .Select(x => x.Key)
                             .ToArray();
-
-                        otherDoor.Kind = null;
                         otherDoor.AllowedLocks = d.AllowedLocks;
                     }
                 }
