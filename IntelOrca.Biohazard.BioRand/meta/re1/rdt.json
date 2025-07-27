@@ -1959,7 +1959,7 @@
     },
     "110": {
       "name": "1F WEST ELEVATOR STAIRS",
-      "rdts": [ "110", "610" ],
+      "rdts": [ "610", "110" ],
       "tags": [ "mansion" ],
       "doors": [
         {
@@ -2353,7 +2353,7 @@
     },
     "119": {
       "name": "1F EAST STUDY",
-      "rdts": [ "119", "619" ],
+      "rdts": [ "619", "119" ],
       "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
@@ -2499,7 +2499,7 @@
     },
     "200": {
       "name": "KITCHEN ELEVATOR (CUTSCENE)",
-      "rdts": [ "200", "700" ],
+      "rdts": [ "700", "200" ],
       "tags": [ "mansion" ],
       "doors": [
         {
@@ -3046,7 +3046,7 @@
     },
     "20C": {
       "name": "PIANO LESSON",
-      "rdts": [ "20C", "70C" ],
+      "rdts": [ "70C", "20C" ],
       "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
@@ -3440,7 +3440,7 @@
     },
     "213": {
       "name": "2F WEST ELEVATOR",
-      "rdts": [ "213", "713" ],
+      "rdts": [ "713", "213" ],
       "tags": [ "mansion" ],
       "doors": [
         {
@@ -3484,7 +3484,7 @@
     },
     "214": {
       "name": "2F WEST BLUE CORRIDOR",
-      "rdts": [ "214", "714" ],
+      "rdts": [ "714", "214" ],
       "tags": [ "mansion" ],
       "doors": [
         {
@@ -3574,7 +3574,7 @@
     },
     "215": {
       "name": "2F WEST DEER ROOM",
-      "rdts": [ "215", "715" ],
+      "rdts": [ "715", "215" ],
       "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
@@ -3627,7 +3627,7 @@
     },
     "216": {
       "name": "2F WEST LIBRARY",
-      "rdts": [ "216", "716" ],
+      "rdts": [ "716", "216" ],
       "tags": [ "mansion" ],
       "doors": [
         {
@@ -3675,7 +3675,7 @@
     },
     "217": {
       "name": "2F WEST LIBRARY PUZZLE",
-      "rdts": [ "217", "717" ],
+      "rdts": [ "717", "217" ],
       "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
@@ -3736,7 +3736,7 @@
     },
     "219": {
       "name": "2F WEST STORAGE",
-      "rdts": [ "219", "719" ],
+      "rdts": [ "719", "219" ],
       "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
@@ -3782,7 +3782,7 @@
     },
     "21A": {
       "name": "B1 EAST",
-      "rdts": [ "21A", "71A" ],
+      "rdts": [ "71A", "21A" ],
       "tags": [ "mansion" ],
       "doors": [
         {
@@ -3815,7 +3815,7 @@
     },
     "21B": {
       "name": "B1 WEST",
-      "rdts": [ "21B", "71B" ],
+      "rdts": [ "71B", "21B" ],
       "tags": [ "mansion" ],
       "doors": [
         {
@@ -3856,7 +3856,7 @@
     },
     "21C": {
       "name": "B1 KITCHEN",
-      "rdts": [ "21C", "71C" ],
+      "rdts": [ "71C", "21C" ],
       "tags": [ "mansion" ],
       "doors": [
         {

@@ -185,15 +185,6 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 }
             }
 
-            // Remove mansion 2 RDTs for door rando
-            if (randomDoors)
-            {
-                foreach (var room in map.Rooms.Values)
-                {
-                    room.Rdts = room.Rdts.RemoveAll(x => x.Stage >= 5);
-                }
-            }
-
             // Lockpick, remove all sword key and small key requirements
             var enableLockpick = context.Configuration.GetValueOrDefault("inventory/special/lockpick", "Always") == "Always";
             if (enableLockpick)
