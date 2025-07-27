@@ -392,6 +392,28 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 {
                     rdt40C.Nop(0x66AC);
                 }
+
+                // Block door until plant 42 is dead
+                if (Player == 0)
+                {
+                    rdt40C.Nop(0x67A2, 0x67A8);
+                    rdt40C.Patch(0x67AE + 1, 3);
+                    rdt40C.Patch(0x67AE + 2, 96);
+                    rdt40C.Patch(0x67AE + 3, 1);
+                    rdt40C.Nop(0x67B2);
+                    rdt40C.Nop(0x67C0);
+                    rdt40C.Nop(0x67C4);
+                }
+                else
+                {
+                    rdt40C.Nop(0x66E2, 0x66E8);
+                    rdt40C.Patch(0x66EE + 1, 3);
+                    rdt40C.Patch(0x66EE + 2, 96);
+                    rdt40C.Patch(0x66EE + 3, 1);
+                    rdt40C.Nop(0x66F2);
+                    rdt40C.Nop(0x6700);
+                    rdt40C.Nop(0x6704);
+                }
             }
         }
 
