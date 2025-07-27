@@ -413,6 +413,11 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     rdt40C.Nop(0x66F2);
                     rdt40C.Nop(0x6700);
                     rdt40C.Nop(0x6704);
+
+                    // Plant 42 crashes room if you kill it then leave then come back in room
+                    // Not sure why, and it doesn't happen if you save, restart game, load just
+                    // before going back in room. Some kind of runtime memory issue?
+                    rdt40C.Nop(0x65FA, 0x6676);
                 }
             }
         }
