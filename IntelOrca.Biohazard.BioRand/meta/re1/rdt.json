@@ -3058,7 +3058,6 @@
           "target": "20C/GRAVE",
           "kind": "oneway",
           "allowedLocks": [],
-          "randomize": false,
           "doorRando": false
         },
         {
@@ -3100,6 +3099,12 @@
       "rdts": [ "20C", "70C" ],
       "tags": [ "mansion" ],
       "doors": [
+        {
+          "target": "20C",
+          "kind": "blocked",
+          "allowedLocks": [],
+          "randomize": false
+        },
         {
           "id": 1,
           "tags": [ "segment-end" ],
