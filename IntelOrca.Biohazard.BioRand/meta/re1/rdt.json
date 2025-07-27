@@ -6033,6 +6033,48 @@
           "excludeTypes": [ 4 ],
           "player": 1
         }
+      ],
+      "cutscenes": [
+        {
+          "id": 0,
+          "name": "escape 500 (chris, jill)",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "globalId": "508-jill",
+              "name": "jill",
+              "character": 33,
+              "offsets": [ "0xCF26" ]
+            }
+          ],
+          "player": 0
+        },
+        {
+          "id": 0,
+          "name": "escape 500 (jill, chris, barry)",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "globalId": "508-chris",
+              "name": "chris",
+              "character": 32,
+              "offsets": [ "0xCF26" ]
+            },
+            {
+              "globalId": "501-barry",
+              "name": "barry",
+              "character": 34,
+              "offsets": [ "0xCF48" ]
+            }
+          ],
+          "player": 1
+        }
       ]
     },
     "501": {

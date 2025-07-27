@@ -668,6 +668,20 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             }
         }
 
+        [Patch]
+        public void FixDoor500(RandomizedRdt rdt500)
+        {
+            // Prevent leaving due to Tyrant 1 being killed
+            if (Player == 0)
+            {
+                rdt500.Nop(0xCF42, 0xCF54);
+            }
+            else
+            {
+                rdt500.Nop(0xCF70, 0xCF82);
+            }
+        }
+
         private static void SetItemAot(RandomizedRdt rdt, int targetOffset, int sourceOffset, bool clearSource = true)
         {
             var targetAot = rdt.Opcodes.OfType<ItemAotSetOpcode>().FirstOrDefault(x => x.Offset == targetOffset);
