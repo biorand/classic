@@ -3382,7 +3382,7 @@
       ],
       "enemies": [
         {
-          "excludeTypes": [ 2, 4, 12 ],
+          "excludeTypes": [ 4, 12 ],
           "maxDifficulty": 0
         }
       ]

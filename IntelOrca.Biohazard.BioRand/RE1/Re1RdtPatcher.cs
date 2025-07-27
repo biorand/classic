@@ -219,6 +219,17 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             }
         }
 
+        [Patch]
+        public void RemoveBlood211(RandomizedRdt rdt211)
+        {
+            if (RandomEnemies)
+            {
+                // Certain enemies like dogs and bees crash game if they attack player
+                // when player does pickup/bend down animation
+                rdt211.Nop(0x10BB2, 0x10C0A);
+            }
+        }
+
         [Patch(BothMansions = true)]
         public void AddDoor207(RandomizedRdt rdt207)
         {
