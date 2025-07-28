@@ -693,7 +693,7 @@ namespace IntelOrca.Biohazard.BioRand
                 var modFileName = $"mod_biorand_{input.Seed}.7z";
                 var archiveFile = crMod.Create7z();
                 var asset = new RandomizerOutputAsset(
-                    "mod",
+                    "_mod",
                     "Classic Rebirth Mod",
                     "Drop this in your RE 1 install folder.",
                     modFileName,
@@ -705,7 +705,7 @@ namespace IntelOrca.Biohazard.BioRand
             }
             else
             {
-                throw new NotSupportedException("The mod builder for this game version is not supported.");
+                throw new NotSupportedException("The _mod builder for this game version is not supported.");
             }
         }
 

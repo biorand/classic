@@ -122,8 +122,8 @@ namespace IntelOrca.Biohazard.BioRand
         private void Append(char c, int repeat) => _sb.Append(c, repeat);
         private void Append(string value) => _sb.Append(value);
         private void AppendSpace(int count = 1) => _sb.Append(' ', count);
-        private void AppendLine() => _sb.AppendLine();
-        private void AppendLine(string value) => _sb.AppendLine(value);
+        public void AppendLine() => _sb.AppendLine();
+        public void AppendLine(string value) => _sb.AppendLine(value);
 
         private static bool IsNumericType(object o)
         {

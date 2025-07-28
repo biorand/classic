@@ -19,7 +19,7 @@ namespace IntelOrca.Biohazard.BioRand
                 PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
                 WriteIndented = true
             });
-            File.WriteAllText("map.json", json);
+            File.WriteAllText("_map.json", json);
         }
 
         private static Map GenerateMap(IEnumerable<RandomizedRdt> rooms)

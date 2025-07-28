@@ -43,13 +43,13 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 _mod = mod;
                 _crModBuilder = new ClassicRebirthModBuilder(mod.Name);
 
-                var player = _mod.General.GetValueOrDefault("player") as int? ?? 0;
                 _map = _dataManager.GetJson<Map>(BioVersion.Biohazard1, "rdt.json")
-                    .For(new MapFilter(false, (byte)player, 0));
+                    .For(new MapFilter(RandomDoors, (byte)Player, 0));
             }
 
             public int Player => _mod.GetGeneralValue<int>("player");
             public int InventorySize => _mod.GetGeneralValue<int>("inventorySize");
+            public bool RandomDoors => _mod.GetGeneralValue<bool>("randomDoors");
             public bool RandomEnemies => _mod.GetGeneralValue<bool>("randomEnemies");
             public bool CutscenesDisabled => _mod.GetGeneralValue<bool>("cutscenesDisabled");
 
@@ -66,7 +66,8 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 {
                     _crModBuilder.Module = new ClassicRebirthModule("biorand.dll", biorandModule);
                 }
-                _crModBuilder.SetFile("log.md", _mod.GetDump(_map, Player == 0 ? "Chris" : "Jill"));
+
+                _crModBuilder.SetFile("log.md", new ModLogBuilder(_map, _mod, Player == 0 ? "Chris" : "Jill").Build());
                 _crModBuilder.SetFile($"generated.json", _mod.ToJson());
 
                 Write();
@@ -772,13 +773,13 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 var hurtFiles = GetHurtFiles(characterName);
                 var hurtFileNames = new string[][]
                 {
-                    ["chris", "ch_ef"],
-                    ["jill", "jill_ef"],
+                    ["CHRIS", "CH_EF"],
+                    ["JILL", "JILL_EF"],
                     [],
-                    ["reb"]
+                    ["REB"]
                 };
 
-                var soundDir = "sound";
+                var soundDir = "SOUND";
                 for (int i = 0; i < hurtFiles.Length; i++)
                 {
                     var targetData = GetHurtWaveData(hurtFiles[i]);
@@ -791,8 +792,8 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 }
                 if (playerIndex <= 1)
                 {
-                    var nom = playerIndex == 0 ? "ch_nom.wav" : "ji_nom.wav";
-                    var sime = playerIndex == 0 ? "ch_sime.wav" : "ji_sime.wav";
+                    var nom = playerIndex == 0 ? "CH_NOM.WAV" : "JI_NOM.WAV";
+                    var sime = playerIndex == 0 ? "CH_SIME.WAV" : "JI_SIME.WAV";
                     Convert($"{soundDir}/{nom}", hurtFiles[3]);
                     Convert($"{soundDir}/{sime}", hurtFiles[2]);
                 }
