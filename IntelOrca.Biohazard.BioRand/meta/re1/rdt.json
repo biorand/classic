@@ -3096,7 +3096,7 @@
     },
     "20C/GRAVE": {
       "name": "PIANO LESSON/GRAVE",
-      "rdts": [ "20C", "70C" ],
+      "rdts": [ "70C", "20C" ],
       "tags": [ "mansion" ],
       "doors": [
         {

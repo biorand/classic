@@ -161,22 +161,28 @@ namespace IntelOrca.Biohazard.BioRand
             // Apply door targets
             foreach (var door in allDoors)
             {
-                var sourceRdtId = door.Identifier;
-                var targetRdtId = door.Target?.Identifier ?? sourceRdtId;
-                var entrance = door.Target == null
-                    ? door.Door.Entrance
-                    : door.Target.Door.Entrance;
-                if (entrance == null)
-                    throw new Exception($"No sourceDoor entrance found");
-
-                context.ModBuilder.SetDoorTarget(sourceRdtId, new DoorTarget()
+                foreach (var rdtId in door.Room.Rdts)
                 {
-                    Room = targetRdtId.Rdt,
-                    X = entrance.X,
-                    Y = entrance.Y,
-                    Z = entrance.Z,
-                    D = entrance.D
-                });
+                    if (door.Door.Id is not int doorId)
+                        continue;
+
+                    var sourceRdtId = new RdtItemId(rdtId, (byte)doorId);
+                    var targetRdtId = door.Target?.Identifier ?? sourceRdtId;
+                    var entrance = door.Target == null
+                        ? door.Door.Entrance
+                        : door.Target.Door.Entrance;
+                    if (entrance == null)
+                        throw new Exception($"No sourceDoor entrance found");
+
+                    context.ModBuilder.SetDoorTarget(sourceRdtId, new DoorTarget()
+                    {
+                        Room = targetRdtId.Rdt,
+                        X = entrance.X,
+                        Y = entrance.Y,
+                        Z = entrance.Z,
+                        D = entrance.D
+                    });
+                }
             }
         }
 
