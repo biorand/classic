@@ -6343,6 +6343,7 @@
         {
           "id": 1,
           "target": "504:0",
+          "lockId": 37,
           "requires2": [
             "flag(506_COMPUTER_MOLE)"
           ],
@@ -6607,6 +6608,7 @@
         {
           "id": 1,
           "target": "509:0",
+          "lockId": 38,
           "requires2": [
             "flag(506_COMPUTER_JOHNADA)"
           ],
