@@ -343,7 +343,7 @@ namespace IntelOrca.Biohazard.BioRand
                     var targetDoor = availableDoor.Door;
                     var lockId = (int?)null;
 
-                    if (sourceDoor.Door.Kind == DoorKinds.Unblock && !sourceDoor.Door.NoUnlock)
+                    if (!sourceDoor.IsSegmentEnd && sourceDoor.Door.Kind == DoorKinds.Unblock && !sourceDoor.Door.NoUnlock)
                     {
                         if (targetDoor.Door.NoUnlock)
                         {

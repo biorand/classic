@@ -2408,7 +2408,8 @@
             "item(45)",
             "item(46)"
           ],
-          "allowedLocks": []
+          "allowedLocks": [],
+          "noUnlock": true
         }
       ],
       "enemies": [
