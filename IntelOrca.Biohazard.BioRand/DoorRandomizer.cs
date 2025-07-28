@@ -75,7 +75,7 @@ namespace IntelOrca.Biohazard.BioRand
             Distribute(headSegment, _allRooms
                 .Shuffle(rng)
                 .OrderByDescending(x => x.Doors.Length)
-                .Take(numSegments * 2));
+                .Take(numSegments * 3));
 
             // Add rest of the rooms
             var remainingRoomCount = numRooms - _includedRooms.Count;
