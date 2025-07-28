@@ -297,7 +297,7 @@ namespace IntelOrca.Biohazard.BioRand
             var doorToEnd = PickUnconnectedDoorForSegmentEnd(segment)
                 ?? throw new Exception("Segment could not be connected up to the end room");
             var target = segment.End.Doors
-                .Where(x => x.IsConnectable && !x.IsSegmentEnd)
+                .Where(x => x.IsConnectable && !x.IsSegmentEnd && x.IsFree)
                 .Shuffle(_rng)
                 .First();
             doorToEnd.Door.Tags = doorToEnd.Door.Tags.Add(MapTags.LockPriority);
@@ -392,17 +392,6 @@ namespace IntelOrca.Biohazard.BioRand
                 }
             }
             return false;
-
-            int CountRemainingDoors(RoomPieceDoor targetDoor)
-            {
-                var newDoors = targetDoor.Owner.Doors
-                    .Where(x => !x.IsSealed && !x.Door.HasTag(MapTags.ConnectBack))
-                    .Except([targetDoor])
-                    .ToArray();
-
-                var remainingDoorsAfterConnection = unconnected.Length - 1 + newDoors.Length;
-                return remainingDoorsAfterConnection;
-            }
         }
 
         private bool ConnectBackDoors(Segment segment, RoomPieceDoor sourceDoor, RoomPiece targetRoom)
