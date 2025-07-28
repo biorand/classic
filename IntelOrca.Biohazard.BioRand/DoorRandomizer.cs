@@ -133,7 +133,7 @@ namespace IntelOrca.Biohazard.BioRand
                 door.Door.Target = $"{targetRoom}:{targetId}";
             }
 
-            // Remove doors with room constraints
+            // Remove requirements for any doors that have no destination
             foreach (var room in map.Rooms.Values)
             {
                 foreach (var door in room.Doors ?? [])
@@ -141,19 +141,6 @@ namespace IntelOrca.Biohazard.BioRand
                     if (door.Target == null)
                     {
                         door.Requires2 = [];
-                    }
-                }
-            }
-
-            // Remove items with room constraints
-            foreach (var room in map.Rooms.Values)
-            {
-                foreach (var item in room.Items ?? [])
-                {
-                    if (item.Requirements.Any(x => x.Kind == MapRequirementKind.Room || x.Kind == MapRequirementKind.Flag))
-                    {
-                        item.Requires2 = [];
-                        item.Optional = true;
                     }
                 }
             }
