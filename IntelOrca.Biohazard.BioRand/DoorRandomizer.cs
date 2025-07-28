@@ -341,6 +341,21 @@ namespace IntelOrca.Biohazard.BioRand
                 foreach (var availableDoor in availableDoors)
                 {
                     var targetDoor = availableDoor.Door;
+                    var lockId = (int?)null;
+
+                    if (sourceDoor.Door.Kind == DoorKinds.Unblock && !sourceDoor.Door.NoUnlock)
+                    {
+                        if (targetDoor.Door.NoUnlock)
+                        {
+                            // We need to be able to lock the target door to prevent reverse entry
+                            // into an unblock door
+                            continue;
+                        }
+                        else
+                        {
+                            lockId = _lockIds.Dequeue();
+                        }
+                    }
 
                     // Nodes are already connected (stops key rando complaining)
                     if (sourceDoor.Room.Doors.Any(x => x.TargetRoom == targetDoor.Room.Key))
@@ -373,7 +388,7 @@ namespace IntelOrca.Biohazard.BioRand
                     if (!ConnectBackDoors(segment, sourceDoor, targetDoor.Owner))
                         continue;
 
-                    sourceDoor.Connect(targetDoor);
+                    sourceDoor.Connect(targetDoor, lockId);
                     segment.UseRoom(targetDoor.Owner);
                     return true;
                 }

@@ -153,10 +153,10 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
-        private RoomTreeNode? GetRoomTree(MapRoom? parent, MapRoom room, HashSet<MapRoom> visited, List<RoomTreeNode> segmentRoots)
+        private RoomTreeNode? GetRoomTree(MapRoom? parent, MapRoom room, HashSet<MapRoom> visited, List<RoomTreeNode> segmentRoots, bool isUnlockLoopback = false)
         {
             if (!visited.Add(room))
-                return new RoomTreeNode(room, [], isLoopback: true);
+                return new RoomTreeNode(room, [], isLoopback: true, isUnlock: isUnlockLoopback);
 
             var roomRdt = room.Rdts.FirstOrDefault();
             var children = ImmutableArray.CreateBuilder<RoomTreeNode>();
@@ -193,9 +193,7 @@ namespace IntelOrca.Biohazard.BioRand
                 if (targetRoom == null || targetRoom == room || targetRoom == parent)
                     continue;
 
-                var node = isUnlock
-                    ? new RoomTreeNode(targetRoom, [], isLoopback: true, isUnlock: true)
-                    : GetRoomTree(room, targetRoom, visited, segmentRoots);
+                var node = GetRoomTree(room, targetRoom, visited, segmentRoots, isUnlock);
                 if (node == null)
                     continue;
 

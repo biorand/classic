@@ -4726,7 +4726,6 @@
           "kind": "dynamic",
           "lockId": 39,
           "allowedLocks": [],
-          "noUnlock": true,
           "player": 0
         },
         {
@@ -5437,8 +5436,7 @@
           "id": 1,
           "target": "409:0",
           "kind": "unblock",
-          "allowedLocks": [],
-          "noUnlock": true
+          "allowedLocks": []
         },
         {
           "id": 2,
@@ -5597,8 +5595,7 @@
           "requires2": [
             "item(62)"
           ],
-          "allowedLocks": [],
-          "noUnlock": true
+          "allowedLocks": []
         }
       ],
       "items": [
@@ -5671,7 +5668,6 @@
           "target": "408:3",
           "kind": "unblock",
           "allowedLocks": [],
-          "noUnlock": true,
           "doorRando": false
         },
         {
@@ -6079,7 +6075,6 @@
             "item(39)"
           ],
           "allowedLocks": [],
-          "noUnlock": true,
           "randomize": false
         }
       ],
@@ -6776,8 +6771,7 @@
           "requires2": [
             "room(513)"
           ],
-          "allowedLocks": [],
-          "noUnlock": true
+          "allowedLocks": []
         }
       ],
       "enemies": [],
@@ -6848,7 +6842,6 @@
             "room(511)"
           ],
           "allowedLocks": [],
-          "noUnlock": true,
           "randomize": false
         }
       ],
