@@ -316,7 +316,7 @@ namespace IntelOrca.Biohazard.BioRand
                     continue;
 
                 var potential = segment.UnconnectedDoors
-                    .Where(x => x != door)
+                    .Where(x => x != door && x.IsFree)
                     .Where(x => !x.Owner.IsConnectedTo(door.Owner))
                     .FirstOrDefault();
                 if (potential != null)
