@@ -285,7 +285,11 @@ namespace IntelOrca.Biohazard.BioRand
 
             var lockLimit = (int)Math.Round(pairs.Count * lockRatio);
             var numLocks = restrictedPairs.Count(x => x.LockId != null);
-            var shuffledPairs = pairs.Except(restrictedPairs).Shuffle(rng);
+            var shuffledPairs = pairs
+                .Except(restrictedPairs)
+                .Shuffle(rng)
+                .OrderByDescending(x => x.HighPriority)
+                .ToArray();
             foreach (var pair in shuffledPairs)
             {
                 var lockId = pair.LockId;
@@ -391,6 +395,7 @@ namespace IntelOrca.Biohazard.BioRand
             public byte? LockId => A.Door.LockId ?? B.Door.LockId;
             public int[] AllowedLocks => (A.Door.AllowedLocks ?? []).Intersect(B.Door.AllowedLocks ?? []).ToArray();
             public bool Restricted => AllowedLocks.Length == 0;
+            public bool HighPriority => a.Door.HasTag(MapTags.LockPriority) || b.Door.HasTag(MapTags.LockPriority);
 
             public string Identity { get; } = $"{a.Identity} <-> {b.Identity}";
 
@@ -427,6 +432,7 @@ namespace IntelOrca.Biohazard.BioRand
                 get
                 {
                     return Tail.Doors
+                        .Where(x => !x.HasTag(MapTags.SegmentEnd))
                         .Where(x => (x.Requires2?.Length ?? 0) == 0)
                         .Select(x => (map.GetRoom(x.TargetRoom ?? ""), x))
                         .Where(x => x.Item1 != null)

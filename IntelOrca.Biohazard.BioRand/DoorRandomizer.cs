@@ -288,12 +288,13 @@ namespace IntelOrca.Biohazard.BioRand
             {
             }
 
-            var doorToEnd = segment.UnconnectedDoors.Shuffle(_rng).FirstOrDefault()
+            var doorToEnd = PickUnconnectedDoorForSegmentEnd(segment)
                 ?? throw new Exception("Segment could not be connected up to the end room");
             var target = segment.End.Doors
                 .Where(x => x.IsConnectable && !x.IsSegmentEnd)
                 .Shuffle(_rng)
                 .First();
+            doorToEnd.Door.Tags = doorToEnd.Door.Tags.Add(MapTags.LockPriority);
             doorToEnd.Connect(target);
             segment.UseRoom(segment.End);
 
@@ -327,46 +328,53 @@ namespace IntelOrca.Biohazard.BioRand
 
         private bool ConnectAnotherDoor(Segment segment, bool ensureFreeDoor)
         {
-            // Get all unconnected doors
             var unconnected = segment.UnconnectedDoors.Shuffle(_rng);
-
-            // Analyse available doors
-            var availableDoors = segment.AvailableDoors.Shuffle(_rng)
-                .Select(x => (x, CountRemainingDoors(x)))
-                .ToArray();
-
+            var availableDoors = segment.AvailableDoors.Shuffle(_rng);
             if (!ensureFreeDoor)
             {
-                availableDoors = availableDoors.OrderByDescending(x => x.Item2).ToArray();
+                availableDoors = availableDoors.OrderByDescending(x => x.OtherAvailableDoors.Count()).ToArray();
             }
 
             foreach (var sourceDoor in unconnected)
             {
                 if (!segment.HasBox || !segment.HasItems)
                 {
-                    if (!sourceDoor.IsSegmentEnd && sourceDoor.Door.Requirements.Any())
+                    if (!sourceDoor.IsSegmentEnd && !sourceDoor.IsFree)
                     {
                         continue;
                     }
                 }
 
-                foreach (var (targetDoor, remainingDoorsAfterConnection) in availableDoors)
+                foreach (var availableDoor in availableDoors)
                 {
-                    if (ensureFreeDoor && remainingDoorsAfterConnection <= 0)
-                        continue;
+                    var targetDoor = availableDoor.Door;
 
-                    if (!segment.HasBox || !segment.HasItems)
-                    {
-                        // Simplifies things
-                        if (targetDoor.Owner.Rooms.Length != 1)
-                        {
-                            continue;
-                        }
-                    }
-
-                    // Nodes are already connected
+                    // Nodes are already connected (stops key rando complaining)
                     if (sourceDoor.Room.Doors.Any(x => x.TargetRoom == targetDoor.Room.Key))
                         continue;
+
+                    if (ensureFreeDoor)
+                    {
+                        var remainingDoorsAfterConnection = 0;
+                        if (!segment.HasBox || !segment.HasItems)
+                        {
+                            // Simplifies things if we don't consider complex pieces
+                            if (targetDoor.Owner.Rooms.Length != 1)
+                            {
+                                continue;
+                            }
+
+                            remainingDoorsAfterConnection += unconnected.Count(x => x.IsFree && x != sourceDoor);
+                            remainingDoorsAfterConnection += availableDoor.OtherAvailableFreeDoors.Count();
+                        }
+                        else
+                        {
+                            remainingDoorsAfterConnection += unconnected.Count(x => x != sourceDoor);
+                            remainingDoorsAfterConnection += availableDoor.OtherAvailableDoors.Count();
+                        }
+                        if (remainingDoorsAfterConnection <= 0)
+                            continue;
+                    }
 
                     // Connect back check
                     if (!ConnectBackDoors(segment, sourceDoor, targetDoor.Owner))
@@ -437,6 +445,51 @@ namespace IntelOrca.Biohazard.BioRand
             return result.ToArray();
         }
 
+        private RoomPieceDoor? PickUnconnectedDoorForSegmentEnd(Segment segment)
+        {
+            var unconnectedDoors = segment.UnconnectedDoors.ToArray();
+            if (unconnectedDoors.Length == 0)
+                return null;
+
+            var unconnectedDoorsDepth = new int[unconnectedDoors.Length];
+
+            var visited = new HashSet<RoomPiece>();
+            var q = new Queue<(RoomPiece, int)>([(segment.Start!, 0)]);
+            while (q.Count != 0)
+            {
+                var (room, depth) = q.Dequeue();
+                if (!visited.Add(room))
+                    continue;
+
+                foreach (var door in room.Doors)
+                {
+                    if (door.Target == null)
+                    {
+                        var index = Array.IndexOf(unconnectedDoors, door);
+                        if (index != -1)
+                        {
+                            unconnectedDoorsDepth[index] = depth;
+                        }
+                    }
+                    else
+                    {
+                        q.Enqueue((door.Target.Owner, depth + 1));
+                    }
+                }
+            }
+
+            var bestDepth = unconnectedDoorsDepth.Max();
+            var potential = new List<RoomPieceDoor>();
+            for (var i = 0; i < unconnectedDoorsDepth.Length; i++)
+            {
+                if (unconnectedDoorsDepth[i] == bestDepth)
+                {
+                    potential.Add(unconnectedDoors[i]);
+                }
+            }
+            return potential.Random(_rng);
+        }
+
         private class Segment
         {
             public RoomPiece? Start { get; set; }
@@ -502,7 +555,7 @@ namespace IntelOrca.Biohazard.BioRand
                 }
             }
 
-            public IEnumerable<RoomPieceDoor> AvailableDoors
+            public IEnumerable<AvailableDoor> AvailableDoors
             {
                 get
                 {
@@ -523,7 +576,7 @@ namespace IntelOrca.Biohazard.BioRand
                             if (door.Door.HasAnyTag([MapTags.ConnectOut, MapTags.ConnectBack]))
                                 continue;
 
-                            yield return door;
+                            yield return new AvailableDoor(door);
                         }
                     }
                 }
@@ -640,6 +693,7 @@ namespace IntelOrca.Biohazard.BioRand
 
             public bool IsSealed { get; private set; }
             public bool IsConnected => Target != null;
+            public bool IsFree => Door.Requirements.Length == 0;
             public bool IsSegmentEnd => Door.HasTag(MapTags.SegmentEnd);
             public RdtItemId Identifier => new(Room.Rdts![0], (byte)(Door.Id ?? 0));
 
@@ -693,6 +747,24 @@ namespace IntelOrca.Biohazard.BioRand
             }
 
             public override string ToString() => $"{Identifier} -> {Target?.Identifier.ToString() ?? "(null)"}";
+        }
+
+        private readonly struct AvailableDoor(RoomPieceDoor door)
+        {
+            public RoomPieceDoor Door => door;
+
+            public IEnumerable<RoomPieceDoor> OtherDoors
+            {
+                get
+                {
+                    var d = door;
+                    return d.Owner.Doors.Where(x => x != d);
+                }
+            }
+
+            public IEnumerable<RoomPieceDoor> OtherUnsealedDoors => OtherDoors.Where(x => !x.IsSealed);
+            public IEnumerable<RoomPieceDoor> OtherAvailableDoors => OtherDoors.Where(x => !x.IsSealed && !x.Door.HasTag(MapTags.ConnectBack));
+            public IEnumerable<RoomPieceDoor> OtherAvailableFreeDoors => OtherAvailableDoors.Where(x => x.IsFree);
         }
 
         private class GroupDictionary<T> where T : notnull

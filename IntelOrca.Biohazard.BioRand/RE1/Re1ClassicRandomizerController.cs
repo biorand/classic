@@ -440,18 +440,13 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 {
                     foreach (var d in r.Doors ?? [])
                     {
-                        if (d.NoUnlock || d.AllowedLocks != null)
-                            continue;
-
-                        var otherDoor = map.GetOtherSide(d);
-                        if (otherDoor == null || otherDoor.NoUnlock || otherDoor.AllowedLocks != null)
+                        if (d.AllowedLocks != null)
                             continue;
 
                         d.AllowedLocks = locks
                             .Where(x => x.SupportsRoom(r))
                             .Select(x => x.Key)
                             .ToArray();
-                        otherDoor.AllowedLocks = d.AllowedLocks;
                     }
                 }
             }

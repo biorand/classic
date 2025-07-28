@@ -22,5 +22,10 @@
         /// without to pick up items.
         /// </summary>
         public const string ConnectBack = "connect-back";
+
+        /// <summary>
+        /// Tells the lock rando to prioritise a lock for this door.
+        /// </summary>
+        public const string LockPriority = "lock-priority";
     }
 }
