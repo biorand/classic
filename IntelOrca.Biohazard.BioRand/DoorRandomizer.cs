@@ -303,7 +303,7 @@ namespace IntelOrca.Biohazard.BioRand
                     continue;
 
                 var potential = segment.UnconnectedDoors
-                    .Where(x => x != door && x.IsFree)
+                    .Where(x => x != door && x.IsFree && !x.MustConnectOut)
                     .Where(x => !x.Owner.IsConnectedTo(door.Owner))
                     .FirstOrDefault();
                 if (potential != null)
@@ -676,6 +676,7 @@ namespace IntelOrca.Biohazard.BioRand
             public bool IsSealed { get; private set; }
             public bool IsConnected => Target != null;
             public bool IsFree => Door.Requirements.Length == 0;
+            public bool MustConnectOut => Door.HasAnyTag([MapTags.ConnectOut, MapTags.ConnectBack]);
             public bool IsSegmentEnd => Door.HasTag(MapTags.SegmentEnd);
             public RdtItemId Identifier => new(Room.Rdts![0], (byte)(Door.Id ?? 0));
 
