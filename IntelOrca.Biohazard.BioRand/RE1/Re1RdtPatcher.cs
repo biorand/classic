@@ -687,6 +687,24 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             }
         }
 
+        [Patch(Player = 1)]
+        public void AddVariableHelper308(RandomizedRdt rdt308)
+        {
+            // Set FG_ROOM[0] if Barry conditions are met
+            // This allows us to only put enemies in based on !FG_ROOM[0]
+            rdt308.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x01, [0x0E]));
+            rdt308.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x04, [0x01, 0x5D, 0x01]));
+            rdt308.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x04, [0x01, 0x25, 0x00]));
+            rdt308.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x05, [0x04, 0x00, 0x00]));
+            rdt308.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x03, [0x00]));
+            rdt308.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x01, [0x12]));
+            rdt308.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x04, [0x01, 0x58, 0x00]));
+            rdt308.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x04, [0x01, 0x48, 0x01]));
+            rdt308.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x04, [0x01, 0x5D, 0x00]));
+            rdt308.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x05, [0x04, 0x00, 0x00]));
+            rdt308.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x03, [0x00]));
+        }
+
         private static void SetItemAot(RandomizedRdt rdt, int targetOffset, int sourceOffset, bool clearSource = true)
         {
             var targetAot = rdt.Opcodes.OfType<ItemAotSetOpcode>().FirstOrDefault(x => x.Offset == targetOffset);

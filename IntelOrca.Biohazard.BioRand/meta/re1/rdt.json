@@ -4479,7 +4479,7 @@
           "player": 0
         },
         {
-          "condition": "!(1:72 && 1:75)",
+          "condition": "4:0",
           "excludeTypes": [ 4 ],
           "player": 1
         }
