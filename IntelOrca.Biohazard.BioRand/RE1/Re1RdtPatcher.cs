@@ -705,6 +705,59 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             rdt308.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x03, [0x00]));
         }
 
+        [Patch]
+        public void FixBookcase216(RandomizedRdt rdt406)
+        {
+            // Keep bookcase moved when going through door
+            if (RandomDoors && mod.Doors.TryGetValue(RdtItemId.Parse("216:2"), out var dtl))
+            {
+                if (dtl.Target?.Room is RdtId targetRdt)
+                {
+                    ForBothMansions(targetRdt, rdt =>
+                    {
+                        rdt.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x05, [0x00, 79, 0x00]));
+                    });
+                }
+            }
+        }
+
+        [Patch]
+        public void FixBookcase406(RandomizedRdt rdt406)
+        {
+            // Keep bookcases moved when going through door
+            if (RandomDoors && mod.Doors.TryGetValue(RdtItemId.Parse("406:2"), out var dtl))
+            {
+                if (dtl.Target?.Room is RdtId targetRdt)
+                {
+                    ForBothMansions(targetRdt, rdt =>
+                    {
+                        rdt.AdditionalOpcodes.Add(new UnknownOpcode(0, 0x05, [0x00, 69, 0x00]));
+                    });
+                }
+            }
+        }
+
+        private void ForBothMansions(RdtId rdtId, Action<RandomizedRdt> action)
+        {
+            if (rdtId.Stage == 5 || rdtId.Stage == 6)
+            {
+                var rdt = gameData.GetRdt(new RdtId(rdtId.Stage - 5, rdtId.Room));
+                if (rdt != null)
+                    action(rdt);
+            }
+            {
+                var rdt = gameData.GetRdt(new RdtId(rdtId.Stage, rdtId.Room));
+                if (rdt != null)
+                    action(rdt);
+            }
+            if (rdtId.Stage == 0 || rdtId.Stage == 1)
+            {
+                var rdt = gameData.GetRdt(new RdtId(rdtId.Stage + 5, rdtId.Room));
+                if (rdt != null)
+                    action(rdt);
+            }
+        }
+
         private static void SetItemAot(RandomizedRdt rdt, int targetOffset, int sourceOffset, bool clearSource = true)
         {
             var targetAot = rdt.Opcodes.OfType<ItemAotSetOpcode>().FirstOrDefault(x => x.Offset == targetOffset);
