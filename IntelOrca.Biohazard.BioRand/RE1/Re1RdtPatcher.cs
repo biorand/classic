@@ -743,6 +743,173 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             }
         }
 
+        [Patch]
+        public void FixMoDiscReader507(RandomizedRdt rdt507)
+        {
+            var aot = rdt507.AllOpcodes.OfType<AotSetOpcode>().FirstOrDefault(x => x.Id == 13);
+            var item = (ItemAotSetOpcode)rdt507.Items.FirstOrDefault(x => x.Id == 14);
+            item.X = aot.X;
+            item.Y = aot.Z;
+            item.W = (short)aot.W;
+            item.H = (short)aot.D;
+
+            string[] ss = [
+                $"011E",                     // if
+                $"04007201",                 // ck(FG_SCENARIO, 114, 1)
+                $"120C070109000D000100",     //     aot_reset(12, SCE_USEITEM, 1, 9, 13, 1);
+                $"120D0281860045000000",     //     aot_reset(13, SCE_MESSAGE, 129, 134, 69, 0);
+                $"130E0D00",                 //     aot_delete(14, SCE_DOCUMENT, 0);
+                $"0230",                     // else
+                $"120C0081000000000000",     //     aot_reset(12, SCE_NONE, 129, 0, 0, 0);
+                $"0114",                     //     if
+                $"04076200",                 //     ck(FG_ITEM, 98, 0)
+                $"120D0081000000000000",     //         aot_reset(13, SCE_NONE, 129, 0, 0, 0);
+                $"130E0D81",                 //         aot_delete(14, SCE_DOCUMENT, 129);
+                $"0210",                     //     else
+                $"120D0281870045000000",     //         aot_reset(13, SCE_MESSAGE, 129, 135, 69, 0);
+                $"130E0D00",                 //         aot_delete(14, SCE_DOCUMENT, 0);
+
+                $"010C",                     // if
+                $"1028",                     // testitem(ITEM_MO_DISK)
+                $"05007200",                 //     set(FG_SCENARIO, 114, 0)
+                $"240E0D00",                 //     aot_on(14, SCE_DOCUMENT, 0);
+                $"0300",                     // endif
+            ];
+            rdt507.AdditionalFrameOpcodes.AddRange(CreateFromString(ss));
+            rdt507.Nop(0x19A64, 0x19A9C);
+        }
+
+        [Patch]
+        public void FixMoDiscReader509(RandomizedRdt rdt509)
+        {
+            var aot = rdt509.AllOpcodes.OfType<AotSetOpcode>().FirstOrDefault(x => x.Id == 4);
+            var item = (ItemAotSetOpcode)rdt509.Items.FirstOrDefault(x => x.Id == 1);
+            item.X = aot.X;
+            item.Y = aot.Z;
+            item.W = (short)aot.W;
+            item.H = (short)aot.D;
+
+            string[] ss = [
+                $"011E",                     // if
+                $"04007001",                 // ck(FG_SCENARIO, 112, 1)
+                $"1203070109000D000100",     //     aot_reset(3, SCE_USEITEM, 1, 9, 13, 1);
+                $"12040981090000000000",     //     aot_reset(4, SCE_EVENT, 129, 9, event_00, 0);
+                $"13010D00",                 //     aot_delete(1, SCE_DOCUMENT, 0);
+                $"0230",                     // else
+                $"12030081000000000000",     //     aot_reset(3, SCE_NONE, 129, 0, 0, 0);
+                $"0114",                     //     if
+                $"04075200",                 //     ck(FG_ITEM, 82, 0)
+                $"12040081000000000000",     //         aot_reset(4, SCE_NONE, 129, 0, 0, 0);
+                $"13010D81",                 //         aot_delete(1, SCE_DOCUMENT, 129);
+                $"0210",                     //     else
+                $"12040281810045000000",     //         aot_reset(4, SCE_MESSAGE, 129, 129, 69, 0);
+                $"13010D00",                 //         aot_delete(1, SCE_DOCUMENT, 0);
+
+                $"010C",                     // if
+                $"1028",                     // testitem(ITEM_MO_DISK)
+                $"05007000",                 //     set(FG_SCENARIO, 112, 0)
+                $"14000901",                 //     evt_exec(0, 9, event_01)
+                $"0300",                     // endif
+            ];
+            rdt509.AdditionalFrameOpcodes.AddRange(CreateFromString(ss));
+            rdt509.Nop(0x1D122, 0x1D15A);
+        }
+
+        [Patch]
+        public void FixMoDiscReader510(RandomizedRdt rdt510)
+        {
+            var aot = rdt510.AllOpcodes.OfType<AotSetOpcode>().FirstOrDefault(x => x.Id == 4);
+            var item = (ItemAotSetOpcode)rdt510.Items.FirstOrDefault(x => x.Id == 2);
+            item.X = aot.X;
+            item.Y = aot.Z;
+            item.W = (short)aot.W;
+            item.H = (short)aot.D;
+
+            string[] ss = [
+                $"011E",                     // if
+                $"04007101",                 // ck(FG_SCENARIO, 113, 1)
+                $"1203070109000D000100",     //     aot_reset(3, SCE_USEITEM, 1, 9, 13, 1);
+                $"12040281800045000000",     //     aot_reset(4, SCE_MESSAGE, 129, 128, 69, 0);
+                $"13020D00",                 //     aot_delete(2, SCE_DOCUMENT, 0);
+                $"0230",                     // else
+                $"12030081000000000000",     //     aot_reset(3, SCE_NONE, 129, 0, 0, 0);
+                $"0114",                     //     if
+                $"04075A00",                 //     ck(FG_ITEM, 90, 0)
+                $"12040081000000000000",     //         aot_reset(4, SCE_NONE, 129, 0, 0, 0);
+                $"13020D81",                 //         aot_delete(2, SCE_DOCUMENT, 129);
+                $"0210",                     //     else
+                $"12040281810045000000",     //         aot_reset(4, SCE_MESSAGE, 129, 129, 69, 0);
+                $"13020D00",                 //         aot_delete(2, SCE_DOCUMENT, 0);
+
+                $"010C",                     // if
+                $"1028",                     // testitem(ITEM_MO_DISK)
+                $"05007100",                 //     set(FG_SCENARIO, 113, 0)
+                $"14000900",                 //     evt_exec(0, 9, event_00)
+                $"0300",                     // endif
+            ];
+            rdt510.AdditionalFrameOpcodes.AddRange(CreateFromString(ss));
+            rdt510.Nop(0x25412, 0x2544A);
+        }
+
+        [Patch]
+        public void FixMoDiscDoor508(RandomizedRdt rdt508)
+        {
+            // FG_ITEM[82] -> FG_SCENARIO[112] (509)
+            // FG_ITEM[98] -> FG_SCENARIO[114] (507)
+            // FG_ITEM[90] -> FG_SCENARIO[113] (510)
+
+            rdt508.Patch(0x039C + 1, 0);
+            rdt508.Patch(0x039C + 2, 112);
+            rdt508.Patch(0x039C + 3, 1);
+            rdt508.Patch(0x03A2 + 1, 0);
+            rdt508.Patch(0x03A2 + 2, 114);
+            rdt508.Patch(0x03A2 + 3, 1);
+            rdt508.Patch(0x03A8 + 1, 0);
+            rdt508.Patch(0x03A8 + 2, 113);
+            rdt508.Patch(0x03A8 + 3, 1);
+
+            rdt508.Patch(0x067C + 1, 0);
+            rdt508.Patch(0x067C + 2, 112);
+            rdt508.Patch(0x067C + 3, 0);
+            rdt508.Patch(0x06AE + 1, 0);
+            rdt508.Patch(0x06AE + 2, 114);
+            rdt508.Patch(0x06AE + 3, 0);
+            rdt508.Patch(0x06E0 + 1, 0);
+            rdt508.Patch(0x06E0 + 2, 113);
+            rdt508.Patch(0x06E0 + 3, 0);
+        }
+
+        private static UnknownOpcode[] CreateFromString(string[] hex)
+        {
+            return hex.Select(CreateFromString).ToArray();
+        }
+
+        private static UnknownOpcode CreateFromString(string hex)
+        {
+            var data = new byte[(hex.Length - 2) / 2];
+            for (var i = 0; i < data.Length; i++)
+            {
+                data[i] = FromHexChars(hex[(i + 1) * 2], hex[(i + 1) * 2 + 1]);
+            }
+            return new UnknownOpcode(0, FromHexChars(hex[0], hex[1]), data);
+
+            static byte FromHexChars(char a, char b)
+            {
+                return (byte)((FromHexChar(a) << 4) + FromHexChar(b));
+            }
+
+            static byte FromHexChar(char c)
+            {
+                if (c >= '0' && c <= '9')
+                    return (byte)(c - '0');
+                if (c >= 'A' && c <= 'F')
+                    return (byte)(c - 'A' + 10);
+                if (c >= 'a' && c <= 'f')
+                    return (byte)(c - 'a' + 10);
+                return 0;
+            }
+        }
+
         private void ForBothMansions(RdtId rdtId, Action<RandomizedRdt> action)
         {
             if (rdtId.Stage == 5 || rdtId.Stage == 6)

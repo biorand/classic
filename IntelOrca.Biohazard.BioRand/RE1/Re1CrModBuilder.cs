@@ -495,7 +495,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             {
                 foreach (var rrdt in gameData.Rdts)
                 {
-                    var aotOnOpcodes = rrdt.Opcodes
+                    var aotOnOpcodes = rrdt.AllOpcodes
                         .OfType<UnknownOpcode>()
                         .Where(x => x.Opcode == 0x13 || x.Opcode == 0x24) // aot_delete / aot_on
                         .ToArray();

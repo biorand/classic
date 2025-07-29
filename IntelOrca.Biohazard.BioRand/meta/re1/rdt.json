@@ -6645,7 +6645,6 @@
           "requires2": [
             "flag(MO_DISC_507)"
           ],
-          "optional": true,
           "group": 32
         }
       ],
@@ -6764,7 +6763,6 @@
           "requires2": [
             "flag(MO_DISC_509)"
           ],
-          "optional": true,
           "group": 32
         },
         {
@@ -7096,7 +7094,6 @@
           "requires2": [
             "flag(MO_DISC_510)"
           ],
-          "optional": true,
           "group": 32
         }
       ],
