@@ -399,6 +399,18 @@
     "103": {
       "name": "Document (Security System)",
       "kind": "document"
+    },
+    "107": {
+      "name": "Document (Pass Code 01)",
+      "kind": "document"
+    },
+    "108": {
+      "name": "Document (Pass Code 02)",
+      "kind": "document"
+    },
+    "109": {
+      "name": "Document (Pass Code 03)",
+      "kind": "document"
     }
   },
   "enemies": [
@@ -6606,6 +6618,18 @@
           "type": 14,
           "amount": 6,
           "group": 32
+        },
+        {
+          "name": "MO DISC PASS CODE",
+          "id": 14,
+          "globalId": 98,
+          "type": 108,
+          "amount": 1,
+          "requires2": [
+            "flag(MO_DISC_507)"
+          ],
+          "optional": true,
+          "group": 32
         }
       ],
       "flags": [
@@ -6713,6 +6737,19 @@
         }
       ],
       "items": [
+        {
+          "name": "MO DISC PASS CODE",
+          "id": 1,
+          "globalId": 82,
+          "type": 107,
+          "amount": 1,
+          "document": true,
+          "requires2": [
+            "flag(MO_DISC_509)"
+          ],
+          "optional": true,
+          "group": 32
+        },
         {
           "name": "DOCUMENT",
           "id": 2,
@@ -7029,6 +7066,21 @@
         {
           "id": 1,
           "target": "511:0"
+        }
+      ],
+      "items": [
+        {
+          "name": "MO DISC PASS CODE",
+          "id": 2,
+          "globalId": 90,
+          "type": 109,
+          "amount": 1,
+          "document": true,
+          "requires2": [
+            "flag(MO_DISC_510)"
+          ],
+          "optional": true,
+          "group": 32
         }
       ],
       "flags": [
