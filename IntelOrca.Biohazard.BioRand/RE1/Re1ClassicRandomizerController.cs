@@ -331,7 +331,22 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 }
 
                 var genericKeys = map.Items.Where(x => x.Value.Discard).Shuffle(rng);
-                if (!randomDoors)
+                if (randomDoors)
+                {
+                    foreach (var r in map.Rooms.Values)
+                    {
+                        foreach (var d in r.Doors ?? [])
+                        {
+                            if (d.AllowedLocks != null)
+                                continue;
+
+                            d.AllowedLocks = genericKeys
+                                .Select(x => x.Key)
+                                .ToArray();
+                        }
+                    }
+                }
+                else
                 {
                     if (context.Configuration.GetValueOrDefault("locks/preserve", false))
                     {
@@ -405,47 +420,47 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                             }
                         }
                     }
-                }
 
-                // Areas:
-                // MANSION | CAVES | GUARDHOUSE | LAB
-                var areaTags = new List<string[]>([
-                        ["mansion", "courtyard"],
+                    // Areas:
+                    // MANSION | CAVES | GUARDHOUSE | LAB
+                    var areaTags = new List<string[]>([
+                            ["mansion", "courtyard"],
                         ["caves"]]);
-                if (config.GetValueOrDefault("progression/guardhouse", true))
-                {
-                    areaTags.Add(["guardhouse"]);
-                }
-                if (config.GetValueOrDefault("progression/lab", true))
-                {
-                    areaTags.Add(["lab"]);
-                }
-                var locks = genericKeys
-                    .Select(x => new DistributedLock(x.Value.Name, x.Key))
-                    .ToArray();
-                foreach (var l in locks)
-                {
-                    var b = rng.Next(0, 0b1111);
-                    for (var i = 0; i < 4; i++)
+                    if (config.GetValueOrDefault("progression/guardhouse", true))
                     {
-                        if ((b & 1 << i) != 0 && areaTags.Count > i)
+                        areaTags.Add(["guardhouse"]);
+                    }
+                    if (config.GetValueOrDefault("progression/lab", true))
+                    {
+                        areaTags.Add(["lab"]);
+                    }
+                    var locks = genericKeys
+                        .Select(x => new DistributedLock(x.Value.Name, x.Key))
+                        .ToArray();
+                    foreach (var l in locks)
+                    {
+                        var b = rng.Next(0, 0b1111);
+                        for (var i = 0; i < 4; i++)
                         {
-                            l.Tags.AddRange(areaTags[i]);
+                            if ((b & 1 << i) != 0 && areaTags.Count > i)
+                            {
+                                l.Tags.AddRange(areaTags[i]);
+                            }
                         }
                     }
-                }
 
-                foreach (var r in map.Rooms.Values)
-                {
-                    foreach (var d in r.Doors ?? [])
+                    foreach (var r in map.Rooms.Values)
                     {
-                        if (d.AllowedLocks != null)
-                            continue;
+                        foreach (var d in r.Doors ?? [])
+                        {
+                            if (d.AllowedLocks != null)
+                                continue;
 
-                        d.AllowedLocks = locks
-                            .Where(x => x.SupportsRoom(r))
-                            .Select(x => x.Key)
-                            .ToArray();
+                            d.AllowedLocks = locks
+                                .Where(x => x.SupportsRoom(r))
+                                .Select(x => x.Key)
+                                .ToArray();
+                        }
                     }
                 }
             }
