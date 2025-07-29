@@ -670,6 +670,12 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 rdt302.Nop(0x192DC);
                 rdt302.Nop(0x1944A);
                 rdt302.Nop(0x19450);
+
+                // Disable waterfall (for now)
+                rdt302.Nop(0x18E40, 0x18E58);
+                rdt302.Nop(0x18EB4, 0x18ED6);
+                rdt302.Nop(0x18F18, 0x18F2A);
+                rdt302.Nop(0x19008, 0x191E2);
             }
         }
 

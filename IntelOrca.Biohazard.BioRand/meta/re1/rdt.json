@@ -4093,7 +4093,16 @@
             "flag(COURTYARD_LIFT_POWER)"
           ],
           "allowedLocks": [],
-          "noUnlock": true
+          "noUnlock": true,
+          "doorRando": false
+        },
+        {
+          "id": 3,
+          "name": "LADDER TO CAVES",
+          "target": "307:0",
+          "allowedLocks": [],
+          "noUnlock": true,
+          "doorRando": true
         }
       ],
       "flags": [
