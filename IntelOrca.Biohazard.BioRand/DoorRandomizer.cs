@@ -271,6 +271,11 @@ namespace IntelOrca.Biohazard.BioRand
             return roomGroup;
         }
 
+        private int GetNextLockId()
+        {
+            return _lockIds.Dequeue();
+        }
+
         private void RandomizeSegment(Segment segment)
         {
             if (segment.Start == null || segment.End == null)
@@ -310,7 +315,7 @@ namespace IntelOrca.Biohazard.BioRand
                     .FirstOrDefault();
                 if (potential != null)
                 {
-                    door.Connect(potential, _lockIds.Dequeue());
+                    door.Connect(potential, GetNextLockId());
                 }
             }
 
@@ -343,13 +348,13 @@ namespace IntelOrca.Biohazard.BioRand
                 foreach (var availableDoor in availableDoors)
                 {
                     var targetDoor = availableDoor.Door;
-                    var lockId = (int?)null;
+                    var shouldLock = false;
 
                     if (!sourceDoor.IsSegmentEnd && sourceDoor.Door.Kind == DoorKinds.Unblock && sourceDoor.CanBeLocked)
                     {
                         if (targetDoor.CanBeLocked)
                         {
-                            lockId = _lockIds.Dequeue();
+                            shouldLock = true;
                         }
                         else
                         {
@@ -390,7 +395,7 @@ namespace IntelOrca.Biohazard.BioRand
                     if (!ConnectBackDoors(segment, sourceDoor, targetDoor.Owner))
                         continue;
 
-                    sourceDoor.Connect(targetDoor, lockId);
+                    sourceDoor.Connect(targetDoor, shouldLock ? GetNextLockId() : null);
                     segment.UseRoom(targetDoor.Owner);
                     return true;
                 }
@@ -416,7 +421,7 @@ namespace IntelOrca.Biohazard.BioRand
             // Connect back to them
             for (var i = 0; i < connectBackDoors.Length; i++)
             {
-                connectBackDoors[i].Connect(suitableDoors[i], lockId: _lockIds.Dequeue());
+                connectBackDoors[i].Connect(suitableDoors[i], lockId: GetNextLockId());
             }
             return true;
         }
