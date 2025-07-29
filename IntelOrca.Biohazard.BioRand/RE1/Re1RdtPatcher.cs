@@ -812,7 +812,10 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 $"0300",                     // endif
             ];
             rdt509.AdditionalFrameOpcodes.AddRange(CreateFromString(ss));
-            rdt509.Nop(0x1D122, 0x1D15A);
+            if (Player == 0)
+                rdt509.Nop(0x1D122, 0x1D15A);
+            else
+                rdt509.Nop(0x1D13A, 0x1D172);
         }
 
         [Patch]
@@ -848,7 +851,10 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 $"0300",                     // endif
             ];
             rdt510.AdditionalFrameOpcodes.AddRange(CreateFromString(ss));
-            rdt510.Nop(0x25412, 0x2544A);
+            if (Player == 0)
+                rdt510.Nop(0x25412, 0x2544A);
+            else
+                rdt510.Nop(0x253FA, 0x25432);
         }
 
         [Patch]
@@ -858,25 +864,28 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             // FG_ITEM[98] -> FG_SCENARIO[114] (507)
             // FG_ITEM[90] -> FG_SCENARIO[113] (510)
 
-            rdt508.Patch(0x039C + 1, 0);
-            rdt508.Patch(0x039C + 2, 112);
-            rdt508.Patch(0x039C + 3, 1);
-            rdt508.Patch(0x03A2 + 1, 0);
-            rdt508.Patch(0x03A2 + 2, 114);
-            rdt508.Patch(0x03A2 + 3, 1);
-            rdt508.Patch(0x03A8 + 1, 0);
-            rdt508.Patch(0x03A8 + 2, 113);
-            rdt508.Patch(0x03A8 + 3, 1);
+            PatchSet(0x039C, 0, 112, 1);
+            PatchSet(0x03A2, 0, 114, 1);
+            PatchSet(0x03A8, 0, 113, 1);
+            if (Player == 0)
+            {
+                PatchSet(0x067C, 0, 112, 0);
+                PatchSet(0x06AE, 0, 114, 0);
+                PatchSet(0x06E0, 0, 113, 0);
+            }
+            else
+            {
+                PatchSet(0x0664, 0, 112, 0);
+                PatchSet(0x0696, 0, 114, 0);
+                PatchSet(0x06C8, 0, 113, 0);
+            }
 
-            rdt508.Patch(0x067C + 1, 0);
-            rdt508.Patch(0x067C + 2, 112);
-            rdt508.Patch(0x067C + 3, 0);
-            rdt508.Patch(0x06AE + 1, 0);
-            rdt508.Patch(0x06AE + 2, 114);
-            rdt508.Patch(0x06AE + 3, 0);
-            rdt508.Patch(0x06E0 + 1, 0);
-            rdt508.Patch(0x06E0 + 2, 113);
-            rdt508.Patch(0x06E0 + 3, 0);
+            void PatchSet(int offset, byte group, byte id, byte value)
+            {
+                rdt508.Patch(offset + 1, group);
+                rdt508.Patch(offset + 2, id);
+                rdt508.Patch(offset + 3, value);
+            }
         }
 
         private static UnknownOpcode[] CreateFromString(string[] hex)
