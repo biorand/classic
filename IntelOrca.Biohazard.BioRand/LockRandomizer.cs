@@ -343,6 +343,10 @@ namespace IntelOrca.Biohazard.BioRand
 
         private void SetDoorLocks(IClassicRandomizerGeneratedVariation context, ImmutableArray<DoorInfo> doors)
         {
+            const int UNLOCKED = 0;
+            const int LOCKED = 255;
+            const int UNLOCK = 254;
+
             var modBuilder = context.ModBuilder;
             foreach (var doorInfo in doors)
             {
@@ -351,34 +355,16 @@ namespace IntelOrca.Biohazard.BioRand
                     continue;
 
                 var doorLockId = door.LockId ?? 0;
-                var doorLock = (DoorLock?)null;
-                if (door.Target == null)
+                var doorLockKey = true switch
                 {
-                    if (!door.NoUnlock)
-                    {
-                        doorLock = new DoorLock(255, 255);
-                    }
-                }
-                else if (door.Kind == DoorKinds.Locked)
-                {
-                    doorLock = new DoorLock(doorLockId, 255);
-                }
-                else if (door.Kind == DoorKinds.Unlock)
-                {
-                    doorLock = new DoorLock(doorLockId, 254);
-                }
-                else if (doorLockId != 0)
-                {
-                    if (door.LockKey is int keyItemId)
-                    {
-                        doorLock = new DoorLock(doorLockId, keyItemId);
-                    }
-                    else
-                    {
-                        doorLock = new DoorLock(doorLockId, 0);
-                    }
-                }
-
+                    _ when door.NoUnlock => UNLOCKED,
+                    _ when door.Target == null => LOCKED,
+                    _ when door.Kind == DoorKinds.Locked => LOCKED,
+                    _ when door.Kind == DoorKinds.Unlock => UNLOCK,
+                    _ when door.LockKey is int keyItemId => keyItemId,
+                    _ => UNLOCKED
+                };
+                var doorLock = doorLockId == 0 ? (DoorLock?)null : new DoorLock(doorLockId, doorLockKey);
                 foreach (var rdtId in doorInfo.Room.Rdts)
                 {
                     modBuilder.SetDoorLock(new RdtItemId(rdtId, (byte)doorId), doorLock);

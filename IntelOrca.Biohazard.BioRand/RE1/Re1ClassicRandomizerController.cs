@@ -284,14 +284,13 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 {
                     foreach (var door in room.Doors ?? [])
                     {
+                        if (door.AllowedLocks == null)
+                        {
+                            door.LockId = null;
+                        }
                         if (door.Kind == DoorKinds.Locked || door.Kind == DoorKinds.Unlock)
                         {
                             door.Kind = null;
-                            door.LockId = null;
-                        }
-                        else if (door.Kind != DoorKinds.Dynamic && (door.Requires2 ?? []).Length == 0)
-                        {
-                            door.LockId = null;
                         }
                     }
                 }

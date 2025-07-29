@@ -4372,7 +4372,8 @@
         },
         {
           "id": 1,
-          "target": "308:0"
+          "target": "308:0",
+          "lockId": 40
         },
         {
           "target": "307/BACK",
@@ -4443,14 +4444,15 @@
           "id": 2,
           "tags": [ "connect-out" ],
           "target": "30B:0",
-          "lockId": 39,
-          "player": 0
+          "allowedLocks": [],
+          "noUnlock": true,
+          "doorRando": false
         },
         {
           "id": 2,
           "tags": [ "connect-out" ],
           "target": "30B:0",
-          "player": 1
+          "doorRando": true
         }
       ]
     },
@@ -4460,18 +4462,45 @@
       "tags": [ "caves" ],
       "doors": [
         {
+          "name": "Flamethrower Door",
           "id": 0,
-          "target": "307:1"
+          "target": "307:1",
+          "lockId": 40,
+          "allowedLocks": [],
+          "noUnlock": true,
+          "doorRando": false
+        },
+        {
+          "name": "Flamethrower Door",
+          "id": 0,
+          "target": "307:1",
+          "kind": "unblock",
+          "lockId": 40,
+          "allowedLocks": [],
+          "noUnlock": true,
+          "doorRando": true
         },
         {
           "id": 1,
           "target": "309:0",
-          "allowedLocks": []
+          "allowedLocks": [],
+          "doorRando": false
+        },
+        {
+          "id": 1,
+          "target": "309:0",
+          "doorRando": true
         },
         {
           "id": 2,
           "target": "309:1",
-          "allowedLocks": []
+          "allowedLocks": [],
+          "doorRando": false
+        },
+        {
+          "id": 2,
+          "target": "309:1",
+          "doorRando": true
         }
       ],
       "enemies": [
@@ -4722,17 +4751,23 @@
       "tags": [ "caves" ],
       "doors": [
         {
+          "name": "Flamethrower Door",
           "id": 0,
           "target": "307/BACK:2",
-          "kind": "dynamic",
           "lockId": 39,
           "allowedLocks": [],
-          "player": 0
+          "noUnlock": true,
+          "doorRando": false
         },
         {
+          "name": "Flamethrower Door",
           "id": 0,
           "target": "307/BACK:2",
-          "player": 1
+          "kind": "unblock",
+          "lockId": 39,
+          "allowedLocks": [],
+          "noUnlock": true,
+          "doorRando": true
         },
         {
           "id": 1,
@@ -4823,18 +4858,13 @@
           "target": "30E:0"
         },
         {
+          "name": "Flamethrower Door",
           "id": 2,
           "target": "30F:2",
-          "kind": "dynamic",
+          "kind": "unblock",
           "lockId": 47,
           "allowedLocks": [],
-          "noUnlock": true,
-          "player": 0
-        },
-        {
-          "id": 2,
-          "target": "30F:2",
-          "player": 1
+          "noUnlock": true
         }
       ],
       "enemies": [

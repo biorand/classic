@@ -301,9 +301,11 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 if (!door.IsConnectable)
                     continue;
+                if (!door.CanBeLocked)
+                    continue;
 
                 var potential = segment.UnconnectedDoors
-                    .Where(x => x != door && x.IsFree && !x.MustConnectOut)
+                    .Where(x => x != door && x.IsFree && !x.MustConnectOut && x.CanBeLocked)
                     .Where(x => !x.Owner.IsConnectedTo(door.Owner))
                     .FirstOrDefault();
                 if (potential != null)
@@ -343,17 +345,17 @@ namespace IntelOrca.Biohazard.BioRand
                     var targetDoor = availableDoor.Door;
                     var lockId = (int?)null;
 
-                    if (!sourceDoor.IsSegmentEnd && sourceDoor.Door.Kind == DoorKinds.Unblock && !sourceDoor.Door.NoUnlock)
+                    if (!sourceDoor.IsSegmentEnd && sourceDoor.Door.Kind == DoorKinds.Unblock && sourceDoor.CanBeLocked)
                     {
-                        if (targetDoor.Door.NoUnlock)
+                        if (targetDoor.CanBeLocked)
+                        {
+                            lockId = _lockIds.Dequeue();
+                        }
+                        else
                         {
                             // We need to be able to lock the target door to prevent reverse entry
                             // into an unblock door
                             continue;
-                        }
-                        else
-                        {
-                            lockId = _lockIds.Dequeue();
                         }
                     }
 
@@ -692,6 +694,7 @@ namespace IntelOrca.Biohazard.BioRand
             public bool IsConnected => Target != null;
             public bool IsFree => Door.Requirements.Length == 0;
             public bool MustConnectOut => Door.HasAnyTag([MapTags.ConnectOut, MapTags.ConnectBack]);
+            public bool CanBeLocked => !Door.NoUnlock;
             public bool IsSegmentEnd => Door.HasTag(MapTags.SegmentEnd);
             public RdtItemId Identifier => new(Room.Rdts![0], (byte)(Door.Id ?? 0));
 
