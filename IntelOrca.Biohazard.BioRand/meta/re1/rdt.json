@@ -6492,7 +6492,14 @@
           "target": "507/STORE:0",
           "kind": "locked",
           "lockId": 45,
-          "allowedLocks": []
+          "allowedLocks": [],
+          "doorRando": false
+        },
+        {
+          "id": 2,
+          "target": "507/STORE:0",
+          "lockId": 45,
+          "doorRando": true
         },
         {
           "id": 3,
