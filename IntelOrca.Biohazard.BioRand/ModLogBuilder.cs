@@ -22,6 +22,12 @@ namespace IntelOrca.Biohazard.BioRand
         {
             var mdb = new MarkdownBuilder();
 
+            mdb.Heading(1, _mod.Name);
+            mdb.AppendLine(_mod.Description.Trim()
+                .Replace("\r\n", "\n")
+                .Replace("\n", " \\\n"));
+            mdb.AppendLine();
+
             mdb.Heading(1, "Inventory");
             DumpInventory(_playerName, _mod.Inventory[0]);
 
@@ -63,6 +69,7 @@ namespace IntelOrca.Biohazard.BioRand
                 mdb.TableRow(enemy.GlobalId, enemy.RdtId, roomName, enemy.Id, enemyName);
             }
 
+#if false
             mdb.Heading(1, "Doors");
             mdb.Table("RDT", "ID", "ROOM", "DOOR", "TARGET", "LOCK", "REQUIRES");
             foreach (var r in _map.Rooms)
@@ -85,6 +92,7 @@ namespace IntelOrca.Biohazard.BioRand
                     mdb.TableRow(rdt, (object?)d.Id ?? "", r.Value.Name ?? "", d.Name ?? "", d.Target ?? "", d.LockId ?? 0, requires);
                 }
             }
+#endif
 
             mdb.Heading(1, "Map");
 
@@ -97,7 +105,7 @@ namespace IntelOrca.Biohazard.BioRand
             for (var i = 0; i < segmentRoots.Count; i++)
             {
                 mdb.Heading(3, $"Segment {i + 1}");
-                segmentRoots[i].Visit(0, (indent, node) => mdb.AppendLine($"{new string(' ', indent * 2)}{node.Icon} **{node.RdtId}** | {node.Name}  "));
+                segmentRoots[i].Visit(0, (indent, node) => mdb.AppendLine($"{new string('\u2003', indent * 2)}{node.Icon} **{node.RdtId}** | {node.Name}  "));
                 mdb.AppendLine();
             }
 

@@ -690,16 +690,29 @@ namespace IntelOrca.Biohazard.BioRand
             if (modBuilder is ICrModBuilder crModBuilder)
             {
                 var crMod = crModBuilder.Create(mod);
-                var modFileName = $"mod_biorand_{input.Seed}.7z";
+                var assets = ImmutableArray.CreateBuilder<RandomizerOutputAsset>();
+
                 var archiveFile = crMod.Create7z();
-                var asset = new RandomizerOutputAsset(
-                    "_mod",
+                assets.Add(new RandomizerOutputAsset(
+                    "_1_mod",
                     "Classic Rebirth Mod",
                     "Drop this in your RE 1 install folder.",
-                    modFileName,
-                    archiveFile);
+                    $"mod_biorand_{input.Seed}.7z",
+                    archiveFile));
+
+                var logData = crMod.GetFile("log.html");
+                if (logData != null)
+                {
+                    assets.Add(new RandomizerOutputAsset(
+                        "_2_log",
+                        "Spoiler Log",
+                        "Shows you where keys are.",
+                        $"mod_biorand_{input.Seed}.html",
+                        logData));
+                }
+
                 return new RandomizerOutput(
-                    [asset],
+                    assets.ToImmutable(),
                     "",
                     []);
             }

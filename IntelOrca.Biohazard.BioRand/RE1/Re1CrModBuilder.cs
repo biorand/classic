@@ -12,6 +12,7 @@ using IntelOrca.Biohazard.Extensions;
 using IntelOrca.Biohazard.Room;
 using IntelOrca.Biohazard.Script;
 using IntelOrca.Biohazard.Script.Opcodes;
+using Markdig;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace IntelOrca.Biohazard.BioRand.RE1
@@ -67,11 +68,38 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     _crModBuilder.Module = new ClassicRebirthModule("biorand.dll", biorandModule);
                 }
 
-                _crModBuilder.SetFile("log.md", new ModLogBuilder(_map, _mod, Player == 0 ? "Chris" : "Jill").Build());
-                _crModBuilder.SetFile($"generated.json", _mod.ToJson());
+                _crModBuilder.SetFile("generated.json", _mod.ToJson());
+                CreateLogs();
 
                 Write();
                 return _crModBuilder.Build();
+            }
+
+            private void CreateLogs()
+            {
+                var md = new ModLogBuilder(_map, _mod, Player == 0 ? "Chris" : "Jill").Build();
+                var pipeline = new MarkdownPipelineBuilder()
+                    .UseAdvancedExtensions()
+                    .Build();
+                var htmlBody = Markdig.Markdown.ToHtml(md.Replace("\u2003", "&#8195;"), pipeline);
+                var html =
+                    $"""
+                    <!doctype html>
+                    <html lang="en">
+                    <head>
+                    <meta charset="utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1">
+                    <title>Log for {_mod.Name}</title>
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.8.1/github-markdown.min.css">
+                    </head>
+                    <body class="markdown-body" style="padding: 32px;">
+                    {htmlBody}
+                    </body>
+                    </html>
+                    """;
+
+                _crModBuilder.SetFile("log.md", md);
+                _crModBuilder.SetFile("log.html", html);
             }
 
             public void Write()
