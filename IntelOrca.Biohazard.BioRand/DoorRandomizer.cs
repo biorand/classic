@@ -109,6 +109,8 @@ namespace IntelOrca.Biohazard.BioRand
                 map.Rooms.Remove(room.Key);
             }
 
+            DistributeLocks(map, headSegment);
+
             // Update door targets in map
             var allDoors = headSegment.All.SelectMany(x => x.Doors).Distinct().ToArray();
             foreach (var door in allDoors)
@@ -222,7 +224,7 @@ namespace IntelOrca.Biohazard.BioRand
             Segment? last = null;
             for (var i = 0; i < numSegments; i++)
             {
-                var segment = new Segment();
+                var segment = new Segment(i + 1);
                 if (last == null)
                     head = segment;
                 else
@@ -323,6 +325,14 @@ namespace IntelOrca.Biohazard.BioRand
             foreach (var door in segment.UnconnectedDoors)
             {
                 door.Seal();
+            }
+
+            foreach (var p in segment.Used)
+            {
+                foreach (var room in p.Rooms)
+                {
+                    room.Tags = room.Tags.Add($"segment-{segment.Number}");
+                }
             }
         }
 
@@ -494,14 +504,66 @@ namespace IntelOrca.Biohazard.BioRand
             return potential.Random(_rng);
         }
 
-        private class Segment
+        private void DistributeLocks(Map map, Segment head)
         {
+            var genericKeys = map.Items
+                .Where(x => x.Value.Discard)
+                .Select(x => x.Key)
+                .Shuffle(_rng)
+                .ToQueue();
+
+            // One key dedicated to each segment
+            var segments = head.All.ToArray();
+            foreach (var segment in segments)
+            {
+                if (genericKeys.Count != 0)
+                {
+                    segment.AvailableLocks.Add(genericKeys.Dequeue());
+                }
+            }
+
+            // Other keys cross segments
+            var segmentBag = new EndlessBag<Segment>(_rng, segments);
+            while (genericKeys.Count != 0)
+            {
+                var key = genericKeys.Dequeue();
+                var numSegmentsForKey = _rng.Next(1, Math.Min(4, segments.Length + 1));
+                for (var i = 0; i < numSegmentsForKey; i++)
+                {
+                    var segment = segmentBag.Next();
+                    segment.AvailableLocks.Add(key);
+                }
+            }
+
+            // Apply available locks to doors
+            foreach (var segment in segments)
+            {
+                foreach (var p in segment.Used)
+                {
+                    foreach (var room in p.Rooms)
+                    {
+                        foreach (var door in room.Doors ?? [])
+                        {
+                            door.AllowedLocks = door.AllowedLocks
+                                .Intersect(segment.AvailableLocks)
+                                .OrderBy(x => x)
+                                .ToArray();
+                        }
+                    }
+                }
+            }
+        }
+
+        private class Segment(int number)
+        {
+            public int Number => number;
             public RoomPiece? Start { get; set; }
             public RoomPiece? End { get; set; }
             public Segment? Previous { get; set; }
             public Segment? Next { get; set; }
             public List<RoomPiece> Used { get; } = [];
             public List<RoomPiece> Unused { get; } = [];
+            public HashSet<int> AvailableLocks { get; } = [];
 
             public bool HasItems { get; private set; }
             public bool HasBox { get; private set; }
