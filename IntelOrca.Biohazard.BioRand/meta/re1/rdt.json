@@ -4386,15 +4386,16 @@
       "tags": [ "caves", "save" ],
       "doors": [
         {
+          "name": "Ladder",
           "id": 0,
           "target": "302:3",
           "allowedLocks": [],
           "noUnlock": true
         },
         {
+          "name": "Side door next to ladder",
           "id": 1,
-          "target": "308:0",
-          "lockId": 40
+          "target": "308:0"
         },
         {
           "target": "307/BACK",
@@ -4462,18 +4463,10 @@
           "randomize": false
         },
         {
+          "name": "Door after crank passage",
           "id": 2,
           "tags": [ "connect-out" ],
-          "target": "30B:0",
-          "allowedLocks": [],
-          "noUnlock": true,
-          "doorRando": false
-        },
-        {
-          "id": 2,
-          "tags": [ "connect-out" ],
-          "target": "30B:0",
-          "doorRando": true
+          "target": "30B:0"
         }
       ]
     },
@@ -4489,7 +4482,8 @@
           "lockId": 40,
           "allowedLocks": [],
           "noUnlock": true,
-          "doorRando": false
+          "doorRando": false,
+          "player": 0
         },
         {
           "name": "Flamethrower Door",
@@ -4499,7 +4493,13 @@
           "lockId": 40,
           "allowedLocks": [],
           "noUnlock": true,
-          "doorRando": true
+          "doorRando": true,
+          "player": 0
+        },
+        {
+          "id": 0,
+          "target": "307:1",
+          "player": 1
         },
         {
           "id": 1,
@@ -4778,7 +4778,8 @@
           "lockId": 39,
           "allowedLocks": [],
           "noUnlock": true,
-          "doorRando": false
+          "doorRando": false,
+          "player": 0
         },
         {
           "name": "Flamethrower Door",
@@ -4788,7 +4789,13 @@
           "lockId": 39,
           "allowedLocks": [],
           "noUnlock": true,
-          "doorRando": true
+          "doorRando": true,
+          "player": 0
+        },
+        {
+          "id": 0,
+          "target": "307/BACK:2",
+          "player": 1
         },
         {
           "id": 1,
@@ -4885,7 +4892,13 @@
           "kind": "unblock",
           "lockId": 47,
           "allowedLocks": [],
-          "noUnlock": true
+          "noUnlock": true,
+          "player": 0
+        },
+        {
+          "id": 2,
+          "target": "30F:2",
+          "player": 1
         }
       ],
       "enemies": [
