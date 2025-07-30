@@ -2104,7 +2104,6 @@
           "type": 61,
           "amount": 1,
           "group": 1,
-          "player": 0,
           "typeOffsets": [
             "0x1CBC5"
           ]
@@ -2478,9 +2477,7 @@
           "type": 61,
           "amount": 1,
           "hidden": true,
-          "optional": true,
-          "group": 4,
-          "player": 0
+          "group": 4
         },
         {
           "name": "CRANK ON SHELF",
@@ -3389,8 +3386,7 @@
           "globalId": 149,
           "type": 61,
           "amount": 1,
-          "group": 1,
-          "player": 0
+          "group": 1
         }
       ],
       "enemies": [
@@ -3896,8 +3892,7 @@
           "type": 61,
           "amount": 1,
           "hidden": true,
-          "group": 2,
-          "player": 0
+          "group": 2
         }
       ],
       "enemies": [
@@ -5134,7 +5129,7 @@
           "type": 61,
           "amount": 1,
           "group": 8,
-          "player": 0
+          "hidden": true
         },
         {
           "name": "LOCKED DRAWER",
@@ -5950,7 +5945,7 @@
           "type": 61,
           "amount": 1,
           "group": 8,
-          "player": 0
+          "hidden": true
         }
       ],
       "enemies": [

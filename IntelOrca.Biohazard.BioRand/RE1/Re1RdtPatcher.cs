@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using IntelOrca.Biohazard.Script.Opcodes;
@@ -886,6 +887,64 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 rdt508.Patch(offset + 2, id);
                 rdt508.Patch(offset + 3, value);
             }
+        }
+
+        [Patch(BothMansions = true, Player = 1)]
+        public void EnableItemForJill113(RandomizedRdt rdt113)
+        {
+            rdt113.Nop(0x1CAD8, 0x1CADA);
+            rdt113.Nop(0x1CB7C);
+            rdt113.Nop(0x1CB98, 0x1CB9A);
+            rdt113.Nop(0x1CBBA);
+        }
+
+        [Patch(BothMansions = true, Player = 1)]
+        public void EnableItemForJill11B(RandomizedRdt rdt11B)
+        {
+            rdt11B.Nop(0x4A7E, 0x4A80);
+            rdt11B.Nop(0x4A9E, 0x4AA0);
+            rdt11B.Nop(0x4B4C);
+        }
+
+        [Patch(BothMansions = true, Player = 1)]
+        public void EnableItemForJill211(RandomizedRdt rdt211)
+        {
+            rdt211.Nop(0x10C1C, 0x10C1E);
+            rdt211.Nop(0x10C42);
+        }
+
+        [Patch(BothMansions = true, Player = 1)]
+        public void EnableItemForJill21C(RandomizedRdt rdt21C)
+        {
+            rdt21C.AdditionalOpcodes.Add(
+                CreateFromString("180A3421781E4006E8033D0100FF222424FA60220000E4810086"));
+        }
+
+        [Patch(Player = 1)]
+        public void EnableItemForJill401(RandomizedRdt rdt401)
+        {
+            rdt401.AdditionalOpcodes.AddRange([
+                CreateItemFromString("1803FC08BC34E803E8033D0101FF360B60FA7837000064810000"),
+                CreateFromString("3B0100089600"),
+                CreateFromString("13030000"),
+                CreateFromString("0118"),
+                CreateFromString("04076400"),
+                CreateFromString("0D05FC08BC34E803E8030981090000000000"),
+                CreateFromString("0300")]);
+        }
+
+        [Patch(Player = 1)]
+        public void EnableItemForJill40F(RandomizedRdt rdt40F)
+        {
+            rdt40F.Nop(0x1F6FE);
+        }
+
+        private static ItemAotSetOpcode CreateItemFromString(string hex)
+        {
+            using var ms = new MemoryStream();
+            CreateFromString(hex).Write(new BinaryWriter(ms));
+            ms.Position = 0;
+            return ItemAotSetOpcode.Read(new BinaryReader(ms), 0);
         }
 
         private static UnknownOpcode[] CreateFromString(string[] hex)
