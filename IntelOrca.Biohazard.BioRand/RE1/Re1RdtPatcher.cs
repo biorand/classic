@@ -89,22 +89,6 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             }
         }
 
-#if false
-        [Patch]
-        public void EnableMoreJillItems(RandomizedRdt rdt106)
-        {
-            rdt106.Patch(0x2FC02 + 1, 7);
-            rdt106.Patch(0x2FC02 + 2, 52);
-            rdt106.Patch(0x2FC02 + 3, 0);
-            rdt106.Nop(0x2FC06);
-            rdt106.Patch(0x2FFBC + 1, 7);
-            rdt106.Patch(0x2FFBC + 2, 52);
-            rdt106.Patch(0x2FFBC + 3, 0);
-            rdt106.Nop(0x2FFC0);
-            rdt106.Nop(0x31862);
-        }
-#endif
-
         [Patch(BothMansions = true)]
         public void FixMapsAsItems(
             RandomizedRdt rdt107,
@@ -887,6 +871,19 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 rdt508.Patch(offset + 2, id);
                 rdt508.Patch(offset + 3, value);
             }
+        }
+
+        [Patch(BothMansions = true, Player = 1)]
+        public void EnableItemForJill106(RandomizedRdt rdt106)
+        {
+            rdt106.Nop(0x2FC00, 0x2FC06);
+            rdt106.Nop(0x2FC24, 0x2FC26);
+
+            rdt106.Nop(0x2FFBC);
+            rdt106.Nop(0x2FFC4);
+
+            rdt106.Nop(0x31860, 0x31862);
+            rdt106.Nop(0x31870, 0x31872);
         }
 
         [Patch(BothMansions = true, Player = 1)]

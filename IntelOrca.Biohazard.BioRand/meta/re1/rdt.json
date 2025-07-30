@@ -716,13 +716,22 @@
       ],
       "items": [
         {
-          "name": "BED SWORD KEY",
+          "name": "SWORD KEY ON BED",
           "id": 4,
           "globalId": 22,
           "type": 51,
           "amount": 1,
           "group": 1,
           "player": 0
+        },
+        {
+          "name": "INK ON BED",
+          "id": 1,
+          "globalId": 22,
+          "type": 47,
+          "amount": 3,
+          "group": 1,
+          "player": 1
         }
       ],
       "enemies": [
