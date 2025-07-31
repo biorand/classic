@@ -6,7 +6,9 @@ using System.Net.Http;
 using System.Reflection;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Spectre.Console;
 using Spectre.Console.Cli;
+using Spectre.Console.Extensions;
 
 namespace IntelOrca.Biohazard.BioRand.Classic.Commands
 {
@@ -34,17 +36,26 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
             var outputPath = Path.Combine(outputDirectory, "data.zip");
 
             var currentVersion = GetDataVersion(outputPath);
+            if (currentVersion == null)
+                AnsiConsole.MarkupLine($"[yellow]No data detected[/]");
+            else
+                AnsiConsole.MarkupLine($"[yellow]Current version: {currentVersion}[/]");
 
-            Console.WriteLine("Getting latest download URL...");
-            var releaseInfo = await GetLatestZipDownloadAsync();
+            var releaseInfo = await AnsiConsole
+                .Status()
+                .Spinner(Spinner.Known.Dots2)
+                .SpinnerStyle(Style.Parse("teal"))
+                .StartAsync("[teal]Getting latest download URL[/]", ctx => GetLatestZipDownloadAsync());
+
             if (releaseInfo.Version > currentVersion || settings.Force)
             {
-                Console.WriteLine($"Downloading {releaseInfo.DownloadUrl}...");
+                AnsiConsole.MarkupLine($"[yellow]Latest version: {releaseInfo.Version}[/]");
+                AnsiConsole.MarkupLine($"[teal]Downloading [link]{releaseInfo.DownloadUrl}[/]...[/]");
                 await DownloadAsync(releaseInfo.DownloadUrl, outputPath);
             }
             else
             {
-                Console.WriteLine($"Data already up to date. Use -f to override.");
+                AnsiConsole.MarkupLine($"[lime]:check_box_with_check:  Data already up to date. Use -f to override.[/]");
             }
             return 0;
         }
@@ -94,19 +105,44 @@ namespace IntelOrca.Biohazard.BioRand.Classic.Commands
             long totalRead = 0;
             int read;
 
-            while ((read = await contentStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+            var fileName = Path.GetFileName(outputPath) ?? "";
+            if (canReportProgress)
             {
-                await fileStream.WriteAsync(buffer, 0, read);
-                totalRead += read;
+                await AnsiConsole
+                    .Progress()
+                    .Columns([
+                        new SpinnerColumn(Spinner.Known.Dots2).Style(Style.Parse("teal")),
+                        new TaskDescriptionColumn(),
+                        new ProgressBarColumn(),
+                        new DownloadedColumn(),
+                        new PercentageColumn(),
+                        new TransferSpeedColumn(),
+                        new RemainingTimeColumn(),
+                    ])
+                    .StartAsync(async ctx =>
+                    {
+                        var downloadTask = ctx.AddTask($"[teal]{fileName}[/]");
+                        downloadTask.MaxValue = totalBytes;
 
-                var mib = totalRead / (1024 * 1024);
-                if (canReportProgress)
+                        while ((read = await contentStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
+                        {
+                            await fileStream.WriteAsync(buffer, 0, read);
+                            totalRead += read;
+
+                            var mib = totalRead / (1024 * 1024);
+                            double progress = (double)totalRead / totalBytes * 100;
+                            downloadTask.Value(totalRead);
+                        }
+                    });
+            }
+            else
+            {
+                while ((read = await contentStream.ReadAsync(buffer, 0, buffer.Length)) > 0)
                 {
-                    double progress = (double)totalRead / totalBytes * 100;
-                    Console.Write($"\rDownloaded {mib:0.0} MiB ({progress:0.0}%)...");
-                }
-                else
-                {
+                    await fileStream.WriteAsync(buffer, 0, read);
+                    totalRead += read;
+
+                    var mib = totalRead / (1024 * 1024);
                     Console.Write($"\rDownloaded {mib:0.0} MiB...");
                 }
             }
