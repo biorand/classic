@@ -109,7 +109,10 @@ namespace IntelOrca.Biohazard.BioRand
                 map.Rooms.Remove(room.Key);
             }
 
-            DistributeLocks(map, headSegment);
+            if (context.Configuration.GetValueOrDefault<bool>("locks/random"))
+            {
+                DistributeLocks(map, headSegment);
+            }
 
             // Update door targets in map
             var allDoors = headSegment.All.SelectMany(x => x.Doors).Distinct().ToArray();
@@ -544,7 +547,7 @@ namespace IntelOrca.Biohazard.BioRand
                     {
                         foreach (var door in room.Doors ?? [])
                         {
-                            door.AllowedLocks = door.AllowedLocks
+                            door.AllowedLocks = (door.AllowedLocks ?? [])
                                 .Intersect(segment.AvailableLocks)
                                 .OrderBy(x => x)
                                 .ToArray();
