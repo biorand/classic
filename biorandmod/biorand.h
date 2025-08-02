@@ -9,10 +9,12 @@ class MemoryManager
 {
 private:
     void* _handle;
+    void* _crhandle;
 
 public:
     MemoryManager();
 
+    uint32_t CalculateCrAddress(uint32_t address);
     void Read(uint32_t address, void* buffer, size_t len);
     void Write(uint32_t address, const void* buffer, size_t len);
     void Nop(uint32_t address, uint32_t addressEnd);

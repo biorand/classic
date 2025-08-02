@@ -8,6 +8,13 @@
 MemoryManager::MemoryManager()
 {
     _handle = GetCurrentProcess();
+    _crhandle = GetModuleHandleA("ddraw.dll");
+}
+
+uint32_t MemoryManager::CalculateCrAddress(uint32_t address)
+{
+    auto relative = address - 0x10000000;
+    return (uint32_t)_crhandle + relative;
 }
 
 void MemoryManager::Read(uint32_t address, void* buffer, size_t len)

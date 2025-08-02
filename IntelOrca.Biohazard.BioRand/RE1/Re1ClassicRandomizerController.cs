@@ -29,6 +29,14 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 Options = ["Default", "Never", "Always", "Random"],
                 Default = false
             });
+            page.Groups[0].Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "hard",
+                Label = "Hard Mode",
+                Description = "If enabled, enemies will be harder to kill. This is equivalent to new game+.",
+                Type = "switch",
+                Default = false
+            });
 
             page.Groups.Insert(1, new RandomizerConfigurationDefinition.Group("Progression (non-door randomizer)")
             {
@@ -592,6 +600,8 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             {
                 modBuilder.General = modBuilder.General.SetItem("ink", true);
             }
+
+            modBuilder.General = modBuilder.General.SetItem("hard", config.GetValueOrDefault<bool>("hard"));
 
             var lockpick = UpdateConfigNeverAlways(rng, config, "inventory/special/lockpick", "Never", "Always");
             modBuilder.General = modBuilder.General.SetItem("lockpick", lockpick == "Always");

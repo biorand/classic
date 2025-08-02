@@ -99,7 +99,7 @@ public:
         FixYawnPoison();
         UpdateMixes();
         RemoveDrawerInkHack();
-        EnableChrisNoInk();
+        ChangeInkToFlag122();
         EnableChrisLockpick();
         IncreaseLockLimit();
         UpdateInventorySize();
@@ -238,10 +238,22 @@ private:
         _mm.Nop(0x4563C0, 0x4563F7);
     }
 
-    void EnableChrisNoInk()
+    void ChangeInkToFlag122()
     {
-        _mm.Nop(0x456659, 0x45666B);
-        _mm.Nop(0x456A90, 0x456A9B);
+        // Remove forced ink for Chris
+        _mm.Nop(0x456659, 0x45666B); // typewriter
+        _mm.Nop(0x456A90, 0x456A9B); // typewriter
+
+        // Scenario flag 123 means new game+
+        // This makes enemies harder to kill and forces ink on for Jill
+        // We want to split this, so scenario flag 122 now means ink for both characters
+        _mm.Write<uint8_t>(0x418C30, 122); // allow ink items
+        _mm.Write<uint8_t>(0x4190D5, 122); // show ink model
+        _mm.Write<uint8_t>(0x45666C, 122); // typewriter
+        _mm.Write<uint8_t>(0x456A9C, 122); // typewriter
+
+        // CR hacks
+        _mm.Write<uint8_t>(_mm.CalculateCrAddress(0x10072A62), 122); // use ink ribbon up
     }
 
     void EnableChrisLockpick()

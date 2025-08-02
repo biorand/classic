@@ -20,6 +20,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
         public bool RandomItems => mod.GetGeneralValue<bool>("randomItems");
         public bool RandomDoors => mod.GetGeneralValue<bool>("randomDoors");
         public bool InkEnabled => mod.GetGeneralValue<bool>("ink");
+        public bool HardMode => mod.GetGeneralValue<bool>("hard");
         public bool LockpickEnabled => mod.GetGeneralValue<bool>("lockpick");
         public bool HelipadTyrantForced => mod.GetGeneralValue<bool>("forceTyrant");
 
@@ -60,27 +61,18 @@ namespace IntelOrca.Biohazard.BioRand.RE1
         [Patch]
         public void ConfigureOptions(RandomizedRdt rdt106)
         {
-            if (Player == 0)
+            rdt106.AdditionalOpcodes.AddRange(
+                ScdCondition.Parse("1:0").Generate(BioVersion.Biohazard1, [
+                    Set(0, 122, (byte)(InkEnabled ? 0 : 1)),
+                    Set(0, 123, (byte)(HardMode ? 0 : 1)),
+                    Set(0, 124, (byte)(LockpickEnabled ? 0 : 1))
+                ])
+            );
+
+            if (Player == 1 && !LockpickEnabled)
             {
-                rdt106.AdditionalOpcodes.AddRange(
-                    ScdCondition.Parse("1:0").Generate(BioVersion.Biohazard1, [
-                        Set(0, 123, (byte)(InkEnabled ? 0 : 1)), // Ink
-                        Set(0, 124, (byte)(LockpickEnabled ? 0 : 1)) // Lockpick
-                    ])
-                );
-            }
-            else
-            {
-                rdt106.AdditionalOpcodes.AddRange(
-                    ScdCondition.Parse("1:0").Generate(BioVersion.Biohazard1, [
-                        Set(0, 123, (byte)(InkEnabled ? 0 : 1)), // Ink
-                        Set(0, 124, (byte)(LockpickEnabled ? 0 : 1)), // Lockpick
-                    ])
-                );
-                if (!LockpickEnabled)
-                {
-                    rdt106.Nop(0x31B02); // Disable Barry giving Jill the lockpick
-                }
+                // Disable Barry giving Jill the lockpick
+                rdt106.Nop(0x31B02);
             }
 
             static UnknownOpcode Set(byte group, byte index, byte value)
