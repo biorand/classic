@@ -46,7 +46,7 @@ namespace IntelOrca.Biohazard.BioRand
             var rooms = context.Variation.Map.Rooms;
             foreach (var room in rooms.Values)
             {
-                var rdtIds = room.Rdts ?? [];
+                var rdtIds = room.Rdts;
                 foreach (var cutscene in room.Cutscenes ?? [])
                 {
                     var actors = ImmutableArray.CreateBuilder<CutsceneActor>();
@@ -77,7 +77,7 @@ namespace IntelOrca.Biohazard.BioRand
                     result.Add(new Cutscene()
                     {
                         Name = cutscene.Name,
-                        Rdts = [.. room.Rdts ?? []],
+                        Rdts = [.. room.Rdts],
                         Id = cutscene.Id,
                         Actors = actors.ToImmutable()
                     });
@@ -255,7 +255,7 @@ namespace IntelOrca.Biohazard.BioRand
                 .ToImmutableArray();
         }
 
-        public ImmutableArray<VoiceTarget> GetTargets(int player, RdtId[] rdtIds, int cutscene, string actor)
+        public ImmutableArray<VoiceTarget> GetTargets(int player, ImmutableArray<RdtId> rdtIds, int cutscene, string actor)
         {
             return Targets
                 .Where(x => (x.Player == null || x.Player == player) && x.Rdt != null && rdtIds.Contains(x.Rdt.Value) && x.Cutscene == cutscene && x.Actor == actor)

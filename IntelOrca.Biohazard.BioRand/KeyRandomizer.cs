@@ -72,7 +72,7 @@ namespace IntelOrca.Biohazard.BioRand
                         {
                             if (edge.IgnoreInGraph || edge.Target == null)
                                 continue;
-                            if (edge.Kind == "blocked" || edge.Kind == "locked")
+                            if (edge.Kind == DoorKinds.Blocked || edge.Kind == DoorKinds.Locked)
                                 continue;
 
                             var targetKeyId = edge.Target.Split(':');
@@ -81,17 +81,17 @@ namespace IntelOrca.Biohazard.BioRand
 
                             // The graph library hates it when you have unblock[key] <--> [key]
                             var oppositeEdge = map.GetOtherSide(edge);
-                            if (oppositeEdge?.Kind == "unblock")
+                            if (oppositeEdge?.Kind == DoorKinds.Unblock)
                             {
                                 requirements = [];
                             }
 
                             _ = edge.Kind switch
                             {
-                                "oneway" => graphBuilder.OneWay(source, target, requirements),
-                                "noreturn" => graphBuilder.NoReturn(source, target, requirements),
-                                "unblock" => graphBuilder.BlockedDoor(source, target, requirements),
-                                "unlock" => graphBuilder.BlockedDoor(source, target, requirements),
+                                DoorKinds.OneWay => graphBuilder.OneWay(source, target, requirements),
+                                DoorKinds.NoReturn => graphBuilder.NoReturn(source, target, requirements),
+                                DoorKinds.Unblock => graphBuilder.BlockedDoor(source, target, requirements),
+                                DoorKinds.Unlock => graphBuilder.BlockedDoor(source, target, requirements),
                                 _ => graphBuilder.Door(source, target, requirements)
                             };
                         }
@@ -258,14 +258,14 @@ namespace IntelOrca.Biohazard.BioRand
                     rooms.Add(room);
                     foreach (var d in room.Doors ?? [])
                     {
-                        if (d.Kind == "blocked")
+                        if (d.Kind == DoorKinds.Blocked)
                             continue;
 
                         var targetRoom = map.GetRoom(d.TargetRoom ?? "");
                         if (targetRoom == null)
                             continue;
 
-                        if (d.Kind == "noreturn")
+                        if (d.Kind == DoorKinds.NoReturn)
                             children.Add(VisitSegment(targetRoom));
                         else
                             VisitRoom(targetRoom, rooms, children);

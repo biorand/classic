@@ -119,6 +119,9 @@ namespace IntelOrca.Biohazard.BioRand
 
             // Choose one and make sure all doors in route are never locked
             var chosen = final.FirstOrDefault();
+            if (chosen == null)
+                return;
+
             foreach (var door in chosen.Doors)
             {
                 door.AllowedLocks = [];
@@ -164,7 +167,7 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 foreach (var door in room.Doors ?? [])
                 {
-                    if (door.Kind != "noreturn")
+                    if (door.Kind != DoorKinds.NoReturn)
                         continue;
 
                     var targetRoom = map.GetRoom(door.TargetRoom ?? "");
@@ -194,9 +197,9 @@ namespace IntelOrca.Biohazard.BioRand
 
                         foreach (var door in room.Doors ?? [])
                         {
-                            if (door.Kind == "noreturn")
+                            if (door.Kind == DoorKinds.NoReturn)
                                 continue;
-                            if (door.Kind == "blocked")
+                            if (door.Kind == DoorKinds.Blocked)
                                 continue;
 
                             // Skip locked / puzzle doors
@@ -282,7 +285,11 @@ namespace IntelOrca.Biohazard.BioRand
 
             var lockLimit = (int)Math.Round(pairs.Count * lockRatio);
             var numLocks = restrictedPairs.Count(x => x.LockId != null);
-            var shuffledPairs = pairs.Except(restrictedPairs).Shuffle(rng);
+            var shuffledPairs = pairs
+                .Except(restrictedPairs)
+                .Shuffle(rng)
+                .OrderByDescending(x => x.HighPriority)
+                .ToArray();
             foreach (var pair in shuffledPairs)
             {
                 var lockId = pair.LockId;
@@ -304,9 +311,9 @@ namespace IntelOrca.Biohazard.BioRand
                     var doorLockB = doorLock;
 
                     // Work around for key randomizer complaining about requirements on other side of blocked door
-                    if (pair.A.Door.Kind == "unblock")
+                    if (pair.A.Door.Kind == DoorKinds.Unblock)
                         doorLockB = new DoorLock(lockId.Value, 255);
-                    else if (pair.B.Door.Kind == "unblock")
+                    else if (pair.B.Door.Kind == DoorKinds.Unblock)
                         doorLockA = new DoorLock(lockId.Value, 255);
 
                     AssignDoorLock(pair.A, doorLockA);
@@ -327,7 +334,7 @@ namespace IntelOrca.Biohazard.BioRand
             else
             {
                 doorInfo.Door.LockId = (byte)doorLock.Value.Id;
-                doorInfo.Door.LockKey = doorLock.Value.KeyItemId;
+                doorInfo.Door.LockKey = doorLock.Value.Type;
                 doorInfo.Door.Requires2 = doorInfo.Door.LockKey == 255
                     ? ([])
                     : ([$"item({doorInfo.Door.LockKey})"]);
@@ -336,6 +343,10 @@ namespace IntelOrca.Biohazard.BioRand
 
         private void SetDoorLocks(IClassicRandomizerGeneratedVariation context, ImmutableArray<DoorInfo> doors)
         {
+            const int UNLOCKED = 0;
+            const int LOCKED = 255;
+            const int UNLOCK = 254;
+
             var modBuilder = context.ModBuilder;
             foreach (var doorInfo in doors)
             {
@@ -344,32 +355,17 @@ namespace IntelOrca.Biohazard.BioRand
                     continue;
 
                 var doorLockId = door.LockId ?? 0;
-                var doorLock = (DoorLock?)null;
-                if (door.Target == null)
+                var doorLockKey = true switch
                 {
-                    doorLock = new DoorLock(255, 255);
-                }
-                else if (door.Kind == "locked")
-                {
-                    doorLock = new DoorLock(doorLockId, 255);
-                }
-                else if (door.Kind == "unlock")
-                {
-                    doorLock = new DoorLock(doorLockId, 254);
-                }
-                else if (door.NoUnlock)
-                {
-                    doorLock = new DoorLock(doorLockId, 0);
-                }
-                else
-                {
-                    if (door.LockKey is int keyItemId)
-                    {
-                        doorLock = new DoorLock(doorLockId, keyItemId);
-                    }
-                }
-
-                foreach (var rdtId in doorInfo.Room.Rdts ?? [])
+                    _ when door.NoUnlock => UNLOCKED,
+                    _ when door.Target == null => LOCKED,
+                    _ when door.Kind == DoorKinds.Locked => LOCKED,
+                    _ when door.Kind == DoorKinds.Unlock => UNLOCK,
+                    _ when door.LockKey is int keyItemId => keyItemId,
+                    _ => UNLOCKED
+                };
+                var doorLock = doorLockId == 0 ? (DoorLock?)null : new DoorLock(doorLockId, doorLockKey);
+                foreach (var rdtId in doorInfo.Room.Rdts)
                 {
                     modBuilder.SetDoorLock(new RdtItemId(rdtId, (byte)doorId), doorLock);
                 }
@@ -383,8 +379,9 @@ namespace IntelOrca.Biohazard.BioRand
             public DoorInfo B => b;
 
             public byte? LockId => A.Door.LockId ?? B.Door.LockId;
-            public int[] AllowedLocks => A.Door.AllowedLocks ?? B.Door.AllowedLocks ?? [];
+            public int[] AllowedLocks => (A.Door.AllowedLocks ?? []).Intersect(B.Door.AllowedLocks ?? []).ToArray();
             public bool Restricted => AllowedLocks.Length == 0;
+            public bool HighPriority => a.Door.HasTag(MapTags.LockPriority) || b.Door.HasTag(MapTags.LockPriority);
 
             public string Identity { get; } = $"{a.Identity} <-> {b.Identity}";
 
@@ -421,7 +418,8 @@ namespace IntelOrca.Biohazard.BioRand
                 get
                 {
                     return Tail.Doors
-                        .Where(x => !x.NoUnlock || x.LockId == null)
+                        .Where(x => !x.HasTag(MapTags.SegmentEnd))
+                        .Where(x => (x.Requires2?.Length ?? 0) == 0)
                         .Select(x => (map.GetRoom(x.TargetRoom ?? ""), x))
                         .Where(x => x.Item1 != null)
                         .Select(x => (x.Item1!, x.Item2))
@@ -440,7 +438,7 @@ namespace IntelOrca.Biohazard.BioRand
                         var n = q.Dequeue();
                         foreach (var d in n.Doors ?? [])
                         {
-                            if (!d.NoUnlock || d.LockId != null)
+                            if ((d.Requires2?.Length ?? 0) != 0)
                                 continue;
 
                             var conn = map.GetRoom(d.TargetRoom ?? "");

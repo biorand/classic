@@ -15,6 +15,12 @@ namespace IntelOrca.Biohazard.BioRand
             _files = files;
         }
 
+        public byte[]? GetFile(string path)
+        {
+            _files.TryGetValue(path, out var data);
+            return data;
+        }
+
         public void Dump(string outputPath)
         {
             try

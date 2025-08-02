@@ -31,7 +31,7 @@ namespace IntelOrca.Biohazard.BioRand
         public string? CustomAdditionalScript { get; set; }
         public List<Action> PostModifications { get; } = new List<Action>();
 
-        public IEnumerable<OpcodeBase> AllOpcodes => AdditionalOpcodes.Concat(Opcodes);
+        public IEnumerable<OpcodeBase> AllOpcodes => AdditionalOpcodes.Concat(AdditionalFrameOpcodes).Concat(Opcodes);
         public IEnumerable<IDoorAotSetOpcode> Doors => AllOpcodes.OfType<IDoorAotSetOpcode>();
         public IEnumerable<SceEmSetOpcode> Enemies => AllOpcodes.OfType<SceEmSetOpcode>();
         public IEnumerable<IItemAotSetOpcode> Items => AllOpcodes.OfType<IItemAotSetOpcode>();

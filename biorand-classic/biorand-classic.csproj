@@ -6,7 +6,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Spectre.Console.Cli" Version="0.49.1" />
+    <PackageReference Include="Spectre.Console.Cli" Version="0.50.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\IntelOrca.Biohazard.BioRand\IntelOrca.Biohazard.BioRand.csproj" />

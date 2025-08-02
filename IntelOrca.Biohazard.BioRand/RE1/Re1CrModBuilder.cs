@@ -12,6 +12,7 @@ using IntelOrca.Biohazard.Extensions;
 using IntelOrca.Biohazard.Room;
 using IntelOrca.Biohazard.Script;
 using IntelOrca.Biohazard.Script.Opcodes;
+using Markdig;
 using SixLabors.ImageSharp.PixelFormats;
 
 namespace IntelOrca.Biohazard.BioRand.RE1
@@ -43,13 +44,13 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 _mod = mod;
                 _crModBuilder = new ClassicRebirthModBuilder(mod.Name);
 
-                var player = _mod.General.GetValueOrDefault("player") as int? ?? 0;
                 _map = _dataManager.GetJson<Map>(BioVersion.Biohazard1, "rdt.json")
-                    .For(new MapFilter(false, (byte)player, 0));
+                    .For(new MapFilter(RandomDoors, (byte)Player, 0));
             }
 
             public int Player => _mod.GetGeneralValue<int>("player");
             public int InventorySize => _mod.GetGeneralValue<int>("inventorySize");
+            public bool RandomDoors => _mod.GetGeneralValue<bool>("randomDoors");
             public bool RandomEnemies => _mod.GetGeneralValue<bool>("randomEnemies");
             public bool CutscenesDisabled => _mod.GetGeneralValue<bool>("cutscenesDisabled");
 
@@ -66,11 +67,39 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 {
                     _crModBuilder.Module = new ClassicRebirthModule("biorand.dll", biorandModule);
                 }
-                _crModBuilder.SetFile("log.md", _mod.GetDump(_map, Player == 0 ? "Chris" : "Jill"));
-                _crModBuilder.SetFile($"generated.json", _mod.ToJson());
+
+                _crModBuilder.SetFile("generated.json", _mod.ToJson());
+                CreateLogs();
 
                 Write();
                 return _crModBuilder.Build();
+            }
+
+            private void CreateLogs()
+            {
+                var md = new ModLogBuilder(_map, _mod, Player == 0 ? "Chris" : "Jill").Build();
+                var pipeline = new MarkdownPipelineBuilder()
+                    .UseAdvancedExtensions()
+                    .Build();
+                var htmlBody = Markdig.Markdown.ToHtml(md.Replace("\u2003", "&#8195;"), pipeline);
+                var html =
+                    $"""
+                    <!doctype html>
+                    <html lang="en">
+                    <head>
+                    <meta charset="utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1">
+                    <title>Log for {_mod.Name}</title>
+                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.8.1/github-markdown.min.css">
+                    </head>
+                    <body class="markdown-body" style="padding: 32px;">
+                    {htmlBody}
+                    </body>
+                    </html>
+                    """;
+
+                _crModBuilder.SetFile("log.md", md);
+                _crModBuilder.SetFile("log.html", html);
             }
 
             public void Write()
@@ -98,6 +127,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 {
                     DecompileGameData(gameData, Player, "scripts/");
                 }
+                DumpDoors(gameData);
                 ApplyRdtPatches(gameData);
                 if (CutscenesDisabled)
                 {
@@ -117,6 +147,48 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 {
                     DecompileGameData(gameData, Player, "scripts_modded/");
                 }
+            }
+
+            private void DumpDoors(GameData gameData)
+            {
+#if false
+                var map = _dataManager.GetJson<Map>(BioVersion.Biohazard1, "rdt.json");
+                var data = new List<object[]>();
+                for (var stage = 0; stage < 5; stage++)
+                {
+                    for (var room = 0; room < 64; room++)
+                    {
+                        var rdt = gameData.GetRdt(new RdtId(stage, room));
+                        if (rdt == null)
+                            continue;
+
+                        var mapRoom = map.GetRoomsContaining(rdt.RdtId).FirstOrDefault();
+                        foreach (var door in rdt.Doors)
+                        {
+                            var mapDoor = mapRoom.Doors.FirstOrDefault(x => x.Id == door.Id);
+                            if (mapDoor == null)
+                                continue;
+
+                            var doorIdentity = new RdtItemId(rdt.RdtId, door.Id);
+                            var target = door.Target;
+                            if (target.Stage == 255)
+                                target = new RdtId(rdt.RdtId.Stage, target.Room);
+                            var realTarget = new RdtItemId(target, (byte)(mapDoor?.TargetId ?? 255));
+                            if (realTarget.Id == 255)
+                            {
+                            }
+                            if (realTarget.ToString() == "40C:1")
+                            {
+                            }
+                            var p = new object[] { realTarget, door.NextX, door.NextY, door.NextZ, door.NextD };
+                            data.Add(p);
+                        }
+                    }
+                }
+                data = data.OrderBy(x => x[0]).ToList();
+                foreach (var d in data)
+                    Console.WriteLine(string.Join(",", d));
+#endif
             }
 
             private void DecompileGameData(GameData gameData, int player, string prefix)
@@ -197,17 +269,18 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     rdt.AdditionalOpcodes.AddRange(
                         ScdCondition.Parse("1:0").Generate(BioVersion.Biohazard1, [
                             Set(1, 0, 0), // First cutscene
-                        Set(1, 2, 0), // First zombie found
-                        Set(1, 3, 0), // Second cutscene (Jill? Wesker?)
-                        Set(1, 36, 0), // First Rebecca save room cutscene
-                        Set(1, 69, 0), // Brad call cutscene in final lab room
-                        Set(1, 72, 0), // Enrico cutscene
-                        Set(1, 100, 0), // Prevent Plant 42 Rebecca switch
-                        Set(1, 167, 0), // Init. dining room emblem state
-                        Set(1, 171, 0), // Wesker cutscene after Plant 42
-                        Set(0, 101, 0), // Jill in cell cutscene
-                        Set(0, 127, 0), // Pick up radio
-                        Set(0, 192, 0) // Rebecca not saved
+                            Set(1, 2, 0), // First zombie found
+                            Set(1, 3, 0), // Second cutscene (Jill? Wesker?)
+                            Set(1, 36, 0), // First Rebecca save room cutscene
+                            Set(1, 69, 0), // Brad call cutscene in final lab room
+                            Set(1, 72, 0), // Enrico cutscene
+                            Set(1, 100, 0), // Prevent Plant 42 Rebecca switch
+                            Set(1, 167, 0), // Init. dining room emblem state
+                            Set(1, 170, 0), // Rebecca cutscene
+                            Set(1, 171, 0), // Wesker cutscene after Plant 42
+                            Set(0, 101, 0), // Jill in cell cutscene
+                            Set(0, 127, 0), // Pick up radio
+                            Set(0, 192, 0) // Rebecca not saved
                         ]));
 
                     // Disable hunter / rebecca scream
@@ -269,23 +342,23 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     rdt.AdditionalOpcodes.AddRange(
                         ScdCondition.Parse("1:0").Generate(BioVersion.Biohazard1, [
                             Set(0, 101, 0), // Chris in cell cutscene
-                        Set(0, 127, 0), // Pick up radio
-                        Set(1, 0, 0), // 106 first cutscene
-                        Set(1, 2, 0), // 104 first zombie found
-                        Set(1, 3, 0), // 106 Wesker search cutscene
-                        Set(1, 5, 0), // 106/203 Wesker search complete
-                        Set(1, 7, 0), // 106/203 Barry gift cutscene (also disables 115 sandwich rescue and 20A cutscene)
-                        Set(1, 69, 0), // Brad call cutscene in final lab room
-                        Set(1, 72, 0), // Enrico cutscene
-                        Set(1, 86, 0), // 20E Yawn poison partner recovery
-                        Set(1, 97, 0), // 20D Richard receives serum
-                        Set(1, 103, 0), // 212 Forrest cutscene
-                        Set(1, 161, 0), // 105 first dining room cutscene
-                        Set(1, 170, 0), // Init. dining room emblem state
-                        Set(1, 172, 0), // 104 visted
-                        Set(1, 173, 0), // 105 zombie cutscene
-                        Set(1, 175, 0), // Wesker cutscene after Plant 42
-                        Set(1, 192, 0) // Barry not saved
+                            Set(0, 127, 0), // Pick up radio
+                            Set(1, 0, 0), // 106 first cutscene
+                            Set(1, 2, 0), // 104 first zombie found
+                            Set(1, 3, 0), // 106 Wesker search cutscene
+                            Set(1, 5, 0), // 106/203 Wesker search complete
+                            Set(1, 7, 0), // 106/203 Barry gift cutscene (also disables 115 sandwich rescue and 20A cutscene)
+                            Set(1, 69, 0), // Brad call cutscene in final lab room
+                            Set(1, 72, 0), // Enrico cutscene
+                            Set(1, 86, 0), // 20E Yawn poison partner recovery
+                            Set(1, 97, 0), // 20D Richard receives serum
+                            Set(1, 103, 0), // 212 Forrest cutscene
+                            Set(1, 161, 0), // 105 first dining room cutscene
+                            Set(1, 170, 0), // Init. dining room emblem state
+                            Set(1, 172, 0), // 104 visted
+                            Set(1, 173, 0), // 105 zombie cutscene
+                            Set(1, 175, 0), // Wesker cutscene after Plant 42
+                            Set(1, 192, 0) // Barry not saved
                         ]));
 
                     // Disable Plant 42 Barry
@@ -393,17 +466,25 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     foreach (var doorOpcode in rrdt.Doors)
                     {
                         var doorIdentity = new RdtItemId(rrdt.RdtId, doorOpcode.Id);
-                        if (_mod.Doors.TryGetValue(doorIdentity, out var doorLock))
+                        if (_mod.Doors.TryGetValue(doorIdentity, out var doorInfo))
                         {
-                            if (doorLock == null)
+                            if (doorInfo.Target is DoorTarget target)
                             {
-                                doorOpcode.LockId = 0;
-                                doorOpcode.LockType = 0;
+                                doorOpcode.Target = target.Room;
+                                doorOpcode.NextX = (short)target.X;
+                                doorOpcode.NextY = (short)target.Y;
+                                doorOpcode.NextZ = (short)target.Z;
+                                doorOpcode.NextD = (short)target.D;
+                            }
+                            if (doorInfo.Lock is DoorLock doorLock)
+                            {
+                                doorOpcode.LockId = (byte)doorLock.Id;
+                                doorOpcode.LockType = (byte)doorLock.Type;
                             }
                             else
                             {
-                                doorOpcode.LockId = (byte)doorLock.Value.Id;
-                                doorOpcode.LockType = (byte)doorLock.Value.KeyItemId;
+                                doorOpcode.LockId = 0;
+                                doorOpcode.LockType = 0;
                             }
                         }
                     }
@@ -414,7 +495,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             {
                 foreach (var rrdt in gameData.Rdts)
                 {
-                    var aotOnOpcodes = rrdt.Opcodes
+                    var aotOnOpcodes = rrdt.AllOpcodes
                         .OfType<UnknownOpcode>()
                         .Where(x => x.Opcode == 0x13 || x.Opcode == 0x24) // aot_delete / aot_on
                         .ToArray();
@@ -720,13 +801,13 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 var hurtFiles = GetHurtFiles(characterName);
                 var hurtFileNames = new string[][]
                 {
-                    ["chris", "ch_ef"],
-                    ["jill", "jill_ef"],
+                    ["CHRIS", "CH_EF"],
+                    ["JILL", "JILL_EF"],
                     [],
-                    ["reb"]
+                    ["REB"]
                 };
 
-                var soundDir = "sound";
+                var soundDir = "SOUND";
                 for (int i = 0; i < hurtFiles.Length; i++)
                 {
                     var targetData = GetHurtWaveData(hurtFiles[i]);
@@ -739,8 +820,8 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 }
                 if (playerIndex <= 1)
                 {
-                    var nom = playerIndex == 0 ? "ch_nom.wav" : "ji_nom.wav";
-                    var sime = playerIndex == 0 ? "ch_sime.wav" : "ji_sime.wav";
+                    var nom = playerIndex == 0 ? "CH_NOM.WAV" : "JI_NOM.WAV";
+                    var sime = playerIndex == 0 ? "CH_SIME.WAV" : "JI_SIME.WAV";
                     Convert($"{soundDir}/{nom}", hurtFiles[3]);
                     Convert($"{soundDir}/{sime}", hurtFiles[2]);
                 }

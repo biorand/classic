@@ -399,6 +399,18 @@
     "103": {
       "name": "Document (Security System)",
       "kind": "document"
+    },
+    "107": {
+      "name": "Document (Pass Code 01)",
+      "kind": "document"
+    },
+    "108": {
+      "name": "Document (Pass Code 02)",
+      "kind": "document"
+    },
+    "109": {
+      "name": "Document (Pass Code 03)",
+      "kind": "document"
     }
   },
   "enemies": [
@@ -704,13 +716,22 @@
       ],
       "items": [
         {
-          "name": "BED SWORD KEY",
+          "name": "SWORD KEY ON BED",
           "id": 4,
           "globalId": 22,
           "type": 51,
           "amount": 1,
           "group": 1,
           "player": 0
+        },
+        {
+          "name": "INK ON BED",
+          "id": 1,
+          "globalId": 22,
+          "type": 47,
+          "amount": 3,
+          "group": 1,
+          "player": 1
         }
       ],
       "enemies": [
@@ -808,6 +829,7 @@
         {
           "id": 3,
           "target": "201:3",
+          "allowedLocks": [],
           "noUnlock": true
         }
       ],
@@ -1160,7 +1182,7 @@
     "106": {
       "name": "1F MAIN HALL",
       "rdts": [ "106", "606" ],
-      "tags": [ "mansion", "save" ],
+      "tags": [ "mansion", "save", "begin" ],
       "doors": [
         {
           "id": 2,
@@ -1184,24 +1206,21 @@
         {
           "id": 4,
           "target": "203:0",
+          "allowedLocks": [],
           "noUnlock": true,
           "randomize": false
         },
         {
-          "create": true,
           "id": 3,
-          "texture": 3,
-          "special": 6,
-          "target": "100",
-          "doorRando": true,
+          "target": "106:3",
           "entrance": {
             "x": 17200,
             "y": 0,
             "z": 3000,
             "d": -1024,
-            "floor": 0,
             "cut": 0
-          }
+          },
+          "doorRando": true
         }
       ],
       "items": [
@@ -1507,8 +1526,7 @@
         {
           "id": 3,
           "target": "115:0",
-          "lockId": 15,
-          "noUnlock": true
+          "lockId": 15
         }
       ],
       "items": [
@@ -1614,6 +1632,7 @@
         {
           "id": 1,
           "target": "207:3",
+          "allowedLocks": [],
           "noUnlock": true
         },
         {
@@ -1645,13 +1664,16 @@
       "doors": [
         {
           "id": 0,
-          "target": "103:0"
+          "target": "103:2"
         },
         {
           "target": "10C/BACK",
+          "kind": "unblock",
           "requires2": [
             "item(38)"
-          ]
+          ],
+          "allowedLocks": [],
+          "randomize": false
         }
       ],
       "enemies": []
@@ -1662,7 +1684,10 @@
       "tags": [ "mansion" ],
       "doors": [
         {
-          "target": "10C"
+          "target": "10C",
+          "kind": "blocked",
+          "allowedLocks": [],
+          "randomize": false
         }
       ],
       "items": [
@@ -1955,20 +1980,19 @@
     },
     "110": {
       "name": "1F WEST ELEVATOR STAIRS",
-      "rdts": [ "110", "610" ],
+      "rdts": [ "610", "110" ],
       "tags": [ "mansion" ],
       "doors": [
         {
           "id": 0,
+          "tags": [ "softlock-safe" ],
           "target": "104:2",
           "lockId": 19,
-          "kind": "unlock",
-          "noUnlock": true // To prevent softlock in lock rando
+          "kind": "unlock"
         },
         {
           "id": 1,
-          "target": "21C:2",
-          "noUnlock": true // To prevent softlock in lock rando
+          "target": "21C:2"
         }
       ],
       "enemies": []
@@ -2089,7 +2113,6 @@
           "type": 61,
           "amount": 1,
           "group": 1,
-          "player": 0,
           "typeOffsets": [
             "0x1CBC5"
           ]
@@ -2177,14 +2200,17 @@
         {
           "id": 0,
           "target": "109:3",
+          "kind": "dynamic",
           "lockId": 15,
-          "noUnlock": true
+          "allowedLocks": []
         },
         {
           "id": 1,
           "target": "116:0",
+          "kind": "dynamic",
           "lockId": 16,
-          "noUnlock": true
+          "allowedLocks": [],
+          "randomize": false
         }
       ],
       "enemies": [
@@ -2239,8 +2265,10 @@
         {
           "id": 0,
           "target": "115:1",
+          "kind": "dynamic",
           "lockId": 16,
-          "noUnlock": true
+          "allowedLocks": [],
+          "randomize": false
         }
       ],
       "items": [
@@ -2345,7 +2373,7 @@
     },
     "119": {
       "name": "1F EAST STUDY",
-      "rdts": [ "119", "619" ],
+      "rdts": [ "619", "119" ],
       "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
@@ -2390,7 +2418,9 @@
         },
         {
           "id": 1,
+          "tags": [ "segment-end" ],
           "target": "11B:0",
+          "kind": "unblock",
           "lockId": 23,
           "requires2": [
             "item(41)",
@@ -2398,8 +2428,8 @@
             "item(45)",
             "item(46)"
           ],
-          "noUnlock": true,
-          "segmentEnd": true
+          "allowedLocks": [],
+          "noUnlock": true
         }
       ],
       "enemies": [
@@ -2456,9 +2486,7 @@
           "type": 61,
           "amount": 1,
           "hidden": true,
-          "optional": true,
-          "group": 4,
-          "player": 0
+          "group": 4
         },
         {
           "name": "CRANK ON SHELF",
@@ -2490,18 +2518,20 @@
     },
     "200": {
       "name": "KITCHEN ELEVATOR (CUTSCENE)",
-      "rdts": [ "200", "700" ],
+      "rdts": [ "700", "200" ],
       "tags": [ "mansion" ],
       "doors": [
         {
           "id": 0,
           "target": "213:1",
-          "noUnlock": true
+          "noUnlock": true,
+          "doorRando": false
         },
         {
           "id": 1,
           "target": "21C:0",
-          "noUnlock": true
+          "noUnlock": true,
+          "doorRando": false
         }
       ]
     },
@@ -2518,14 +2548,14 @@
           "id": 1,
           "target": "214:1",
           "lockId": 17,
-          "kind": "blocked",
+          "kind": "locked",
           "player": 0
         },
         {
           "id": 1,
           "target": "214:5",
           "lockId": 17,
-          "kind": "blocked",
+          "kind": "locked",
           "player": 1
         },
         {
@@ -2540,6 +2570,7 @@
         {
           "id": 3,
           "target": "101:3",
+          "allowedLocks": [],
           "noUnlock": true
         }
       ],
@@ -2578,6 +2609,7 @@
         {
           "id": 0,
           "target": "106:4",
+          "allowedLocks": [],
           "randomize": false
         },
         {
@@ -2793,6 +2825,7 @@
         {
           "id": 3,
           "target": "10B:1",
+          "allowedLocks": [],
           "noUnlock": true
         },
         {
@@ -2989,7 +3022,7 @@
       "doors": [
         {
           "id": 0,
-          "target": "207:3"
+          "target": "207:2"
         },
         {
           "id": 5,
@@ -3032,7 +3065,7 @@
     },
     "20C": {
       "name": "PIANO LESSON",
-      "rdts": [ "20C", "70C" ],
+      "rdts": [ "70C", "20C" ],
       "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
@@ -3042,7 +3075,15 @@
         },
         {
           "target": "20C/GRAVE",
-          "kind": "oneway"
+          "kind": "oneway",
+          "allowedLocks": [],
+          "doorRando": false
+        },
+        {
+          "target": "20C/GRAVE",
+          "allowedLocks": [],
+          "randomize": false,
+          "doorRando": true
         }
       ],
       "enemies": [
@@ -3074,13 +3115,21 @@
     },
     "20C/GRAVE": {
       "name": "PIANO LESSON/GRAVE",
-      "rdts": [ "20C", "70C" ],
+      "rdts": [ "70C", "20C" ],
       "tags": [ "mansion" ],
       "doors": [
         {
+          "target": "20C",
+          "kind": "blocked",
+          "allowedLocks": [],
+          "randomize": false
+        },
+        {
           "id": 1,
+          "tags": [ "segment-end" ],
           "target": "21A:0",
-          "noUnlock": true
+          "kind": "unblock",
+          "allowedLocks": []
         }
       ]
     },
@@ -3346,13 +3395,12 @@
           "globalId": 149,
           "type": 61,
           "amount": 1,
-          "group": 1,
-          "player": 0
+          "group": 1
         }
       ],
       "enemies": [
         {
-          "excludeTypes": [ 2, 4, 12 ],
+          "excludeTypes": [ 4, 12 ],
           "maxDifficulty": 0
         }
       ]
@@ -3410,7 +3458,7 @@
     },
     "213": {
       "name": "2F WEST ELEVATOR",
-      "rdts": [ "213", "713" ],
+      "rdts": [ "713", "213" ],
       "tags": [ "mansion" ],
       "doors": [
         {
@@ -3454,32 +3502,60 @@
     },
     "214": {
       "name": "2F WEST BLUE CORRIDOR",
-      "rdts": [ "214", "714" ],
+      "rdts": [ "714", "214" ],
       "tags": [ "mansion" ],
       "doors": [
         {
           "id": 0,
           "target": "213:3",
-          "player": 0
+          "player": 0,
+          "entrance": {
+            "x": 22800,
+            "y": 0,
+            "z": 6300,
+            "d": 2048,
+            "cut": 0
+          }
         },
         {
           "id": 1,
           "target": "213:3",
-          "player": 1
+          "player": 1,
+          "entrance": {
+            "x": 22800,
+            "y": 0,
+            "z": 6300,
+            "d": 2048,
+            "cut": 0
+          }
         },
         {
           "id": 1,
           "target": "201:1",
           "lockId": 17,
           "kind": "unlock",
-          "player": 0
+          "player": 0,
+          "entrance": {
+            "x": 11200,
+            "y": 0,
+            "z": 28000,
+            "d": 3072,
+            "cut": 4
+          }
         },
         {
           "id": 5,
           "target": "201:1",
           "lockId": 17,
           "kind": "unlock",
-          "player": 1
+          "player": 1,
+          "entrance": {
+            "x": 11200,
+            "y": 0,
+            "z": 28000,
+            "d": 3072,
+            "cut": 4
+          }
         }
       ],
       "items": [
@@ -3516,7 +3592,7 @@
     },
     "215": {
       "name": "2F WEST DEER ROOM",
-      "rdts": [ "215", "715" ],
+      "rdts": [ "715", "215" ],
       "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
@@ -3569,7 +3645,7 @@
     },
     "216": {
       "name": "2F WEST LIBRARY",
-      "rdts": [ "216", "716" ],
+      "rdts": [ "716", "216" ],
       "tags": [ "mansion" ],
       "doors": [
         {
@@ -3617,7 +3693,7 @@
     },
     "217": {
       "name": "2F WEST LIBRARY PUZZLE",
-      "rdts": [ "217", "717" ],
+      "rdts": [ "717", "217" ],
       "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
@@ -3678,7 +3754,7 @@
     },
     "219": {
       "name": "2F WEST STORAGE",
-      "rdts": [ "219", "719" ],
+      "rdts": [ "719", "219" ],
       "tags": [ "mansion", "mansion2able" ],
       "doors": [
         {
@@ -3724,18 +3800,19 @@
     },
     "21A": {
       "name": "B1 EAST",
-      "rdts": [ "21A", "71A" ],
+      "rdts": [ "71A", "21A" ],
       "tags": [ "mansion" ],
       "doors": [
         {
           "id": 0,
           "target": "20C/GRAVE:1",
+          "allowedLocks": [],
           "noUnlock": true
         },
         {
           "id": 1,
-          "target": "21B:0",
-          "noUnlock": true // To prevent softlock in lock rando
+          "tags": [ "softlock-safe" ],
+          "target": "21B:0"
         }
       ],
       "items": [
@@ -3756,20 +3833,19 @@
     },
     "21B": {
       "name": "B1 WEST",
-      "rdts": [ "21B", "71B" ],
+      "rdts": [ "71B", "21B" ],
       "tags": [ "mansion" ],
       "doors": [
         {
           "id": 0,
-          "target": "21A:1",
-          "noUnlock": true // To prevent softlock in lock rando
+          "target": "21A:1"
         },
         {
           "id": 1,
+          "tags": [ "softlock-safe" ],
           "target": "21C:1",
           "lockId": 27,
-          "kind": "unlock",
-          "noUnlock": true // To prevent softlock in lock rando
+          "kind": "unlock"
         }
       ],
       "items": [
@@ -3798,7 +3874,7 @@
     },
     "21C": {
       "name": "B1 KITCHEN",
-      "rdts": [ "21C", "71C" ],
+      "rdts": [ "71C", "21C" ],
       "tags": [ "mansion" ],
       "doors": [
         {
@@ -3808,14 +3884,13 @@
         {
           "id": 1,
           "target": "21B:1",
-          "lockId": 27,
           "kind": "locked",
-          "noUnlock": true // To prevent softlock in lock rando
+          "lockId": 27
         },
         {
           "id": 2,
-          "target": "110:1",
-          "noUnlock": true // To prevent softlock in lock rando
+          "tags": [ "softlock-safe" ],
+          "target": "110:1"
         }
       ],
       "items": [
@@ -3826,8 +3901,7 @@
           "type": 61,
           "amount": 1,
           "hidden": true,
-          "group": 2,
-          "player": 0
+          "group": 2
         }
       ],
       "enemies": [
@@ -3856,8 +3930,16 @@
           "id": 1,
           "target": "302:0",
           "kind": "blocked",
+          "allowedLocks": [],
           "noUnlock": true,
-          "randomize": false
+          "doorRando": false
+        },
+        {
+          "id": 1,
+          "target": "302:0",
+          "allowedLocks": [],
+          "noUnlock": true,
+          "doorRando": true
         },
         {
           "id": 2,
@@ -3946,18 +4028,38 @@
           "target": "300:0"
         },
         {
-          "id": 1,
-          "target": "302:1",
+          "target": "301/END",
           "kind": "unblock",
           "requires2": [
             "item(29)"
           ],
-          "noUnlock": true
+          "allowedLocks": [],
+          "randomize": false
         }
       ],
       "enemies": [
         {
           "excludeTypes": [ 3, 4, 7, 10 ]
+        }
+      ]
+    },
+    "301/END": {
+      "name": "COURTYARD RESERVOIR",
+      "rdts": [ "301" ],
+      "tags": [ "courtyard" ],
+      "doors": [
+        {
+          "target": "301",
+          "kind": "blocked",
+          "allowedLocks": [],
+          "randomize": false
+        },
+        {
+          "id": 1,
+          "tags": [ "connect-out" ],
+          "target": "302:1",
+          "allowedLocks": [],
+          "noUnlock": true
         }
       ]
     },
@@ -3969,17 +4071,17 @@
         {
           "id": 0,
           "target": "300:1",
-          "randomize": false,
           "requires2": [
             "flag(COURTYARD_LIFT_POWER)"
           ],
           "kind": "unblock",
+          "allowedLocks": [],
           "noUnlock": true
         },
         {
           "id": 1,
-          "target": "301:1",
-          "kind": "blocked",
+          "target": "301/END:1",
+          "allowedLocks": [],
           "noUnlock": true
         },
         {
@@ -3994,7 +4096,17 @@
           "requires2": [
             "flag(COURTYARD_LIFT_POWER)"
           ],
-          "noUnlock": true
+          "allowedLocks": [],
+          "noUnlock": true,
+          "doorRando": false
+        },
+        {
+          "id": 3,
+          "name": "LADDER TO CAVES",
+          "target": "307:0",
+          "allowedLocks": [],
+          "noUnlock": true,
+          "doorRando": true
         }
       ],
       "flags": [
@@ -4018,24 +4130,24 @@
           "name": "LIFT TO LAB",
           "id": 0,
           "target": "50D:1",
-          "noUnlock": true
+          "allowedLocks": [],
+          "noUnlock": true,
+          "randomize": false
         },
         {
           "name": "DOOR TO FOUNTAIN",
-          "create": true,
           "id": 8,
           "target": "305:0",
           "kind": "locked",
           "lockId": 2,
-          "texture": 3,
-          "special": 6,
           "entrance": {
             "x": 28350,
             "y": 0,
             "z": 5700,
             "d": 0,
             "cut": 4
-          }
+          },
+          "doorRando": false
         }
       ],
       "flags": [
@@ -4197,13 +4309,13 @@
             "item(63)",
             "item(64)"
           ],
-          "noUnlock": true,
-          "segmentEnd": true,
+          "allowedLocks": [],
           "randomize": false
         },
         {
           "id": 2,
           "target": "30F:0",
+          "allowedLocks": [],
           "noUnlock": true
         }
       ],
@@ -4278,11 +4390,14 @@
       "tags": [ "caves", "save" ],
       "doors": [
         {
+          "name": "Ladder",
           "id": 0,
           "target": "302:3",
+          "allowedLocks": [],
           "noUnlock": true
         },
         {
+          "name": "Side door next to ladder",
           "id": 1,
           "target": "308:0"
         },
@@ -4291,7 +4406,9 @@
           "kind": "unblock",
           "requires2": [
             "item(30)"
-          ]
+          ],
+          "allowedLocks": [],
+          "randomize": false
         }
       ],
       "items": [
@@ -4345,18 +4462,15 @@
       "doors": [
         {
           "target": "307",
-          "kind": "blocked"
+          "kind": "blocked",
+          "allowedLocks": [],
+          "randomize": false
         },
         {
+          "name": "Door after crank passage",
           "id": 2,
-          "target": "30B:0",
-          "lockId": 39,
-          "player": 0
-        },
-        {
-          "id": 2,
-          "target": "30B:0",
-          "player": 1
+          "tags": [ "connect-out" ],
+          "target": "30B:0"
         }
       ]
     },
@@ -4366,18 +4480,52 @@
       "tags": [ "caves" ],
       "doors": [
         {
+          "name": "Flamethrower Door",
           "id": 0,
-          "target": "307:1"
+          "target": "307:1",
+          "lockId": 40,
+          "allowedLocks": [],
+          "noUnlock": true,
+          "doorRando": false,
+          "player": 0
+        },
+        {
+          "name": "Flamethrower Door",
+          "id": 0,
+          "target": "307:1",
+          "kind": "unblock",
+          "lockId": 40,
+          "allowedLocks": [],
+          "noUnlock": true,
+          "doorRando": true,
+          "player": 0
+        },
+        {
+          "id": 0,
+          "target": "307:1",
+          "player": 1
         },
         {
           "id": 1,
           "target": "309:0",
-          "noUnlock": true
+          "allowedLocks": [],
+          "doorRando": false
+        },
+        {
+          "id": 1,
+          "target": "309:0",
+          "doorRando": true
         },
         {
           "id": 2,
           "target": "309:1",
-          "noUnlock": true
+          "allowedLocks": [],
+          "doorRando": false
+        },
+        {
+          "id": 2,
+          "target": "309:1",
+          "doorRando": true
         }
       ],
       "enemies": [
@@ -4386,7 +4534,7 @@
           "player": 0
         },
         {
-          "condition": "!(1:72 && 1:75)",
+          "condition": "4:0",
           "excludeTypes": [ 4 ],
           "player": 1
         }
@@ -4424,12 +4572,12 @@
         {
           "id": 0,
           "target": "308:1",
-          "noUnlock": true
+          "allowedLocks": []
         },
         {
           "id": 1,
           "target": "308:2",
-          "noUnlock": true
+          "allowedLocks": []
         },
         {
           "id": 2,
@@ -4551,12 +4699,12 @@
         {
           "id": 1,
           "globalId": 80,
-          "excludeTypes": [ 9 ]
+          "excludeTypes": [ 3, 9 ]
         },
         {
           "id": 2,
           "globalId": 81,
-          "excludeTypes": [ 9 ]
+          "excludeTypes": [ 3, 9 ]
         }
       ],
       "cutscenes": [
@@ -4628,20 +4776,35 @@
       "tags": [ "caves" ],
       "doors": [
         {
+          "name": "Flamethrower Door",
           "id": 0,
-          "target": "307/BACK",
+          "target": "307/BACK:2",
           "lockId": 39,
+          "allowedLocks": [],
           "noUnlock": true,
+          "doorRando": false,
+          "player": 0
+        },
+        {
+          "name": "Flamethrower Door",
+          "id": 0,
+          "target": "307/BACK:2",
+          "kind": "unblock",
+          "lockId": 39,
+          "allowedLocks": [],
+          "noUnlock": true,
+          "doorRando": true,
           "player": 0
         },
         {
           "id": 0,
-          "target": "307/BACK",
+          "target": "307/BACK:2",
           "player": 1
         },
         {
           "id": 1,
-          "target": "30C",
+          "tags": [ "connect-out" ],
+          "target": "30C:0",
           "kind": "unblock"
         }
       ],
@@ -4727,9 +4890,12 @@
           "target": "30E:0"
         },
         {
+          "name": "Flamethrower Door",
           "id": 2,
           "target": "30F:2",
+          "kind": "unblock",
           "lockId": 47,
+          "allowedLocks": [],
           "noUnlock": true,
           "player": 0
         },
@@ -4797,6 +4963,7 @@
         {
           "id": 0,
           "target": "305:2",
+          "allowedLocks": [],
           "noUnlock": true
         },
         {
@@ -4804,7 +4971,9 @@
           "kind": "unblock",
           "requires2": [
             "item(30)"
-          ]
+          ],
+          "allowedLocks": [],
+          "randomize": false
         },
         {
           "id": 2,
@@ -4850,10 +5019,12 @@
       "doors": [
         {
           "target": "30F",
-          "kind": "blocked"
+          "kind": "blocked",
+          "randomize": false
         },
         {
           "id": 1,
+          "tags": [ "connect-out" ],
           "target": "306:0"
         }
       ]
@@ -4866,12 +5037,15 @@
         {
           "id": 0,
           "target": "305:1",
+          "allowedLocks": [],
           "noUnlock": true,
           "randomize": false
         },
         {
           "id": 1,
+          "tags": [ "segment-end" ],
           "target": "500:1",
+          "allowedLocks": [],
           "noUnlock": true
         }
       ]
@@ -4964,7 +5138,7 @@
           "type": 61,
           "amount": 1,
           "group": 8,
-          "player": 0
+          "hidden": true
         },
         {
           "name": "LOCKED DRAWER",
@@ -5019,7 +5193,7 @@
       "doors": [
         {
           "id": 0,
-          "target": "400:0"
+          "target": "400:2"
         }
       ],
       "items": [
@@ -5223,6 +5397,7 @@
           "id": 2,
           "target": "40D:0",
           "kind": "unblock",
+          "allowedLocks": [],
           "noUnlock": true
         }
       ],
@@ -5330,7 +5505,7 @@
           "id": 1,
           "target": "409:0",
           "kind": "unblock",
-          "noUnlock": true
+          "allowedLocks": []
         },
         {
           "id": 2,
@@ -5344,8 +5519,13 @@
         {
           "id": 3,
           "target": "40C:0",
-          "kind": "locked",
-          "noUnlock": true
+          "kind": "blocked",
+          "doorRando": false
+        },
+        {
+          "id": 3,
+          "target": "40C:0",
+          "doorRando": true
         }
       ],
       "items": [
@@ -5394,8 +5574,7 @@
       "doors": [
         {
           "id": 0,
-          "target": "408:1",
-          "noUnlock": true
+          "target": "408:1"
         }
       ],
       "items": [
@@ -5481,12 +5660,11 @@
         {
           "id": 2,
           "target": "40C",
-          "kind": "oneway",
+          "kind": "unblock",
           "requires2": [
             "item(62)"
           ],
-          "noUnlock": true,
-          "doorRando": false
+          "allowedLocks": []
         }
       ],
       "items": [
@@ -5557,8 +5735,19 @@
         {
           "id": 0,
           "target": "408:3",
-          "kind": "unlock",
-          "noUnlock": true
+          "kind": "unblock",
+          "allowedLocks": [],
+          "doorRando": false
+        },
+        {
+          "id": 0,
+          "tags": [ "segment-end" ],
+          "target": "408:3",
+          "doorRando": true
+        },
+        {
+          "id": 1,
+          "target": "40A:2"
         }
       ],
       "items": [
@@ -5569,6 +5758,14 @@
           "type": 54,
           "amount": 3,
           "group": 64
+        }
+      ],
+      "flags": [
+        {
+          "name": "PLANT_42_WEAK",
+          "requires2": [
+            "flag(VJOLT_ROOTS)"
+          ]
         }
       ],
       "enemies": [
@@ -5641,11 +5838,14 @@
         {
           "id": 0,
           "target": "406:2",
+          "allowedLocks": [],
           "noUnlock": true
         },
         {
           "target": "40D/EXIT",
-          "kind": "unblock"
+          "kind": "unblock",
+          "allowedLocks": [],
+          "randomize": false
         }
       ],
       "enemies": [
@@ -5661,10 +5861,13 @@
       "doors": [
         {
           "target": "40D",
-          "kind": "blocked"
+          "kind": "blocked",
+          "allowedLocks": [],
+          "randomize": false
         },
         {
           "id": 1,
+          "tags": [ "connect-out" ],
           "target": "40E:0"
         }
       ],
@@ -5707,6 +5910,7 @@
           "requires2": [
             "room(411)"
           ],
+          "allowedLocks": [],
           "noUnlock": true
         },
         {
@@ -5750,7 +5954,7 @@
           "type": 61,
           "amount": 1,
           "group": 8,
-          "player": 0
+          "hidden": true
         }
       ],
       "enemies": [
@@ -5772,8 +5976,7 @@
         {
           "id": 0,
           "target": "40E:2",
-          "lockId": 36,
-          "noUnlock": true
+          "lockId": 36
         }
       ],
       "items": [
@@ -5860,11 +6063,12 @@
         {
           "id": 1,
           "target": "310:1",
-          "noUnlock": true
+          "allowedLocks": []
         },
         {
           "id": 2,
-          "target": "502",
+          "target": "502:0",
+          "allowedLocks": [],
           "noUnlock": true
         }
       ],
@@ -5879,11 +6083,53 @@
           "excludeTypes": [ 4 ],
           "player": 1
         }
+      ],
+      "cutscenes": [
+        {
+          "id": 0,
+          "name": "escape 500 (chris, jill)",
+          "actors": [
+            {
+              "name": "chris",
+              "character": 0
+            },
+            {
+              "globalId": "508-jill",
+              "name": "jill",
+              "character": 33,
+              "offsets": [ "0xCF26" ]
+            }
+          ],
+          "player": 0
+        },
+        {
+          "id": 0,
+          "name": "escape 500 (jill, chris, barry)",
+          "actors": [
+            {
+              "name": "jill",
+              "character": 0
+            },
+            {
+              "globalId": "508-chris",
+              "name": "chris",
+              "character": 32,
+              "offsets": [ "0xCF26" ]
+            },
+            {
+              "globalId": "501-barry",
+              "name": "barry",
+              "character": 34,
+              "offsets": [ "0xCF48" ]
+            }
+          ],
+          "player": 1
+        }
       ]
     },
     "501": {
       "name": "LABORATORY B1 ESCAPE",
-      "tags": [ "lab" ],
+      "tags": [ "lab", "end" ],
       "rdts": [ "501" ],
       "doors": [
         {
@@ -5897,7 +6143,7 @@
           "requires2": [
             "item(39)"
           ],
-          "noUnlock": true,
+          "allowedLocks": [],
           "randomize": false
         }
       ],
@@ -5954,6 +6200,7 @@
               "character": 0
             },
             {
+              "globalId": "501-rebecca",
               "name": "rebecca",
               "character": 35,
               "offsets": [ "0x1BDD2" ]
@@ -5976,6 +6223,7 @@
               "offsets": [ "0x1BDB0" ]
             },
             {
+              "globalId": "501-rebecca",
               "name": "rebecca",
               "character": 35,
               "offsets": [ "0x1BDD2" ]
@@ -6024,6 +6272,7 @@
               "character": 0
             },
             {
+              "globalId": "501-barry",
               "name": "barry",
               "character": 34,
               "offsets": [ "0x1BDD2" ]
@@ -6046,6 +6295,7 @@
               "offsets": [ "0x1BDB0" ]
             },
             {
+              "globalId": "501-barry",
               "name": "barry",
               "character": 34,
               "offsets": [ "0x1BDD2" ]
@@ -6063,26 +6313,20 @@
         {
           "id": 0,
           "target": "500:2",
+          "allowedLocks": [],
           "noUnlock": true,
           "player": 0
         },
         {
           "id": 0,
           "target": "500:2",
+          "allowedLocks": [],
           "noUnlock": true,
-          "player": 1,
-          "doorRando": false
-        },
-        {
-          "id": 0,
-          "target": "500:2",
-          "kind": "unblock",
-          "noUnlock": true,
-          "player": 1,
-          "doorRando": true
+          "player": 1
         },
         {
           "id": 1,
+          "tags": [ "connect-out" ], // This prevents a cutscene softlock for Jill
           "target": "503:0"
         }
       ],
@@ -6163,14 +6407,17 @@
         {
           "id": 1,
           "target": "504:0",
+          "lockId": 37,
           "requires2": [
             "flag(506_COMPUTER_MOLE)"
           ],
+          "allowedLocks": [],
           "noUnlock": true
         },
         {
           "id": 2,
           "target": "505:0",
+          "allowedLocks": [],
           "noUnlock": true
         }
       ],
@@ -6213,8 +6460,7 @@
       "doors": [
         {
           "id": 0,
-          "target": "503:1",
-          "noUnlock": true
+          "target": "503:1"
         }
       ],
       "items": [
@@ -6251,6 +6497,7 @@
         {
           "id": 0,
           "target": "503:2",
+          "allowedLocks": [],
           "noUnlock": true
         },
         {
@@ -6260,8 +6507,16 @@
         {
           "id": 2,
           "target": "507/STORE:0",
+          "kind": "locked",
           "lockId": 45,
-          "kind": "locked"
+          "allowedLocks": [],
+          "doorRando": false
+        },
+        {
+          "id": 2,
+          "target": "507/STORE:0",
+          "lockId": 45,
+          "doorRando": true
         },
         {
           "id": 3,
@@ -6333,7 +6588,9 @@
       "doors": [
         {
           "target": "507/STORE",
-          "kind": "oneway"
+          "kind": "oneway",
+          "allowedLocks": [],
+          "randomize": false
         },
         {
           "id": 1,
@@ -6366,11 +6623,24 @@
       "rdts": [ "507" ],
       "doors": [
         {
+          "target": "507/TABLE",
+          "kind": "blocked",
+          "allowedLocks": [],
+          "randomize": false
+        },
+        {
           "id": 0,
-          "target": "505",
-          "lockId": 45,
+          "target": "505:2",
           "kind": "unlock",
-          "allowedLocks": []
+          "lockId": 45,
+          "allowedLocks": [],
+          "doorRando": false
+        },
+        {
+          "id": 0,
+          "tags": [ "connect-back" ],
+          "target": "505:2",
+          "doorRando": true
         }
       ],
       "items": [
@@ -6380,6 +6650,18 @@
           "globalId": 148,
           "type": 14,
           "amount": 6,
+          "group": 32
+        },
+        {
+          "name": "MO DISC PASS CODE",
+          "id": 14,
+          "globalId": 98,
+          "type": 108,
+          "amount": 1,
+          "document": true,
+          "requires2": [
+            "flag(MO_DISC_507)"
+          ],
           "group": 32
         }
       ],
@@ -6409,9 +6691,11 @@
         {
           "id": 1,
           "target": "509:0",
+          "lockId": 38,
           "requires2": [
             "flag(506_COMPUTER_JOHNADA)"
           ],
+          "allowedLocks": [],
           "noUnlock": true
         },
         {
@@ -6420,12 +6704,14 @@
         },
         {
           "id": 3,
+          "tags": [ "segment-end" ],
           "target": "50B:0",
           "requires2": [
             "flag(MO_DISC_507)",
             "flag(MO_DISC_509)",
             "flag(MO_DISC_510)"
           ],
+          "allowedLocks": [],
           "noUnlock": true
         }
       ],
@@ -6480,11 +6766,22 @@
       "doors": [
         {
           "id": 0,
-          "target": "508:1",
-          "noUnlock": true
+          "target": "508:1"
         }
       ],
       "items": [
+        {
+          "name": "MO DISC PASS CODE",
+          "id": 1,
+          "globalId": 82,
+          "type": 107,
+          "amount": 1,
+          "document": true,
+          "requires2": [
+            "flag(MO_DISC_509)"
+          ],
+          "group": 32
+        },
         {
           "name": "DOCUMENT",
           "id": 2,
@@ -6565,16 +6862,16 @@
       "doors": [
         {
           "id": 0,
-          "target": "508:3",
-          "noUnlock": true
+          "target": "508:3"
         },
         {
           "id": 1,
           "target": "512:0",
+          "kind": "unblock",
           "requires2": [
             "room(513)"
           ],
-          "noUnlock": true
+          "allowedLocks": []
         }
       ],
       "enemies": [],
@@ -6644,7 +6941,7 @@
             "room(50F)",
             "room(511)"
           ],
-          "noUnlock": true,
+          "allowedLocks": [],
           "randomize": false
         }
       ],
@@ -6703,12 +7000,14 @@
         {
           "id": 0,
           "target": "501:1",
+          "allowedLocks": [],
           "noUnlock": true,
           "randomize": false
         },
         {
           "id": 1,
           "target": "303:0",
+          "allowedLocks": [],
           "noUnlock": true,
           "randomize": false
         }
@@ -6720,6 +7019,7 @@
       "rdts": [ "50E" ],
       "doors": [
         {
+          "id": 0,
           "target": "50C:0"
         }
       ],
@@ -6800,6 +7100,20 @@
           "target": "511:0"
         }
       ],
+      "items": [
+        {
+          "name": "MO DISC PASS CODE",
+          "id": 2,
+          "globalId": 90,
+          "type": 109,
+          "amount": 1,
+          "document": true,
+          "requires2": [
+            "flag(MO_DISC_510)"
+          ],
+          "group": 32
+        }
+      ],
       "flags": [
         {
           "name": "MO_DISC_510",
@@ -6861,8 +7175,7 @@
       "doors": [
         {
           "id": 0,
-          "target": "50B:1",
-          "noUnlock": true
+          "target": "50B:1"
         }
       ],
       "cutscenes": [
@@ -6910,6 +7223,7 @@
         {
           "id": 0,
           "target": "514:0",
+          "allowedLocks": [],
           "noUnlock": true,
           "randomize": false
         }
@@ -6994,12 +7308,14 @@
         {
           "id": 0,
           "target": "513:0",
+          "allowedLocks": [],
           "noUnlock": true,
           "randomize": false
         },
         {
           "id": 1,
           "target": "515:1",
+          "allowedLocks": [],
           "noUnlock": true,
           "randomize": false
         }
@@ -7066,12 +7382,14 @@
         {
           "id": 0,
           "target": "50C:4",
+          "allowedLocks": [],
           "noUnlock": true,
           "randomize": false
         },
         {
           "id": 1,
           "target": "514:1",
+          "allowedLocks": [],
           "noUnlock": true,
           "randomize": false
         }

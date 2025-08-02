@@ -84,7 +84,7 @@ namespace IntelOrca.Biohazard.BioRand
                     " Once a segment is complete, no key items are required from a previous segment.",
                 Type = "range",
                 Min = 1,
-                Max = 4,
+                Max = 6,
                 Default = 3
             });
             group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
@@ -690,22 +690,35 @@ namespace IntelOrca.Biohazard.BioRand
             if (modBuilder is ICrModBuilder crModBuilder)
             {
                 var crMod = crModBuilder.Create(mod);
-                var modFileName = $"mod_biorand_{input.Seed}.7z";
+                var assets = ImmutableArray.CreateBuilder<RandomizerOutputAsset>();
+
                 var archiveFile = crMod.Create7z();
-                var asset = new RandomizerOutputAsset(
-                    "mod",
+                assets.Add(new RandomizerOutputAsset(
+                    "_1_mod",
                     "Classic Rebirth Mod",
                     "Drop this in your RE 1 install folder.",
-                    modFileName,
-                    archiveFile);
+                    $"mod_biorand_{input.Seed}.7z",
+                    archiveFile));
+
+                var logData = crMod.GetFile("log.html");
+                if (logData != null)
+                {
+                    assets.Add(new RandomizerOutputAsset(
+                        "_2_log",
+                        "Spoiler Log",
+                        "Shows you where keys are.",
+                        $"mod_biorand_{input.Seed}.html",
+                        logData));
+                }
+
                 return new RandomizerOutput(
-                    [asset],
+                    assets.ToImmutable(),
                     "",
                     []);
             }
             else
             {
-                throw new NotSupportedException("The mod builder for this game version is not supported.");
+                throw new NotSupportedException("The _mod builder for this game version is not supported.");
             }
         }
 
@@ -714,12 +727,13 @@ namespace IntelOrca.Biohazard.BioRand
             var chosenVariationName = context.Configuration.GetValueOrDefault("variation", controller.VariationNames[0]);
             var variation = controller.GetVariation(context, chosenVariationName ?? "");
             var generatedVariation = new GeneratedVariation(context, variation, modBuilder);
-            if (context.Configuration.GetValueOrDefault("doors/random", true))
-            {
-                throw new RandomizerUserException("Door randomizer not implemented yet.");
-            }
             var inventoryRandomizer = new InventoryRandomizer();
             inventoryRandomizer.Randomize(generatedVariation);
+            if (context.Configuration.GetValueOrDefault("doors/random", false))
+            {
+                var doorRandomizer = new DoorRandomizer();
+                doorRandomizer.Randomize(generatedVariation);
+            }
             var lockRandomizer = new LockRandomizer();
             lockRandomizer.Randomise(generatedVariation);
             if (context.Configuration.GetValueOrDefault("items/random", false))
