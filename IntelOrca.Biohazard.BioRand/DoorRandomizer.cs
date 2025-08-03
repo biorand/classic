@@ -348,8 +348,13 @@ namespace IntelOrca.Biohazard.BioRand
             }
 
             // Now seal all remaining doors
-            foreach (var door in segment.UnconnectedDoors)
+            foreach (var door in segment.Doors)
             {
+                if (door.IsSealed)
+                    continue;
+                if (door.IsSegmentEnd)
+                    continue;
+
                 door.Seal();
             }
 
@@ -423,6 +428,9 @@ namespace IntelOrca.Biohazard.BioRand
                             remainingDoorsAfterConnection += unconnected.Count(x => x != sourceDoor);
                             remainingDoorsAfterConnection += availableDoor.OtherAvailableDoors.Count();
                         }
+
+                        var numConnectBackDoors = targetDoor.Owner.Doors.Count(x => x.Door.HasTag(MapTags.ConnectBack));
+                        remainingDoorsAfterConnection -= numConnectBackDoors;
                         if (remainingDoorsAfterConnection <= 0)
                             continue;
                     }
