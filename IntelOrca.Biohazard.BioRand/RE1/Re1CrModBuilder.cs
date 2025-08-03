@@ -77,29 +77,45 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
             private void CreateLogs()
             {
-                var md = new ModLogBuilder(_map, _mod, Player == 0 ? "Chris" : "Jill").Build();
-                var pipeline = new MarkdownPipelineBuilder()
-                    .UseAdvancedExtensions()
-                    .Build();
-                var htmlBody = Markdig.Markdown.ToHtml(md.Replace("\u2003", "&#8195;"), pipeline);
-                var html =
-                    $"""
-                    <!doctype html>
-                    <html lang="en">
-                    <head>
-                    <meta charset="utf-8">
-                    <meta name="viewport" content="width=device-width, initial-scale=1">
-                    <title>Log for {_mod.Name}</title>
-                    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.8.1/github-markdown.min.css">
-                    </head>
-                    <body class="markdown-body" style="padding: 32px;">
-                    {htmlBody}
-                    </body>
-                    </html>
-                    """;
+                try
+                {
+                    var md = new ModLogBuilder(_map, _mod, Player == 0 ? "Chris" : "Jill").Build();
+                    _crModBuilder.SetFile("log.md", md);
 
-                _crModBuilder.SetFile("log.md", md);
-                _crModBuilder.SetFile("log.html", html);
+                    string htmlBody;
+                    try
+                    {
+                        var pipeline = new MarkdownPipelineBuilder()
+                            .UseAdvancedExtensions()
+                            .Build();
+                        htmlBody = Markdig.Markdown.ToHtml(md.Replace("\u2003", "&#8195;"), pipeline);
+                    }
+                    catch (Exception ex)
+                    {
+                        htmlBody = ex.Message;
+                    }
+
+                    var html =
+                        $"""
+                        <!doctype html>
+                        <html lang="en">
+                        <head>
+                        <meta charset="utf-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1">
+                        <title>Log for {_mod.Name}</title>
+                        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/github-markdown-css/5.8.1/github-markdown.min.css">
+                        </head>
+                        <body class="markdown-body" style="padding: 32px;">
+                        {htmlBody}
+                        </body>
+                        </html>
+                        """;
+                    _crModBuilder.SetFile("log.html", html);
+                }
+                catch (Exception ex)
+                {
+                    _crModBuilder.SetFile("log.md", ex.Message);
+                }
             }
 
             public void Write()

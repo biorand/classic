@@ -35,8 +35,21 @@ namespace IntelOrca.Biohazard.BioRand
             var numRooms = Math.Max(0, Math.Min((int)Math.Round(_allRooms.Count * numRoomsRatio), _allRooms.Count));
             var numSegments = Math.Max(1, context.Configuration.GetValueOrDefault("doors/segments", 2));
 
-            // Take segment enders (remove unused ones)
+            // Find all segment enders
             var segmentEnders = _allRooms.Where(x => x.IsSegmentEnd).Shuffle(rng);
+            if (numSegments == 1)
+            {
+                foreach (var r in segmentEnders)
+                {
+                    foreach (var d in r.Doors)
+                    {
+                        d.Door.Tags = d.Door.Tags.Remove(MapTags.SegmentEnd);
+                    }
+                }
+                segmentEnders = [];
+            }
+
+            // Take segment enders (remove unused ones)
             var usedSegmentEnders = segmentEnders.Take(numSegments - 1).ToQueue();
             var unusedSegmentEnders = segmentEnders.Skip(numSegments - 1).ToArray();
             var allUnusedRooms = unusedSegmentEnders.ToList();
@@ -249,7 +262,7 @@ namespace IntelOrca.Biohazard.BioRand
                     segment.Unused.AddRange(TakeRoom(startRoom).Except([startRoom]));
                     segment.Start = startRoom;
                 }
-                else if (i == numSegments - 1)
+                if (i == numSegments - 1)
                 {
                     var endRoom = _allRooms.FirstOrDefault(x => x.IsEnd);
                     segment.Unused.AddRange(TakeRoom(endRoom).Except([endRoom]));

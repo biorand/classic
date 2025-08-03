@@ -3130,7 +3130,7 @@
         },
         {
           "id": 1,
-          "tags": [ "segment-end" ],
+          "tags": [ "segment-end", "connect-back" ],
           "target": "21A:0",
           "kind": "unblock",
           "allowedLocks": []
@@ -4793,7 +4793,7 @@
           "name": "Flamethrower Door",
           "id": 0,
           "target": "307/BACK:2",
-          "kind": "unblock",
+          // "kind": "unblock", // Can't do this as the other way is unblock too
           "lockId": 39,
           "allowedLocks": [],
           "noUnlock": true,
@@ -4807,7 +4807,6 @@
         },
         {
           "id": 1,
-          "tags": [ "connect-out" ],
           "target": "30C:0",
           "kind": "unblock"
         }
@@ -4966,6 +4965,7 @@
       "doors": [
         {
           "id": 0,
+          "name": "Lift to fountain",
           "target": "305:2",
           "allowedLocks": [],
           "noUnlock": true
@@ -5028,6 +5028,7 @@
         },
         {
           "id": 1,
+          "name": "Door after crank tunnel",
           "tags": [ "connect-out" ],
           "target": "306:0"
         }
@@ -6330,7 +6331,6 @@
         },
         {
           "id": 1,
-          "tags": [ "connect-out" ], // This prevents a cutscene softlock for Jill
           "target": "503:0"
         }
       ],
