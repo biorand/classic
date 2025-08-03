@@ -441,6 +441,15 @@ namespace IntelOrca.Biohazard.BioRand.RE1
         }
 
         [Patch(BothMansions = true)]
+        public void DiableJillSandwich(RandomizedRdt rdt115)
+        {
+            if (RandomDoors)
+            {
+                rdt115.Nop(0x22F4, 0x231E);
+            }
+        }
+
+        [Patch(BothMansions = true)]
         public void ShotgunOnWallFix(RandomizedRdt rdt109, RandomizedRdt rdt115, RandomizedRdt rdt116)
         {
             if (RandomItems)
