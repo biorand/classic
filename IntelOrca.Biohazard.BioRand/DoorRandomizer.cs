@@ -126,7 +126,17 @@ namespace IntelOrca.Biohazard.BioRand
 
                 if (door.Target == null)
                 {
+                    if (door.Door.NoUnlock)
+                    {
+                        door.Door.Kind = "blocked";
+                    }
+                    else
+                    {
+                        door.Door.LockId = 255;
+                        door.Door.Kind = "locked";
+                    }
                     door.Door.Requires2 = [];
+                    door.Door.AllowedLocks = [];
                     continue;
                 }
 
