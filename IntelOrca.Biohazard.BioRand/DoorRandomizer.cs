@@ -635,14 +635,7 @@ namespace IntelOrca.Biohazard.BioRand
                             if (!door.IsConnectable)
                                 continue;
 
-                            // Unblock assumes connect out
-                            if (door.Door.Kind == DoorKinds.Unblock)
-                                continue;
-
-                            if (door.Door.Requirements.Any())
-                                continue;
-
-                            if (door.Door.HasAnyTag([MapTags.ConnectOut, MapTags.ConnectBack]))
+                            if (door.MustConnectOut)
                                 continue;
 
                             yield return new AvailableDoor(door);
@@ -763,7 +756,10 @@ namespace IntelOrca.Biohazard.BioRand
             public bool IsSealed { get; private set; }
             public bool IsConnected => Target != null;
             public bool IsFree => Door.Requirements.Length == 0;
-            public bool MustConnectOut => Door.HasAnyTag([MapTags.ConnectOut, MapTags.ConnectBack]);
+            public bool MustConnectOut =>
+                Door.Kind == DoorKinds.Unblock ||
+                Door.HasAnyTag([MapTags.ConnectOut, MapTags.ConnectBack]) ||
+                !IsFree;
             public bool CanBeLocked => !Door.NoUnlock;
             public bool IsSegmentEnd => Door.HasTag(MapTags.SegmentEnd);
             public RdtItemId Identifier => new(Room.Rdts![0], (byte)(Door.Id ?? 0));
