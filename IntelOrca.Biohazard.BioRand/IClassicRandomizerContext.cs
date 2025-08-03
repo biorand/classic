@@ -2,6 +2,7 @@
 {
     internal interface IClassicRandomizerContext
     {
+        RandomizerConfigurationDefinition ConfigurationDefinition { get; }
         RandomizerConfiguration Configuration { get; }
         DataManager DataManager { get; }
 

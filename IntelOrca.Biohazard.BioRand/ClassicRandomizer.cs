@@ -658,7 +658,7 @@ namespace IntelOrca.Biohazard.BioRand
         public ClassicMod RandomizeToMod(RandomizerInput input)
         {
             var modBuilder = CreateModBuilder(input);
-            var context = new Context(input.Configuration.Clone(), dataManager, input.Seed);
+            var context = new Context(ConfigurationDefinition, input.Configuration.Clone(), dataManager, input.Seed);
             controller.ApplyConfigModifications(context, modBuilder);
             var generatedVariation = Randomize(context, modBuilder);
             return generatedVariation.ModBuilder.Build();
@@ -767,10 +767,12 @@ namespace IntelOrca.Biohazard.BioRand
         }
 
         private sealed class Context(
+            RandomizerConfigurationDefinition configurationDefinition,
             RandomizerConfiguration configuration,
             DataManager dataManager,
             int seed) : IClassicRandomizerContext
         {
+            public RandomizerConfigurationDefinition ConfigurationDefinition => configurationDefinition;
             public RandomizerConfiguration Configuration => configuration;
             public DataManager DataManager => dataManager;
             public Rng GetRng(string key)
@@ -787,6 +789,7 @@ namespace IntelOrca.Biohazard.BioRand
             Variation variation,
             ModBuilder modBuilder) : IClassicRandomizerGeneratedVariation
         {
+            public RandomizerConfigurationDefinition ConfigurationDefinition => context.ConfigurationDefinition;
             public RandomizerConfiguration Configuration => context.Configuration;
             public DataManager DataManager => context.DataManager;
             public Rng GetRng(string key) => context.GetRng(key);

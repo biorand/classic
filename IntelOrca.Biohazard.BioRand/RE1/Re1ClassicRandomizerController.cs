@@ -15,8 +15,8 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             page.Groups[0].Items.Add(new RandomizerConfigurationDefinition.GroupItem()
             {
                 Id = "cutscenes/disable",
-                Label = "Remove Alpha Team",
-                Description = "Remove the other members of the Alpha team, i.e. Chris, Jill, Rebecca, Barry, and Wesker. Disables all related cutscenes.",
+                Label = "Disable cutscenes",
+                Description = "Disables all cutscenes keeping the randomizer completely gameplay focused.",
                 Type = "switch",
                 Default = false
             });
@@ -47,83 +47,57 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                         Id = "progression/guardhouse",
                         Label = "Guardhouse",
                         Description = "Include the guardhouse in the randomizer. If disabled, the gates to the guardhouse will be locked.",
-                        Type = "switch",
-                        Default = true
+                        Type = "dropdown",
+                        Options = ["Random", "Always", "Never"],
+                        Default = "Always"
+                    },
+                    new RandomizerConfigurationDefinition.GroupItem()
+                    {
+                        Id = "progression/mansion2",
+                        Label = "Mansion 2",
+                        Description =
+                            "Split the mansion into two segments, before and after plant 42. " +
+                            "The mansion 2 key will be behind plant 42, and the battery will be in a mansion 2 room. " +
+                            "Only applicable if guardhouse is enabled.",
+                        Type = "dropdown",
+                        Options = ["Random", "Always", "Never"],
+                        Default = "Always"
+                    },
+                    new RandomizerConfigurationDefinition.GroupItem()
+                    {
+                        Id = "progression/caves",
+                        Label = "Caves",
+                        Description = "Isolate the caves in the randomizer. If enabled, the caves will be a standalone segment.",
+                        Type = "dropdown",
+                        Options = ["Always", "Always (Segmented)"],
+                        Default = "Always (Segmented)"
                     },
                     new RandomizerConfigurationDefinition.GroupItem()
                     {
                         Id = "progression/lab",
                         Label = "Lab",
                         Description = "Include the lab in the randomizer. If disabled, there will be no doom books, and you can go straight to the heliport when you reach the fountain.",
-                        Type = "switch",
-                        Default = true
+                        Type = "dropdown",
+                        Options = ["Random", "Random (Segmented)", "Always", "Always (Segmented)", "Never"],
+                        Default = "Always (Segmented)"
                     },
                     new RandomizerConfigurationDefinition.GroupItem()
                     {
-                        Id = "progression/mansion/split",
-                        Label = "Split Mansion",
-                        Description =
-                            "Split the mansion into two segments, before and after plant 42. " +
-                            "The helmet key will be behind plant 42, and the battery will be in a mansion 2 room. " +
-                            "Only applicable if guardhouse is enabled.",
-                        Type = "switch",
-                        Default = false
-                    },
-                    new RandomizerConfigurationDefinition.GroupItem()
-                    {
-                        Id = "progression/guardhouse/segmented",
-                        Label = "Segmented Guardhouse",
-                        Description = "Isolate the guardhouse in the randomizer. If enabled, the guardhouse will be a standalone segment.",
-                        Type = "switch",
-                        Default = false
-                    },
-                    new RandomizerConfigurationDefinition.GroupItem()
-                    {
-                        Id = "progression/caves/segmented",
-                        Label = "Segmented Caves",
-                        Description = "Isolate the caves in the randomizer. If enabled, the caves will be a standalone segment.",
-                        Type = "switch",
-                        Default = true
-                    },
-                    new RandomizerConfigurationDefinition.GroupItem()
-                    {
-                        Id = "progression/lab/segmented",
-                        Label = "Segmented Lab",
-                        Description = "Isolate the lab in the randomizer. If enabled, the lab will be a standalone segment.",
-                        Type = "switch",
-                        Default = true
-                    },
-                    // new RandomizerConfigurationDefinition.GroupItem()
-                    // {
-                    //     Id = "progression/guardhouse/plant42",
-                    //     Label = "Mandatory Plant 42",
-                    //     Description = "Plant 42 must be defeated to complete the randomizer. If disabled, it may optional for some seeds.",
-                    //     Type = "switch",
-                    //     Default = false
-                    // },
-                    // new RandomizerConfigurationDefinition.GroupItem()
-                    // {
-                    //     Id = "progression/mansion/yawn2",
-                    //     Label = "Mandatory Yawn",
-                    //     Description = "Yawn must be defeated to complete the randomizer. If disabled, it may optional for some seeds.",
-                    //     Type = "switch",
-                    //     Default = false
-                    // },
-                    new RandomizerConfigurationDefinition.GroupItem()
-                    {
-                        Id = "progression/lab/tyrant",
+                        Id = "progression/tyrant1",
                         Label = "Mandatory Tyrant 1",
                         Description = "Tyrant 1 must be defeated to complete the randomizer. If disabled, it may optional for some seeds.",
-                        Type = "switch",
-                        Default = false
+                        Type = "dropdown",
+                        Options = ["Random", "Always", "Never"],
+                        Default = "Random"
                     },
                     new RandomizerConfigurationDefinition.GroupItem()
                     {
-                        Id = "progression/heliport/tyrant",
+                        Id = "progression/tyrant2",
                         Label = "Mandatory Tyrant 2",
                         Description = "Tyrant 2 must be defeated to complete the randomizer. If disabled, it may optional for some seeds.",
-                        Type = "switch",
-                        Default = false
+                        Type = "dropdown",
+                        Options = ["Random", "Always", "Never"],
+                        Default = "Random"
                     }
                 ]
             });
@@ -164,7 +138,14 @@ namespace IntelOrca.Biohazard.BioRand.RE1
         {
             var rng = context.GetRng("re1map");
             var config = context.Configuration;
+
             var randomDoors = context.Configuration.GetValueOrDefault("doors/random", false);
+            var guardhouse = config.GetValueOrDefault("progression/guardhouse", "Never") == "Always";
+            var mansion2 = config.GetValueOrDefault("progression/mansion2", "Never") == "Always";
+            var segmentedCaves = config.GetValueOrDefault("progression/caves", "Always") == "Always (Segmented)";
+            var lab = config.GetValueOrDefault("progression/lab", "Never") != "Never";
+            var segmentedLab = lab && config.GetValueOrDefault("progression/lab", "Never") == "Always (Segmented)";
+            var tyrant1 = config.GetValueOrDefault("progression/tyrant1", "Never") == "Always";
 
             // Apply player, scenario filter
             var map = context.DataManager.GetJson<Map>(BioVersion.Biohazard1, "rdt.json");
@@ -229,9 +210,9 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             if (!randomDoors)
             {
                 // Enable / disable guardhouse rooms
-                if (!config.GetValueOrDefault("progression/guardhouse", false))
+                if (!guardhouse)
                 {
-                    if (config.GetValueOrDefault("progression/mansion/split", false))
+                    if (mansion2)
                     {
                         throw new RandomizerUserException("Split mansion requires guardhouse to be enabled.");
                     }
@@ -247,7 +228,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 }
 
                 // Enable / disable lab rooms
-                if (config.GetValueOrDefault("progression/lab", false))
+                if (lab)
                 {
                     var fountainRoom = map.Rooms["305"];
                     var fountainDoor = fountainRoom.Doors.First(x => x.Name == "DOOR TO HELIPORT");
@@ -371,7 +352,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                             }
                         }
 
-                        if (config.GetValueOrDefault("progression/mansion/split", false))
+                        if (mansion2)
                         {
                             var mansion2key = enableLockpick
                                 ? genericKeys.FirstOrDefault(x => x.Key != Re1ItemIds.SwordKey)
@@ -434,11 +415,11 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     var areaTags = new List<string[]>([
                             ["mansion", "courtyard"],
                         ["caves"]]);
-                    if (config.GetValueOrDefault("progression/guardhouse", true))
+                    if (guardhouse)
                     {
                         areaTags.Add(["guardhouse"]);
                     }
-                    if (config.GetValueOrDefault("progression/lab", true))
+                    if (lab)
                     {
                         areaTags.Add(["lab"]);
                     }
@@ -494,14 +475,8 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 foreach (var item in items)
                     item.Group = GROUP_ALL;
 
-                if (config.GetValueOrDefault("progression/guardhouse", true) &&
-                    config.GetValueOrDefault("progression/guardhouse/segmented", false))
+                if (guardhouse)
                 {
-                    if (context.Configuration.GetValueOrDefault("locks/random", false))
-                    {
-                        throw new RandomizerUserException("Segmented guardhouse with lock randomizer not implemented yet.");
-                    }
-
                     // Only guardhouse can contain guardhouse keys
                     foreach (var item in items)
                         item.Group &= ~GROUP_GUARDHOUSE;
@@ -509,7 +484,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                         item.Group = GROUP_GUARDHOUSE | GROUP_SMALL_KEY;
                 }
 
-                if (config.GetValueOrDefault("progression/mansion/split", false))
+                if (mansion2)
                 {
                     // Mansion 2 (helmet key in plant 42)
                     foreach (var item in items)
@@ -528,8 +503,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                         item.Group |= GROUP_BATTERY;
                 }
 
-                if (config.GetValueOrDefault("progression/lab", true) &&
-                    config.GetValueOrDefault("progression/lab/tyrant", false))
+                if (lab && tyrant1)
                 {
                     // To ensure player has to fight tyrant, place flare there
                     map.Items[42].Group = GROUP_LAB_TYRANT;
@@ -539,7 +513,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                         item.Group = GROUP_LAB_TYRANT;
                 }
 
-                if (config.GetValueOrDefault("progression/caves/segmented", false))
+                if (segmentedCaves)
                 {
                     var caveDoor = map.Rooms!["302"].Doors.First(x => x.Name == "LADDER TO CAVES");
                     caveDoor.Kind = DoorKinds.NoReturn;
@@ -547,8 +521,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     map.GetOtherSide(caveDoor)!.Kind = DoorKinds.Blocked;
                 }
 
-                if (config.GetValueOrDefault("progression/lab", true) &&
-                    config.GetValueOrDefault("progression/lab/segmented", false))
+                if (segmentedLab)
                 {
                     var labDoor = map.Rooms!["305"].Doors.First(x => x.Name == "FOUNTAIN STAIRS");
                     labDoor.Kind = DoorKinds.NoReturn;
@@ -574,52 +547,46 @@ namespace IntelOrca.Biohazard.BioRand.RE1
         {
             var rng = context.GetRng("re1config");
             var config = context.Configuration;
-            var player = config.GetValueOrDefault("variation", "Chris") == "Chris" ? 0 : 1;
-            modBuilder.General = modBuilder.General.SetItem("player", player);
 
-            // inventory/size
-            var inventorySizeSetting = config.GetValueOrDefault("inventory/size", "Default");
-            var inventorySize = inventorySizeSetting switch
-            {
-                "Random" => rng.NextOf(6, 8),
-                "6" => 6,
-                "8" => 8,
-                _ => player == 0 ? 6 : 8
-            };
-            modBuilder.General = modBuilder.General.SetItem("inventorySize", inventorySize);
-
+            // Options with default Chris/Jill setting
             var ink = UpdateConfigNeverAlways(rng, config, "ink/enable", "Always", "Never");
             if (ink != "Always")
             {
                 config["inventory/ink/min"] = 0;
                 config["inventory/ink/max"] = 0;
                 config["items/distribution/ink"] = 0;
-                modBuilder.General = modBuilder.General.SetItem("ink", false);
             }
-            else
+            UpdateConfigNeverAlways(rng, config, "inventory/size", "6", "8");
+            UpdateConfigNeverAlways(rng, config, "inventory/special/lockpick", "Never", "Always");
+
+            ApplyRandomConfigOptions(context, rng);
+            ApplyModGeneral(context, modBuilder);
+        }
+
+        private static void ApplyRandomConfigOptions(IClassicRandomizerContext context, Rng rng)
+        {
+            var config = context.Configuration;
+            foreach (var configItem in context.ConfigurationDefinition.AllItems)
             {
-                modBuilder.General = modBuilder.General.SetItem("ink", true);
+                if (configItem.Type == "dropdown" && configItem.Id is string key)
+                {
+                    var value = config.GetValueOrDefault<string>(key, configItem.Default as string ?? "");
+                    if (value == "Random")
+                    {
+                        var options = configItem.Options
+                            .Except(["Random", "Random (Segmented)", "Always (Segmented)"])
+                            .ToArray();
+                        config[key] = rng.NextOf(options);
+                    }
+                    else if (value == "Random (Segmented)")
+                    {
+                        var options = configItem.Options
+                            .Except(["Random", "Random (Segmented)", "Always"])
+                            .ToArray();
+                        config[key] = rng.NextOf(options);
+                    }
+                }
             }
-
-            modBuilder.General = modBuilder.General.SetItem("hard", config.GetValueOrDefault<bool>("hard"));
-
-            var lockpick = UpdateConfigNeverAlways(rng, config, "inventory/special/lockpick", "Never", "Always");
-            modBuilder.General = modBuilder.General.SetItem("lockpick", lockpick == "Always");
-
-            if (config.TryGetValue("doors/random", out var randomDoors))
-                modBuilder.General = modBuilder.General.SetItem("randomDoors", randomDoors);
-
-            if (config.TryGetValue("items/random", out var randomItems))
-                modBuilder.General = modBuilder.General.SetItem("randomItems", randomItems);
-
-            if (config.TryGetValue("enemies/random", out var randomEnemies))
-                modBuilder.General = modBuilder.General.SetItem("randomEnemies", randomEnemies);
-
-            if (config.TryGetValue("cutscenes/disable", out var cutscenesDisabled))
-                modBuilder.General = modBuilder.General.SetItem("cutscenesDisabled", cutscenesDisabled);
-
-            if (config.TryGetValue("progression/heliport/tyrant", out var forceTyrant))
-                modBuilder.General = modBuilder.General.SetItem("forceTyrant", forceTyrant);
         }
 
         private static string UpdateConfigNeverAlways(
@@ -638,10 +605,26 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             }
             else if (value == "Random")
             {
-                value = rng.NextOf("Never", "Always");
+                value = rng.NextOf(defaultValueChris, defaultValueJill);
             }
             config[key] = value;
             return value;
+        }
+
+        private void ApplyModGeneral(IClassicRandomizerContext context, ModBuilder modBuilder)
+        {
+            var config = context.Configuration;
+
+            modBuilder.General = modBuilder.General.SetItem("player", config.GetValueOrDefault("variation", "Chris") == "Chris" ? 0 : 1);
+            modBuilder.General = modBuilder.General.SetItem("hard", config.GetValueOrDefault<bool>("hard"));
+            modBuilder.General = modBuilder.General.SetItem("randomDoors", config.GetValueOrDefault<bool>("doors/random"));
+            modBuilder.General = modBuilder.General.SetItem("randomItems", config.GetValueOrDefault<bool>("items/random"));
+            modBuilder.General = modBuilder.General.SetItem("randomEnemies", config.GetValueOrDefault<bool>("enemies/random"));
+            modBuilder.General = modBuilder.General.SetItem("cutscenesDisabled", config.GetValueOrDefault<bool>("cutscenes/disable"));
+            modBuilder.General = modBuilder.General.SetItem("forceTyrant", config.GetValueOrDefault<string>("progression/tyrant2") == "Always");
+            modBuilder.General = modBuilder.General.SetItem("lockpick", config.GetValueOrDefault<string>("inventory/special/lockpick") == "Always");
+            modBuilder.General = modBuilder.General.SetItem("ink", config.GetValueOrDefault<string>("ink/enable") == "Always");
+            modBuilder.General = modBuilder.General.SetItem("inventorySize", config.GetValueOrDefault("inventory/size", "8") == "6" ? 6 : 8);
         }
 
         private class CsvDoorEntrance

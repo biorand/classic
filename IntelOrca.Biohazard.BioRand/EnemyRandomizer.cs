@@ -146,7 +146,7 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 var map = context.Variation.Map;
                 var config = context.Configuration;
-                var separateRdts = config.GetValueOrDefault("progression/mansion/split", false);
+                var separateRdts = config.GetValueOrDefault("progression/mansion2", "Never") == "Always";
                 var roomWeight = config.GetValueOrDefault("enemies/rooms", 0.0);
 
                 // Get a list of room tags where we don't want enemies
