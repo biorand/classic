@@ -679,6 +679,20 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             }
         }
 
+        [Patch]
+        public void FixCutscene502(RandomizedRdt rdt502)
+        {
+            if (Player == 1)
+            {
+                rdt502.AdditionalOpcodes.AddRange([
+                    CreateFromString("0118"),
+                    CreateFromString("04003700"),
+                    CreateFromString("0401C001"),
+                    CreateFromString("20000000000C0000E01500001C0C"),
+                    CreateFromString("0300")]);
+            }
+        }
+
         [Patch(Player = 1)]
         public void AddVariableHelper308(RandomizedRdt rdt308)
         {

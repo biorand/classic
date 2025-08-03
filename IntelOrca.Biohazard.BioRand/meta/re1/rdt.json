@@ -400,6 +400,10 @@
       "name": "Document (Security System)",
       "kind": "document"
     },
+    "106": {
+      "name": "Document (Barry's photo)",
+      "kind": "document"
+    },
     "107": {
       "name": "Document (Pass Code 01)",
       "kind": "document"
@@ -6328,6 +6332,19 @@
           "id": 1,
           "tags": [ "connect-out" ], // This prevents a cutscene softlock for Jill
           "target": "503:0"
+        }
+      ],
+      "items": [
+        {
+          "name": "BARRY'S PHOTO",
+          "id": 2,
+          "globalId": 117,
+          "type": 106,
+          "amount": 0,
+          "optional": true,
+          "document": true,
+          "group": 32,
+          "player": 1
         }
       ],
       "enemies": [
