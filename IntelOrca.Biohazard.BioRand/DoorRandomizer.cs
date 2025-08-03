@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
+using System.Diagnostics;
 using System.Linq;
 
 namespace IntelOrca.Biohazard.BioRand
@@ -88,7 +89,7 @@ namespace IntelOrca.Biohazard.BioRand
             Distribute(headSegment, _allRooms
                 .Shuffle(rng)
                 .OrderByDescending(x => x.Doors.Length)
-                .Take(numSegments * 3));
+                .Take(numSegments * 4));
 
             // Add rest of the rooms
             var remainingRoomCount = numRooms - _includedRooms.Count;
@@ -441,6 +442,8 @@ namespace IntelOrca.Biohazard.BioRand
 
                     sourceDoor.Connect(targetDoor, shouldLock ? GetNextLockId() : null);
                     segment.UseRoom(targetDoor.Owner);
+
+                    Debug.Assert(!ensureFreeDoor || segment.UnconnectedDoors.Any());
                     return true;
                 }
             }
@@ -478,7 +481,7 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 foreach (var d in curr.Doors)
                 {
-                    if (d.IsConnectable && d != tail)
+                    if (d.IsConnectable && !d.MustConnectOut && !d.IsSegmentEnd && d != tail)
                     {
                         result.Add(d);
                     }
