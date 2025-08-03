@@ -906,7 +906,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
         public void EnableItemForJill21C(RandomizedRdt rdt21C)
         {
             rdt21C.AdditionalOpcodes.Add(
-                CreateFromString("180A3421781E4006E8033D0100FF222424FA60220000E4810086"));
+                CreateItemFromString("180A3421781E4006E8033D0100FF222424FA60220000E4810086"));
         }
 
         [Patch(Player = 1)]
