@@ -27,7 +27,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 Description = "If disabled, no ink ribbons will be placed, and saving can be done at any time unlimited times at a typewriter. Default will enable it for Chris, but not Jill.",
                 Type = "dropdown",
                 Options = ["Default", "Never", "Always", "Random"],
-                Default = false
+                Default = "Always"
             });
             page.Groups[0].Items.Add(new RandomizerConfigurationDefinition.GroupItem()
             {
@@ -67,7 +67,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     {
                         Id = "progression/caves",
                         Label = "Caves",
-                        Description = "Isolate the caves in the randomizer. If enabled, the caves will be a standalone segment.",
+                        Description = "If segmented, key items required for caves will not be found prior to reaching the caves.",
                         Type = "dropdown",
                         Options = ["Always", "Always (Segmented)"],
                         Default = "Always (Segmented)"
@@ -76,7 +76,8 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     {
                         Id = "progression/lab",
                         Label = "Lab",
-                        Description = "Include the lab in the randomizer. If disabled, there will be no doom books, and you can go straight to the heliport when you reach the fountain.",
+                        Description = "Include the lab in the randomizer. If disabled, there will be no doom books, and you can go straight to the heliport when you reach the fountain. " +
+                            "If segmented, key items required for the lab will not be found prior to reaching the lab.",
                         Type = "dropdown",
                         Options = ["Random", "Random (Segmented)", "Always", "Always (Segmented)", "Never"],
                         Default = "Always (Segmented)"
@@ -85,7 +86,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     {
                         Id = "progression/tyrant1",
                         Label = "Mandatory Tyrant 1",
-                        Description = "Tyrant 1 must be defeated to complete the randomizer. If disabled, it may optional for some seeds.",
+                        Description = "If enabled, Tyrant 1 must be defeated to complete the randomizer.",
                         Type = "dropdown",
                         Options = ["Random", "Always", "Never"],
                         Default = "Random"
@@ -94,7 +95,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     {
                         Id = "progression/tyrant2",
                         Label = "Mandatory Tyrant 2",
-                        Description = "Tyrant 2 must be defeated to complete the randomizer. If disabled, it may optional for some seeds.",
+                        Description = "If enabled, Tyrant 2 must be defeated to complete the randomizer.",
                         Type = "dropdown",
                         Options = ["Random", "Always", "Never"],
                         Default = "Random"
@@ -141,6 +142,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
             var randomDoors = context.Configuration.GetValueOrDefault("doors/random", false);
             var guardhouse = config.GetValueOrDefault("progression/guardhouse", "Never") == "Always";
+            var segmentedGuardhouse = false;
             var mansion2 = config.GetValueOrDefault("progression/mansion2", "Never") == "Always";
             var segmentedCaves = config.GetValueOrDefault("progression/caves", "Always") == "Always (Segmented)";
             var lab = config.GetValueOrDefault("progression/lab", "Never") != "Never";
@@ -475,7 +477,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 foreach (var item in items)
                     item.Group = GROUP_ALL;
 
-                if (guardhouse)
+                if (segmentedGuardhouse)
                 {
                     // Only guardhouse can contain guardhouse keys
                     foreach (var item in items)
