@@ -1478,10 +1478,10 @@
     ]
   },
   "voice/VA09_04.wav": { "rdt": "50C", "player": 1, "actor": "barry", "condition": "@jill", "split": 0.995827664399093 },
-  "voice/VA09_05.wav": { "rdt": "000", "player": 1, "actor": "barry" },
-  "voice/VA09_06.wav": { "rdt": "000", "player": 1, "actor": "jill", "condition": "@barry" },
-  "voice/VA09_07.wav": { "rdt": "000", "player": 1, "actor": "barry", "condition": "@jill", "nameClipped": { "start": 1.15 } },
-  "voice/VA09_08.wav": { "rdt": "000", "player": 1, "actor": "jill", "condition": "@barry", "nameClipped": { "start": 0.9 } },
+  "voice/VA09_05.wav": { "rdt": "50C", "player": 1, "actor": "barry" },
+  "voice/VA09_06.wav": { "rdt": "50C", "player": 1, "actor": "jill", "condition": "@barry" },
+  "voice/VA09_07.wav": { "rdt": "50C", "player": 1, "actor": "barry", "condition": "@jill", "nameClipped": { "start": 1.15 } },
+  "voice/VA09_08.wav": { "rdt": "50C", "player": 1, "actor": "jill", "condition": "@barry", "nameClipped": { "start": 0.9 } },
   "voice/VA09_09.wav": {
     "rdt": "50C",
     "player": 1,
