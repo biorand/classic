@@ -1,20 +1,15 @@
-﻿using System.Collections.Immutable;
-
-namespace IntelOrca.Biohazard.BioRand
+﻿namespace IntelOrca.Biohazard.BioRand
 {
     internal interface IClassicRandomizerController
     {
-        ImmutableArray<string> VariationNames { get; }
-
         void UpdateConfigDefinition(RandomizerConfigurationDefinition definition);
-        Variation GetVariation(IClassicRandomizerContext context, string name);
+        Variation GetVariation(IClassicRandomizerContext context);
         void ApplyConfigModifications(IClassicRandomizerContext context, ModBuilder modBuilder);
     }
 
-    public class Variation(int playerIndex, string playerName, Map map)
+    public class Variation(int playerIndex, Map map)
     {
         public int PlayerIndex { get; } = playerIndex;
-        public string PlayerName { get; } = playerName;
         public Map Map { get; } = map;
     }
 }

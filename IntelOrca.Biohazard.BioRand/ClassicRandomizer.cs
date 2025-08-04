@@ -49,15 +49,6 @@ namespace IntelOrca.Biohazard.BioRand
             var group = page.CreateGroup("");
             group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
             {
-                Id = "variation",
-                Label = "Variation",
-                Description = "Set which variation of the game to randomize.",
-                Type = "dropdown",
-                Options = [.. controller.VariationNames],
-                Default = controller.VariationNames[0]
-            });
-            group.Items.Add(new RandomizerConfigurationDefinition.GroupItem()
-            {
                 Id = "title/call/random",
                 Label = "Random Title Call",
                 Description = "Set whether to randomize the title sound that says \"RESIDENT EVIL\".",
@@ -724,8 +715,7 @@ namespace IntelOrca.Biohazard.BioRand
 
         private IClassicRandomizerGeneratedVariation Randomize(IClassicRandomizerContext context, ModBuilder modBuilder)
         {
-            var chosenVariationName = context.Configuration.GetValueOrDefault("variation", controller.VariationNames[0]);
-            var variation = controller.GetVariation(context, chosenVariationName ?? "");
+            var variation = controller.GetVariation(context);
             var generatedVariation = new GeneratedVariation(context, variation, modBuilder);
             var inventoryRandomizer = new InventoryRandomizer();
             inventoryRandomizer.Randomize(generatedVariation);

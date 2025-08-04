@@ -844,6 +844,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
                 FixWeaponHitScan($"{characterPath}/weapons.csv", srcPlayer);
                 FixInventoryFace($"{characterPath}/face.png", Player);
+                FixPlayerCard($"{characterPath}/face.png", Player);
 
                 void Convert(string target, string source)
                 {
@@ -903,6 +904,32 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 var tim = new Tim(timData);
                 var timBuilder = tim.ToBuilder();
                 timBuilder.ImportPixels(col * 32, row * 32, 30, 30, face32, 0);
+                _crModBuilder.SetFile(timPath, timBuilder.GetBytes());
+            }
+
+            private void FixPlayerCard(string facePath, int pldIndex)
+            {
+                var facePng = _dataManager.GetData(facePath);
+                if (facePng == null)
+                    return;
+
+                var timPath = "DATA/SELECT_B.TIM";
+                var timData = _gameDataManager.GetData(timPath);
+                if (timData == null)
+                    return;
+
+                var basePng = PngToBgra32(_dataManager.GetData("re1/select_b.png")!);
+                var face32 = PngToBgra32(facePng);
+
+                var offsetX = pldIndex == 0 ? 85 : 5;
+                var offsetY = pldIndex == 0 ? 72 : 200;
+                var x = offsetX + (40 / 2) - (30 / 2);
+                var y = offsetY + 48 - 30;
+
+                var tim = new Tim(timData);
+                var timBuilder = tim.ToBuilder();
+                timBuilder.ImportPixels(basePng, 0);
+                timBuilder.ImportPixels(x, y, 30, 30, face32, 0);
                 _crModBuilder.SetFile(timPath, timBuilder.GetBytes());
             }
 

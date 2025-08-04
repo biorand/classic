@@ -1,17 +1,23 @@
 ﻿using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 
 namespace IntelOrca.Biohazard.BioRand.RE1
 {
     internal class Re1ClassicRandomizerController : IClassicRandomizerController
     {
-        public ImmutableArray<string> VariationNames { get; } = ["Chris", "Jill"];
-
         public void UpdateConfigDefinition(RandomizerConfigurationDefinition definition)
         {
             var page = definition.Pages.First(x => x.Label == "General");
 
+            page.Groups[0].Items.Add(new RandomizerConfigurationDefinition.GroupItem()
+            {
+                Id = "player",
+                Label = "Player",
+                Description = "Set which player of the game to randomize.",
+                Type = "dropdown",
+                Options = ["Chris", "Jill", "Random"],
+                Default = "Random"
+            });
             page.Groups[0].Items.Add(new RandomizerConfigurationDefinition.GroupItem()
             {
                 Id = "cutscenes/disable",
@@ -126,13 +132,10 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 }]);
         }
 
-        public Variation GetVariation(IClassicRandomizerContext context, string name)
+        public Variation GetVariation(IClassicRandomizerContext context)
         {
-            var playerIndex = VariationNames.IndexOf(name);
-            if (playerIndex == -1)
-                playerIndex = 0;
-
-            return new Variation(playerIndex, VariationNames[playerIndex], GetMap(context, playerIndex));
+            var playerIndex = context.Configuration.GetValueOrDefault("player", "Chris") == "Chris" ? 0 : 1;
+            return new Variation(playerIndex, GetMap(context, playerIndex));
         }
 
         public Map GetMap(IClassicRandomizerContext context, int playerIndex)
@@ -547,27 +550,28 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
         public void ApplyConfigModifications(IClassicRandomizerContext context, ModBuilder modBuilder)
         {
-            var rng = context.GetRng("re1config");
-            var config = context.Configuration;
+            // Update all option values that were set to random
+            ApplyRandomConfigOptions(context);
 
-            // Options with default Chris/Jill setting
-            var ink = UpdateConfigNeverAlways(rng, config, "ink/enable", "Always", "Never");
+            // Update all option values that are set to default
+            var config = context.Configuration;
+            var ink = UpdateConfigNeverAlways(config, "ink/enable", "Always", "Never");
             if (ink != "Always")
             {
                 config["inventory/ink/min"] = 0;
                 config["inventory/ink/max"] = 0;
                 config["items/distribution/ink"] = 0;
             }
-            UpdateConfigNeverAlways(rng, config, "inventory/size", "6", "8");
-            UpdateConfigNeverAlways(rng, config, "inventory/special/lockpick", "Never", "Always");
+            UpdateConfigNeverAlways(config, "inventory/size", "6", "8");
+            UpdateConfigNeverAlways(config, "inventory/special/lockpick", "Never", "Always");
 
-            ApplyRandomConfigOptions(context, rng);
             ApplyModGeneral(context, modBuilder);
         }
 
-        private static void ApplyRandomConfigOptions(IClassicRandomizerContext context, Rng rng)
+        private static void ApplyRandomConfigOptions(IClassicRandomizerContext context)
         {
             var config = context.Configuration;
+            var rng = context.GetRng("config");
             foreach (var configItem in context.ConfigurationDefinition.AllItems)
             {
                 if (configItem.Type == "dropdown" && configItem.Id is string key)
@@ -592,7 +596,6 @@ namespace IntelOrca.Biohazard.BioRand.RE1
         }
 
         private static string UpdateConfigNeverAlways(
-            Rng rng,
             RandomizerConfiguration config,
             string key,
             string defaultValueChris,
@@ -601,13 +604,9 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             var value = config.GetValueOrDefault(key, "Default")!;
             if (value == "Default")
             {
-                value = config.GetValueOrDefault("variation", "Chris") == "Chris"
+                value = config.GetValueOrDefault("player", "Chris") == "Chris"
                     ? defaultValueChris
                     : defaultValueJill;
-            }
-            else if (value == "Random")
-            {
-                value = rng.NextOf(defaultValueChris, defaultValueJill);
             }
             config[key] = value;
             return value;
@@ -616,17 +615,19 @@ namespace IntelOrca.Biohazard.BioRand.RE1
         private void ApplyModGeneral(IClassicRandomizerContext context, ModBuilder modBuilder)
         {
             var config = context.Configuration;
-
-            modBuilder.General = modBuilder.General.SetItem("player", config.GetValueOrDefault("variation", "Chris") == "Chris" ? 0 : 1);
-            modBuilder.General = modBuilder.General.SetItem("hard", config.GetValueOrDefault<bool>("hard"));
-            modBuilder.General = modBuilder.General.SetItem("randomDoors", config.GetValueOrDefault<bool>("doors/random"));
-            modBuilder.General = modBuilder.General.SetItem("randomItems", config.GetValueOrDefault<bool>("items/random"));
-            modBuilder.General = modBuilder.General.SetItem("randomEnemies", config.GetValueOrDefault<bool>("enemies/random"));
-            modBuilder.General = modBuilder.General.SetItem("cutscenesDisabled", config.GetValueOrDefault<bool>("cutscenes/disable"));
-            modBuilder.General = modBuilder.General.SetItem("forceTyrant", config.GetValueOrDefault<string>("progression/tyrant2") == "Always");
-            modBuilder.General = modBuilder.General.SetItem("lockpick", config.GetValueOrDefault<string>("inventory/special/lockpick") == "Always");
-            modBuilder.General = modBuilder.General.SetItem("ink", config.GetValueOrDefault<string>("ink/enable") == "Always");
-            modBuilder.General = modBuilder.General.SetItem("inventorySize", config.GetValueOrDefault("inventory/size", "8") == "6" ? 6 : 8);
+            modBuilder.General = modBuilder.General.SetItems(new Dictionary<string, object?>
+            {
+                ["player"] = config.GetValueOrDefault("player", "Chris") == "Chris" ? 0 : 1,
+                ["hard"] = config.GetValueOrDefault<bool>("hard"),
+                ["randomDoors"] = config.GetValueOrDefault<bool>("doors/random"),
+                ["randomItems"] = config.GetValueOrDefault<bool>("items/random"),
+                ["randomEnemies"] = config.GetValueOrDefault<bool>("enemies/random"),
+                ["cutscenesDisabled"] = config.GetValueOrDefault<bool>("cutscenes/disable"),
+                ["forceTyrant"] = config.GetValueOrDefault<string>("progression/tyrant2") == "Always",
+                ["lockpick"] = config.GetValueOrDefault<string>("inventory/special/lockpick") == "Always",
+                ["ink"] = config.GetValueOrDefault<string>("ink/enable") == "Always",
+                ["inventorySize"] = config.GetValueOrDefault("inventory/size", "8") == "6" ? 6 : 8
+            });
         }
 
         private class CsvDoorEntrance
