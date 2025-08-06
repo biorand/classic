@@ -629,6 +629,13 @@ namespace IntelOrca.Biohazard.BioRand.RE1
         }
 
         [Patch]
+        public void FixPlayerChangeGlitch305(RandomizedRdt rdt305)
+        {
+            rdt305.Nop(0x3EEEC);
+            rdt305.Nop(0x3EEF8);
+        }
+
+        [Patch]
         public void ForceHelipadTyrant(RandomizedRdt rdt303)
         {
             if (HelipadTyrantForced)
