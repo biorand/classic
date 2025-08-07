@@ -78,7 +78,7 @@ namespace IntelOrca.Biohazard.BioRand.Classic
                 var biorandDirectory = AppContext.BaseDirectory;
                 dataManager.AddFileSystem(GetCustomDataDirectory());
                 dataManager.AddFileSystem(Path.Combine(biorandDirectory, "data"));
-                dataManager.AddZip(Path.Combine(biorandDirectory, "data.zip"), "data");
+                AddDirectory(dataManager, Path.Combine(biorandDirectory, "datapacks"));
                 dataManager.AddFileSystem(Path.Combine(biorandDirectory, "meta"));
             }
             else
@@ -86,7 +86,16 @@ namespace IntelOrca.Biohazard.BioRand.Classic
                 var paths = env.Split(Path.PathSeparator);
                 foreach (var p in paths)
                 {
-                    if (p.EndsWith(".zip"))
+                    var fileName = Path.GetFileName(p);
+                    if (fileName.Equals("*.zip", StringComparison.OrdinalIgnoreCase))
+                    {
+                        AddDirectory(dataManager, Path.GetDirectoryName(p)!, onlyZip: true);
+                    }
+                    else if (fileName == "*")
+                    {
+                        AddDirectory(dataManager, Path.GetDirectoryName(p)!);
+                    }
+                    else if (fileName.EndsWith(".zip"))
                     {
                         dataManager.AddZip(p, "data");
                     }
@@ -97,6 +106,29 @@ namespace IntelOrca.Biohazard.BioRand.Classic
                 }
             }
             return dataManager;
+        }
+
+        private static void AddDirectory(DataManager dataManager, string path, bool onlyZip = false)
+        {
+            var datapacksDirectory = new DirectoryInfo(path);
+            if (datapacksDirectory.Exists)
+            {
+                var entries = datapacksDirectory.EnumerateFileSystemInfos();
+                foreach (var e in entries)
+                {
+                    if ((e.Attributes & FileAttributes.Directory) != 0)
+                    {
+                        if (!onlyZip)
+                        {
+                            dataManager.AddFileSystem(e.FullName);
+                        }
+                    }
+                    else if (e.Name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
+                    {
+                        dataManager.AddZip(e.FullName, "data");
+                    }
+                }
+            }
         }
 
         private static string GetCustomDataDirectory()
