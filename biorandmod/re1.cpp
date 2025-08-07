@@ -219,6 +219,11 @@ private:
     void UpdateMixes()
     {
         SetMixData(28, _blueHerbMix);
+
+        // Update item textures after a mix
+        // Original game did some daft thing rather than just refeshing all the textures
+        uint8_t data[] = { 0xE9, 0xBB, 0xBD, 0xFC, 0xFF };
+        _mm.Write(0x448380, data, sizeof(data));
     }
 
     const ITEM_MIX_TABLE* GetMixData(uint8_t mixNum)
