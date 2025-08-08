@@ -391,8 +391,8 @@
   "voice/V013_04.wav": { "rdt": "513", "player": 0, "actor": "chris" },
   "voice/V013_05.wav": { "rdt": "513", "player": 0, "actor": "wesker" },
   "voice/V013_06.wav": { "rdt": "513", "player": 0, "actor": "wesker" },
-  "voice/V013_07.wav": { "rdt": "513", "player": 0, "actor": "wesker" }, // Sounds like Chris, but is also played for Jill
-  "voice/V013_08.wav": { "rdt": "513", "player": 0, "actor": "wesker", "kind": "doom" },
+  "voice/V013_07.wav": { "rdt": "513", "actor": "wesker" }, // Sounds like Chris, but is also played for Jill
+  "voice/V013_08.wav": { "rdt": "513", "actor": "wesker", "kind": "doom" },
   "voice/V013_09.wav": { "rdt": "513", "player": 0, "actor": "chris" },
   "voice/V013_0A.wav": { "rdt": "513", "player": 0, "actor": "wesker" },
   "voice/V013_02A.wav": { "rdt": "513", "player": 0, "actor": "wesker", "condition": "@chris" },
