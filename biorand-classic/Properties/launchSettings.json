@@ -2,29 +2,29 @@
   "profiles": {
     "generate": {
       "commandName": "Project",
-      "commandLineArgs": "generate -g re1 -o mod_biorand_new --seed 35826 --config config.json",
-      "workingDirectory": "M:\\apps\\biorand\\re1hd",
+      "commandLineArgs": "generate -g re1 -o mod_biorand_new --seed 534055 --config config.json",
+      "workingDirectory": "F:\\games\\re1",
       "environmentVariables": {
-        "BIORAND_GAMEDATA_1": "M:\\apps\\biorand\\re1hd",
+        "BIORAND_GAMEDATA_1": "F:\\games\\re1\\jpn",
         "BIORAND_DEBUG_SCRIPTS": "true"
       }
     },
     "generate-semi": {
       "commandName": "Project",
       "commandLineArgs": "generate -g re1 -o mod.json --seed 35825 --config config.json",
-      "workingDirectory": "M:\\apps\\biorand\\re1hd",
+      "workingDirectory": "F:\\games\\re1",
       "environmentVariables": {
-        "BIORAND_GAMEDATA_1": "M:\\apps\\biorand\\re1hd",
+        "BIORAND_GAMEDATA_1": "F:\\games\\re1\\jpn",
         "BIORAND_DEBUG_SCRIPTS": "true"
       }
     },
     "generate-final": {
       "commandName": "Project",
       "commandLineArgs": "generate -o mod_biorand_new --input mod_biorand_emily/generated.json",
-      "workingDirectory": "M:\\apps\\biorand\\re1hd",
+      "workingDirectory": "F:\\games\\re1",
       "environmentVariables": {
-        "BIORAND_GAMEDATA_1": "M:\\apps\\biorand\\re1hd",
-        "BIORAND_DEBUG_OUTPUT": "M:\\apps\\biorand\\re1hd\\mod_biorand_new",
+        "BIORAND_GAMEDATA_1": "F:\\games\\re1\\jpn",
+        "BIORAND_DEBUG_OUTPUT": "F:\\games\\re1\\mod_biorand_new",
         "BIORAND_DEBUG_SCRIPTS": "true"
       }
     },
@@ -36,7 +36,7 @@
       "commandName": "Project",
       "commandLineArgs": "agent https://beta-api.biorand.net -k LAkcp9XbmFjo05ffk6ayH9b6DgDcuuXi",
       "environmentVariables": {
-        "BIORAND_GAMEDATA_1": "M:\\apps\\biorand\\re1hd"
+        "BIORAND_GAMEDATA_1": "F:\\games\\re1\\jpn"
       }
     },
     "data": {
