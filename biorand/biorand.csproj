@@ -5,9 +5,9 @@
     <UseWPF>true</UseWPF>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <Copyright>Copyright (C) Ted John 2022-2024</Copyright>
+    <Copyright>Copyright (C) Ted John 2022-2025</Copyright>
     <Product>Resident Evil Randomizer</Product>
-    <Version>3.2.7</Version>
+    <Version>3.3.0</Version>
     <RootNamespace>IntelOrca.Biohazard.BioRand</RootNamespace>
     <ApplicationIcon>biorand.ico</ApplicationIcon>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
@@ -16,8 +16,8 @@
     <Content Include="biorand.ico" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Text.Json" Version="6.0.6" />
-    <PackageReference Include="QRCoder" Version="1.4.3" />
+    <PackageReference Include="System.Text.Json" Version="9.0.8" />
+    <PackageReference Include="QRCoder" Version="1.6.0" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\IntelOrca.Biohazard.BioRand\IntelOrca.Biohazard.BioRand.csproj" />
