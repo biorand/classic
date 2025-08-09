@@ -6,8 +6,6 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using IntelOrca.Biohazard.BioRand.RE1;
-using IntelOrca.Biohazard.BioRand.RE3;
 using IntelOrca.Biohazard.Extensions;
 using IntelOrca.Biohazard.Model;
 using IntelOrca.Biohazard.Room;
@@ -389,20 +387,6 @@ namespace IntelOrca.Biohazard.BioRand.RE2
 
         internal override void RandomizeNPCs(RandoConfig config, NPCRandomiser npcRandomiser, VoiceRandomiser voiceRandomiser)
         {
-            if (InstallConfig!.IsEnabled(BioVersion.Biohazard1))
-            {
-                var dataPath = Re1Randomiser.FindDataPath(InstallConfig.GetInstallPath(BioVersion.Biohazard1));
-                voiceRandomiser.AddToSelection(BioVersion.Biohazard1, new FileRepository(dataPath));
-            }
-            if (InstallConfig!.IsEnabled(BioVersion.Biohazard3))
-            {
-                var dataPath = GetDataPath(InstallConfig.GetInstallPath(BioVersion.Biohazard3));
-                var fileRepository = new FileRepository(dataPath);
-                var re3randomizer = new Re3Randomiser(InstallConfig, null);
-                re3randomizer.AddArchives(dataPath, fileRepository);
-                voiceRandomiser.AddToSelection(BioVersion.Biohazard3, fileRepository);
-            }
-
             var pldFolders0 = DataManager.GetDirectories(BiohazardVersion, $"pld0");
             var pldFolders1 = DataManager.GetDirectories(BiohazardVersion, $"pld1");
             var pldFolders = pldFolders0.Concat(pldFolders1).ToArray();
@@ -418,13 +402,6 @@ namespace IntelOrca.Biohazard.BioRand.RE2
                     }
                 }
             }
-        }
-
-        internal void AddMusicSelection(BgmRandomiser bgmRandomizer, ReInstallConfig reConfig, double volume)
-        {
-            var dataPath = GetDataPath(reConfig.GetInstallPath(BiohazardVersion));
-            var srcBgmDirectory = Path.Combine(dataPath, BGMPath);
-            bgmRandomizer.AddToSelection(GetBgmJson(), srcBgmDirectory, ".sap", volume);
         }
 
         internal override string BGMPath => @"Common\Sound\BGM";
@@ -494,11 +471,6 @@ namespace IntelOrca.Biohazard.BioRand.RE2
                 .OrderBy(x => x.IsOriginal ? 0 : 1)
                 .ThenBy(x => x.IsNPC ? 0 : 1)
                 .ToArray();
-        }
-
-        protected override string[] GetDefaultNPCs()
-        {
-            return new[] { "leon", "claire", "ada", "sherry", "annette", "marvin", "irons", "ben", "kendo" };
         }
 
         private void ReplacePlayer(RandoConfig config, RandoLogger logger, FileRepository fileRepository,

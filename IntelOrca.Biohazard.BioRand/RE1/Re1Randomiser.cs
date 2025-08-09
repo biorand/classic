@@ -8,7 +8,6 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
-using IntelOrca.Biohazard.BioRand.RE3;
 using IntelOrca.Biohazard.Extensions;
 using IntelOrca.Biohazard.Model;
 using IntelOrca.Biohazard.Room;
@@ -40,11 +39,6 @@ namespace IntelOrca.Biohazard.BioRand.RE1
         }
 
         public override string GetPlayerName(int player) => player == 0 ? "Chris" : "Jill";
-
-        protected override string[] GetDefaultNPCs()
-        {
-            return new[] { "chris", "jill", "barry", "rebecca", "wesker", "enrico", "richard" };
-        }
 
         private string[] GetEnabledPartners(RandoConfig config)
         {
@@ -441,25 +435,6 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
         internal override void RandomizeNPCs(RandoConfig config, NPCRandomiser npcRandomiser, VoiceRandomiser voiceRandomiser)
         {
-            if (InstallConfig!.IsEnabled(BioVersion.Biohazard2))
-            {
-                var dataPath = GetDataPath(InstallConfig.GetInstallPath(BioVersion.Biohazard2));
-                // HACK should be helper function from RE 2 randomizer
-                if (Directory.Exists(Path.Combine(dataPath, "data", "pl0", "rdt")))
-                {
-                    dataPath = Path.Combine(dataPath, "data");
-                }
-                voiceRandomiser.AddToSelection(BioVersion.Biohazard2, new FileRepository(dataPath));
-            }
-            if (InstallConfig!.IsEnabled(BioVersion.Biohazard3))
-            {
-                var dataPath = GetDataPath(InstallConfig.GetInstallPath(BioVersion.Biohazard3));
-                var fileRepository = new FileRepository(dataPath);
-                var re3randomizer = new Re3Randomiser(InstallConfig, null);
-                re3randomizer.AddArchives(dataPath, fileRepository);
-                voiceRandomiser.AddToSelection(BioVersion.Biohazard3, fileRepository);
-            }
-
             var pldFolders0 = DataManager.GetDirectories(BiohazardVersion, $"pld0");
             var pldFolders1 = DataManager.GetDirectories(BiohazardVersion, $"pld1");
             var pldFolders = pldFolders0.Concat(pldFolders1).ToArray();
@@ -582,13 +557,6 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
             // Do sound processing in bulk / parallel
             Parallel.ForEach(soundProcessActions, x => x());
-        }
-
-        internal void AddMusicSelection(BgmRandomiser bgmRandomizer, ReInstallConfig reConfig, double volume)
-        {
-            var dataPath = GetDataPath(reConfig.GetInstallPath(BiohazardVersion));
-            var srcBgmDirectory = Path.Combine(dataPath, BGMPath);
-            bgmRandomizer.AddToSelection(GetBgmJson(), srcBgmDirectory, ".wav", volume);
         }
 
         protected override void SerialiseInventory(FileRepository fileRepository)

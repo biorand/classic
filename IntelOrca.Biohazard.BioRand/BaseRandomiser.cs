@@ -7,8 +7,6 @@ using System.Text;
 using System.Text.Json;
 using System.Threading;
 using IntelOrca.Biohazard.BioRand.Events;
-using IntelOrca.Biohazard.BioRand.RE1;
-using IntelOrca.Biohazard.BioRand.RE2;
 using IntelOrca.Biohazard.BioRand.RE3;
 
 namespace IntelOrca.Biohazard.BioRand
@@ -48,9 +46,6 @@ namespace IntelOrca.Biohazard.BioRand
                 {
                     var assemblyDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
                     var basePath = assemblyDir;
-#if DEBUG
-                    basePath = Path.GetFullPath(Path.Combine(assemblyDir, "..\\..\\..\\..\\IntelOrca.Biohazard.BioRand"));
-#endif
                     dataPath = Path.Combine(basePath, "data");
                 }
 
@@ -511,21 +506,6 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 throw new BioRandUserException("No music albums selected.");
             }
-            if (enabledBgms.Contains("RE1", StringComparer.OrdinalIgnoreCase))
-            {
-                var r = new Re1Randomiser(reConfig, BgCreator);
-                r.AddMusicSelection(bgmRandomizer, reConfig, 1.0);
-            }
-            if (enabledBgms.Contains("RE2", StringComparer.OrdinalIgnoreCase))
-            {
-                var r = new Re2Randomiser(reConfig, BgCreator);
-                r.AddMusicSelection(bgmRandomizer, reConfig, 1.0);
-            }
-            if (enabledBgms.Contains("RE3", StringComparer.OrdinalIgnoreCase))
-            {
-                var r = new Re3Randomiser(reConfig, BgCreator);
-                r.AddMusicSelection(bgmRandomizer, reConfig, 0.75);
-            }
 
             if (BiohazardVersion == BioVersion.Biohazard1)
                 bgmRandomizer.ImportVolume = 0.75f;
@@ -700,7 +680,6 @@ namespace IntelOrca.Biohazard.BioRand
         public virtual string[] GetNPCs()
         {
             var actors = new HashSet<string>();
-            actors.AddRange(GetDefaultNPCs());
             for (int i = 0; i < 2; i++)
             {
                 var plds = DataManager
@@ -712,11 +691,6 @@ namespace IntelOrca.Biohazard.BioRand
             return actors
                 .OrderBy(x => x)
                 .ToArray();
-        }
-
-        protected virtual string[] GetDefaultNPCs()
-        {
-            return new[] { "chris", "jill", "barry", "rebecca", "wesker", "enrico", "richard" };
         }
 
         protected bool MusicAlbumSelected(RandoConfig config, string album)
@@ -731,17 +705,10 @@ namespace IntelOrca.Biohazard.BioRand
 
         public virtual string[] GetMusicAlbums()
         {
-            var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "re1",
-                "re2",
-                "re3"
-            };
-            result.AddRange(DataManager
+            return DataManager
                 .GetDirectories("bgm")
-                .Select(Path.GetFileName));
-            return result
-                .Select(x => x.ToUpper())
+                .Select(x => Path.GetFileName(x).ToUpper())
+                .Distinct()
                 .OrderBy(x => x)
                 .ToArray();
         }

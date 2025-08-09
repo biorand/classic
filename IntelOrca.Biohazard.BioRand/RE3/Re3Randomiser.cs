@@ -4,7 +4,6 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using IntelOrca.Biohazard.BioRand.RE1;
 using IntelOrca.Biohazard.Extensions;
 using IntelOrca.Biohazard.Model;
 
@@ -69,13 +68,6 @@ namespace IntelOrca.Biohazard.BioRand.RE3
         protected override string GetRdtPath(string dataPath, RdtId rdtId, int player, bool mod)
         {
             return Path.Combine(dataPath, "DATA_J", "RDT", $"R{rdtId}.RDT");
-        }
-
-        internal void AddMusicSelection(BgmRandomiser bgmRandomizer, ReInstallConfig reConfig, double volume)
-        {
-            var dataPath = GetDataPath(reConfig.GetInstallPath(BiohazardVersion));
-            var srcBgmDirectory = Path.Combine(dataPath, BGMPath);
-            bgmRandomizer.AddToSelection(GetBgmJson(), srcBgmDirectory, ".WAV", volume);
         }
 
         public override void Generate(RandoConfig config, IRandoProgress progress, FileRepository fileRepository)
@@ -195,12 +187,6 @@ namespace IntelOrca.Biohazard.BioRand.RE3
                 .OrderBy(x => x.IsOriginal ? 0 : 1)
                 .ThenBy(x => x.IsNPC ? 0 : 1)
                 .ToArray();
-        }
-
-        protected override string[] GetDefaultNPCs()
-        {
-            return new[] { "jill.re3", "brad", "mikhail", "nikolai", "dario", "murphy", "tyrell", "carlos",
-                "marvin", "irons" };
         }
 
         internal override string[] ChangePlayerCharacters(RandoConfig config, RandoLogger logger, GameData gameData, FileRepository fileRepository)
@@ -358,30 +344,6 @@ namespace IntelOrca.Biohazard.BioRand.RE3
 
         internal override void RandomizeNPCs(RandoConfig config, NPCRandomiser npcRandomiser, VoiceRandomiser voiceRandomiser)
         {
-            if (InstallConfig!.IsEnabled(BioVersion.Biohazard1))
-            {
-                var dataPath = Re1Randomiser.FindDataPath(InstallConfig.GetInstallPath(BioVersion.Biohazard1));
-                voiceRandomiser.AddToSelection(BioVersion.Biohazard1, new FileRepository(dataPath));
-            }
-            if (InstallConfig!.IsEnabled(BioVersion.Biohazard2))
-            {
-                var dataPath = GetDataPath(InstallConfig.GetInstallPath(BioVersion.Biohazard2));
-                // HACK should be helper function from RE 2 randomizer
-                if (Directory.Exists(Path.Combine(dataPath, "data", "pl0", "rdt")))
-                {
-                    dataPath = Path.Combine(dataPath, "data");
-                }
-                voiceRandomiser.AddToSelection(BioVersion.Biohazard2, new FileRepository(dataPath));
-            }
-            if (InstallConfig!.IsEnabled(BioVersion.Biohazard3))
-            {
-                var dataPath = GetDataPath(InstallConfig.GetInstallPath(BioVersion.Biohazard3));
-                var fileRepository = new FileRepository(dataPath);
-                var re3randomizer = new Re3Randomiser(InstallConfig, null);
-                re3randomizer.AddArchives(dataPath, fileRepository);
-                voiceRandomiser.AddToSelection(BioVersion.Biohazard3, fileRepository);
-            }
-
             var pldFolders = DataManager.GetDirectories(BiohazardVersion, $"pld0");
             foreach (var pldFolder in pldFolders)
             {
