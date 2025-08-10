@@ -223,19 +223,19 @@ namespace IntelOrca.Biohazard.BioRand.RE3
 
             var targetPldDir = fileRepository.GetModPath($"DATA/PLD");
             Directory.CreateDirectory(targetPldDir);
-            var pldFiles = Directory.GetFiles(srcPldDir);
-            foreach (var pldPath in pldFiles)
+            var pldFiles = DataManager.GetFiles(srcPldDir);
+            foreach (var pldFile in pldFiles)
             {
-                var pldFile = Path.GetFileName(pldPath);
+                var fullPldPath = Path.Combine(srcPldDir, pldFile);
                 if (pldFile.Length > 4 &&
                     (pldFile.EndsWith("pld", StringComparison.OrdinalIgnoreCase) ||
                      pldFile.EndsWith("plw", StringComparison.OrdinalIgnoreCase)))
                 {
-                    pldFile = $"PL{pldIndex:X2}{pldFile.Substring(4)}";
-                    if (pldFile.EndsWith("pld", StringComparison.OrdinalIgnoreCase))
-                        ProcessPlayerModel(pldPath, Path.Combine(targetPldDir, pldFile));
+                    var pldFile2 = $"PL{pldIndex:X2}{pldFile.Substring(4)}";
+                    if (pldFile2.EndsWith("pld", StringComparison.OrdinalIgnoreCase))
+                        ProcessPlayerModel(fullPldPath, Path.Combine(targetPldDir, pldFile2));
                     else
-                        File.Copy(pldPath, Path.Combine(targetPldDir, pldFile), true);
+                        DataManager.Export(fullPldPath, Path.Combine(targetPldDir, pldFile2));
                 }
             }
 
@@ -256,8 +256,11 @@ namespace IntelOrca.Biohazard.BioRand.RE3
                 var faceIndex = pldIndex == 0 ? 0 : 1;
                 ChangePlayerInventoryFace(config, fileRepository, faceIndex, actor);
 
-                var allHurtFiles = DataManager.GetHurtFiles(actor.StripActorSkin())
-                    .Where(x => x.EndsWith(".ogg", StringComparison.OrdinalIgnoreCase) || x.EndsWith(".wav", StringComparison.OrdinalIgnoreCase))
+                var hurtBasePath = Path.Combine("hurt", actor.StripActorSkin());
+                var allHurtFiles = DataManager
+                    .GetFiles(hurtBasePath)
+                    .Where(WaveformBuilder.IsSupportedExtension)
+                    .Select(x => Path.Combine(hurtBasePath, x))
                     .ToArray();
                 var hurtFiles = new string[4];
                 foreach (var hurtFile in allHurtFiles)
@@ -283,8 +286,11 @@ namespace IntelOrca.Biohazard.BioRand.RE3
                     var sampleRates = new[] { 16000, 16000, 8000, 12000, 16000 };
                     for (int i = 0; i < hurtIndex.Length; i++)
                     {
+                        var inputSoundPath = hurtFiles[hurtIndex[i]];
+                        var inputSoundData = DataManager.GetData(inputSoundPath);
+
                         var waveBuilder = new WaveformBuilder(channels: 1, sampleRates[i]);
-                        waveBuilder.Append(hurtFiles[hurtIndex[i]]);
+                        waveBuilder.Append(inputSoundPath, new MemoryStream(inputSoundData));
                         var pcmData = waveBuilder.GetPCM();
                         vb.SetSampleFromPCM(7 + i, pcmData);
                     }
@@ -295,11 +301,11 @@ namespace IntelOrca.Biohazard.BioRand.RE3
 
         private void ProcessPlayerModel(string source, string destination)
         {
-            var pldFile = new PldFile(BiohazardVersion, source);
+            var pldFile = new PldFile(BiohazardVersion, new MemoryStream(DataManager.GetData(source)));
 
             // Update texture
-            var p2timPath = DataManager.GetPath(BiohazardVersion, "pld.2.tim");
-            var p2tim = new TimFile(p2timPath);
+            var p2timData = DataManager.GetData(BiohazardVersion, "pld.2.tim");
+            var p2tim = new TimFile(p2timData);
             var pldTim = pldFile.GetTim(0);
             pldTim.ImportPage(2, p2tim);
             pldTim.ResizeImage(128 * 3, 256);
@@ -344,16 +350,17 @@ namespace IntelOrca.Biohazard.BioRand.RE3
 
         internal override void RandomizeNPCs(RandoConfig config, NPCRandomiser npcRandomiser, VoiceRandomiser voiceRandomiser)
         {
-            var pldFolders = DataManager.GetDirectories(BiohazardVersion, $"pld0");
+            var pldFolders = DataManager.GetDirectories(BiohazardVersion, "pld0");
             foreach (var pldFolder in pldFolders)
             {
                 var actor = Path.GetFileName(pldFolder);
-                var files = Directory.GetFiles(pldFolder);
+                var files = DataManager.GetFiles(BiohazardVersion, Path.Combine("pld0", pldFolder));
                 foreach (var file in files)
                 {
                     if (file.EndsWith(".pld", StringComparison.OrdinalIgnoreCase))
                     {
-                        npcRandomiser.AddNPC(0, file, actor);
+                        var fullPath = DataManager.GetPath(BiohazardVersion, Path.Combine("pld0", pldFolder, file));
+                        npcRandomiser.AddNPC(0, fullPath, actor);
                     }
                 }
             }
@@ -412,16 +419,18 @@ namespace IntelOrca.Biohazard.BioRand.RE3
                 var dstEmd = fileRepository.GetModPath(emdPath);
                 var dstTim = Path.ChangeExtension(dstEmd, ".tim");
 
-                if (new FileInfo(srcEmd).Length == 0)
+                var srcEmdData = DataManager.GetData(srcEmd)!;
+                if (srcEmdData.Length == 0)
                 {
                     // NPC overwrite
                     for (var i = 0; i < 32; i++)
                     {
                         var pldFolder = pldBag.Next();
                         var actor = Path.GetFileName(pldFolder).ToActorString();
-                        var pldPath = Directory.GetFiles(pldFolder)
+                        var pldPath = DataManager.GetFiles(pldFolder)
                             .First(x => x.EndsWith(".PLD", StringComparison.OrdinalIgnoreCase));
-                        var pldFile = new PldFile(BiohazardVersion, pldPath);
+                        var pldData = DataManager.GetData(Path.Combine(pldFolder, pldPath));
+                        var pldFile = new PldFile(BiohazardVersion, new MemoryStream(pldData));
                         if (pldFile.GetMorph(0).Data.Length > 4)
                         {
                             // This PLD is unsuitable
@@ -447,8 +456,8 @@ namespace IntelOrca.Biohazard.BioRand.RE3
                 {
                     logger.WriteLine($"Setting EM{config.Player}{id:X2} to {skin.Name}");
                     Directory.CreateDirectory(Path.GetDirectoryName(dstEmd));
-                    File.Copy(srcEmd, dstEmd, true);
-                    File.Copy(srcTim, dstTim, true);
+                    DataManager.Export(srcEmd, dstEmd);
+                    DataManager.Export(srcTim, dstTim);
                 }
             }
         }
@@ -609,7 +618,7 @@ namespace IntelOrca.Biohazard.BioRand.RE3
                 Directory.CreateDirectory(Path.GetDirectoryName(vbTargetPath));
 
                 var waveBuilder = new WaveformBuilder(channels: 1, sampleRate: 32000);
-                waveBuilder.Append(sourcePath);
+                waveBuilder.Append(sourcePath, new MemoryStream(DataManager.GetData(sourcePath)));
                 var pcmData = waveBuilder.GetPCM();
 
                 var vb = new VabFile(vbSourceFile);
