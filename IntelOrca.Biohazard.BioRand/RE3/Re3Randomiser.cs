@@ -164,7 +164,7 @@ namespace IntelOrca.Biohazard.BioRand.RE3
             foreach (var enemyDir in DataManager.GetDirectories(BiohazardVersion, "emd"))
             {
                 var enemyIds = new List<byte>();
-                foreach (var file in Directory.GetFiles(enemyDir))
+                foreach (var file in DataManager.GetFiles(BiohazardVersion, $"emd/{enemyDir}"))
                 {
                     var fileName = Path.GetFileName(file);
                     var match = emdRegex.Match(fileName);
@@ -322,8 +322,8 @@ namespace IntelOrca.Biohazard.BioRand.RE3
             if (BgCreator == null)
                 return;
 
-            var facePath = DataManager.GetPath(BiohazardVersion, Path.Combine($"pld{config.Player}", actor, "face.png"));
-            if (!File.Exists(facePath))
+            var faceImageData = DataManager.GetData(BiohazardVersion, Path.Combine($"pld{config.Player}", actor, "face.png"));
+            if (faceImageData == null)
                 return;
 
             var filename = Path.Combine("DATA_J", "ETC2", "STMAIN0J.TIM");
@@ -338,7 +338,7 @@ namespace IntelOrca.Biohazard.BioRand.RE3
             {
                 tim = new TimFile(inputStream);
             }
-            BgCreator.DrawImage(tim, facePath, faceIndex * 40, 192, faceIndex == 0 ? 2 : 3);
+            BgCreator.DrawImage(tim, faceImageData, faceIndex * 40, 192, faceIndex == 0 ? 2 : 3);
             tim.Save(outputTimPath);
         }
 

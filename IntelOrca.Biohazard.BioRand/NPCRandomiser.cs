@@ -184,7 +184,7 @@ namespace IntelOrca.Biohazard.BioRand
             if (!_fileRepository.Exists(originalEmdPath))
                 return;
 
-            _npcHelper.CreateEmdFile(id, ec.EmPath, originalEmdPath, targetEmdPath, _fileRepository, rng);
+            _npcHelper.CreateEmdFile(id, ec.EmPath, originalEmdPath, targetEmdPath, _dataManager, _fileRepository, rng);
             _extraNpcMap[id] = ec.Actor;
             _logger.WriteLine($"Enemy 0x{id:X2} becomes {ec.Actor}");
         }

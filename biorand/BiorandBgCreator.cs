@@ -70,9 +70,9 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
-        public void DrawImage(TimFile timFile, string srcImagePath, int x, int y)
+        public void DrawImage(TimFile timFile, byte[] srcImage, int x, int y)
         {
-            using (var srcBitmap = new Bitmap(srcImagePath))
+            using (var srcBitmap = new Bitmap(new MemoryStream(srcImage)))
             {
                 using (var bitmap = timFile.ToBitmap())
                 {
@@ -85,9 +85,9 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
-        public void DrawImage(TimFile timFile, string srcImagePath, int x, int y, int clutIndex)
+        public void DrawImage(TimFile timFile, byte[] srcImage, int x, int y, int clutIndex)
         {
-            using (var srcBitmap = new Bitmap(srcImagePath))
+            using (var srcBitmap = new Bitmap(new MemoryStream(srcImage)))
             {
                 timFile.ImportBitmap(srcBitmap, x, y, clutIndex);
             }

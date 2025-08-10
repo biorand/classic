@@ -28,6 +28,7 @@ namespace IntelOrca.Biohazard.BioRand
     {
         private static Version CurrentVersion = Assembly.GetEntryAssembly().GetName().Version;
 
+        private BaseRandomiser _randomizer;
         private Rng _random = new Rng();
         private RandoAppSettings _settings = new RandoAppSettings();
         private RandoConfig _config = new RandoConfig();
@@ -926,6 +927,8 @@ namespace IntelOrca.Biohazard.BioRand
                     break;
             }
 
+            _randomizer = null;
+
             using (SuspendEvents())
             {
                 if (index == -3)
@@ -983,7 +986,9 @@ namespace IntelOrca.Biohazard.BioRand
         {
             if (SelectedGame == null)
                 return null;
-            return GetRandomizer(SelectedGame.Value);
+            if (_randomizer == null)
+                _randomizer = GetRandomizer(SelectedGame.Value);
+            return _randomizer;
         }
 
         private BaseRandomiser GetRandomizer(int index)

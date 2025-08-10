@@ -167,9 +167,9 @@ namespace IntelOrca.Biohazard.BioRand.RE2
             }
         }
 
-        public void CreateEmdFile(byte type, string pldPath, string baseEmdPath, string targetEmdPath, FileRepository fileRepository, Rng rng)
+        public void CreateEmdFile(byte type, string pldPath, string baseEmdPath, string targetEmdPath, DataManager dataManager, FileRepository fileRepository, Rng rng)
         {
-            var pldFile = ModelFile.FromFile(pldPath);
+            var pldFile = new PldFile(BioVersion.Biohazard2, new MemoryStream(dataManager.GetData(pldPath)));
             var emdFile = ModelFile.FromFile(baseEmdPath);
             var timFile = pldFile.GetTim(0);
             var plwFile = null as ModelFile;
@@ -180,10 +180,10 @@ namespace IntelOrca.Biohazard.BioRand.RE2
             }
 
             var weapon = GetSuitableWeaponForNPC(type).Random(rng);
-            var plwPath = GetPlwPath(fileRepository, pldPath, weapon);
+            var plwPath = GetPlwPath(dataManager, fileRepository, pldPath, weapon);
             if (plwPath != null)
             {
-                plwFile = ModelFile.FromFile(plwPath);
+                plwFile = new PlwFile(BioVersion.Biohazard2, new MemoryStream(dataManager.GetData(plwPath)));
                 var plwTim = plwFile.GetTim(0);
                 timFile = timFile.WithWeaponTexture(plwTim, 1);
                 timFile = timFile.WithWeaponTexture(plwTim, 3);
@@ -403,7 +403,7 @@ namespace IntelOrca.Biohazard.BioRand.RE2
             timFile.Save(Path.ChangeExtension(targetEmdPath, ".tim"));
         }
 
-        private static string? GetPlwPath(FileRepository fileRepository, string pldPath, byte weapon)
+        private static string? GetPlwPath(DataManager dataManager, FileRepository fileRepository, string pldPath, byte weapon)
         {
             var player = 0;
             var fileName = Path.GetFileNameWithoutExtension(pldPath);
@@ -415,7 +415,7 @@ namespace IntelOrca.Biohazard.BioRand.RE2
             var plwFileName = $"PL{player:00}W{weapon:X2}.PLW";
             var pldDirectory = Path.GetDirectoryName(pldPath);
             var customPlwPath = Path.Combine(pldDirectory, plwFileName);
-            if (File.Exists(customPlwPath))
+            if (dataManager.GetData(customPlwPath) != null)
             {
                 return customPlwPath;
             }

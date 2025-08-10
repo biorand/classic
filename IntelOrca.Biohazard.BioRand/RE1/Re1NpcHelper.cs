@@ -128,9 +128,9 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             }
         }
 
-        public void CreateEmdFile(byte type, string pldPath, string baseEmdPath, string targetEmdPath, FileRepository fileRepository, Rng rng)
+        public void CreateEmdFile(byte type, string pldPath, string baseEmdPath, string targetEmdPath, DataManager dataManager, FileRepository fileRepository, Rng rng)
         {
-            var pldFile = ModelFile.FromFile(pldPath);
+            var pldFile = new EmdFile(BioVersion.Biohazard1, new MemoryStream(dataManager.GetData(pldPath)));
             var emdFile = ModelFile.FromFile(baseEmdPath);
             var timFile = pldFile.GetTim(0);
 
@@ -271,7 +271,8 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     return 8;
                 default:
                     return 0;
-            };
+            }
+            ;
         }
     }
 }

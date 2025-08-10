@@ -136,9 +136,9 @@ namespace IntelOrca.Biohazard.BioRand.RE3
             }
         }
 
-        public void CreateEmdFile(byte type, string pldPath, string baseEmdPath, string targetEmdPath, FileRepository fileRepository, Rng rng)
+        public void CreateEmdFile(byte type, string pldPath, string baseEmdPath, string targetEmdPath, DataManager dataManager, FileRepository fileRepository, Rng rng)
         {
-            var pldFile = ModelFile.FromFile(pldPath);
+            var pldFile = new PldFile(BioVersion.Biohazard3, new MemoryStream(dataManager.GetData(pldPath)));
             var emdFile = new EmdFile(BioVersion.Biohazard3, fileRepository.GetStream(baseEmdPath));
             var timFile = pldFile.GetTim(0);
             var plwFile = null as ModelFile;
@@ -244,7 +244,8 @@ namespace IntelOrca.Biohazard.BioRand.RE3
                         Re3ItemIds.ShotgunBenelliEnhanced,
                         Re3ItemIds.MineThrowerEnhanced,
                     };
-            };
+            }
+            ;
         }
 
         private static bool HasWeapon(byte type)

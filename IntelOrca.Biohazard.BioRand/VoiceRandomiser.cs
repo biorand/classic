@@ -77,9 +77,9 @@ namespace IntelOrca.Biohazard.BioRand
         private VoiceSample[] AddToSelectionInternal(BioVersion version, FileRepository fileRepository)
         {
             var voiceJsonPath = _dataManager.GetPath(version, "voice.json");
-            var voiceJson = File.ReadAllText(voiceJsonPath);
-            var extraSamples = LoadVoiceInfoFromJson(fileRepository, voiceJson);
-            _uniqueSamples.AddRange(extraSamples);
+            var voiceJson = _dataManager.GetText(voiceJsonPath)!;
+            var extraSamples = LoadVoiceInfoFromJson(voiceJson);
+            // _uniqueSamples.AddRange(extraSamples);
             return extraSamples;
         }
 
@@ -88,13 +88,13 @@ namespace IntelOrca.Biohazard.BioRand
             _roomVoices.Add(new RoomVoices(rdtId, cutscene, pc, actorToActorMap));
         }
 
-        private VoiceSample[] AddCustom(FileRepository fileRepository)
+        private VoiceSample[] AddCustom()
         {
             var samples = new List<VoiceSample>();
             foreach (var actorPath in _dataManager.GetDirectories("hurt"))
             {
                 var actor = Path.GetFileName(actorPath);
-                var sampleFiles = Directory.GetFiles(actorPath);
+                var sampleFiles = _dataManager.GetFiles(actorPath);
                 foreach (var sampleFile in sampleFiles)
                 {
                     if (!sampleFile.EndsWith(".wav", StringComparison.OrdinalIgnoreCase) &&
@@ -107,7 +107,7 @@ namespace IntelOrca.Biohazard.BioRand
                     sample.BasePath = Path.GetDirectoryName(sampleFile);
                     sample.Path = Path.GetFileName(sampleFile);
                     sample.Actor = actor;
-                    sample.End = GetVoiceLength(sampleFile, fileRepository);
+                    sample.End = GetVoiceLength(sampleFile);
                     sample.Kind = Path.GetFileNameWithoutExtension(sampleFile) == "3" ? "death" : "hurt";
                     samples.Add(sample);
                 }
@@ -118,11 +118,13 @@ namespace IntelOrca.Biohazard.BioRand
                 .SelectMany(x =>
                 {
                     var actor = Path.GetFileName(x);
-                    var sampleFiles = Directory.GetFiles(x);
-                    return sampleFiles.Select(y => (Actor: actor, SampleFiles: y));
+                    return _dataManager
+                        .GetFiles(Path.Combine("voice", x))
+                        .Select(x => Path.Combine("voice", actor, x))
+                        .Select(y => (Actor: actor, SampleFiles: y));
                 })
                 .AsParallel()
-                .Select(x => ProcessSample(x.Actor, x.SampleFiles, fileRepository))
+                .Select(x => ProcessSample(x.Actor, x.SampleFiles))
                 .Where(x => x != null)
                 .ToArray() as VoiceSample[];
 
@@ -130,7 +132,7 @@ namespace IntelOrca.Biohazard.BioRand
             return samples.ToArray();
         }
 
-        private VoiceSample? ProcessSample(string actor, string sampleFile, FileRepository fileRepository)
+        private VoiceSample? ProcessSample(string actor, string sampleFile)
         {
             if (!sampleFile.EndsWith(".wav", StringComparison.OrdinalIgnoreCase) &&
                 !sampleFile.EndsWith(".ogg", StringComparison.OrdinalIgnoreCase))
@@ -165,7 +167,7 @@ namespace IntelOrca.Biohazard.BioRand
                 sample.BasePath = Path.GetDirectoryName(sampleFile);
                 sample.Path = fileName;
                 sample.Actor = actor;
-                sample.End = GetVoiceLength(sampleFile, fileRepository);
+                sample.End = GetVoiceLength(sampleFile);
                 sample.Kind = GetThingsFromFileName(fileName, '_').FirstOrDefault();
                 sample.Condition = conditionsb.Length == 0 ? null : conditionsb.ToString();
                 return sample;
@@ -258,7 +260,7 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 using (_logger.Progress.BeginTask(_config.Player, "Scanning voices"))
                 {
-                    _customSamplesCache = AddCustom(_fileRepository);
+                    _customSamplesCache = AddCustom();
                 }
             }
             _uniqueSamples.AddRange(_customSamplesCache);
@@ -538,7 +540,7 @@ namespace IntelOrca.Biohazard.BioRand
                                     }
                                     else
                                     {
-                                        var stream = _fileRepository.GetStream(sliceSrcPath);
+                                        var stream = new MemoryStream(_dataManager.GetData(sliceSrcPath));
                                         builder.Append(sliceSrcPath, stream, replacement.Start, replacement.End);
                                     }
                                 }
@@ -595,7 +597,7 @@ namespace IntelOrca.Biohazard.BioRand
             return Path.Combine(basePath, sample.Path);
         }
 
-        private static VoiceSample[] LoadVoiceInfoFromJson(FileRepository fileRepository, string json)
+        private VoiceSample[] LoadVoiceInfoFromJson(string json)
         {
             var voiceList = JsonSerializer.Deserialize<Dictionary<string, VoiceSample>>(json, new JsonSerializerOptions()
             {
@@ -607,7 +609,7 @@ namespace IntelOrca.Biohazard.BioRand
             foreach (var kvp in voiceList!)
             {
                 var sample = kvp.Value;
-                sample.BasePath = fileRepository.DataPath;
+                sample.BasePath = _fileRepository.DataPath;
                 sample.Path = kvp.Key;
                 if (sample.Path.Contains("#"))
                 {
@@ -616,7 +618,7 @@ namespace IntelOrca.Biohazard.BioRand
                     sample.SapIndex = int.Parse(parts[1]);
                 }
 
-                var totalLength = GetVoiceLength(fileRepository.GetDataPath(sample.Path), fileRepository);
+                var totalLength = GetVoiceLength(_fileRepository.GetDataPath(sample.Path));
                 if (sample.Strict)
                     sample.MaxLength = totalLength;
                 if (sample.Actors != null)
@@ -678,62 +680,59 @@ namespace IntelOrca.Biohazard.BioRand
             return (int)new FileInfo(path).Length;
         }
 
-        private static double GetVoiceLength(string path, FileRepository fileRepository)
+        private double GetVoiceLength(string path)
         {
             if (_voiceLengthCache.TryGetValue(path, out var result))
             {
                 return result;
             }
-            result = GetVoiceLengthInner(path, fileRepository);
+            result = GetVoiceLengthInner(path);
             _voiceLengthCache.TryAdd(path, result);
             return result;
         }
 
-        private static double GetVoiceLengthInner(string path, FileRepository fileRepository)
+        private double GetVoiceLengthInner(string path)
         {
+            Stream? fs = null;
             try
             {
+                var data = _dataManager.GetData(path);
+                fs = data == null ? _fileRepository.GetStream(path) : new MemoryStream(data);
                 if (path.EndsWith(".sap", StringComparison.OrdinalIgnoreCase))
                 {
-                    using (var fs = fileRepository.GetStream(path))
+                    fs.Position = 8;
+                    var br = new BinaryReader(fs);
+                    var magic = br.ReadUInt32();
+                    fs.Position -= 4;
+                    if (magic == 0x5367674F) // OGG
                     {
-                        fs.Position = 8;
-                        var br = new BinaryReader(fs);
-                        var magic = br.ReadUInt32();
-                        fs.Position -= 4;
-                        if (magic == 0x5367674F) // OGG
-                        {
-                            using (var vorbis = new VorbisReader(new SlicedStream(fs, 8, fs.Length - 8), closeOnDispose: false))
-                            {
-                                return vorbis.TotalTime.TotalSeconds;
-                            }
-                        }
-                        else
-                        {
-                            var decoder = new MSADPCMDecoder();
-                            return decoder.GetLength(fs);
-                        }
-                    }
-                }
-                else if (path.EndsWith(".ogg"))
-                {
-                    using (var vorbis = new VorbisReader(path))
-                    {
+                        using var vorbis = new VorbisReader(new SlicedStream(fs, 8, fs.Length - 8), closeOnDispose: false);
                         return vorbis.TotalTime.TotalSeconds;
                     }
-                }
-                else
-                {
-                    using (var fs = fileRepository.GetStream(path))
+                    else
                     {
                         var decoder = new MSADPCMDecoder();
                         return decoder.GetLength(fs);
                     }
                 }
+                else if (path.EndsWith(".ogg"))
+                {
+                    using var vorbis = new VorbisReader(fs);
+                    return vorbis.TotalTime.TotalSeconds;
+                }
+                else
+                {
+                    var decoder = new MSADPCMDecoder();
+                    return decoder.GetLength(fs);
+                }
             }
             catch (Exception ex)
             {
                 throw new BioRandUserException($"Unable to process '{path}'. {ex.Message}");
+            }
+            finally
+            {
+                fs?.Dispose();
             }
         }
 
