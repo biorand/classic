@@ -372,7 +372,8 @@ namespace IntelOrca.Biohazard.BioRand.RE3
 
             var rng = new Rng(config.Seed);
 
-            var pldDir0 = DataManager.GetDirectories(BiohazardVersion, "pld0");
+            var pldBase0 = DataManager.GetPath(BiohazardVersion, "pld0");
+            var pldDir0 = DataManager.GetDirectories(pldBase0).Select(x => Path.Combine(pldBase0, x)).ToArray();
             var pldBag = new EndlessBag<string>(rng, pldDir0);
 
             var enemySkins = GetEnemySkins()
@@ -429,8 +430,9 @@ namespace IntelOrca.Biohazard.BioRand.RE3
                         var actor = Path.GetFileName(pldFolder).ToActorString();
                         var pldPath = DataManager.GetFiles(pldFolder)
                             .First(x => x.EndsWith(".PLD", StringComparison.OrdinalIgnoreCase));
+                        var pldFullPath = Path.Combine(pldFolder, pldPath);
                         var pldData = DataManager.GetData(Path.Combine(pldFolder, pldPath));
-                        var pldFile = new PldFile(BiohazardVersion, new MemoryStream(pldData));
+                        var pldFile = new PldFile(BiohazardVersion, new MemoryStream(DataManager.GetData(pldFullPath)));
                         if (pldFile.GetMorph(0).Data.Length > 4)
                         {
                             // This PLD is unsuitable

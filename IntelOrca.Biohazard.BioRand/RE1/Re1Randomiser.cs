@@ -462,8 +462,10 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
             var rng = new Rng(config.Seed);
 
-            var pldDir0 = DataManager.GetDirectories(BiohazardVersion, "pld0");
-            var pldDir1 = DataManager.GetDirectories(BiohazardVersion, "pld1");
+            var pldBase0 = DataManager.GetPath(BiohazardVersion, "pld0");
+            var pldBase1 = DataManager.GetPath(BiohazardVersion, "pld1");
+            var pldDir0 = DataManager.GetDirectories(pldBase0).Select(x => Path.Combine(pldBase0, x)).ToArray();
+            var pldDir1 = DataManager.GetDirectories(pldBase1).Select(x => Path.Combine(pldBase1, x)).ToArray();
             var pldBag = new EndlessBag<string>(rng, pldDir0.Concat(pldDir1));
 
             var enemySkins = GetEnemySkins()
@@ -516,9 +518,10 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                     // NPC overwrite
                     var pldFolder = pldBag.Next();
                     var actor = Path.GetFileName(pldFolder).ToActorString();
-                    var pldPath = Directory.GetFiles(pldFolder)
+                    var pldPath = DataManager.GetFiles(pldFolder)
                         .First(x => x.EndsWith(".emd", StringComparison.OrdinalIgnoreCase));
-                    var pldFile = new EmdFile(BiohazardVersion, pldPath);
+                    var pldFullPath = Path.Combine(pldFolder, pldPath);
+                    var pldFile = new EmdFile(BiohazardVersion, new MemoryStream(DataManager.GetData(pldFullPath)));
                     var emdFile = new EmdFile(BiohazardVersion, origEmd);
 
                     logger.WriteLine($"Setting EM1{config.Player}{id:X2} to {actor}");

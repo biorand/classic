@@ -293,7 +293,7 @@ namespace IntelOrca.Biohazard.BioRand.RECV
             var srcPldFile = Path.Combine(srcPldDir, $"PL00.PLD");
 
             var afsBuilder = _systemAfs!.ToBuilder();
-            afsBuilder.Replace(pldIndex, File.ReadAllBytes(srcPldFile));
+            afsBuilder.Replace(pldIndex, DataManager.GetData(srcPldFile)!);
             _systemAfs = afsBuilder.ToAfsFile();
         }
 
