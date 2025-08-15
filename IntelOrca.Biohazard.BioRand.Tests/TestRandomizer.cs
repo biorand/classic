@@ -1,5 +1,4 @@
 using System;
-using System.IO;
 using IntelOrca.Biohazard.BioRand.RE1;
 using IntelOrca.Biohazard.BioRand.RE2;
 using IntelOrca.Biohazard.BioRand.RE3;
@@ -119,9 +118,6 @@ namespace IntelOrca.Biohazard.BioRand.Tests
 
         protected void Randomize(RandoConfig config)
         {
-            var dataPath = Path.Combine(Environment.CurrentDirectory, "..", "..", "..", "..", "IntelOrca.Biohazard.BioRand", "data");
-            Environment.SetEnvironmentVariable("BIORAND_DATA", dataPath);
-
             var rando = GetRandomizer();
             rando.Generate(config, new NullProgress());
         }

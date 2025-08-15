@@ -53,7 +53,6 @@ jobs:
             curl -LO "%BASE_URL%/spinoffs.zip"
         popd
         7z -mx=0 -r a ${{ github.workspace }}\artefacts\biorand.zip datapacks
-        dir
     - name: Create release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/v')
