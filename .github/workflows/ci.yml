@@ -27,25 +27,32 @@ jobs:
         copy ${{ github.workspace }}\LICENSE .
         md ${{ github.workspace }}\artefacts
         del *.pdb
-        7z -r a ${{ github.workspace }}\artefacts\biorand.zip data *.exe *.dll *.config README.md CHANGELOG.md LICENSE
-
-        rd /s /q data\bgm data\voice data\hurt data\title
-        rd /s /q data\re1\emd data\re1\pld0 data\re1\pld1
-        rd /s /q data\re2\emd data\re2\pld0 data\re2\pld1 data\re2\credits
-        rd /s /q data\re3\emd data\re3\pld0
-        7z -r a ${{ github.workspace }}\artefacts\biorand_slim.zip data *.exe *.dll *.config README.md CHANGELOG.md LICENSE
-    - name: Upload artifact (slim)
-      uses: actions/upload-artifact@v4
-      with:
-        name: biorand-slim
-        compression-level: 0
-        path: artefacts/biorand_slim.zip
-    - name: Upload artifact (full)
+        7z -r a ${{ github.workspace }}\artefacts\biorand.zip *
+    - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: biorand
         compression-level: 0
         path: artefacts/biorand.zip
+    - name: Prepare release
+      working-directory: biorand
+      shell: cmd
+      run: |
+        cd bin\Release\net472\publish
+        md datapacks
+        pushd datapacks
+            set DATA_TAG=v2.0-rc2
+            set BASE_URL=https://github.com/biorand/classic-data/releases/download/%DATA_TAG%
+            curl -LO "%BASE_URL%/base.zip"
+            curl -LO "%BASE_URL%/classic.zip"
+            curl -LO "%BASE_URL%/dinocrisis.zip"
+            curl -LO "%BASE_URL%/modern.zip"
+            curl -LO "%BASE_URL%/reboot.zip"
+            curl -LO "%BASE_URL%/remakes.zip"
+            curl -LO "%BASE_URL%/silenthill.zip"
+            curl -LO "%BASE_URL%/spinoffs.zip"
+        popd
+        7z -mx=0 -r a ${{ github.workspace }}\artefacts\biorand.zip datapacks
     - name: Create release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/v')

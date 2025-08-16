@@ -97,13 +97,6 @@ namespace IntelOrca.Biohazard.BioRand.RECV
             return File.Exists(Path.Combine(path, "rofs1.dat"));
         }
 
-        internal void AddMusicSelection(BgmRandomiser bgmRandomizer, ReInstallConfig reConfig, double volume)
-        {
-            var dataPath = GetDataPath(reConfig.GetInstallPath(BiohazardVersion));
-            var srcBgmDirectory = Path.Combine(dataPath, BGMPath);
-            bgmRandomizer.AddToSelection(GetBgmJson(), srcBgmDirectory, ".WAV", volume);
-        }
-
         protected override RandomizedRdt ReadRdt(FileRepository fileRepository, RdtId rdtId, string path, string modPath)
         {
             var result = base.ReadRdt(fileRepository, rdtId, path, modPath);
@@ -300,7 +293,7 @@ namespace IntelOrca.Biohazard.BioRand.RECV
             var srcPldFile = Path.Combine(srcPldDir, $"PL00.PLD");
 
             var afsBuilder = _systemAfs!.ToBuilder();
-            afsBuilder.Replace(pldIndex, File.ReadAllBytes(srcPldFile));
+            afsBuilder.Replace(pldIndex, DataManager.GetData(srcPldFile)!);
             _systemAfs = afsBuilder.ToAfsFile();
         }
 
@@ -517,11 +510,6 @@ namespace IntelOrca.Biohazard.BioRand.RECV
             {
             }
             return compressedData;
-        }
-
-        protected override string[] GetDefaultNPCs()
-        {
-            return new[] { "claire", "steve", "chris", "rodrigo", "alfred", "alexia" };
         }
 
         private void DisableNosferatuPoison()

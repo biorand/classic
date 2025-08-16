@@ -64,14 +64,6 @@ namespace IntelOrca.Biohazard.BioRand
             _dataManager = dataManager;
         }
 
-        public void AddToSelection(string bgmJson, string bgmSubDirectory, string extension, double volume)
-        {
-            var bgmList = GetBgmList(bgmJson);
-            bgmList.MakeFullPath(bgmSubDirectory, extension);
-            bgmList.SetVolume(volume);
-            _srcBgmList.Union(bgmList);
-        }
-
         public void AddCutomMusicToSelection(string[] albums)
         {
             var bgmList = new BgmList();
@@ -86,15 +78,16 @@ namespace IntelOrca.Biohazard.BioRand
         private void AddCustomMusicToSelection(BgmList bgmList, string directory)
         {
             var tags = _dataManager.GetDirectories(directory);
-            foreach (var tagPath in tags)
+            foreach (var tag in tags)
             {
-                var tag = Path.GetFileName(tagPath);
-                var files = Directory.GetFiles(tagPath)
+                var files = _dataManager
+                    .GetFiles(Path.Combine(directory, tag))
                     .Where(x => WaveformBuilder.IsSupportedExtension(x))
                     .ToArray();
                 foreach (var file in files)
                 {
-                    bgmList.Add(tag, file);
+                    var fullPath = Path.Combine(directory, tag, file);
+                    bgmList.Add(tag, fullPath);
                 }
             }
         }
@@ -231,7 +224,7 @@ namespace IntelOrca.Biohazard.BioRand
                             src = src.Substring(0, volumeSep);
                         }
 
-                        using var stream = _fileRepo.GetStream(src);
+                        using var stream = new MemoryStream(_dataManager.GetData(src));
                         var builder = new WaveformBuilder(volume: volume);
                         if (_config.Game == 1)
                         {
@@ -248,7 +241,7 @@ namespace IntelOrca.Biohazard.BioRand
                     {
                         for (int i = 1; i < dst.Length; i++)
                         {
-                            File.Copy(dst[0], dst[i], true);
+                            _dataManager.Export(dst[0], dst[i]);
                         }
                     }
                 }

@@ -9,7 +9,7 @@ The randomizer currently only supports the Sourcenext port of all three classic 
 
 ## How to use
 
-1. Download the latest release from https://github.com/IntelOrca/biorand/releases.
+1. Download the latest release from https://github.com/biorand/classic/releases.
 2. Extract all the files to a directory of your choice.
 3. Run `biorand.exe`, press the settings icon on the left and set your RE 1, RE 2, and RE 3 game directory. If browsing, select `bio.exe`, `bio2 1.10.exe` or `bio2.exe` file.
 4. Configure your settings, click `seed` for a random seed and then click generate.
@@ -26,7 +26,7 @@ A `.dgml` file for both Leon and Claire is also generated which is a directed gr
 * The game can occasionally crash at the end of playing the sourcenext logo. You can work around this issue by skipping the logo, or disabling movies from the REbirth launcher.
 
 ## Reporting issues
-Please report any bugs, crashes or suggestions by raising an issue on https://github.com/IntelOrca/biorand/issues.
+Please report any bugs, crashes or suggestions by raising an issue on https://github.com/biorand/classic/issues.
 Include the seed you were using in your report.
 
 ## Features

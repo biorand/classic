@@ -42,7 +42,7 @@ namespace IntelOrca.Biohazard.BioRand.RE2
         {
             PreventWrongScenario(config, gameData);
 
-            // See https://github.com/IntelOrca/biorand/issues/265
+            // See https://github.com/biorand/classic/issues/265
             var rdt = gameData.GetRdt(new RdtId(0, 0x0D));
             if (rdt == null || rdt.Version != BioVersion.Biohazard2 || config.Player != 1)
                 return;

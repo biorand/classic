@@ -28,6 +28,7 @@ namespace IntelOrca.Biohazard.BioRand
     {
         private static Version CurrentVersion = Assembly.GetEntryAssembly().GetName().Version;
 
+        private BaseRandomiser _randomizer;
         private Rng _random = new Rng();
         private RandoAppSettings _settings = new RandoAppSettings();
         private RandoConfig _config = new RandoConfig();
@@ -872,7 +873,7 @@ namespace IntelOrca.Biohazard.BioRand
         {
             var client = new HttpClient();
             client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("BioRand", CurrentVersion.ToString()));
-            var response = await client.GetAsync("https://api.github.com/repos/IntelOrca/biorand/releases/latest");
+            var response = await client.GetAsync("https://api.github.com/repos/biorand/classic/releases/latest");
             if (response.IsSuccessStatusCode)
             {
                 var jsonResponse = await response.Content.ReadAsStringAsync();
@@ -885,7 +886,7 @@ namespace IntelOrca.Biohazard.BioRand
 
         private void UpdateLink_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://github.com/IntelOrca/biorand/releases");
+            Process.Start("https://github.com/biorand/classic/releases");
         }
 
         private void ReportIssue_Click(object sender, RoutedEventArgs e)
@@ -896,7 +897,7 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 version += " with custom content";
             }
-            Process.Start($"https://github.com/IntelOrca/biorand/issues/new?template=bug_report.yml&version={version}&seed={seed}");
+            Process.Start($"https://github.com/biorand/classic/issues/new?template=bug_report.yml&version={version}&seed={seed}");
         }
 
         private void Link_Click(object sender, RoutedEventArgs e)
@@ -925,6 +926,8 @@ namespace IntelOrca.Biohazard.BioRand
                     _config = RandoConfig.FromString(_settings.SeedCv);
                     break;
             }
+
+            _randomizer = null;
 
             using (SuspendEvents())
             {
@@ -983,7 +986,9 @@ namespace IntelOrca.Biohazard.BioRand
         {
             if (SelectedGame == null)
                 return null;
-            return GetRandomizer(SelectedGame.Value);
+            if (_randomizer == null)
+                _randomizer = GetRandomizer(SelectedGame.Value);
+            return _randomizer;
         }
 
         private BaseRandomiser GetRandomizer(int index)

@@ -2,19 +2,18 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Text.Json;
 using System.Threading;
 using IntelOrca.Biohazard.BioRand.Events;
-using IntelOrca.Biohazard.BioRand.RE1;
-using IntelOrca.Biohazard.BioRand.RE2;
 using IntelOrca.Biohazard.BioRand.RE3;
 
 namespace IntelOrca.Biohazard.BioRand
 {
     public abstract class BaseRandomiser
     {
+        private DataManager _dataManager;
+
         protected ReInstallConfig InstallConfig { get; }
         protected IBgCreator? BgCreator { get; }
 
@@ -37,33 +36,10 @@ namespace IntelOrca.Biohazard.BioRand
         {
             InstallConfig = installConfig;
             BgCreator = bgCreator;
+            _dataManager = CreateDataManager();
         }
 
-        internal DataManager DataManager
-        {
-            get
-            {
-                var dataPath = Environment.GetEnvironmentVariable("BIORAND_DATA");
-                if (string.IsNullOrEmpty(dataPath))
-                {
-                    var assemblyDir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location);
-                    var basePath = assemblyDir;
-#if DEBUG
-                    basePath = Path.GetFullPath(Path.Combine(assemblyDir, "..\\..\\..\\..\\IntelOrca.Biohazard.BioRand"));
-#endif
-                    dataPath = Path.Combine(basePath, "data");
-                }
-
-                var dataPaths = new List<string>();
-                if (InstallConfig.EnableCustomContent)
-                {
-                    var userDataPath = Path.Combine(GetSettingsDirectory(), "data");
-                    dataPaths.Add(userDataPath);
-                }
-                dataPaths.Add(dataPath);
-                return new DataManager(dataPaths.ToArray());
-            }
-        }
+        internal DataManager DataManager => CreateDataManager();
 
         private static string GetSettingsDirectory()
         {
@@ -511,21 +487,6 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 throw new BioRandUserException("No music albums selected.");
             }
-            if (enabledBgms.Contains("RE1", StringComparer.OrdinalIgnoreCase))
-            {
-                var r = new Re1Randomiser(reConfig, BgCreator);
-                r.AddMusicSelection(bgmRandomizer, reConfig, 1.0);
-            }
-            if (enabledBgms.Contains("RE2", StringComparer.OrdinalIgnoreCase))
-            {
-                var r = new Re2Randomiser(reConfig, BgCreator);
-                r.AddMusicSelection(bgmRandomizer, reConfig, 1.0);
-            }
-            if (enabledBgms.Contains("RE3", StringComparer.OrdinalIgnoreCase))
-            {
-                var r = new Re3Randomiser(reConfig, BgCreator);
-                r.AddMusicSelection(bgmRandomizer, reConfig, 0.75);
-            }
 
             if (BiohazardVersion == BioVersion.Biohazard1)
                 bgmRandomizer.ImportVolume = 0.75f;
@@ -559,7 +520,7 @@ namespace IntelOrca.Biohazard.BioRand
 
         private Map GetMapFromJson()
         {
-            var jsonMap = GetJsonMap();
+            var jsonMap = DataManager.GetText(BiohazardVersion, "rdt.json")!;
             var map = JsonSerializer.Deserialize<Map>(jsonMap, new JsonSerializerOptions()
             {
                 ReadCommentHandling = JsonCommentHandling.Skip,
@@ -568,13 +529,7 @@ namespace IntelOrca.Biohazard.BioRand
             return map;
         }
 
-        private string GetJsonMap()
-        {
-            var path = DataManager.GetPath(BiohazardVersion, "rdt.json");
-            return File.ReadAllText(path);
-        }
-
-        internal string GetBgmJson() => DataManager.GetText(BiohazardVersion, "bgm.json");
+        internal string GetBgmJson() => DataManager.GetText(BiohazardVersion, "bgm.json")!;
 
         internal abstract string BGMPath { get; }
 
@@ -675,11 +630,12 @@ namespace IntelOrca.Biohazard.BioRand
         {
             var pldIndex = GetSelectedPldIndex(config, player);
             var pldDirectoryIndex = config.SwapCharacters ? player ^ 1 : player;
-            var pldPath = DataManager.GetDirectories(BiohazardVersion, $"pld{pldDirectoryIndex}")
-                .OrderBy(x => Path.GetFileName(x).ToActorString())
+            var basePath = DataManager.GetPath(BiohazardVersion, $"pld{pldDirectoryIndex}");
+            var pldPath = DataManager.GetDirectories(basePath)
+                .OrderBy(x => x.ToActorString())
                 .Skip(pldIndex)
                 .FirstOrDefault();
-            return pldPath;
+            return Path.Combine(basePath, pldPath);
         }
 
         protected int GetSelectedPldIndex(RandoConfig config, int player)
@@ -700,7 +656,6 @@ namespace IntelOrca.Biohazard.BioRand
         public virtual string[] GetNPCs()
         {
             var actors = new HashSet<string>();
-            actors.AddRange(GetDefaultNPCs());
             for (int i = 0; i < 2; i++)
             {
                 var plds = DataManager
@@ -712,11 +667,6 @@ namespace IntelOrca.Biohazard.BioRand
             return actors
                 .OrderBy(x => x)
                 .ToArray();
-        }
-
-        protected virtual string[] GetDefaultNPCs()
-        {
-            return new[] { "chris", "jill", "barry", "rebecca", "wesker", "enrico", "richard" };
         }
 
         protected bool MusicAlbumSelected(RandoConfig config, string album)
@@ -731,17 +681,10 @@ namespace IntelOrca.Biohazard.BioRand
 
         public virtual string[] GetMusicAlbums()
         {
-            var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
-            {
-                "re1",
-                "re2",
-                "re3"
-            };
-            result.AddRange(DataManager
+            return DataManager
                 .GetDirectories("bgm")
-                .Select(Path.GetFileName));
-            return result
-                .Select(x => x.ToUpper())
+                .Select(x => Path.GetFileName(x).ToUpper())
+                .Distinct()
                 .OrderBy(x => x)
                 .ToArray();
         }
@@ -882,14 +825,14 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 var rng = new Rng(config.Seed);
                 var titleSound = rng.NextOf(titleSounds);
-                ReplaceTitleCardSound(fileRepository, titleSound);
+                ReplaceTitleCardSound(fileRepository, Path.Combine("title", titleSound));
             }
         }
 
         protected virtual void ReplaceTitleCardSound(FileRepository fileRepository, string sourcePath)
         {
             var builder = new WaveformBuilder();
-            builder.Append(sourcePath);
+            builder.Append(sourcePath, new MemoryStream(_dataManager.GetData(sourcePath)));
 
             var targetTitleCardSounds = TitleCardSoundFiles;
             foreach (var filename in targetTitleCardSounds)
@@ -910,12 +853,82 @@ namespace IntelOrca.Biohazard.BioRand
             var biorandModuleFilename = "biorand.dll";
             try
             {
-                var src = DataManager.GetPath(biorandModuleFilename);
                 var dst = fileRepository.GetModPath(biorandModuleFilename);
-                File.Copy(src, dst, true);
+                DataManager.Export(biorandModuleFilename, dst);
             }
             catch
             {
+            }
+        }
+
+        private DataManager CreateDataManager()
+        {
+            if (_dataManager != null)
+            {
+                return _dataManager;
+            }
+
+            var dataManager = new DataManager();
+            _dataManager = dataManager;
+            var env = Environment.GetEnvironmentVariable("BIORAND_DATA");
+            if (env == null)
+            {
+                var biorandDirectory = AppContext.BaseDirectory;
+                if (InstallConfig.EnableCustomContent)
+                {
+                    AddDirectory(dataManager, Path.Combine(GetSettingsDirectory(), "data"));
+                    AddDirectory(dataManager, Path.Combine(GetSettingsDirectory(), "datapacks"));
+                }
+                AddDirectory(dataManager, Path.Combine(biorandDirectory, "datapacks"));
+                dataManager.AddFileSystem(Path.Combine(biorandDirectory, "data"));
+            }
+            else
+            {
+                var paths = env.Split(Path.PathSeparator);
+                foreach (var p in paths)
+                {
+                    var fileName = Path.GetFileName(p);
+                    if (fileName.Equals("*.zip", StringComparison.OrdinalIgnoreCase))
+                    {
+                        AddDirectory(dataManager, Path.GetDirectoryName(p)!, onlyZip: true);
+                    }
+                    else if (fileName == "*")
+                    {
+                        AddDirectory(dataManager, Path.GetDirectoryName(p)!);
+                    }
+                    else if (fileName.EndsWith(".zip"))
+                    {
+                        dataManager.AddZip(p, "data");
+                    }
+                    else
+                    {
+                        dataManager.AddFileSystem(p);
+                    }
+                }
+            }
+            return dataManager;
+        }
+
+        private static void AddDirectory(DataManager dataManager, string path, bool onlyZip = false)
+        {
+            var datapacksDirectory = new DirectoryInfo(path);
+            if (datapacksDirectory.Exists)
+            {
+                var entries = datapacksDirectory.EnumerateFileSystemInfos();
+                foreach (var e in entries)
+                {
+                    if ((e.Attributes & FileAttributes.Directory) != 0)
+                    {
+                        if (!onlyZip)
+                        {
+                            dataManager.AddFileSystem(e.FullName);
+                        }
+                    }
+                    else if (e.Name.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
+                    {
+                        dataManager.AddZip(e.FullName, "data");
+                    }
+                }
             }
         }
     }

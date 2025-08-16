@@ -1,6 +1,6 @@
 [submodule "biohazard-utils"]
 	path = biohazard-utils
-	url = https://github.com/IntelOrca/biohazard-utils
+	url = https://github.com/biorand/biohazard-utils
 [submodule "Ps2IsoTools"]
 	path = Ps2IsoTools
 	url = https://github.com/IntelOrca/Ps2IsoTools.git

@@ -95,7 +95,7 @@
                         <TextBlock FontSize="16">SikShadow - Randy Rando songs</TextBlock>
                         <TextBlock FontSize="16">baesik - testing</TextBlock>
                         <TextBlock FontSize="16">DeathNoDamage - testing</TextBlock>
-                        <TextBlock FontSize="16">gonta2319 - testing</TextBlock>
+                        <TextBlock FontSize="16">GontaPog - testing</TextBlock>
                         <TextBlock FontSize="16">otamega72 - testing</TextBlock>
                         <TextBlock FontSize="16">Shannon - testing</TextBlock>
                         <TextBlock FontSize="16">PMCDC - UI enhancements</TextBlock>
@@ -110,6 +110,9 @@
                         <TextBlock FontSize="16">Us3r_Cr0ft - animations, models</TextBlock>
                         <TextBlock FontSize="16">HazNut - a bugfix</TextBlock>
                         <TextBlock FontSize="16">Grchman - model conversions</TextBlock>
+                        <TextBlock FontSize="16">Zach - models</TextBlock>
+                        <TextBlock FontSize="16">ChiliConCarnage - models</TextBlock>
+                        <TextBlock FontSize="16">Vivian Reed - voice acting</TextBlock>
                         <TextBlock FontSize="16">re_duke - RDT information</TextBlock>
                         <TextBlock FontSize="16">kapdap - RE:CVX information</TextBlock>
                         <TextBlock FontSize="16">Classic RE Modding community discord</TextBlock>
@@ -169,7 +172,7 @@
                             </TextBlock>
                             <TextBlock Margin="0 0 8 0">
                                 <Hyperlink Click="Link_Click"
-                                    NavigateUri="https://github.com/IntelOrca/biorand">GitHub</Hyperlink>
+                                    NavigateUri="https://github.com/biorand/classic">GitHub</Hyperlink>
                             </TextBlock>
                             <TextBlock Margin="0 0 8 0">
                                 <Hyperlink Click="Link_Click" NavigateUri="https://x.com/re_biorand">
@@ -177,7 +180,7 @@
                             </TextBlock>
                             <TextBlock>
                                 <Hyperlink Click="Link_Click"
-                                    NavigateUri="https://github.com/IntelOrca/biorand#readme">View
+                                    NavigateUri="https://github.com/biorand/classic#readme">View
                                     Documentation</Hyperlink>
                             </TextBlock>
                         </StackPanel>

@@ -1404,7 +1404,8 @@
           "noUnlock": true
         },
         {
-          "target": "301"
+          "target": "301",
+          "doorRando": false
         },
         {
           "target": "304"
