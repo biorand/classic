@@ -36,25 +36,6 @@ jobs:
         name: biorand
         compression-level: 0
         path: artefacts/biorand.zip
-    - name: Prepare release
-      working-directory: biorand
-      shell: cmd
-      run: |
-        cd bin\Release\net472\publish
-        md datapacks
-        pushd datapacks
-            set DATA_TAG=v2.0-rc2
-            set BASE_URL=https://github.com/biorand/classic-data/releases/download/%DATA_TAG%
-            curl -LO "%BASE_URL%/base.zip"
-            curl -LO "%BASE_URL%/classic.zip"
-            curl -LO "%BASE_URL%/dinocrisis.zip"
-            curl -LO "%BASE_URL%/modern.zip"
-            curl -LO "%BASE_URL%/reboot.zip"
-            curl -LO "%BASE_URL%/remakes.zip"
-            curl -LO "%BASE_URL%/silenthill.zip"
-            curl -LO "%BASE_URL%/spinoffs.zip"
-        popd
-        7z -mx=0 -r a ${{ github.workspace }}\artefacts\biorand.zip datapacks
     - name: Create release
       uses: softprops/action-gh-release@v1
       if: startsWith(github.ref, 'refs/tags/v')
