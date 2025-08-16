@@ -169,7 +169,7 @@
                             </TextBlock>
                             <TextBlock Margin="0 0 8 0">
                                 <Hyperlink Click="Link_Click"
-                                    NavigateUri="https://github.com/IntelOrca/biorand">GitHub</Hyperlink>
+                                    NavigateUri="https://github.com/biorand/classic">GitHub</Hyperlink>
                             </TextBlock>
                             <TextBlock Margin="0 0 8 0">
                                 <Hyperlink Click="Link_Click" NavigateUri="https://x.com/re_biorand">
@@ -177,7 +177,7 @@
                             </TextBlock>
                             <TextBlock>
                                 <Hyperlink Click="Link_Click"
-                                    NavigateUri="https://github.com/IntelOrca/biorand#readme">View
+                                    NavigateUri="https://github.com/biorand/classic#readme">View
                                     Documentation</Hyperlink>
                             </TextBlock>
                         </StackPanel>

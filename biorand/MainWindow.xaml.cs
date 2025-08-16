@@ -873,7 +873,7 @@ namespace IntelOrca.Biohazard.BioRand
         {
             var client = new HttpClient();
             client.DefaultRequestHeaders.UserAgent.Add(new ProductInfoHeaderValue("BioRand", CurrentVersion.ToString()));
-            var response = await client.GetAsync("https://api.github.com/repos/IntelOrca/biorand/releases/latest");
+            var response = await client.GetAsync("https://api.github.com/repos/biorand/classic/releases/latest");
             if (response.IsSuccessStatusCode)
             {
                 var jsonResponse = await response.Content.ReadAsStringAsync();
@@ -886,7 +886,7 @@ namespace IntelOrca.Biohazard.BioRand
 
         private void UpdateLink_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://github.com/IntelOrca/biorand/releases");
+            Process.Start("https://github.com/biorand/classic/releases");
         }
 
         private void ReportIssue_Click(object sender, RoutedEventArgs e)
@@ -897,7 +897,7 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 version += " with custom content";
             }
-            Process.Start($"https://github.com/IntelOrca/biorand/issues/new?template=bug_report.yml&version={version}&seed={seed}");
+            Process.Start($"https://github.com/biorand/classic/issues/new?template=bug_report.yml&version={version}&seed={seed}");
         }
 
         private void Link_Click(object sender, RoutedEventArgs e)
