@@ -8,7 +8,7 @@
 * **SikShadow** - Randy Rando songs
 * **baesik** - testing
 * **DeathNoDamage** - testing
-* **gonta2319** - testing
+* **GontaPog** - testing
 * **otamega72** - testing
 * **Shannon** - testing
 * **PMCDC** - UI enhancements
@@ -23,8 +23,11 @@
 * **Us3r_Cr0ft** - animations, models
 * **HazNut** - a bugfix
 * **Grchman** - model conversions
-* **kapdap** - RE:CVX information
+* **Zach** - models
+* **ChiliConCarnage** - models
+* **Vivian Reed** - voice acting
 * **re_duke** - RDT information
+* **kapdap** - RE:CVX information
 * **Classic RE Modding community discord**
 
 Special thanks to all **BioRand** streamers and bug reporters!
