@@ -1,3 +1,10 @@
+BioRand v3.3.0 (2024-08-31)
+
+* [Feature] New content added, see [biorand/classic-data](https://github.com/biorand/classic-data/releases) for release notes.
+* [Enhancement] Add support for datapacks.
+* [Fix] #920: RE 1, cannot enter door 302:1.
+* [Fix] #934: RE 2, female characters unable to hit with custom magnum.
+
 BioRand v3.2.7 (2024-08-31)
 
 * [Feature] RE 1, add Donna, Helena, and Yoko as playable characters.
