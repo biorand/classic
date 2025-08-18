@@ -270,26 +270,32 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             var emdRegex = new Regex("em10([0-9a-f][0-9a-f]).emd", RegexOptions.IgnoreCase);
             var result = new List<EnemySkin>();
             result.Add(EnemySkin.Original);
-            foreach (var enemyDir in DataManager.GetDirectories(BiohazardVersion, "emd"))
+            var emdDirectory = DataManager.GetPath(BiohazardVersion, "emd");
+            foreach (var enemyDir in DataManager.GetDirectories(emdDirectory))
             {
                 var enemyIds = new List<byte>();
-                foreach (var file in DataManager.GetFiles(BiohazardVersion, $"emd/{enemyDir}"))
+                foreach (var file in DataManager.GetFiles($"{emdDirectory}/{enemyDir}"))
                 {
-                    var fileName = Path.GetFileName(file);
-                    var match = emdRegex.Match(fileName);
+                    var fullPath = $"{emdDirectory}/{enemyDir}/{file}";
+                    var match = emdRegex.Match(file);
                     if (match.Success)
                     {
+                        if (!enemyDir.StartsWith("npc", StringComparison.OrdinalIgnoreCase) && DataManager.GetData(fullPath)?.Length == 0)
+                        {
+                            enemyIds.Clear();
+                            break;
+                        }
+
                         var id = byte.Parse(match.Groups[1].Value, NumberStyles.HexNumber);
                         enemyIds.Add(id);
                     }
                 }
                 if (enemyIds.Count > 0)
                 {
-                    var fileName = Path.GetFileName(enemyDir);
                     var enemyNames = enemyIds
                         .Select(x => EnemyHelper.GetEnemyName(x).ToLower().ToActorString())
                         .ToArray();
-                    result.Add(new EnemySkin(fileName, enemyNames, enemyIds.ToArray()));
+                    result.Add(new EnemySkin(enemyDir, enemyNames, enemyIds.ToArray()));
                 }
             }
             return result
@@ -922,11 +928,12 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             for (var i = 0; i < 2; i++)
             {
                 var pldPath = GetSelectedPldPath(config, i);
-                var csvPath = Path.Combine(pldPath, "weapons.csv");
-                if (!File.Exists(csvPath))
+                var csvData = DataManager.GetText(Path.Combine(pldPath, "weapons.csv"));
+                if (csvData == null)
                     continue;
 
-                var csv = File.ReadAllLines(csvPath)
+                var csv = csvData
+                    .Split(['\n', '\r'], StringSplitOptions.RemoveEmptyEntries)
                     .Where(x => !string.IsNullOrWhiteSpace(x))
                     .Select(x => x.Trim().Split(','))
                     .ToArray();
