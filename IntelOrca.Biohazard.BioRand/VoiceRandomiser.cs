@@ -91,10 +91,10 @@ namespace IntelOrca.Biohazard.BioRand
         private VoiceSample[] AddCustom()
         {
             var samples = new List<VoiceSample>();
-            foreach (var actorPath in _dataManager.GetDirectories("hurt"))
+            foreach (var actor in _dataManager.GetDirectories("hurt"))
             {
-                var actor = Path.GetFileName(actorPath);
-                var sampleFiles = _dataManager.GetFiles(actorPath);
+                var hurtDirectory = $"hurt/{actor}";
+                var sampleFiles = _dataManager.GetFiles(hurtDirectory);
                 foreach (var sampleFile in sampleFiles)
                 {
                     if (!sampleFile.EndsWith(".wav", StringComparison.OrdinalIgnoreCase) &&
@@ -104,10 +104,10 @@ namespace IntelOrca.Biohazard.BioRand
                     }
 
                     var sample = new VoiceSample();
-                    sample.BasePath = Path.GetDirectoryName(sampleFile);
-                    sample.Path = Path.GetFileName(sampleFile);
+                    sample.BasePath = hurtDirectory;
+                    sample.Path = sampleFile;
                     sample.Actor = actor;
-                    sample.End = GetVoiceLength(sampleFile);
+                    sample.End = GetVoiceLength($"{hurtDirectory}/{sample.Path}");
                     sample.Kind = Path.GetFileNameWithoutExtension(sampleFile) == "3" ? "death" : "hurt";
                     samples.Add(sample);
                 }
