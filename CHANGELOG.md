@@ -1,4 +1,4 @@
-BioRand v3.3.0 (2024-08-31)
+BioRand v3.3.0 (2025-08-22)
 
 * [Feature] New content added, see [biorand/classic-data](https://github.com/biorand/classic-data/releases) for release notes.
 * [Enhancement] Add support for datapacks.
