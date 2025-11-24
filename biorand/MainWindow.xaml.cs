@@ -1453,6 +1453,8 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
+
+
         private void btnStartRE_Click(object sender, RoutedEventArgs e)
         {
             var executableDirectory = GetGameLocation();
@@ -1463,6 +1465,10 @@ namespace IntelOrca.Biohazard.BioRand
                 MessageBox.Show($"Unable to start the game.{Environment.NewLine}{Environment.NewLine}The path '{executablePath}' does not exists.", "Warning", MessageBoxButton.OK, MessageBoxImage.Warning);
                 return;
             }
+
+            // This helps prevent "The operation was cancelled by the user" messages by unblocking
+            // the exe file that Windows marks when extracting the zip file
+            Kernel32.DeleteFile(executablePath + ":Zone.Identifier");
 
             try
             {
