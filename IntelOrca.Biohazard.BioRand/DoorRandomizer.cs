@@ -344,7 +344,7 @@ namespace IntelOrca.Biohazard.BioRand
                     .FirstOrDefault();
                 if (potential != null)
                 {
-                    door.Connect(potential, GetNextLockId());
+                    door.Connect(potential, door.Door.LockId ?? GetNextLockId());
                 }
             }
 
@@ -812,8 +812,18 @@ namespace IntelOrca.Biohazard.BioRand
                     target.Owner.Parent = Owner;
                 }
 
-                if (lockId != null)
+                if (Door.LockId != null)
                 {
+                    // Door already has a lock, so make opposite door use same lock
+                    Target.Door.Kind = null;
+                    Target.Door.Requires2 = Door.Requires2;
+                    Target.Door.LockId = Door.LockId;
+                    Target.Door.LockKey = Door.LockKey;
+                    Target.Door.AllowedLocks = Door.AllowedLocks;
+                }
+                else if (lockId != null)
+                {
+                    // Opposite door should be locked
                     Door.Kind = DoorKinds.Unlock;
                     Door.LockId = (byte)lockId.Value;
                     Door.AllowedLocks = [];

@@ -144,6 +144,8 @@ namespace IntelOrca.Biohazard.BioRand.RE1
             var config = context.Configuration;
 
             var randomDoors = context.Configuration.GetValueOrDefault("doors/random", false);
+            var randomLocks = context.Configuration.GetValueOrDefault("locks/random", false);
+            var preserveLocks = context.Configuration.GetValueOrDefault("locks/preserve", false);
             var guardhouse = config.GetValueOrDefault("progression/guardhouse", "Never") == "Always";
             var segmentedGuardhouse = false;
             var mansion2 = config.GetValueOrDefault("progression/mansion2", "Never") == "Always";
@@ -272,24 +274,7 @@ namespace IntelOrca.Biohazard.BioRand.RE1
 
             // Locks
             var mansion2keyType = (int)Re1ItemIds.HelmetKey;
-            if (randomDoors)
-            {
-                foreach (var room in map.Rooms.Values)
-                {
-                    foreach (var door in room.Doors ?? [])
-                    {
-                        if (door.AllowedLocks == null)
-                        {
-                            door.LockId = null;
-                        }
-                        if (door.Kind == DoorKinds.Locked || door.Kind == DoorKinds.Unlock)
-                        {
-                            door.Kind = null;
-                        }
-                    }
-                }
-            }
-            else
+            if (!randomDoors)
             {
                 var softlockSafeDoors = map.Rooms.Values.SelectMany(x => x.Doors).Where(x => x.HasTag("softlock-safe")).ToArray();
                 foreach (var door in softlockSafeDoors)
@@ -302,14 +287,14 @@ namespace IntelOrca.Biohazard.BioRand.RE1
                 }
             }
 
-            if (context.Configuration.GetValueOrDefault("locks/random", false))
+            if (randomLocks)
             {
-                if (!context.Configuration.GetValueOrDefault("locks/preserve", false))
+                if (!preserveLocks)
                 {
                     // Remove all vanilla locks that can be randomized
                     foreach (var door in map.Rooms.Values.SelectMany(x => x.Doors ?? []))
                     {
-                        var opposite = map.GetOtherSide(door);
+                        var opposite = randomDoors ? null : map.GetOtherSide(door);
                         if (door.AllowedLocks == null && opposite?.AllowedLocks == null)
                         {
                             if (door.Kind == DoorKinds.Locked || door.Kind == DoorKinds.Unlock)
