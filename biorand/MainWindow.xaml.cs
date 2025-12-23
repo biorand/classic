@@ -9,6 +9,7 @@ using System.Net.Http.Headers;
 using System.Reflection;
 using System.Text.Encodings.Web;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -608,12 +609,64 @@ namespace IntelOrca.Biohazard.BioRand
             UpdateUi();
         }
 
+        private static bool TryExtractSeedFromText(string text, out string seed)
+        {
+            var m = Regex.Match(text, @"R\d\d\d-[A-Z0-9]{4}-[A-Z0-9]+", RegexOptions.IgnoreCase);
+            if (m.Success)
+            {
+                seed = m.Value;
+                return true;
+            }
+            seed = null;
+            return false;
+        }
+
+        private async void btnSeedCopy_Click(object sender, RoutedEventArgs e)
+        {
+            Clipboard.SetText(txtSeed.Text);
+            if (sender is Button b)
+            {
+                var guid = Guid.NewGuid();
+                lock (b)
+                {
+                    b.Tag = guid;
+                    b.Content = "Copied!";
+                }
+                await Task.Delay(3000);
+                lock (b)
+                {
+                    if (guid.Equals(b.Tag))
+                    {
+                        b.Content = "Copy";
+                    }
+                }
+            }
+        }
+
+        private void btnSeedPaste_Click(object sender, RoutedEventArgs e)
+        {
+            var clipboard = Clipboard.GetText();
+            if (TryExtractSeedFromText(clipboard, out var seed))
+            {
+                txtSeed.Text = seed;
+            }
+            else
+            {
+                ShowFailedMessage("Failed to paste seed", "No valid seed detected in clipboard. Try copying it again.");
+            }
+        }
+
         private void txtSeed_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (_suspendEvents)
                 return;
 
             var txt = txtSeed.Text;
+            if (TryExtractSeedFromText(txt, out var seed))
+            {
+                txt = seed;
+            }
+
             foreach (var change in e.Changes)
             {
                 if (change.AddedLength > 0 && change.RemovedLength > 0)

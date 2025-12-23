@@ -194,15 +194,23 @@
                             <local:SeedQR x:Name="seedQrCode"
                                 Grid.Column="0" />
                             <StackPanel Grid.Column="1" Margin="0,8,0,0">
-                                <TextBox x:Name="txtSeed"
-                                    Grid.Row="1"
-                                    Grid.Column="1"
-                                    Grid.ColumnSpan="3"
-                                    FontFamily="Courier New"
-                                    FontSize="24"
-                                    TextAlignment="Center"
-                                    TextChanged="txtSeed_TextChanged"
-                                    Margin="4" />
+                                <Grid>
+                                    <TextBox x:Name="txtSeed"
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Grid.ColumnSpan="3"
+                                        FontFamily="Courier New"
+                                        FontSize="24"
+                                        TextAlignment="Center"
+                                        TextChanged="txtSeed_TextChanged"
+                                        Margin="4" />
+                                    <Border Padding="4">
+                                        <StackPanel Orientation="Horizontal" Margin="4">
+                                            <Button Padding="8,0" Click="btnSeedPaste_Click">Paste</Button>
+                                            <Button Margin="4,0,0,0" Padding="8,0" Click="btnSeedCopy_Click">Copy</Button>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition />
