@@ -17,7 +17,7 @@ namespace IntelOrca.Biohazard.BioRand
 {
     internal class EnemyRandomiser
     {
-        private static bool g_debugLogging = false;
+        private static bool g_debugLogging = true;
         private static readonly Dictionary<RdtId, SelectableEnemy> g_stickyEnemies = new Dictionary<RdtId, SelectableEnemy>();
         private static int g_player;
 
@@ -202,7 +202,7 @@ namespace IntelOrca.Biohazard.BioRand
         public void Apply()
         {
             _logger.WriteHeading("Replacing enemies:");
-            foreach (var kvp in ChosenEnemies)
+            foreach (var kvp in ChosenEnemies.OrderBy(x => x.Key.RdtId))
             {
                 ReplaceEnemiesInRoom(kvp.Key, kvp.Value);
             }
@@ -286,11 +286,9 @@ namespace IntelOrca.Biohazard.BioRand
 
             if (g_debugLogging)
             {
-                _logger.WriteLine("Random room order:");
-                foreach (var r in enemyRdts)
-                {
-                    _logger.WriteLine($"  {r.RdtId}");
-                }
+                _logger.WriteLine($"[DEBUG] RDT ORDER: {string.Join(" ", rdts.Select(x => x.RdtId))}");
+                _logger.WriteLine($"[DEBUG] ENEMY RDT ORDER: {string.Join(" ", enemyRdts)}");
+                _logger.WriteLine($"[DEBUG] ENEMY ORDER: {string.Join(" ", enemies.Select(x => $"({x.e.Name}, {x.q})"))}");
             }
 
             // First randomize rooms that ignore enemy ratios
@@ -465,8 +463,6 @@ namespace IntelOrca.Biohazard.BioRand
                 foreach (var offset in nopArray)
                 {
                     rdt.Nop(offset);
-                    if (g_debugLogging)
-                        _logger.WriteLine($"{rdt.RdtId} (0x{offset:X2}) opcode removed");
                 }
             }
         }
