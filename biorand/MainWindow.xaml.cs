@@ -42,6 +42,7 @@ namespace IntelOrca.Biohazard.BioRand
             LoadSettings();
             UpdateUi();
             UpdateEnabledUi();
+            PopulateContributors();
             PopulateChangelog();
 #if !DEBUG
             CheckForNewVersion();
@@ -61,7 +62,28 @@ namespace IntelOrca.Biohazard.BioRand
 #endif
         }
 
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            MinWidth = 1920 / 4;
+            MinHeight = 1080 / 4;
+            MaxWidth = Width;
+            MaxHeight = Height;
+        }
+
+        private void PopulateContributors()
+        {
+            var text = GetBioRandFileContent("CONTRIBUTORS.md");
+            text = Regex.Replace(text, @"#.*\s+", "");
+            text = text.Replace("**", "");
+            textContributors.Text = text;
+        }
+
         private void PopulateChangelog()
+        {
+            textChangelog.Text = GetBioRandFileContent("CHANGELOG.md");
+        }
+
+        private string GetBioRandFileContent(string fileName)
         {
             try
             {
@@ -70,12 +92,12 @@ namespace IntelOrca.Biohazard.BioRand
 #else
                 var installLocation = Path.GetDirectoryName(Program.CurrentAssembly.Location);
 #endif
-                var changelogPath = Path.Combine(installLocation, "CHANGELOG.md");
-                var changelog = File.ReadAllText(changelogPath);
-                textChangelog.Text = changelog;
+                var path = Path.Combine(installLocation, fileName);
+                return File.ReadAllText(path);
             }
             catch
             {
+                return "[Failed to load content]";
             }
         }
 

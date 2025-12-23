@@ -7,14 +7,16 @@
     mc:Ignorable="d"
     Title="BioRand: A Resident Evil Randomizer"
     WindowStartupLocation="CenterScreen"
-    ResizeMode="CanMinimize"
-    SizeToContent="WidthAndHeight">
+    ResizeMode="CanResize"
+    SizeToContent="WidthAndHeight"
+    Loaded="Window_Loaded">
     <Window.Resources>
         <Style TargetType="local:RandoSlider">
             <Setter Property="Maximum" Value="31" />
             <Setter Property="Value" Value="15" />
         </Style>
     </Window.Resources>
+    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
     <StackPanel>
         <Border x:Name="versionBox" Visibility="Collapsed" Background="#FFB" Padding="8,4">
             <TextBlock>
@@ -62,18 +64,7 @@
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
                     <StackPanel Grid.Row="0">
-                        <TextBlock x:Name="txtWhatsNewTitle" FontSize="24">What's New - BioRand
-                            {VERSION}</TextBlock>
-                        <TextBlock FontSize="16">BioRand has a new discord server: <Hyperlink
-                                Click="Link_Click" NavigateUri="https://discord.gg/8WAr38Svxd">
-                            https://discord.gg/8WAr38Svxd</Hyperlink></TextBlock>
-                        <TextBlock FontSize="16">BioRand has a new website: <Hyperlink
-                                Click="Link_Click" NavigateUri="https://biorand.net">
-                            https://biorand.net</Hyperlink></TextBlock>
-                        <TextBlock FontSize="16">Please now use this link for BioRand when sharing
-                            the mod.</TextBlock>
-                        <TextBlock FontSize="16" Margin="0,16,0,0">Chris (RE 1) can now have 8 item
-                            slots. Enable this in the settings panel.</TextBlock>
+                        <TextBlock x:Name="txtWhatsNewTitle" FontSize="24">What's New - BioRand {VERSION}</TextBlock>
                     </StackPanel>
                     <local:TopDownContainer Grid.Row="1">
                         <TextBox x:Name="textChangelog"
@@ -84,44 +75,23 @@
                             VerticalScrollBarVisibility="Visible" />
                     </local:TopDownContainer>
                 </Grid>
-                <StackPanel x:Name="panelInfo" Visibility="Hidden">
-                    <TextBlock FontSize="24">Contributors</TextBlock>
-                    <StackPanel Margin="12,0,0,0">
-                        <TextBlock FontSize="16">IntelOrca - programmer</TextBlock>
-                        <TextBlock FontSize="16">Snipz - testing, animations, models, voices</TextBlock>
-                        <TextBlock FontSize="16">Kashup - testing, models, textures, voices</TextBlock>
-                        <TextBlock FontSize="16">Zky3sdge - models</TextBlock>
-                        <TextBlock FontSize="16">Resevilnemesis30 - Randy Rando</TextBlock>
-                        <TextBlock FontSize="16">SikShadow - Randy Rando songs</TextBlock>
-                        <TextBlock FontSize="16">baesik - testing</TextBlock>
-                        <TextBlock FontSize="16">DeathNoDamage - testing</TextBlock>
-                        <TextBlock FontSize="16">GontaPog - testing</TextBlock>
-                        <TextBlock FontSize="16">otamega72 - testing</TextBlock>
-                        <TextBlock FontSize="16">Shannon - testing</TextBlock>
-                        <TextBlock FontSize="16">PMCDC - UI enhancements</TextBlock>
-                        <TextBlock FontSize="16">ALSOP - textures</TextBlock>
-                        <TextBlock FontSize="16">AndrewC - models</TextBlock>
-                        <TextBlock FontSize="16">Komizo - models</TextBlock>
-                        <TextBlock FontSize="16">Leigi - models</TextBlock>
-                        <TextBlock FontSize="16">ncf - models</TextBlock>
-                        <TextBlock FontSize="16">Rusty - models</TextBlock>
-                        <TextBlock FontSize="16">StarringRole - models</TextBlock>
-                        <TextBlock FontSize="16">UniComics - textures</TextBlock>
-                        <TextBlock FontSize="16">Us3r_Cr0ft - animations, models</TextBlock>
-                        <TextBlock FontSize="16">HazNut - a bugfix</TextBlock>
-                        <TextBlock FontSize="16">Grchman - model conversions</TextBlock>
-                        <TextBlock FontSize="16">Zach - models</TextBlock>
-                        <TextBlock FontSize="16">ChiliConCarnage - models</TextBlock>
-                        <TextBlock FontSize="16">Vivian Reed - voice acting</TextBlock>
-                        <TextBlock FontSize="16">re_duke - RDT information</TextBlock>
-                        <TextBlock FontSize="16">kapdap - RE:CVX information</TextBlock>
-                        <TextBlock FontSize="16">Classic RE Modding community discord</TextBlock>
+                <Grid x:Name="panelInfo" Visibility="Hidden">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <StackPanel Grid.Row="0">
+                        <TextBlock FontSize="24">Contributors</TextBlock>
                     </StackPanel>
-                    <StackPanel Margin="12,16,0,0">
-                        <TextBlock FontSize="16">Special thanks to all BioRand streamers and bug
-                            reporters!</TextBlock>
-                    </StackPanel>
-                </StackPanel>
+                    <local:TopDownContainer Grid.Row="1">
+                        <TextBox x:Name="textContributors"
+                            Margin="0,16,0,0"
+                            FontSize="14"
+                            IsReadOnly="True"
+                            HorizontalScrollBarVisibility="Visible"
+                            VerticalScrollBarVisibility="Visible" />
+                    </local:TopDownContainer>
+                </Grid>
                 <StackPanel x:Name="panelConfig" Visibility="Hidden">
                     <TextBlock>In order to generate a seed, set the location of where each Resident
                         Evil game is installed on your system. All games need to be specified in
@@ -519,4 +489,5 @@
             </Grid>
         </Grid>
     </StackPanel>
+    </ScrollViewer>
 </Window>

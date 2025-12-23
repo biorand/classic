@@ -26,6 +26,7 @@ jobs:
         cd bin\Release\net472\publish
         copy ${{ github.workspace }}\README.md .
         copy ${{ github.workspace }}\CHANGELOG.md .
+        copy ${{ github.workspace }}\CONTRIBUTORS.md .
         copy ${{ github.workspace }}\LICENSE .
         md ${{ github.workspace }}\artefacts
         del *.pdb
