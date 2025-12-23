@@ -12,6 +12,7 @@
     <ApplicationIcon>biorand.ico</ApplicationIcon>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DefineConstants>$(DefineConstants);DISABLE_CVX</DefineConstants>
+    <LangVersion>8</LangVersion>
   </PropertyGroup>
   <ItemGroup>
     <Content Include="biorand.ico" />

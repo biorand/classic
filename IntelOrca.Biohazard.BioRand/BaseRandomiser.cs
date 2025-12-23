@@ -175,7 +175,12 @@ namespace IntelOrca.Biohazard.BioRand
             }
 
             var reConfig = InstallConfig;
-            var installPath = reConfig.GetInstallPath(BiohazardVersion);
+            var installPath = reConfig.InstallPath;
+            if (!Directory.Exists(installPath) && !File.Exists(installPath))
+            {
+                throw new BioRandUserException("Install path for game was not found.\nNavigate to settings to update it.");
+            }
+
             if (BiohazardVersion == BioVersion.BiohazardCv)
             {
                 installPath = Path.GetDirectoryName(installPath);
@@ -184,10 +189,10 @@ namespace IntelOrca.Biohazard.BioRand
             var originalDataPath = GetDataPath(installPath);
             var modPath = Path.Combine(installPath, @"mod_biorand");
             var fileRepo = new FileRepository(originalDataPath, modPath);
-            if (reConfig!.IsEnabled(BioVersion.Biohazard3))
+            if (BiohazardVersion == BioVersion.Biohazard3)
             {
                 var re3randomizer = new Re3Randomiser(reConfig, null);
-                var dataPath = re3randomizer.GetDataPath(reConfig.GetInstallPath(BioVersion.Biohazard3));
+                var dataPath = re3randomizer.GetDataPath(installPath);
                 re3randomizer.AddArchives(dataPath, fileRepo);
             }
 
@@ -488,10 +493,7 @@ namespace IntelOrca.Biohazard.BioRand
                 throw new BioRandUserException("No music albums selected.");
             }
 
-            if (BiohazardVersion == BioVersion.Biohazard1)
-                bgmRandomizer.ImportVolume = 0.75f;
-            if (BiohazardVersion == BioVersion.Biohazard3)
-                bgmRandomizer.ImportVolume = 0.5f;
+            bgmRandomizer.ImportVolume = reConfig.BgmVolume;
             bgmRandomizer.AddCutomMusicToSelection(enabledBgms);
 
             using (progress.BeginTask(null, "Randomizing BGM"))

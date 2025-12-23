@@ -715,7 +715,7 @@ namespace IntelOrca.Biohazard.BioRand
             txtSeed.CaretIndex = Math.Min(caretIndex, txtSeed.Text.Length);
         }
 
-        private ReInstallConfig GetInstallConfig()
+        private ReInstallConfig GetInstallConfig(int index)
         {
             SaveSettings();
 
@@ -724,14 +724,21 @@ namespace IntelOrca.Biohazard.BioRand
             config.RandomizeTitleVoice = _settings.RandomizeTitleVoice;
             config.MaxInventorySize = _settings.MaxInventorySize;
             config.DoorSkip = _settings.DoorSkip;
-            config.SetEnabled(0, _settings.GameEnabled1);
-            config.SetEnabled(1, _settings.GameEnabled2);
-            config.SetEnabled(2, _settings.GameEnabled3);
-            config.SetEnabled(3, _settings.GameEnabledCv);
-            config.SetInstallPath(0, _settings.GamePath1);
-            config.SetInstallPath(1, _settings.GamePath2);
-            config.SetInstallPath(2, _settings.GamePath3);
-            config.SetInstallPath(3, _settings.GamePathCv);
+            config.BgmVolume = index switch
+            {
+                0 => _settings.BgmVolume1,
+                1 => _settings.BgmVolume2,
+                2 => _settings.BgmVolume3,
+                _ => 1.0f
+            };
+            config.InstallPath = index switch
+            {
+                0 => _settings.GamePath1,
+                1 => _settings.GamePath2,
+                2 => _settings.GamePath3,
+                3 => _settings.GamePathCv,
+                _ => ""
+            };
             return config;
         }
 
@@ -1046,7 +1053,7 @@ namespace IntelOrca.Biohazard.BioRand
 
         private BaseRandomiser GetRandomizer(int index)
         {
-            var installConfig = GetInstallConfig();
+            var installConfig = GetInstallConfig(index);
             switch (index)
             {
                 case 0:

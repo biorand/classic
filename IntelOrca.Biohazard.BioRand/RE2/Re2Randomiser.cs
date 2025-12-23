@@ -92,26 +92,6 @@ namespace IntelOrca.Biohazard.BioRand.RE2
 
         public override void Generate(RandoConfig config, IRandoProgress progress, FileRepository fileRepository)
         {
-            var reConfig = InstallConfig;
-            if (config.RandomBgm && MusicAlbumSelected(config, "RE1"))
-            {
-                if (!reConfig.IsEnabled(BioVersion.Biohazard1))
-                {
-                    throw new BioRandUserException("RE1 installation must be enabled to use RE1 assets.");
-                }
-            }
-            if (!reConfig.IsEnabled(BioVersion.Biohazard2))
-            {
-                throw new BioRandUserException("RE2 installation must be enabled to randomize RE2.");
-            }
-            if (config.RandomBgm && MusicAlbumSelected(config, "RE3"))
-            {
-                if (!reConfig.IsEnabled(BioVersion.Biohazard3))
-                {
-                    throw new BioRandUserException("RE3 installation must be enabled to use RE3 assets.");
-                }
-            }
-
             var po = new ParallelOptions();
 #if DEBUG
             po.MaxDegreeOfParallelism = 1;

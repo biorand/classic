@@ -7,8 +7,8 @@ namespace IntelOrca.Biohazard.BioRand.Tests
     {
         public static string GetInstallPath(int game)
         {
-            var fileName = $"re{game + 1}";
-            if (game == 3)
+            var fileName = $"re{game}";
+            if (game == 4)
                 fileName = "recvx";
             var places = new[]
             {

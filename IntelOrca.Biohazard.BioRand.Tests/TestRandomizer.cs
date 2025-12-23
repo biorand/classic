@@ -124,7 +124,10 @@ namespace IntelOrca.Biohazard.BioRand.Tests
 
         private BaseRandomiser GetRandomizer()
         {
-            var installConfig = GetInstallConfig();
+            var installConfig = new ReInstallConfig
+            {
+                InstallPath = TestInfo.GetInstallPath(Game)
+            };
             switch (Game)
             {
                 case 1:
@@ -180,18 +183,6 @@ namespace IntelOrca.Biohazard.BioRand.Tests
             for (int i = 0; i < 5; i++)
                 config.EnabledBGMs[i] = i % 2 == 0;
             return config;
-        }
-
-        private static ReInstallConfig GetInstallConfig()
-        {
-            var reInstall = new ReInstallConfig();
-            reInstall.SetInstallPath(0, TestInfo.GetInstallPath(0));
-            reInstall.SetInstallPath(1, TestInfo.GetInstallPath(1));
-            reInstall.SetInstallPath(2, TestInfo.GetInstallPath(2));
-            reInstall.SetEnabled(0, true);
-            reInstall.SetEnabled(1, true);
-            reInstall.SetEnabled(2, true);
-            return reInstall;
         }
 
         private class NullProgress : IRandoProgress

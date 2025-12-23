@@ -28,6 +28,10 @@ namespace IntelOrca.Biohazard.BioRand
         public string GameExecutable2 { get; set; }
         public string GameExecutable3 { get; set; }
 
+        public float BgmVolume1 { get; set; } = 0.75f;
+        public float BgmVolume2 { get; set; } = 1.0f;
+        public float BgmVolume3 { get; set; } = 0.75f;
+
         public bool DisableCustomContent { get; set; }
 
         public bool RandomizeTitleVoice { get; set; } = true;
