@@ -1,18 +1,16 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Text.Json;
-using NVorbis;
 
 namespace IntelOrca.Biohazard.BioRand
 {
     internal class VoiceRandomiser
     {
-        private static ConcurrentDictionary<string, double> _voiceLengthCache = new ConcurrentDictionary<string, double>(StringComparer.OrdinalIgnoreCase);
+        private static VoiceLengthCache _voiceLengthCache = VoiceLengthCache.Default;
         private static VoiceSample[]? _customSamplesCache;
 
         private readonly BioVersion _version;
@@ -261,6 +259,7 @@ namespace IntelOrca.Biohazard.BioRand
                 using (_logger.Progress.BeginTask(_config.Player, "Scanning voices"))
                 {
                     _customSamplesCache = AddCustom();
+                    _voiceLengthCache.Save();
                 }
             }
             _uniqueSamples.AddRange(_customSamplesCache);
@@ -682,58 +681,11 @@ namespace IntelOrca.Biohazard.BioRand
 
         private double GetVoiceLength(string path)
         {
-            if (_voiceLengthCache.TryGetValue(path, out var result))
-            {
-                return result;
-            }
-            result = GetVoiceLengthInner(path);
-            _voiceLengthCache.TryAdd(path, result);
-            return result;
-        }
-
-        private double GetVoiceLengthInner(string path)
-        {
-            Stream? fs = null;
-            try
+            return _voiceLengthCache.GetVoiceLength(path, path =>
             {
                 var data = _dataManager.GetData(path);
-                fs = data == null ? _fileRepository.GetStream(path) : new MemoryStream(data);
-                if (path.EndsWith(".sap", StringComparison.OrdinalIgnoreCase))
-                {
-                    fs.Position = 8;
-                    var br = new BinaryReader(fs);
-                    var magic = br.ReadUInt32();
-                    fs.Position -= 4;
-                    if (magic == 0x5367674F) // OGG
-                    {
-                        using var vorbis = new VorbisReader(new SlicedStream(fs, 8, fs.Length - 8), closeOnDispose: false);
-                        return vorbis.TotalTime.TotalSeconds;
-                    }
-                    else
-                    {
-                        var decoder = new MSADPCMDecoder();
-                        return decoder.GetLength(fs);
-                    }
-                }
-                else if (path.EndsWith(".ogg"))
-                {
-                    using var vorbis = new VorbisReader(fs);
-                    return vorbis.TotalTime.TotalSeconds;
-                }
-                else
-                {
-                    var decoder = new MSADPCMDecoder();
-                    return decoder.GetLength(fs);
-                }
-            }
-            catch (Exception ex)
-            {
-                throw new BioRandUserException($"Unable to process '{path}'. {ex.Message}");
-            }
-            finally
-            {
-                fs?.Dispose();
-            }
+                return data == null ? _fileRepository.GetStream(path) : new MemoryStream(data);
+            });
         }
 
         private class RoomVoices
