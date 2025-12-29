@@ -1,3 +1,14 @@
+BioRand v3.3.1 (2025-12-29)
+
+* [Feature] Add copy and paste buttons for seed.
+* [Feature] Allow BGM volume to be modified in settings file.
+* [Enhancement] Speed up randomization after restart by caching voice sample lengths.
+* [Change] Add extra logging to enemy rando to help diagnose seed inconsistency.
+* [Change] RE 3, increase default volume of BGM.
+* [Fix] #841: UI not compatible with screen resolution 1280x800.
+* [Fix] #1068: Voice randomization broken for actor skins when all voice samples used at least once.
+* [Fix] Automatically unblock game .exe files to prevent `operation was cancelled by the user` message.
+
 BioRand v3.3.0 (2025-08-22)
 
 * [Feature] New content added, see [biorand/classic-data](https://github.com/biorand/classic-data/releases) for release notes.
