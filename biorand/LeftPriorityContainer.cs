@@ -1,4 +1,6 @@
-﻿using System.Windows;
+﻿using System;
+using System.Collections.Generic;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace IntelOrca.Biohazard.BioRand
@@ -47,12 +49,34 @@ namespace IntelOrca.Biohazard.BioRand
 
         protected override Size ArrangeOverride(Size finalSize)
         {
+            var maxWidth = 0.0;
+            var sizable = new List<UIElement>();
+            foreach (UIElement child in InternalChildren)
+            {
+                maxWidth += child.DesiredSize.Width;
+                if (child is FrameworkElement frameworkElement)
+                {
+                    if (double.IsNaN(frameworkElement.Width))
+                    {
+                        sizable.Add(child);
+                    }
+                }
+            }
+            var remainder = Math.Max(0, finalSize.Width - maxWidth);
+            var sharedRemainder = sizable.Count == 0 ? 0 : remainder / sizable.Count;
+
             var x = 0.0;
+            var index = 0;
             foreach (UIElement child in InternalChildren)
             {
                 var childSize = child.DesiredSize;
+                if (sizable.Contains(child))
+                {
+                    childSize.Width += sharedRemainder;
+                }
                 child.Arrange(new Rect(x, 0, childSize.Width, finalSize.Height));
                 x += childSize.Width;
+                index++;
             }
             return finalSize;
         }

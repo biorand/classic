@@ -66,8 +66,6 @@ namespace IntelOrca.Biohazard.BioRand
         {
             MinWidth = 1920 / 4;
             MinHeight = 1080 / 4;
-            MaxWidth = Width;
-            MaxHeight = Height;
         }
 
         private void PopulateContributors()

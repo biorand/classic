@@ -17,13 +17,17 @@
         </Style>
     </Window.Resources>
     <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
-    <StackPanel>
-        <Border x:Name="versionBox" Visibility="Collapsed" Background="#FFB" Padding="8,4">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Border Grid.Row="0" x:Name="versionBox" Visibility="Collapsed" Background="#FFB" Padding="8,4">
             <TextBlock>
                 <Hyperlink Click="UpdateLink_Click">A new update is available!</Hyperlink>
             </TextBlock>
         </Border>
-        <Grid>
+        <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="Auto" />
                 <ColumnDefinition Width="*" />
@@ -123,8 +127,13 @@
                         </StackPanel>
                     </GroupBox>
                 </StackPanel>
-                <StackPanel x:Name="panelRando" Visibility="Visible">
-                    <Grid>
+                <Grid x:Name="panelRando" Visibility="Visible">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid Grid.Row="0">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
                             <ColumnDefinition />
@@ -155,7 +164,7 @@
                             </TextBlock>
                         </StackPanel>
                     </Grid>
-                    <GroupBox Header="Seed">
+                    <GroupBox Grid.Row="1" Header="Seed">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto" />
@@ -229,7 +238,7 @@
                             </StackPanel>
                         </Grid>
                     </GroupBox>
-                    <local:LeftPriorityContainer ImportantChildIndex="2" MinHeight="500">
+                    <local:LeftPriorityContainer Grid.Row="2" ImportantChildIndex="2" MinHeight="500">
                         <StackPanel Width="200">
                             <local:CheckGroupBox x:Name="chkPlayer" Header="Change Player Character">
                                 <StackPanel>
@@ -286,8 +295,7 @@
                                 </StackPanel>
                             </local:CheckGroupBox>
                         </StackPanel>
-                        <local:CheckGroupBox x:Name="chkRngItems" Header="Randomize Items"
-                            Width="400">
+                        <local:CheckGroupBox x:Name="chkRngItems" Header="Randomize Items" Width="400">
                             <StackPanel>
                                 <Grid>
                                     <Grid.ColumnDefinitions>
@@ -389,8 +397,7 @@
                                 </local:CheckGroupBox>
                             </StackPanel>
                         </local:CheckGroupBox>
-                        <local:CheckGroupBox Grid.Row="1" x:Name="chkRngEnemies"
-                            Header="Randomize Enemies" Width="300">
+                        <local:CheckGroupBox Grid.Row="1" x:Name="chkRngEnemies" Header="Randomize Enemies" Width="300">
                             <Grid>
                                 <Grid.RowDefinitions>
                                     <RowDefinition Height="Auto" />
@@ -465,29 +472,32 @@
                                     enemies.</TextBlock>
                             </Grid>
                         </local:CheckGroupBox>
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto" />
-                                <RowDefinition />
-                            </Grid.RowDefinitions>
-                            <StackPanel Grid.Row="1" Orientation="Horizontal">
-                                <local:CheckGroupBox x:Name="chkEnemySkins" MinWidth="150"
-                                    Header="Enemy Skins">
+                        <Grid MinWidth="500">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <local:GrowlessContainer Grid.Column="0">
+                                <local:CheckGroupBox x:Name="chkEnemySkins" Header="Enemy Skins">
                                     <local:CheckBoxList x:Name="listEnemySkins" />
                                 </local:CheckGroupBox>
+                            </local:GrowlessContainer>
+                            <local:GrowlessContainer Grid.Column="1">
                                 <local:CheckGroupBox x:Name="chkRngBgm" Header="Randomize Music">
                                     <local:CheckBoxList x:Name="listBGMs" />
                                 </local:CheckGroupBox>
-                            </StackPanel>
+                            </local:GrowlessContainer>
+                            <local:GrowlessContainer Grid.Column="2">
+                                <local:CheckGroupBox x:Name="chkRngChars" Header="Randomize NPCs">
+                                    <local:CheckBoxList x:Name="listNPCs" />
+                                </local:CheckGroupBox>
+                            </local:GrowlessContainer>
                         </Grid>
-                        <local:CheckGroupBox x:Name="chkRngChars" MinWidth="150"
-                            Header="Randomize NPCs">
-                            <local:CheckBoxList x:Name="listNPCs" />
-                        </local:CheckGroupBox>
                     </local:LeftPriorityContainer>
-                </StackPanel>
+                </Grid>
             </Grid>
         </Grid>
-    </StackPanel>
+    </Grid>
     </ScrollViewer>
 </Window>
