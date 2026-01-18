@@ -10,7 +10,7 @@ namespace IntelOrca.Biohazard.BioRand.RE3
     {
         public byte[] GetReservedLockIds()
         {
-            return new byte[] { 0, 1, 3, 9, 10, 12, 13, 14, 16, 17, 19, 20, 21, 25, 26, 29, 32, 33, 34, 35 };
+            return new byte[] { 0, 1, 3, 4, 9, 10, 12, 13, 14, 16, 17, 19, 20, 21, 25, 26, 27, 29, 32, 33, 34, 35 };
         }
 
         public void Begin(RandoConfig config, GameData gameData, Map map)
