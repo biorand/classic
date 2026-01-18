@@ -5,7 +5,7 @@
     <UseWPF>true</UseWPF>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <PlatformTarget>AnyCPU</PlatformTarget>
-    <Copyright>Copyright (C) Ted John 2022-2025</Copyright>
+    <Copyright>Copyright (C) Ted John 2022-2026</Copyright>
     <Product>Resident Evil Randomizer</Product>
     <Version>3.3.2</Version>
     <RootNamespace>IntelOrca.Biohazard.BioRand</RootNamespace>
