@@ -181,6 +181,29 @@ namespace IntelOrca.Biohazard.BioRand
                     // Reserve for weapon
                     _specialItem = null;
                 }
+
+                if (_specialItem != Re2ItemIds.Lockpick)
+                {
+                    if (_config.Player == 1)
+                    {
+                        // Add small key check for sewer door
+                        var rdt = _gameData.GetRdt(new RdtId(3, 0x01));
+                        if (rdt != null)
+                        {
+                            // Fix messages and small key check to be lockpick related
+                            var msg = rdt.Opcodes.FirstOrDefault(x => x.Offset == 0x2760) as UnknownOpcode;
+                            if (msg != null)
+                            {
+                                msg.Data[1]++;
+                            }
+
+                            rdt.Nop(0x273A, 0x273E);
+                            rdt.Nop(0x274E, 0x2757);
+                            rdt.Nop(0x277C, 0x2780);
+                            rdt.Nop(0x278E, 0x2799);
+                        }
+                    }
+                }
             }
             else
             {
@@ -396,45 +419,45 @@ namespace IntelOrca.Biohazard.BioRand
                 switch (randomGroup.Key)
                 {
                     case ItemAttribute.Ammo:
-                    {
-                        var item = _rng.NextOf(randomGroup.ToArray());
-                        var maxAmount = ItemHelper.GetMaxAmmoForAmmoType((byte)item.Type);
-                        var amount = (byte)_rng.Next(maxAmount / 2, maxAmount);
-                        if (generosity == 0)
                         {
-                            amount /= 2;
+                            var item = _rng.NextOf(randomGroup.ToArray());
+                            var maxAmount = ItemHelper.GetMaxAmmoForAmmoType((byte)item.Type);
+                            var amount = (byte)_rng.Next(maxAmount / 2, maxAmount);
+                            if (generosity == 0)
+                            {
+                                amount /= 2;
+                            }
+                            return new Item((byte)item.Type, amount);
                         }
-                        return new Item((byte)item.Type, amount);
-                    }
                     case ItemAttribute.Heal:
-                    {
-                        if (generosity == 0)
                         {
-                            return new Item(rng.NextOf(
-                                ItemHelper.GetItemId(CommonItemKind.HerbG),
-                                ItemHelper.GetItemId(CommonItemKind.HerbGG),
-                                ItemHelper.GetItemId(CommonItemKind.HerbGGB),
-                                ItemHelper.GetItemId(CommonItemKind.HerbR),
-                                ItemHelper.GetItemId(CommonItemKind.HerbB),
-                                ItemHelper.GetItemId(CommonItemKind.HerbGB),
-                                ItemHelper.GetItemId(CommonItemKind.FirstAid),
-                                ItemHelper.GetItemId(CommonItemKind.HerbGRB)), 1);
+                            if (generosity == 0)
+                            {
+                                return new Item(rng.NextOf(
+                                    ItemHelper.GetItemId(CommonItemKind.HerbG),
+                                    ItemHelper.GetItemId(CommonItemKind.HerbGG),
+                                    ItemHelper.GetItemId(CommonItemKind.HerbGGB),
+                                    ItemHelper.GetItemId(CommonItemKind.HerbR),
+                                    ItemHelper.GetItemId(CommonItemKind.HerbB),
+                                    ItemHelper.GetItemId(CommonItemKind.HerbGB),
+                                    ItemHelper.GetItemId(CommonItemKind.FirstAid),
+                                    ItemHelper.GetItemId(CommonItemKind.HerbGRB)), 1);
+                            }
+                            else
+                            {
+                                return new Item(rng.NextOf(
+                                    ItemHelper.GetItemId(CommonItemKind.FirstAid),
+                                    ItemHelper.GetItemId(CommonItemKind.HerbGRB)), 1);
+                            }
                         }
-                        else
-                        {
-                            return new Item(rng.NextOf(
-                                ItemHelper.GetItemId(CommonItemKind.FirstAid),
-                                ItemHelper.GetItemId(CommonItemKind.HerbGRB)), 1);
-                        }
-                    }
                     case ItemAttribute.InkRibbon:
-                    {
-                        var inkType = ItemHelper.GetItemId(CommonItemKind.InkRibbon);
-                        var count = (byte)rng.Next(3, 6);
-                        if (generosity == 0)
-                            count = (byte)(count / 2);
-                        return new Item(inkType, count);
-                    }
+                        {
+                            var inkType = ItemHelper.GetItemId(CommonItemKind.InkRibbon);
+                            var count = (byte)rng.Next(3, 6);
+                            if (generosity == 0)
+                                count = (byte)(count / 2);
+                            return new Item(inkType, count);
+                        }
                 }
             }
             var fasType = ItemHelper.GetItemId(CommonItemKind.FirstAid);
