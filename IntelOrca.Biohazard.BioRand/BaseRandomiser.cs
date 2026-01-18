@@ -878,7 +878,7 @@ namespace IntelOrca.Biohazard.BioRand
                 var biorandDirectory = AppContext.BaseDirectory;
                 if (InstallConfig.EnableCustomContent)
                 {
-                    AddDirectory(dataManager, Path.Combine(GetSettingsDirectory(), "data"));
+                    dataManager.AddFileSystem(Path.Combine(GetSettingsDirectory(), "data"));
                     AddDirectory(dataManager, Path.Combine(GetSettingsDirectory(), "datapacks"));
                 }
                 AddDirectory(dataManager, Path.Combine(biorandDirectory, "datapacks"));
