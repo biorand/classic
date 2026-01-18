@@ -659,7 +659,7 @@ namespace IntelOrca.Biohazard.BioRand.RECV
                     continue;
                 }
 
-                ReplaceRdtTexture(gameData, rdtId, groupNum, entryNum, file);
+                ReplaceRdtTexture(gameData, rdtId, groupNum, entryNum, $"portrait/{file}");
             }
         }
 
@@ -672,7 +672,11 @@ namespace IntelOrca.Biohazard.BioRand.RECV
             if (rdt == null)
                 return;
 
-            var argb = BgCreator.LoadImage(path);
+            var data = DataManager.GetData(path);
+            if (data == null)
+                return;
+
+            var argb = BgCreator.LoadImage(new MemoryStream(data));
             var rdtBuilder = ((RdtCv)rdt.RdtFile).ToBuilder();
             var tim2Builder = rdtBuilder.Textures.Groups[groupNum].Entries[entryNum].Tim2.ToBuilder();
             var pic0 = tim2Builder.Pictures[0].ToBuilder();

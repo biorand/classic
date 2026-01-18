@@ -102,9 +102,9 @@ namespace IntelOrca.Biohazard.BioRand
             return qrCodeImage;
         }
 
-        public uint[] LoadImage(string path)
+        public uint[] LoadImage(Stream data)
         {
-            using (var bitmap = (Bitmap)Image.FromFile(path))
+            using (var bitmap = (Bitmap)Image.FromStream(data))
             {
                 return bitmap.ToArgb();
             }
