@@ -966,7 +966,7 @@ namespace IntelOrca.Biohazard.BioRand
 
         private void UpdateLink_Click(object sender, RoutedEventArgs e)
         {
-            Process.Start("https://github.com/biorand/classic/releases");
+            Process.Start("https://biorand.net#downloads");
         }
 
         private void ReportIssue_Click(object sender, RoutedEventArgs e)
