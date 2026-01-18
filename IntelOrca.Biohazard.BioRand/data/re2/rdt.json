@@ -3431,7 +3431,7 @@
       ],
       "enemies": [
         {
-          "condition": "$27 != 1536 && !34:43",
+          "condition": "$27 != 1536 && !34:43 && 3:106",
           "excludeTypes": [ 40 ],
           "scenario": 1,
           "player": 0
