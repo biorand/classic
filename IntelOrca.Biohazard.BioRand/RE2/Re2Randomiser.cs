@@ -137,8 +137,8 @@ namespace IntelOrca.Biohazard.BioRand.RE2
 
         internal override string[] ChangePlayerCharacters(RandoConfig config, RandoLogger logger, GameData gameData, FileRepository fileRepository)
         {
-            var actor = config.Player == 0 ? "leon" : "claire";
-            var partner = config.Player == 0 ? "ada" : "sherry";
+            var actor = config.Player == 0 ? "leon.re2" : "claire.re2";
+            var partner = config.Player == 0 ? "ada.re2" : "sherry.re2";
 
             var pldIndex = config.Player == 0 ? 0 : 1;
             var hurtSoundIndex = config.Player == 0 ? 0 : 1;
