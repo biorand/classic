@@ -1,3 +1,13 @@
+BioRand v3.3.2 (2026-01-18)
+
+* [Change] Update link now goes to official website (which hosts full packs) instead of GitHub.
+* [Fix] #614: RE 2, Claire, lockpick still works for sewer door when she has no lockpick.
+* [Fix] #826: RE 2, locked drawers sometimes already open.
+* [Fix] #949: RE 2, Leon B, 602 enemy attack in Annette cutscene.
+* [Fix] #1081: RE 2, Leon is Claire when player character not randomized.
+* [Fix] RE 3, restaurant lockpick cabinet sometimes already unlocked.
+* [Fix] RE 3, boutique door sometimes already unlocked.
+
 BioRand v3.3.1 (2025-12-29)
 
 * [Feature] Add copy and paste buttons for seed.
