@@ -299,9 +299,54 @@ static void RE2_HookLoadGame()
     ExtendScdTasks();
 }
 
+struct PsxRect
+{
+    int16_t x;
+    int16_t y;
+    int16_t w;
+    int16_t h;
+};
+
+typedef int(__cdecl* fnLoadImage)(PsxRect* rect, void* pixels);
+static fnLoadImage _originalLoadImage;
+
+static int __cdecl LoadImageClamped(PsxRect* rect, void* pixels)
+{
+    auto r = *rect;
+    auto limit = r.y < 256 ? 256 : 512;
+    if (r.h > 0 && r.y >= 0 && r.y + r.h > limit)
+    {
+        r.h = (int16_t)(limit - r.y);
+        if (r.h <= 0)
+            return 0;
+    }
+    return _originalLoadImage(&r, pixels);
+}
+
+static void RE3_HookEtdClamp()
+{
+    auto site = (uint8_t*)0x0043FAE3;
+    uint8_t opcode;
+    if (!ReadProcessMemory(GetCurrentProcess(), (LPVOID)site, &opcode, sizeof(opcode), NULL) || opcode != 0xE8)
+        return;
+
+    int32_t rel;
+    if (!ReadProcessMemory(GetCurrentProcess(), (LPVOID)(site + 1), &rel, sizeof(rel), NULL))
+        return;
+
+    auto target = site + 5 + rel;
+    if (target != (uint8_t*)0x00425450)
+        return;
+
+    _originalLoadImage = (fnLoadImage)target;
+    rel = (int32_t)((uint8_t*)&LoadImageClamped - site - 5);
+    WriteProcessMemory(GetCurrentProcess(), (LPVOID)(site + 1), &rel, sizeof(rel), NULL);
+}
+
 static void ModMain(HMODULE hExecutable)
 {
     RE2_HookLoadGame();
+    RE3_HookEtdClamp();
     SetupDataPath(hExecutable);
     ProcessDataFile(_dataPath);
     CreateThread(NULL, 0, &ModThreadRunner, NULL, 0, NULL);
