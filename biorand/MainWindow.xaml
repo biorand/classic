@@ -106,9 +106,10 @@
                         Validate="gameLocation_Validate" Changed="gameLocation_Changed" />
                     <local:GameLocationBox x:Name="gameLocation3" Tag="2" Header="Resident Evil 3"
                         Validate="gameLocation_Validate" Changed="gameLocation_Changed" />
-                    <local:GameLocationBox x:Name="gameLocationCV" Tag="3"
-                        Header="Resident Evil CV:X" Validate="gameLocationCV_Validate"
-                        Changed="gameLocation_Changed" IsIso="True" />
+                    <local:CvGameLocationBox x:Name="gameLocationCV"
+                        ValidateIso="cvGameLocation_ValidateIso"
+                        ValidatePc="cvGameLocation_ValidatePc"
+                        Changed="gameLocation_Changed" />
                     <GroupBox Header="Custom Content">
                         <StackPanel Orientation="Vertical" HorizontalAlignment="Left">
                             <CheckBox x:Name="chkEnableCustomContent" Margin="0,0,0,4">Enable</CheckBox>
@@ -122,8 +123,6 @@
                             <CheckBox x:Name="chkRandomizeTitleVoice"
                                 Checked="globalCheckBox_Changed" Unchecked="globalCheckBox_Changed">Randomize
                                 title voice</CheckBox>
-                            <CheckBox x:Name="chkDoorSkip" Checked="globalCheckBox_Changed"
-                                Unchecked="globalCheckBox_Changed">Door Skip (RE CVX)</CheckBox>
                         </StackPanel>
                     </GroupBox>
                 </StackPanel>

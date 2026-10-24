@@ -107,7 +107,9 @@ namespace IntelOrca.Biohazard.BioRand
                 gameLocation1.Location = _settings.GamePath1;
                 gameLocation2.Location = _settings.GamePath2;
                 gameLocation3.Location = _settings.GamePath3;
-                gameLocationCV.Location = _settings.GamePathCv;
+                gameLocationCV.IsoLocation = _settings.GamePathCv;
+                gameLocationCV.PcLocation = _settings.GamePathCvPc;
+                gameLocationCV.IsPc = _settings.GenerateCvPcMod;
 
                 gameLocation1.IsChecked = _settings.GameEnabled1;
                 gameLocation2.IsChecked = _settings.GameEnabled2;
@@ -117,6 +119,8 @@ namespace IntelOrca.Biohazard.BioRand
                 gameLocation1.SetExecutableList(_settings.GamePath1, _settings.GameExecutable1);
                 gameLocation2.SetExecutableList(_settings.GamePath2, _settings.GameExecutable2);
                 gameLocation3.SetExecutableList(_settings.GamePath3, _settings.GameExecutable3);
+                gameLocationCV.SetExecutables(_settings.GamePathCvPc, _settings.GameExecutableCv);
+                _settings.GameExecutableCv = gameLocationCV.SelectedExecutable;
 
                 gameLocation1.IsSettingsLoaded = true;
                 gameLocation2.IsSettingsLoaded = true;
@@ -126,7 +130,7 @@ namespace IntelOrca.Biohazard.BioRand
                 chkEnableCustomContent.IsChecked = !_settings.DisableCustomContent;
                 chkRandomizeTitleVoice.IsChecked = _settings.RandomizeTitleVoice;
                 chkMaxInventorySize.IsChecked = _settings.MaxInventorySize;
-                chkDoorSkip.IsChecked = _settings.DoorSkip;
+                gameLocationCV.DoorSkip = _settings.DoorSkip;
             }
 
             if (!Version.TryParse(_settings.LastVersion, out var lastVersion) || lastVersion != Program.CurrentVersion)
@@ -157,21 +161,24 @@ namespace IntelOrca.Biohazard.BioRand
             _settings.GamePath1 = gameLocation1.Location;
             _settings.GamePath2 = gameLocation2.Location;
             _settings.GamePath3 = gameLocation3.Location;
-            _settings.GamePathCv = gameLocationCV.Location;
+            _settings.GamePathCv = gameLocationCV.IsoLocation;
+            _settings.GamePathCvPc = gameLocationCV.PcLocation;
+            _settings.GenerateCvPcMod = gameLocationCV.IsPc;
 
             _settings.GameEnabled1 = gameLocation1.IsChecked == true;
             _settings.GameEnabled2 = gameLocation2.IsChecked == true;
             _settings.GameEnabled3 = gameLocation3.IsChecked == true;
-            _settings.GameEnabledCv = gameLocationCV.IsChecked == true;
+            _settings.GameEnabledCv = gameLocationCV.IsChecked;
 
             _settings.GameExecutable1 = gameLocation1.SelectedExecutable;
             _settings.GameExecutable2 = gameLocation2.SelectedExecutable;
             _settings.GameExecutable3 = gameLocation3.SelectedExecutable;
+            _settings.GameExecutableCv = gameLocationCV.SelectedExecutable;
 
             _settings.DisableCustomContent = chkEnableCustomContent.IsChecked != true;
             _settings.RandomizeTitleVoice = chkRandomizeTitleVoice.IsChecked == true;
             _settings.MaxInventorySize = chkMaxInventorySize.IsChecked == true;
-            _settings.DoorSkip = chkDoorSkip.IsChecked == true;
+            _settings.DoorSkip = gameLocationCV.DoorSkip;
 
             _settings.LastVersion = Program.CurrentVersionNumber;
 
@@ -356,16 +363,23 @@ namespace IntelOrca.Biohazard.BioRand
                 seedQrCode.Seed = _config;
 
                 btnStartRE.Content = $"Start RE{_config.Game}";
-                var gameLocationPath = GetGameLocation();
-                var gameExecutableName = GetGameExecutable();
-                btnStartRE.IsEnabled = !string.IsNullOrEmpty(gameLocationPath)
-                                        && !string.IsNullOrEmpty(gameExecutableName)
-                                        && File.Exists(Path.Combine(gameLocationPath, gameExecutableName));
-                btnStartRE.ToolTip = $"Start the '{Path.GetFileName(gameExecutableName)}' executable.";
+                UpdateStartButton();
 
                 UpdateHints();
             }
             UpdateEnabledUi();
+        }
+
+        private void UpdateStartButton()
+        {
+            var gameLocationPath = GetGameLocation();
+            var gameExecutableName = GetGameExecutable();
+            btnStartRE.IsEnabled = !string.IsNullOrEmpty(gameLocationPath)
+                                    && !string.IsNullOrEmpty(gameExecutableName)
+                                    && File.Exists(Path.Combine(gameLocationPath, gameExecutableName));
+            btnStartRE.ToolTip = string.IsNullOrEmpty(gameExecutableName) ?
+                null :
+                $"Start the '{Path.GetFileName(gameExecutableName)}' executable.";
         }
 
         private void UpdateHints()
@@ -759,6 +773,11 @@ namespace IntelOrca.Biohazard.BioRand
                 3 => _settings.GamePathCv,
                 _ => ""
             };
+            if (index == 3)
+            {
+                config.GenerateCvPcMod = _settings.GenerateCvPcMod;
+                config.CvPcPortPath = _settings.GamePathCvPc ?? "";
+            }
             return config;
         }
 
@@ -1100,7 +1119,7 @@ namespace IntelOrca.Biohazard.BioRand
                 case 2:
                     return _settings.GamePath3;
                 case 3:
-                    return _settings.GamePathCv;
+                    return _settings.GenerateCvPcMod ? _settings.GamePathCvPc : _settings.GamePathCv;
                 default:
                     return null;
             }
@@ -1116,6 +1135,8 @@ namespace IntelOrca.Biohazard.BioRand
                     return _settings.GameExecutable2;
                 case 2:
                     return _settings.GameExecutable3;
+                case 3:
+                    return _settings.GenerateCvPcMod ? _settings.GameExecutableCv : null;
                 default:
                     return null;
             }
@@ -1157,7 +1178,7 @@ namespace IntelOrca.Biohazard.BioRand
             e.Message = "Directory looks good!";
         }
 
-        private void gameLocationCV_Validate(object sender, PathValidateEventArgs e)
+        private void cvGameLocation_ValidateIso(object sender, PathValidateEventArgs e)
         {
             if (!File.Exists(e.Path))
             {
@@ -1178,9 +1199,30 @@ namespace IntelOrca.Biohazard.BioRand
             e.Message = "ISO looks good!";
         }
 
+        private void cvGameLocation_ValidatePc(object sender, PathValidateEventArgs e)
+        {
+            if (!Directory.Exists(e.Path))
+            {
+                e.Message = "Directory does not exist!";
+                e.IsValid = false;
+                return;
+            }
+
+            if (!File.Exists(Path.Combine(e.Path, "recvx.exe")))
+            {
+                e.Message = "PC folder does not contain recvx.exe!";
+                e.IsValid = false;
+                return;
+            }
+
+            e.IsValid = true;
+            e.Message = "PC folder looks good!";
+        }
+
         private void gameLocation_Changed(object sender, EventArgs e)
         {
             SaveSettings();
+            UpdateStartButton();
         }
 
         private void globalCheckBox_Changed(object sender, RoutedEventArgs e)
@@ -1388,7 +1430,11 @@ namespace IntelOrca.Biohazard.BioRand
                 return null;
 
             if (SelectedGame == 3)
+            {
+                if (_settings.GenerateCvPcMod)
+                    return Path.Combine(_settings.GamePathCvPc ?? "", "mods", "biorand", $"log_pl{player}.txt");
                 location = Path.GetDirectoryName(location);
+            }
 
             var path = Path.Combine(location, "mod_biorand", $"log_pl{player}.txt");
             return path;

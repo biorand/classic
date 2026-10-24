@@ -18,6 +18,8 @@ namespace IntelOrca.Biohazard.BioRand
         public string GamePath2 { get; set; }
         public string GamePath3 { get; set; }
         public string GamePathCv { get; set; }
+        public string GamePathCvPc { get; set; }
+        public bool GenerateCvPcMod { get; set; }
 
         public bool GameEnabled1 { get; set; }
         public bool GameEnabled2 { get; set; }
@@ -27,6 +29,7 @@ namespace IntelOrca.Biohazard.BioRand
         public string GameExecutable1 { get; set; }
         public string GameExecutable2 { get; set; }
         public string GameExecutable3 { get; set; }
+        public string GameExecutableCv { get; set; }
 
         public float BgmVolume1 { get; set; } = 0.75f;
         public float BgmVolume2 { get; set; } = 1.0f;
