@@ -125,7 +125,7 @@ namespace IntelOrca.Biohazard.BioRand
 
         private void RandomizeSpecialItem()
         {
-            // Only RE 2 has a special inventory item
+            // RE 2 and CV have a special inventory item
             var gameHasSpecialItem = _config.Game == 2 || _config.Game == 4;
             if (gameHasSpecialItem && _config.RandomInventory && !_config.ShuffleItems)
             {
