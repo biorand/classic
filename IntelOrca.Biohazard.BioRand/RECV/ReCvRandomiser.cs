@@ -472,24 +472,25 @@ namespace IntelOrca.Biohazard.BioRand.RECV
                     }
                     else if (type != 0)
                     {
-                        // The PC port initialises the special slot to the lighter.
-                        // Replace the starting lighter with the randomised special
-                        // item, keeping the special slot itself for the lighter.
-                        rrdt!.AdditionalOpcodes.Add(new UnknownOpcode(0, 0xC7, new byte[] { ReCvItemIds.Lighter, type, 0x00 }));
+                        // 0xFF is the PC sentinel for the special slot; the
+                        // third byte is the count (no separate C9).
+                        rrdt!.AdditionalOpcodes.Add(new UnknownOpcode(0, 0xC7, new byte[] { 0xFF, type, quantity }));
                     }
                 }
                 else if (index == 0)
                 {
+                    // Replace the retail Playing Manual in the first cell;
+                    // C9 then sets the generated count.
                     if (!InstallConfig.GenerateCvPcMod)
                         SetFirstInventoryItem(type);
                     else if (type != 0)
-                        rrdt!.AdditionalOpcodes.Add(new UnknownOpcode(0, 0xC7, new byte[] { 0x00, type, 0x00 }));
+                        rrdt!.AdditionalOpcodes.Add(new UnknownOpcode(0, 0xC7, new byte[] { ReCvItemIds.PlayingManual, type, 0x00 }));
                 }
                 else if (type != 0)
                 {
                     rrdt!.AdditionalOpcodes.Add(new UnknownOpcode(0, 0xC7, new byte[] { 0x00, type, 0x00 }));
                 }
-                if (type != 0)
+                if (type != 0 && index != -1)
                 {
                     rrdt.AdditionalOpcodes.Add(new UnknownOpcode(0, 0xC9, new byte[] { type, quantity, 0x00 }));
                 }
