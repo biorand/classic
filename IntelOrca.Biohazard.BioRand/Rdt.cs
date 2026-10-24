@@ -28,6 +28,15 @@ namespace IntelOrca.Biohazard.BioRand
         public List<KeyValuePair<int, byte>> Patches { get; } = new List<KeyValuePair<int, byte>>();
         public List<OpcodeBase> AdditionalOpcodes { get; } = new List<OpcodeBase>();
         public List<OpcodeBase> AdditionalFrameOpcodes { get; } = new List<OpcodeBase>();
+
+        /// <summary>
+        /// RE:CVX PC port only. Store the pickup quantity of stackable items in
+        /// the item record's unused <c>wrk_no</c> byte. The game continues to use
+        /// getbulletmax for vanilla items and for item box/combination code.
+        /// </summary>
+        internal bool UseCvItemQuantities { get; set; }
+
+        internal IItemHelper? ItemHelper { get; set; }
         public string? CustomAdditionalScript { get; set; }
         public List<Action> PostModifications { get; } = new List<Action>();
 
@@ -257,6 +266,14 @@ namespace IntelOrca.Biohazard.BioRand
                 {
                     var item = rdtBuilder.Items[itemId.Value];
                     item.Type = (item.Type & 0xFFFF) | (type << 16);
+                    if (UseCvItemQuantities)
+                    {
+                        // ETTY_WORK.wrk_no is unused for items. Store the pickup
+                        // quantity there for the PC port's GetItem hook. Zero
+                        // means "use getbulletmax / the retail behaviour".
+                        var quantity = GetCvPickupQuantity(type, amount);
+                        item.Unk08 = (item.Unk08 & ~0x00FF0000) | (quantity << 16);
+                    }
                     rdtBuilder.Items[itemId.Value] = item;
                     RdtFile = rdtBuilder.ToRdt();
                 }
@@ -282,11 +299,32 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
+        private int GetCvPickupQuantity(ushort type, ushort amount)
+        {
+            if (!UseCvItemQuantities || ItemHelper == null || amount == 0)
+                return 0;
+
+            var attributes = ItemHelper.GetItemAttributes((byte)type);
+            if ((attributes & (ItemAttribute.Ammo | ItemAttribute.InkRibbon | ItemAttribute.Gunpowder)) == 0)
+                return 0;
+
+            return Math.Min((int)amount, 255);
+        }
+
         private void SetItemAt(int offset, ushort type, ushort amount)
         {
             var opcode = Opcodes.FirstOrDefault(x => x.Offset == offset);
             if (Version == BioVersion.BiohazardCv)
             {
+                // CV has no single "item type" operand. The type lives in a
+                // different byte depending on how the script grants the item:
+                //   0x08 setb:                 variable, value
+                //   0x06 cmpb:                 variable, comparison, value
+                //   0xC7 player_item_change_m: old type, new type, count
+                //   0x7C flr_atari_set2:       trigger, attr, prm0..3, type
+                // 0x08/0x06 address sb_id (variable 8); 0xC7's second operand
+                // is the replacement type; 0x7C uses prm0 (the room 10B
+                // workaround).
                 var op = (UnknownOpcode)opcode;
                 if (op.Opcode == 0x08)
                 {

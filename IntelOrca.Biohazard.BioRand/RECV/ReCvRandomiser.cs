@@ -59,10 +59,23 @@ namespace IntelOrca.Biohazard.BioRand.RECV
 
         protected override string GetRdtPath(string dataPath, RdtId rdtId, int player, bool mod)
         {
-            var rdtPath = $"R{rdtId}.RDT";
+            var rdtPath = GetRdtTempFileName(rdtId);
             return mod ?
                 Path.Combine(dataPath, "rdx_lnk_modded", rdtPath) :
                 Path.Combine(dataPath, "..", "mod_biorand", "rdx_lnk", rdtPath);
+        }
+
+        /// <summary>
+        /// Temporary file name for an extracted room. Uses the disc name
+        /// (RM_9090), not RdtId.ToString() (A090), and avoids the old
+        /// R{rdtId}.RDT collision between RM_0000 and RM_1000.
+        /// </summary>
+        private string GetRdtTempFileName(RdtId rdtId)
+        {
+            var index = GetRdxFileIndex(rdtId);
+            if (index >= 0)
+                return Path.GetFileNameWithoutExtension(_rdxFileNames[index]) + ".RDT";
+            return $"R{rdtId}.RDT";
         }
 
         public override string GetPlayerName(int player) =>
@@ -100,6 +113,8 @@ namespace IntelOrca.Biohazard.BioRand.RECV
         protected override RandomizedRdt ReadRdt(FileRepository fileRepository, RdtId rdtId, string path, string modPath)
         {
             var result = base.ReadRdt(fileRepository, rdtId, path, modPath);
+            result.UseCvItemQuantities = InstallConfig.GenerateCvPcMod;
+            result.ItemHelper = ItemHelper;
             var fileIndex = GetRdxFileIndex(rdtId);
             if (_rdts[fileIndex] == null)
                 _rdts[fileIndex] = result;
@@ -115,9 +130,12 @@ namespace IntelOrca.Biohazard.BioRand.RECV
             config.RandomEvents = false;
             config.RandomBgm = false;
 
-            var isoDirectory = Path.GetDirectoryName(fileRepository.DataPath);
-            var input = Path.Combine(isoDirectory, "recvx.iso");
+            var isPcPort = InstallConfig.GenerateCvPcMod;
+            var input = ResolveIsoPath(fileRepository);
+            var isoDirectory = Path.GetDirectoryName(input)!;
             var output = Path.Combine(isoDirectory, "recvx_biorand.iso");
+
+            _rdts = new RandomizedRdt[_rdxFileNames.Length];
 
             UdfEditor? udfEditor = null;
             try
@@ -129,7 +147,12 @@ namespace IntelOrca.Biohazard.BioRand.RECV
                 FileIdentifier? systemAfsFileId;
                 using (progress.BeginTask(null, "Reading ISO file"))
                 {
-                    udfEditor = new Ps2IsoTools.UDF.UdfEditor(input, output);
+                    // For the PC port we only read the ISO. Do not ask UdfEditor
+                    // to copy the 1.8 GB image first; it is not rebuilt.
+                    udfEditor = isPcPort ?
+                        new Ps2IsoTools.UDF.UdfEditor(input) :
+                        new Ps2IsoTools.UDF.UdfEditor(input, output);
+
                     advAfsFileId = udfEditor.GetFileByName("ADV.AFS");
                     if (advAfsFileId == null)
                         throw new BioRandUserException("ADV.AFS not found in ISO");
@@ -153,7 +176,8 @@ namespace IntelOrca.Biohazard.BioRand.RECV
                     _advAfs = ReadAfs(udfEditor, advAfsFileId);
                     // _multspq1Afs = ReadAfs(udfEditor, multspq1AfsFileId);
                     _rdxAfs = ReadAfs(udfEditor, rdxAfsFileId);
-                    _elf = ReadFile(udfEditor, elfFileId);
+                    if (!isPcPort)
+                        _elf = ReadFile(udfEditor, elfFileId);
                     _systemAfs = ReadAfs(udfEditor, systemAfsFileId);
                 }
 
@@ -168,7 +192,7 @@ namespace IntelOrca.Biohazard.BioRand.RECV
                 {
                     var rdtId = GetRdtId(i);
                     var prs = new PrsFile(_rdxAfs.GetFileData(i));
-                    prs.Uncompressed.WriteToFile(Path.Combine(rdxPath, $"R{rdtId}.RDT"));
+                    prs.Uncompressed.WriteToFile(Path.Combine(rdxPath, GetRdtTempFileName(rdtId)));
 
 #if EXTRACT_TEXTURES
                     try
@@ -211,34 +235,138 @@ namespace IntelOrca.Biohazard.BioRand.RECV
 
                 GenerateRdts(config, progress, fileRepository);
 
-                if (config.RandomDoors)
-                    DisableNosferatuPoison();
-                if (InstallConfig.DoorSkip)
-                    SetDoorSkip();
-                FixRifleStacking();
-                SetItemQuantityPickup(config, new Rng(config.Seed));
-                HackItemPickup();
-
-                // base.Generate(config, progress, fileRepository);
-
-                using (progress.BeginTask(null, "Compressing room files"))
+                if (isPcPort)
                 {
-                    _rdxAfs = WriteRdxAfs(fileRepository);
+                    // PC floor pickups use the per-item wrk_no quantity. The
+                    // global getbulletmax table stays at its retail values and
+                    // is only the fallback for wrk_no == 0.
+                    using (progress.BeginTask(null, "Writing PC port mod"))
+                        WritePcPortMod(config, fileRepository);
                 }
-
-                using (progress.BeginTask(null, "Creating ISO file"))
+                else
                 {
-                    udfEditor.ReplaceFileStream(advAfsFileId, new MemoryStream(_advAfs!.Data.ToArray()));
-                    udfEditor.ReplaceFileStream(rdxAfsFileId, new MemoryStream(_rdxAfs!.Data.ToArray()));
-                    udfEditor.ReplaceFileStream(elfFileId, new MemoryStream(_elf));
-                    udfEditor.ReplaceFileStream(systemAfsFileId, new MemoryStream(_systemAfs!.Data.ToArray()));
-                    udfEditor.Rebuild(output);
+                    if (config.RandomDoors)
+                        DisableNosferatuPoison();
+                    if (InstallConfig.DoorSkip)
+                        SetDoorSkip();
+                    FixRifleStacking();
+                    SetItemQuantityPickup(config, new Rng(config.Seed));
+                    HackItemPickup();
+
+                    // base.Generate(config, progress, fileRepository);
+
+                    using (progress.BeginTask(null, "Compressing room files"))
+                    {
+                        _rdxAfs = WriteRdxAfs(fileRepository);
+                    }
+
+                    using (progress.BeginTask(null, "Creating ISO file"))
+                    {
+                        udfEditor.ReplaceFileStream(advAfsFileId, new MemoryStream(_advAfs!.Data.ToArray()));
+                        udfEditor.ReplaceFileStream(rdxAfsFileId, new MemoryStream(_rdxAfs!.Data.ToArray()));
+                        udfEditor.ReplaceFileStream(elfFileId, new MemoryStream(_elf));
+                        udfEditor.ReplaceFileStream(systemAfsFileId, new MemoryStream(_systemAfs!.Data.ToArray()));
+                        udfEditor.Rebuild(output);
+                    }
                 }
             }
             finally
             {
                 udfEditor?.Dispose();
             }
+        }
+
+        private string ResolveIsoPath(FileRepository fileRepository)
+        {
+            var path = InstallConfig.InstallPath;
+            if (!string.IsNullOrWhiteSpace(path))
+            {
+                if (File.Exists(path))
+                    return path;
+                if (Directory.Exists(path))
+                {
+                    var inDirectory = Path.Combine(path, "recvx.iso");
+                    if (File.Exists(inDirectory))
+                        return inDirectory;
+                }
+            }
+
+            var directory = Path.GetDirectoryName(fileRepository.DataPath);
+            if (!string.IsNullOrWhiteSpace(directory))
+            {
+                var fallback = Path.Combine(directory, "recvx.iso");
+                if (File.Exists(fallback))
+                    return fallback;
+            }
+
+            throw new BioRandUserException("Code: Veronica X ISO not found. Select the Game data ISO in the settings.");
+        }
+
+        private string GetPcModPath(string portPath)
+        {
+            return Path.Combine(portPath, "mods", "biorand");
+        }
+
+        private void WritePcPortMod(RandoConfig config, FileRepository fileRepository)
+        {
+            var portPath = InstallConfig.CvPcPortPath;
+            if (string.IsNullOrWhiteSpace(portPath) || !Directory.Exists(portPath))
+            {
+                throw new BioRandUserException(
+                    "The PC folder was not found. " +
+                    "Select the folder containing recvx.exe and its mods folder.");
+            }
+
+            if (!File.Exists(Path.Combine(portPath, "recvx.exe")) &&
+                !File.Exists(Path.Combine(portPath, "recvx")))
+            {
+                throw new BioRandUserException(
+                    "The selected folder does not look like the PC version. " +
+                    "It should contain recvx.exe.");
+            }
+
+            var modPath = GetPcModPath(portPath);
+            if (Directory.Exists(modPath))
+                Directory.Delete(modPath, true);
+            Directory.CreateDirectory(modPath);
+
+            // Room files. The port reads RM_SRRC.RDX from the mods root
+            // (RECVX_MODS) before the disc.
+            // Always write the literal-only PRS stream: it needs no PRS search
+            // and the port always expands it.
+            Parallel.For(0, _rdts.Length, i =>
+            {
+                var rdt = _rdts[i];
+                if (rdt == null)
+                    return;
+
+                var packed = PrsFile.Store(rdt.RdtFile.Data).Data.ToArray();
+                File.WriteAllBytes(Path.Combine(modPath, _rdxFileNames[i]), packed);
+            });
+
+            // Player models (SYSTEM.AFS entries 10 and 11) and the title
+            // background (ADV.AFS entry 2). These are raw AFS entries.
+            WriteAfsEntry(modPath, _systemAfs, "SYSTEM.AFS", 10);
+            WriteAfsEntry(modPath, _systemAfs, "SYSTEM.AFS", 11);
+            WriteAfsEntry(modPath, _advAfs, "ADV.AFS", 2);
+
+            // Keep the human-readable output next to the mod (the log has the seed).
+            foreach (var fileName in new[] { "log_pl0.txt", "graph_pl0.dgml" })
+            {
+                var source = Path.Combine(fileRepository.ModPath, fileName);
+                if (File.Exists(source))
+                    File.Copy(source, Path.Combine(modPath, fileName), true);
+            }
+        }
+
+        private static void WriteAfsEntry(string modPath, AfsFile? afs, string archiveName, int index)
+        {
+            if (afs == null || index < 0 || index >= afs.Count)
+                return;
+
+            var directory = Path.Combine(modPath, archiveName);
+            Directory.CreateDirectory(directory);
+            File.WriteAllBytes(Path.Combine(directory, index.ToString()), afs.GetFileData(index).ToArray());
         }
 
         internal override string[]? ChangePlayerCharacters(RandoConfig config, RandoLogger logger, GameData gameData, FileRepository fileRepository)
@@ -296,7 +424,9 @@ namespace IntelOrca.Biohazard.BioRand.RECV
             if (rrdt == null)
                 return;
 
-            var inventory = Inventories[0];
+            var inventory = Inventories.Count > config.Player
+                ? Inventories[config.Player]
+                : null;
             if (inventory == null)
                 return;
 
@@ -336,11 +466,24 @@ namespace IntelOrca.Biohazard.BioRand.RECV
             {
                 if (index == -1)
                 {
-                    SetSpecialSlotItem(type);
+                    if (!InstallConfig.GenerateCvPcMod)
+                    {
+                        SetSpecialSlotItem(type);
+                    }
+                    else if (type != 0)
+                    {
+                        // The PC port initialises the special slot to the lighter.
+                        // Replace the starting lighter with the randomised special
+                        // item, keeping the special slot itself for the lighter.
+                        rrdt!.AdditionalOpcodes.Add(new UnknownOpcode(0, 0xC7, new byte[] { ReCvItemIds.Lighter, type, 0x00 }));
+                    }
                 }
                 else if (index == 0)
                 {
-                    SetFirstInventoryItem(type);
+                    if (!InstallConfig.GenerateCvPcMod)
+                        SetFirstInventoryItem(type);
+                    else if (type != 0)
+                        rrdt!.AdditionalOpcodes.Add(new UnknownOpcode(0, 0xC7, new byte[] { 0x00, type, 0x00 }));
                 }
                 else if (type != 0)
                 {
