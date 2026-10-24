@@ -490,7 +490,9 @@ namespace IntelOrca.Biohazard.BioRand.RECV
                 {
                     rrdt!.AdditionalOpcodes.Add(new UnknownOpcode(0, 0xC7, new byte[] { 0x00, type, 0x00 }));
                 }
-                if (type != 0 && index != -1)
+                // The PC special item carries its count in the C7 sentinel;
+                // the PS2 path still needs the separate C9.
+                if (type != 0 && (index != -1 || !InstallConfig.GenerateCvPcMod))
                 {
                     rrdt.AdditionalOpcodes.Add(new UnknownOpcode(0, 0xC9, new byte[] { type, quantity, 0x00 }));
                 }
