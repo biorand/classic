@@ -14,6 +14,7 @@ namespace IntelOrca.Biohazard.BioRand
     public class RandomizedRdt
     {
         private List<(EmrFlags, double)> _emrScales = new List<(EmrFlags, double)>();
+        private readonly List<OpcodeBase> _cvEarlyFrameOpcodes = new List<OpcodeBase>();
 
         public BioVersion Version => RdtFile.Version;
         public IRdt RdtFile { get; set; }
@@ -161,10 +162,10 @@ namespace IntelOrca.Biohazard.BioRand
             // bgm_off_2
             opcodes.Add(new UnknownOpcode(0, 0x93, new byte[] { 0x00 }));
 
-            // room_case_no
+            // room_sound_case
             opcodes.Add(new UnknownOpcode(0, 0xB6, new byte[] { variant }));
 
-            // room_sound_case
+            // room_case_no
             opcodes.Add(new UnknownOpcode(0, 0x37, new byte[] { variant }));
 
             // set_door_call
@@ -186,6 +187,28 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 AdditionalFrameOpcodes.AddRange(opcodes);
             }
+
+            // Native door AOTs (kind 0) change room without touching the room case.
+            // If the room's own script handles the AOT first and clears its flag, the
+            // override above never runs and the target loads with the current case
+            // (e.g. A200 -> 1031 loads 1030). So, before any original frame code, set
+            // the case as soon as the native door transition has started.
+
+            // if
+            _cvEarlyFrameOpcodes.Add(new UnknownOpcode(0, 0x01, new byte[] { 0x12 }));
+            // ck FG_CUT_BG, 23, aot, 0 (in AOT)
+            _cvEarlyFrameOpcodes.Add(new UnknownOpcode(0, 0x04, new byte[] { 0x0A, 0x17, 0x00, aotIndexB, 0x00 }));
+            // ck FG_CUT_BG, 31, 0, 0 (door transition started)
+            _cvEarlyFrameOpcodes.Add(new UnknownOpcode(0, 0x04, new byte[] { 0x0A, 0x1F, 0x00, 0x00, 0x00 }));
+
+            // room_case_no
+            _cvEarlyFrameOpcodes.Add(new UnknownOpcode(0, 0x37, new byte[] { variant }));
+
+            // room_sound_case
+            _cvEarlyFrameOpcodes.Add(new UnknownOpcode(0, 0xB6, new byte[] { variant }));
+
+            // endif
+            _cvEarlyFrameOpcodes.Add(new UnknownOpcode(0, 0x03, new byte[] { 0x00 }));
         }
 
         public void EnsureDoorUnlock(int id, byte lockId)
@@ -634,7 +657,7 @@ namespace IntelOrca.Biohazard.BioRand
 
         private void AppendFrameOpcodes()
         {
-            if (AdditionalFrameOpcodes.Count == 0)
+            if (AdditionalFrameOpcodes.Count == 0 && _cvEarlyFrameOpcodes.Count == 0)
                 return;
 
             if (RdtFile is RdtCv cv)
@@ -644,6 +667,12 @@ namespace IntelOrca.Biohazard.BioRand
 
                 var ms = new MemoryStream();
                 var bw = new BinaryWriter(ms);
+
+                // Always at the very top, before the room's original code
+                foreach (var op in _cvEarlyFrameOpcodes)
+                {
+                    op.Write(bw);
+                }
 
                 // HACK put new opcodes at bottom of 2nd proc unless
                 //      it is last proc, in which case put it at top
