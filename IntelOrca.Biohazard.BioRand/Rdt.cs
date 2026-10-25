@@ -74,6 +74,21 @@ namespace IntelOrca.Biohazard.BioRand
                     aot.ExitId = (byte)destination.Id!.Value;
                     builder.Aots[id] = aot;
                     RdtFile = builder.ToRdt();
+
+                    // Some rooms reconfigure the door AOT at runtime with set_etc_atari2,
+                    // which restores the vanilla target (e.g. A0C0 -> A100 once the valve
+                    // is open). Rewrite those as well.
+                    foreach (var opcode in Opcodes.OfType<UnknownOpcode>())
+                    {
+                        // set_etc_atari2 aot, flags, stage, room, exit, transition, kind, ?
+                        if (opcode.Opcode == 0x25 && opcode.Data.Length >= 8 &&
+                            opcode.Data[0] == id && opcode.Data[7] == 0)
+                        {
+                            opcode.Data[3] = (byte)target.Stage;
+                            opcode.Data[4] = (byte)target.Room;
+                            opcode.Data[5] = (byte)destination.Id!.Value;
+                        }
+                    }
                 }
 
                 foreach (var offset in offsets)
