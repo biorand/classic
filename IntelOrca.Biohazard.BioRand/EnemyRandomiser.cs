@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Text.Json;
 using System.Threading;
 using IntelOrca.Biohazard.BioRand.RE1;
 using IntelOrca.Biohazard.BioRand.RE2;
@@ -53,11 +52,7 @@ namespace IntelOrca.Biohazard.BioRand
         private void ReadEnemyPlacements()
         {
             var json = _dataManager.GetText(_version, "enemy.json");
-            var enemyPositions = JsonSerializer.Deserialize<EnemyPosition[]>(json, new JsonSerializerOptions()
-            {
-                ReadCommentHandling = JsonCommentHandling.Skip,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            })!.ToList();
+            var enemyPositions = BioRandJson.Deserialize<EnemyPosition[]>(json).ToList();
 
             foreach (var room in _map.Rooms!)
             {

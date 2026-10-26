@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
 using System.Threading;
 using IntelOrca.Biohazard.BioRand.Events;
 using IntelOrca.Biohazard.BioRand.RE3;
@@ -99,7 +98,7 @@ namespace IntelOrca.Biohazard.BioRand
             if (File.Exists(path))
             {
                 var checksumJson = File.ReadAllBytes(path);
-                var checksumsForEachPlayer = JsonSerializer.Deserialize<Dictionary<string, ulong>[]>(checksumJson)!;
+                var checksumsForEachPlayer = BioRandJson.Deserialize<Dictionary<string, ulong>[]>(checksumJson);
                 var checksums = checksumsForEachPlayer[player];
                 return checksums.ToDictionary(x => RdtId.Parse(x.Key), x => x.Value);
             }
@@ -175,14 +174,23 @@ namespace IntelOrca.Biohazard.BioRand
                 throw new BioRandUserException("Install path for game was not found.\nNavigate to settings to update it.");
             }
 
-            if (BiohazardVersion == BioVersion.BiohazardCv)
+            if (BiohazardVersion == BioVersion.BiohazardCv && File.Exists(installPath))
             {
-                installPath = Path.GetDirectoryName(installPath);
+                installPath = Path.GetDirectoryName(installPath)!;
             }
 
             var originalDataPath = GetDataPath(installPath);
-            var modPath = Path.Combine(installPath, @"mod_biorand");
-            var fileRepo = new FileRepository(originalDataPath, modPath);
+            var modPath = string.IsNullOrWhiteSpace(reConfig.ModPath)
+                ? Path.Combine(installPath, "mod_biorand")
+                : reConfig.ModPath;
+            var tempPath = string.IsNullOrWhiteSpace(reConfig.TempPath)
+                ? modPath
+                : reConfig.TempPath;
+            Directory.CreateDirectory(modPath);
+            var repositoryModPath = BiohazardVersion == BioVersion.BiohazardCv
+                ? tempPath
+                : modPath;
+            var fileRepo = new FileRepository(originalDataPath, repositoryModPath);
             if (BiohazardVersion == BioVersion.Biohazard3)
             {
                 var re3randomizer = new Re3Randomiser(reConfig, null);
@@ -190,32 +198,104 @@ namespace IntelOrca.Biohazard.BioRand
                 re3randomizer.AddArchives(dataPath, fileRepo);
             }
 
-            using (progress.BeginTask(null, $"Clearing '{modPath}'"))
+            using (progress.BeginTask(null, "Clearing output"))
             {
-                if (Directory.Exists(modPath))
+                if (Directory.Exists(repositoryModPath))
                 {
                     try
                     {
-                        Directory.Delete(modPath, true);
+                        Directory.Delete(repositoryModPath, true);
                     }
                     catch
                     {
                     }
                 }
-                Directory.CreateDirectory(modPath);
+                Directory.CreateDirectory(repositoryModPath);
             }
 
             using (progress.BeginTask(config.Player, $"Generating seed"))
             {
+                DisableUnavailableCosmeticFeatures(config, progress);
                 PreGenerate(config);
                 Generate(config, progress, fileRepo);
             }
 
-            using (progress.BeginTask(null, $"Writing manifest"))
+            if (BiohazardVersion != BioVersion.BiohazardCv)
             {
-                File.WriteAllText(Path.Combine(modPath, "manifest.txt"), "[MOD]\nName = BioRand: A Resident Evil Randomizer\nModule = biorand.dll\n");
-                File.WriteAllText(Path.Combine(modPath, "description.txt"), $"{Program.CurrentVersionInfo}\r\nSeed: {config}\r\n");
+                using (progress.BeginTask(null, $"Writing manifest"))
+                {
+                    File.WriteAllText(Path.Combine(modPath, "manifest.txt"), "[MOD]\nName = BioRand: A Resident Evil Randomizer\nModule = biorand.dll\n");
+                    File.WriteAllText(Path.Combine(modPath, "description.txt"), $"{Program.CurrentVersionInfo}\r\nSeed: {config}\r\n");
+                }
             }
+        }
+
+        private void DisableUnavailableCosmeticFeatures(RandoConfig config, IRandoProgress progress)
+        {
+            var hasPlayerData = GetPlayerCharacters(0).Length != 0;
+            if (BiohazardVersion == BioVersion.Biohazard1 ||
+                BiohazardVersion == BioVersion.Biohazard2)
+            {
+                hasPlayerData &= GetPlayerCharacters(1).Length != 0;
+            }
+
+            if (!hasPlayerData)
+            {
+                if (config.ChangePlayer)
+                {
+                    config.ChangePlayer = false;
+                    Warn(progress, "player models were not found; player randomization is disabled");
+                }
+            }
+
+            if (GetNPCs().Length == 0)
+            {
+                if (config.RandomNPCs)
+                {
+                    config.RandomNPCs = false;
+                    Warn(progress, "NPC data was not found; NPC randomization is disabled");
+                }
+                if (config.RandomCutscenes)
+                {
+                    config.RandomCutscenes = false;
+                    Warn(progress, "NPC data was not found; cutscene randomization is disabled");
+                }
+                if (config.RandomEvents)
+                {
+                    config.RandomEvents = false;
+                    Warn(progress, "NPC data was not found; random events are disabled");
+                }
+            }
+
+            if (config.RandomCutscenes && !HasVoiceData())
+            {
+                config.RandomCutscenes = false;
+                Warn(progress, "voice data was not found; cutscene randomization is disabled");
+            }
+
+            if (config.RandomBgm && GetMusicAlbums().Length == 0)
+            {
+                config.RandomBgm = false;
+                Warn(progress, "music data was not found; BGM randomization is disabled");
+            }
+
+            if (BiohazardVersion != BioVersion.BiohazardCv &&
+                config.RandomEnemySkins &&
+                GetEnemySkins().Length <= 1)
+            {
+                config.RandomEnemySkins = false;
+                Warn(progress, "enemy skin data was not found; enemy skin randomization is disabled");
+            }
+        }
+
+        private bool HasVoiceData()
+        {
+            return DataManager.GetDirectories("voice").Length != 0;
+        }
+
+        private static void Warn(IRandoProgress progress, string message)
+        {
+            using (progress.BeginTask(null, $"Warning: {message}")) { }
         }
 
         private void PreGenerate(RandoConfig config)
@@ -227,12 +307,14 @@ namespace IntelOrca.Biohazard.BioRand
                 if (config.Player0 == 0)
                 {
                     var length = GetPlayerCharacters(0).Length;
-                    config.Player0 = (byte)(1 + rng.Next(0, length));
+                    if (length != 0)
+                        config.Player0 = (byte)(1 + rng.Next(0, length));
                 }
                 if (config.Player1 == 0)
                 {
                     var length = GetPlayerCharacters(1).Length;
-                    config.Player1 = (byte)(1 + rng.Next(0, length));
+                    if (length != 0)
+                        config.Player1 = (byte)(1 + rng.Next(0, length));
                 }
             }
         }
@@ -247,7 +329,8 @@ namespace IntelOrca.Biohazard.BioRand
 
             if (config.RandomBgm)
             {
-                GenerateBGM(config, reConfig, progress, fileRepository);
+                using (progress.BeginTask(null, "Generating BGM"))
+                    GenerateBGM(config, reConfig, progress, fileRepository);
             }
 
             using (progress.BeginTask(null, $"Creating backgrounds"))
@@ -517,11 +600,7 @@ namespace IntelOrca.Biohazard.BioRand
         private Map GetMapFromJson()
         {
             var jsonMap = DataManager.GetText(BiohazardVersion, "rdt.json")!;
-            var map = JsonSerializer.Deserialize<Map>(jsonMap, new JsonSerializerOptions()
-            {
-                ReadCommentHandling = JsonCommentHandling.Skip,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            })!;
+            var map = BioRandJson.Deserialize<Map>(jsonMap);
             return map;
         }
 
@@ -619,10 +698,12 @@ namespace IntelOrca.Biohazard.BioRand
                 return GetPlayerName(player).ToLower();
 
             var pldPath = GetSelectedPldPath(config, player);
-            return Path.GetFileName(pldPath).ToLower();
+            return pldPath == null
+                ? GetPlayerName(player).ToLower()
+                : Path.GetFileName(pldPath).ToLower();
         }
 
-        protected virtual string GetSelectedPldPath(RandoConfig config, int player)
+        protected virtual string? GetSelectedPldPath(RandoConfig config, int player)
         {
             var pldIndex = GetSelectedPldIndex(config, player);
             var pldDirectoryIndex = config.SwapCharacters ? player ^ 1 : player;
@@ -631,7 +712,7 @@ namespace IntelOrca.Biohazard.BioRand
                 .OrderBy(x => x.ToActorString())
                 .Skip(pldIndex)
                 .FirstOrDefault();
-            return Path.Combine(basePath, pldPath);
+            return pldPath == null ? null : Path.Combine(basePath, pldPath);
         }
 
         protected int GetSelectedPldIndex(RandoConfig config, int player)
@@ -729,18 +810,24 @@ namespace IntelOrca.Biohazard.BioRand
                 if (BiohazardVersion == BioVersion.Biohazard1)
                 {
                     var src = DataManager.GetData(BiohazardVersion, "bg.png");
+                    if (src == null)
+                        return;
                     CreateBackgroundRaw(config, src, fileRepository.GetModPath("data/title.pix"));
                     CreateBackgroundPng(config, src, fileRepository.GetModPath("type.png"));
                 }
                 else if (BiohazardVersion == BioVersion.Biohazard2)
                 {
                     var src = DataManager.GetData(BiohazardVersion, "bg.png");
+                    if (src == null)
+                        return;
                     CreateBackgroundPng(config, src, fileRepository.GetModPath("common/data/title_bg.png"));
                     CreateBackgroundPng(config, src, fileRepository.GetModPath("common/data/type00.png"));
                 }
                 else if (BiohazardVersion == BioVersion.Biohazard3)
                 {
                     var src = DataManager.GetData(BiohazardVersion, "bg.png");
+                    if (src == null)
+                        return;
                     CreateBackgroundRaw(config, src, fileRepository.GetModPath("data/etc/type00.pix"));
                     CreateBackgroundTim(config, src, fileRepository.GetModPath("data_j/etc2/titlej.dat"));
                     CreateBackgroundTim(config, src, fileRepository.GetModPath("data_j/etc2/titletgs.dat"));

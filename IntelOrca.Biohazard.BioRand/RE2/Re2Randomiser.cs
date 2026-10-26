@@ -35,15 +35,18 @@ namespace IntelOrca.Biohazard.BioRand.RE2
 
         public override bool ValidateGamePath(string path)
         {
-            return Directory.Exists(Path.Combine(path, "data", "pl0", "rdt")) ||
-                Directory.Exists(Path.Combine(path, "pl0", "rdt"));
+            var dataPath = GetDataPath(path);
+            return FileRepository.ResolvePathCaseInsensitive(Path.Combine(dataPath, "Pl0", "Rdt")) != null ||
+                FileRepository.ResolvePathCaseInsensitive(Path.Combine(dataPath, "pl0", "rdt")) != null;
         }
 
         protected override string GetDataPath(string installPath)
         {
-            if (Directory.Exists(Path.Combine(installPath, "data", "pl0", "rdt")))
+            var dataPath = FileRepository.ResolvePathCaseInsensitive(Path.Combine(installPath, "data"));
+            if (dataPath != null &&
+                FileRepository.ResolvePathCaseInsensitive(Path.Combine(dataPath, "Pl0", "Rdt")) != null)
             {
-                return Path.Combine(installPath, "data");
+                return dataPath;
             }
             return installPath;
         }
@@ -53,7 +56,12 @@ namespace IntelOrca.Biohazard.BioRand.RE2
             var rdtPaths = new HashSet<RdtId>();
             for (int player = 0; player < 2; player++)
             {
-                var files = Directory.GetFiles(Path.Combine(dataPath, @$"Pl{player}\Rdt"));
+                var rdtDirectory = FileRepository.ResolvePathCaseInsensitive(
+                    Path.Combine(dataPath, $"Pl{player}", "Rdt"));
+                if (rdtDirectory == null)
+                    continue;
+
+                var files = Directory.GetFiles(rdtDirectory);
                 foreach (var file in files)
                 {
                     // Check the file is an RDT file
@@ -86,7 +94,7 @@ namespace IntelOrca.Biohazard.BioRand.RE2
 
         protected override string GetRdtPath(string dataPath, RdtId rdtId, int player, bool mod)
         {
-            var path = Path.Combine(dataPath, @$"Pl{player}\Rdt\ROOM{rdtId}{player}.RDT");
+            var path = Path.Combine(dataPath, $"Pl{player}", "Rdt", $"ROOM{rdtId}{player}.RDT");
             return path;
         }
 
@@ -146,7 +154,8 @@ namespace IntelOrca.Biohazard.BioRand.RE2
             if (config.ChangePlayer)
             {
                 var pldPath = GetSelectedPldPath(config, config.Player);
-                actor = Path.GetFileName(pldPath);
+                if (pldPath != null)
+                    actor = Path.GetFileName(pldPath);
             }
 
             ReplacePlayer(config, logger, fileRepository, pldIndex, hurtSoundIndex, deathSoundIndex, actor);
@@ -392,7 +401,7 @@ namespace IntelOrca.Biohazard.BioRand.RE2
             }
         }
 
-        internal override string BGMPath => @"Common\Sound\BGM";
+        internal override string BGMPath => Path.Combine("Common", "Sound", "BGM");
 
         private string[] GetEnabledPartners(RandoConfig config)
         {
@@ -523,10 +532,10 @@ namespace IntelOrca.Biohazard.BioRand.RE2
                 if (pldIndex == 0 || pldIndex == 1)
                 {
                     var numbers = new[] { 2, 4, 6 };
-                    var src = Path.Combine(targetPldDir, $"pl{pldIndex:X2}.pld");
+                    var src = fileRepository.GetModPath($"pl{config.Player}/pld/pl{pldIndex:X2}.pld");
                     foreach (var n in numbers)
                     {
-                        var dst = Path.Combine(targetPldDir, $"pl{pldIndex + n:X2}.pld");
+                        var dst = fileRepository.GetModPath($"pl{config.Player}/pld/pl{pldIndex + n:X2}.pld");
                         File.Copy(src, dst, true);
                     }
                 }
@@ -691,11 +700,11 @@ namespace IntelOrca.Biohazard.BioRand.RE2
 
         private string GetPldDirectory(string actor, out int pldIndex)
         {
-            var srcPldDir = DataManager.GetPath(BiohazardVersion, $"pld0\\{actor}");
+            var srcPldDir = DataManager.GetPath(BiohazardVersion, Path.Combine("pld0", actor));
             pldIndex = 0;
             if (!DataManager.GetFiles(srcPldDir).Any())
             {
-                srcPldDir = DataManager.GetPath(BiohazardVersion, $"pld1\\{actor}");
+                srcPldDir = DataManager.GetPath(BiohazardVersion, Path.Combine("pld1", actor));
                 pldIndex = 1;
             }
             return srcPldDir;
@@ -831,6 +840,8 @@ namespace IntelOrca.Biohazard.BioRand.RE2
             for (var i = 0; i < 2; i++)
             {
                 var pldPath = GetSelectedPldPath(config, i);
+                if (pldPath == null)
+                    continue;
                 var csvData = DataManager.GetText(Path.Combine(pldPath, "weapons.csv"));
                 if (csvData == null)
                     continue;
@@ -987,8 +998,8 @@ namespace IntelOrca.Biohazard.BioRand.RE2
                 rdtBuilder.MSGJA = msgBuilderJa.ToMsgList();
             }
 
-            var dstRdt0 = Path.Combine(dstPath, "pl0", "rdt", "ROOM2170.RDT");
-            var dstRdt1 = Path.Combine(dstPath, "pl1", "rdt", "ROOM2171.RDT");
+            var dstRdt0 = Path.Combine(dstPath, "Pl0", "Rdt", "ROOM2170.RDT");
+            var dstRdt1 = Path.Combine(dstPath, "Pl1", "Rdt", "ROOM2171.RDT");
             Directory.CreateDirectory(Path.GetDirectoryName(dstRdt0));
             Directory.CreateDirectory(Path.GetDirectoryName(dstRdt1));
             var rdt = rdtBuilder.ToRdt();
@@ -1048,7 +1059,7 @@ namespace IntelOrca.Biohazard.BioRand.RE2
                     scdRedirect;
             }
 
-            var rdtPath = fileRepository.GetModPath($"pl{p}/rdt/ROOM{rdtId}{p}.RDT");
+            var rdtPath = fileRepository.GetModPath($"Pl{p}/Rdt/ROOM{rdtId}{p}.RDT");
             var rdt = (Rdt2)Rdt.FromFile(BioVersion.Biohazard2, rdtPath);
             var rdtBuilder = rdt.ToBuilder();
             var scdBuilder = rdtBuilder.SCDMAIN.ToBuilder();

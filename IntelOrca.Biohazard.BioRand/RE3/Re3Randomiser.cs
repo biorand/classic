@@ -37,15 +37,20 @@ namespace IntelOrca.Biohazard.BioRand.RE3
         internal void AddArchives(string installPath, FileRepository fileRepo)
         {
             var dataPath = GetDataPath(installPath);
-            foreach (var path in Directory.GetFiles(dataPath, "rofs*.dat"))
+            foreach (var path in Directory.GetFiles(dataPath))
             {
-                fileRepo.AddRE3Archive(path);
+                var fileName = Path.GetFileName(path);
+                if (fileName.StartsWith("rofs", StringComparison.OrdinalIgnoreCase) &&
+                    fileName.EndsWith(".dat", StringComparison.OrdinalIgnoreCase))
+                {
+                    fileRepo.AddRE3Archive(path);
+                }
             }
         }
 
         public override bool ValidateGamePath(string path)
         {
-            return File.Exists(Path.Combine(path, "rofs1.dat"));
+            return FileRepository.ResolvePathCaseInsensitive(Path.Combine(path, "rofs1.dat")) != null;
         }
 
         protected override string GetDataPath(string installPath)
@@ -186,6 +191,8 @@ namespace IntelOrca.Biohazard.BioRand.RE3
             {
                 // Change main
                 var pldPath = GetSelectedPldPath(config, config.Player);
+                if (pldPath == null)
+                    return new[] { actor, partner };
                 actor = Path.GetFileName(pldPath);
                 SwapPlayerCharacter(config, logger, fileRepository, 0, "C_02.VB", actor);
 
@@ -205,7 +212,7 @@ namespace IntelOrca.Biohazard.BioRand.RE3
             int pldIndex, string soundFileName, string actor)
         {
             var originalPlayerActor = pldIndex == 0 ? "jill.re3" : "carlos";
-            var srcPldDir = DataManager.GetPath(BiohazardVersion, $"pld0\\{actor}");
+            var srcPldDir = DataManager.GetPath(BiohazardVersion, Path.Combine("pld0", actor));
 
             logger.WriteHeading($"Randomizing Player PL{pldIndex:X2}:");
             logger.WriteLine($"{originalPlayerActor} becomes {actor}");
@@ -234,10 +241,10 @@ namespace IntelOrca.Biohazard.BioRand.RE3
                 if (pldIndex == 0)
                 {
                     var numbers = new[] { 1, 2, 3, 4, 5, 6, 7 };
-                    var src = Path.Combine(targetPldDir, $"pl{config.Player:X2}.pld");
+                    var src = fileRepository.GetModPath($"DATA/PLD/pl{config.Player:X2}.pld");
                     foreach (var n in numbers)
                     {
-                        var dst = Path.Combine(targetPldDir, $"pl{n:X2}.pld");
+                        var dst = fileRepository.GetModPath($"DATA/PLD/pl{n:X2}.pld");
                         File.Copy(src, dst, true);
                     }
                 }

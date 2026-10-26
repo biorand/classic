@@ -19,5 +19,23 @@
         /// The PC version folder containing recvx.exe and its mods folder.
         /// </summary>
         public string CvPcPortPath { get; set; } = "";
+
+        /// <summary>
+        /// Exact output mod folder. When null, the legacy game-folder/mod_biorand
+        /// location is used.
+        /// </summary>
+        public string? ModPath { get; set; }
+
+        /// <summary>
+        /// CVX scratch folder for extracted room files and logs. When null,
+        /// the mod folder is used.
+        /// </summary>
+        public string? TempPath { get; set; }
+
+        /// <summary>
+        /// Exact output path for the rebuilt PS2 ISO. When null, the legacy
+        /// location next to the input ISO is used.
+        /// </summary>
+        public string? CvPs2OutputPath { get; set; }
     }
 }
