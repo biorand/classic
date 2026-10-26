@@ -41,12 +41,6 @@ namespace IntelOrca.Biohazard.BioRand
 
         internal DataManager DataManager => CreateDataManager();
 
-        private static string GetSettingsDirectory()
-        {
-            var appData = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
-            return Path.Combine(appData, "biorand");
-        }
-
         private void SetInventory(int player, RandomInventory? inventory)
         {
             if (inventory == null)
@@ -878,8 +872,8 @@ namespace IntelOrca.Biohazard.BioRand
                 var biorandDirectory = AppContext.BaseDirectory;
                 if (InstallConfig.EnableCustomContent)
                 {
-                    dataManager.AddFileSystem(Path.Combine(GetSettingsDirectory(), "data"));
-                    AddDirectory(dataManager, Path.Combine(GetSettingsDirectory(), "datapacks"));
+                    dataManager.AddFileSystem(RandoAppSettings.GetCustomContentDirectory());
+                    AddDirectory(dataManager, Path.Combine(RandoAppSettings.GetSettingsDirectory(), "datapacks"));
                 }
                 AddDirectory(dataManager, Path.Combine(biorandDirectory, "datapacks"));
                 dataManager.AddFileSystem(Path.Combine(biorandDirectory, "data"));
