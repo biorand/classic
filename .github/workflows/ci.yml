@@ -156,3 +156,50 @@ jobs:
           artefacts/biorand.zip
           artefacts/biorand-cli-win-x64.zip
           artefacts/biorand-cli-linux-x64.tar.gz
+
+  nightly:
+    name: Publish nightly
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    needs: [build, cli-windows, cli-linux]
+    runs-on: ubuntu-latest
+    # One shared release: queue publishes so an older build can't finish last and overwrite a newer one.
+    concurrency:
+      group: nightly
+      cancel-in-progress: false
+    permissions:
+      contents: write
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Download GUI
+      uses: actions/download-artifact@v4
+      with:
+        name: biorand
+        path: artefacts
+    - name: Download CLI (Windows)
+      uses: actions/download-artifact@v4
+      with:
+        name: biorand-cli-windows
+        path: artefacts
+    - name: Download CLI (Linux)
+      uses: actions/download-artifact@v4
+      with:
+        name: biorand-cli-linux
+        path: artefacts
+    - name: Point nightly tag at this commit
+      run: |
+        git tag -f nightly
+        git push --force origin refs/tags/nightly
+    - name: Publish nightly
+      uses: softprops/action-gh-release@v2
+      with:
+        tag_name: nightly
+        name: nightly
+        prerelease: true
+        make_latest: false
+        overwrite_files: true
+        fail_on_unmatched_files: true
+        files: |
+          artefacts/biorand.zip
+          artefacts/biorand-cli-win-x64.zip
+          artefacts/biorand-cli-linux-x64.tar.gz
