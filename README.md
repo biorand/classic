@@ -9,7 +9,7 @@ The randomizer currently only supports the Sourcenext port of all three classic 
 
 ## How to use
 
-1. Download the latest release from https://github.com/biorand/classic/releases.
+1. Download the latest release from https://github.com/biorand/classic/releases. For the newest unreleased changes, try the rolling [nightly build](https://github.com/biorand/classic/releases/tag/nightly), which is rebuilt from `master` on each push and may be unstable.
 2. Extract all the files to a directory of your choice.
 3. Run `biorand.exe`, press the settings icon on the left and set your RE 1, RE 2, and RE 3 game directory. If browsing, select `bio.exe`, `bio2 1.10.exe` or `bio2.exe` file.
 4. Configure your settings, click `seed` for a random seed and then click generate.
