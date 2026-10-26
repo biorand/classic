@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using IntelOrca.Biohazard.Extensions;
@@ -19,6 +21,7 @@ namespace IntelOrca.Biohazard.BioRand.RECV
         private AfsFile? _systemAfs;
         private RandomizedRdt[] _rdts = new RandomizedRdt[205];
         private byte[] _elf = new byte[0];
+        private string? _tempPath;
 
         protected override BioVersion BiohazardVersion => BioVersion.BiohazardCv;
         internal override IDoorHelper DoorHelper { get; } = new ReCvDoorHelper();
@@ -60,9 +63,10 @@ namespace IntelOrca.Biohazard.BioRand.RECV
         protected override string GetRdtPath(string dataPath, RdtId rdtId, int player, bool mod)
         {
             var rdtPath = GetRdtTempFileName(rdtId);
+            var basePath = _tempPath ?? dataPath;
             return mod ?
-                Path.Combine(dataPath, "rdx_lnk_modded", rdtPath) :
-                Path.Combine(dataPath, "..", "mod_biorand", "rdx_lnk", rdtPath);
+                Path.Combine(basePath, "rdx_lnk_modded", rdtPath) :
+                Path.Combine(basePath, "rdx_lnk", rdtPath);
         }
 
         /// <summary>
@@ -87,7 +91,7 @@ namespace IntelOrca.Biohazard.BioRand.RECV
             };
 
         public override string[] GetPlayerCharacters(int index) => base.GetPlayerCharacters(0);
-        protected override string GetSelectedPldPath(RandoConfig config, int player) => base.GetSelectedPldPath(config, 0);
+        protected override string? GetSelectedPldPath(RandoConfig config, int player) => base.GetSelectedPldPath(config, 0);
 
         internal FileRepository CreateRepository(string installPath, string? modPath = null)
         {
@@ -133,7 +137,13 @@ namespace IntelOrca.Biohazard.BioRand.RECV
             var isPcPort = InstallConfig.GenerateCvPcMod;
             var input = ResolveIsoPath(fileRepository);
             var isoDirectory = Path.GetDirectoryName(input)!;
-            var output = Path.Combine(isoDirectory, "recvx_biorand.iso");
+            var output = string.IsNullOrWhiteSpace(InstallConfig.CvPs2OutputPath)
+                ? Path.Combine(isoDirectory, "recvx_biorand.iso")
+                : InstallConfig.CvPs2OutputPath!;
+            var outputDirectory = Path.GetDirectoryName(Path.GetFullPath(output));
+            if (!string.IsNullOrEmpty(outputDirectory))
+                Directory.CreateDirectory(outputDirectory);
+            _tempPath = fileRepository.ModPath;
 
             _rdts = new RandomizedRdt[_rdxFileNames.Length];
 
@@ -149,9 +159,7 @@ namespace IntelOrca.Biohazard.BioRand.RECV
                 {
                     // For the PC port we only read the ISO. Do not ask UdfEditor
                     // to copy the 1.8 GB image first; it is not rebuilt.
-                    udfEditor = isPcPort ?
-                        new Ps2IsoTools.UDF.UdfEditor(input) :
-                        new Ps2IsoTools.UDF.UdfEditor(input, output);
+                    udfEditor = new Ps2IsoTools.UDF.UdfEditor(input);
 
                     advAfsFileId = udfEditor.GetFileByName("ADV.AFS");
                     if (advAfsFileId == null)
@@ -258,14 +266,21 @@ namespace IntelOrca.Biohazard.BioRand.RECV
                     using (progress.BeginTask(null, "Compressing room files"))
                     {
                         _rdxAfs = WriteRdxAfs(fileRepository);
+                        _rdts = new RandomizedRdt[_rdxFileNames.Length];
                     }
+
+                    // The PS2 rebuild is large. Drop the old AFS and room data
+                    // before allocating the final ISO streams.
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    GC.Collect();
 
                     using (progress.BeginTask(null, "Creating ISO file"))
                     {
-                        udfEditor.ReplaceFileStream(advAfsFileId, new MemoryStream(_advAfs!.Data.ToArray()));
-                        udfEditor.ReplaceFileStream(rdxAfsFileId, new MemoryStream(_rdxAfs!.Data.ToArray()));
-                        udfEditor.ReplaceFileStream(elfFileId, new MemoryStream(_elf));
-                        udfEditor.ReplaceFileStream(systemAfsFileId, new MemoryStream(_systemAfs!.Data.ToArray()));
+                        udfEditor.ReplaceFileStream(advAfsFileId, ToReadOnlyStream(_advAfs!.Data));
+                        udfEditor.ReplaceFileStream(rdxAfsFileId, ToReadOnlyStream(_rdxAfs!.Data));
+                        udfEditor.ReplaceFileStream(elfFileId, ToReadOnlyStream(_elf));
+                        udfEditor.ReplaceFileStream(systemAfsFileId, ToReadOnlyStream(_systemAfs!.Data));
                         udfEditor.Rebuild(output);
                     }
                 }
@@ -309,23 +324,44 @@ namespace IntelOrca.Biohazard.BioRand.RECV
 
         private void WritePcPortMod(RandoConfig config, FileRepository fileRepository)
         {
-            var portPath = InstallConfig.CvPcPortPath;
-            if (string.IsNullOrWhiteSpace(portPath) || !Directory.Exists(portPath))
+            var configuredModPath = InstallConfig.ModPath;
+            if (string.IsNullOrWhiteSpace(configuredModPath))
             {
-                throw new BioRandUserException(
-                    "The PC folder was not found. " +
-                    "Select the folder containing recvx.exe and its mods folder.");
+                var portPath = InstallConfig.CvPcPortPath;
+                if (string.IsNullOrWhiteSpace(portPath) || !Directory.Exists(portPath))
+                {
+                    throw new BioRandUserException(
+                        "The PC folder was not found. " +
+                        "Select the folder containing recvx.exe and its mods folder.");
+                }
+
+                if (!File.Exists(Path.Combine(portPath, "recvx.exe")) &&
+                    !File.Exists(Path.Combine(portPath, "recvx")))
+                {
+                    throw new BioRandUserException(
+                        "The selected folder does not look like the PC version. " +
+                        "It should contain recvx.exe.");
+                }
+
+                configuredModPath = GetPcModPath(portPath);
+            }
+            var modPath = configuredModPath!;
+
+            var metadata = new Dictionary<string, byte[]>();
+            var samePath = string.Equals(
+                Path.GetFullPath(fileRepository.ModPath),
+                Path.GetFullPath(modPath),
+                StringComparison.OrdinalIgnoreCase);
+            if (samePath)
+            {
+                foreach (var fileName in new[] { "log_pl0.txt", "graph_pl0.dgml" })
+                {
+                    var source = Path.Combine(fileRepository.ModPath, fileName);
+                    if (File.Exists(source))
+                        metadata[fileName] = File.ReadAllBytes(source);
+                }
             }
 
-            if (!File.Exists(Path.Combine(portPath, "recvx.exe")) &&
-                !File.Exists(Path.Combine(portPath, "recvx")))
-            {
-                throw new BioRandUserException(
-                    "The selected folder does not look like the PC version. " +
-                    "It should contain recvx.exe.");
-            }
-
-            var modPath = GetPcModPath(portPath);
             if (Directory.Exists(modPath))
                 Directory.Delete(modPath, true);
             Directory.CreateDirectory(modPath);
@@ -351,11 +387,19 @@ namespace IntelOrca.Biohazard.BioRand.RECV
             WriteAfsEntry(modPath, _advAfs, "ADV.AFS", 2);
 
             // Keep the human-readable output next to the mod (the log has the seed).
-            foreach (var fileName in new[] { "log_pl0.txt", "graph_pl0.dgml" })
+            if (samePath)
             {
-                var source = Path.Combine(fileRepository.ModPath, fileName);
-                if (File.Exists(source))
-                    File.Copy(source, Path.Combine(modPath, fileName), true);
+                foreach (var kvp in metadata)
+                    File.WriteAllBytes(Path.Combine(modPath, kvp.Key), kvp.Value);
+            }
+            else
+            {
+                foreach (var fileName in new[] { "log_pl0.txt", "graph_pl0.dgml" })
+                {
+                    var source = Path.Combine(fileRepository.ModPath, fileName);
+                    if (File.Exists(source))
+                        File.Copy(source, Path.Combine(modPath, fileName), true);
+                }
             }
         }
 
@@ -396,7 +440,7 @@ namespace IntelOrca.Biohazard.BioRand.RECV
         private void SwapPlayerCharacter(RandoConfig config, RandoLogger logger, FileRepository fileRepository, int pldIndex, string actor)
         {
             var originalPlayerActor = pldIndex == 10 ? "claire.cv" : "chris.cv";
-            var srcPldDir = DataManager.GetPath(BiohazardVersion, $"pld0\\{actor}");
+            var srcPldDir = DataManager.GetPath(BiohazardVersion, Path.Combine("pld0", actor));
 
             logger.WriteHeading($"Randomizing Player PL{pldIndex:X2}:");
             logger.WriteLine($"{originalPlayerActor} becomes {actor}");
@@ -588,6 +632,23 @@ namespace IntelOrca.Biohazard.BioRand.RECV
             return data;
         }
 
+        private static Stream ToReadOnlyStream(ReadOnlyMemory<byte> memory)
+        {
+            if (MemoryMarshal.TryGetArray(memory, out var segment) &&
+                segment.Array != null &&
+                segment.Offset == 0 &&
+                segment.Count == segment.Array.Length)
+            {
+                return new MemoryStream(segment.Array, 0, segment.Count, writable: false);
+            }
+            return new MemoryStream(memory.ToArray(), writable: false);
+        }
+
+        private static Stream ToReadOnlyStream(byte[] data)
+        {
+            return new MemoryStream(data, 0, data.Length, writable: false);
+        }
+
         private AfsFile WriteRdxAfs(FileRepository fileRepository)
         {
             if (_rdxAfs == null)
@@ -765,6 +826,8 @@ namespace IntelOrca.Biohazard.BioRand.RECV
                 return;
 
             var src = DataManager.GetData(BiohazardVersion, "bg.png");
+            if (src == null)
+                return;
             var argb = BgCreator.CreateARGB(config, src);
 
             var afs = _advAfs!;

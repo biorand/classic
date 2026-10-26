@@ -169,7 +169,10 @@ namespace IntelOrca.Biohazard.BioRand.RE2
 
         public void CreateEmdFile(byte type, string pldPath, string baseEmdPath, string targetEmdPath, DataManager dataManager, FileRepository fileRepository, Rng rng)
         {
-            var pldFile = new PldFile(BioVersion.Biohazard2, new MemoryStream(dataManager.GetData(pldPath)));
+            var pldData = dataManager.GetData(pldPath);
+            if (pldData == null)
+                throw new BioRandUserException($"Missing NPC PLD data: {pldPath}");
+            var pldFile = new PldFile(BioVersion.Biohazard2, new MemoryStream(pldData));
             var emdFile = ModelFile.FromFile(baseEmdPath);
             var timFile = pldFile.GetTim(0);
             var plwFile = null as ModelFile;
@@ -183,10 +186,16 @@ namespace IntelOrca.Biohazard.BioRand.RE2
             var plwPath = GetPlwPath(dataManager, fileRepository, pldPath, weapon);
             if (plwPath != null)
             {
-                plwFile = new PlwFile(BioVersion.Biohazard2, new MemoryStream(dataManager.GetData(plwPath)));
-                var plwTim = plwFile.GetTim(0);
-                timFile = timFile.WithWeaponTexture(plwTim, 1);
-                timFile = timFile.WithWeaponTexture(plwTim, 3);
+                var plwData = Path.IsPathRooted(plwPath)
+                    ? fileRepository.GetBytes(plwPath)
+                    : dataManager.GetData(plwPath);
+                if (plwData != null)
+                {
+                    plwFile = new PlwFile(BioVersion.Biohazard2, new MemoryStream(plwData));
+                    var plwTim = plwFile.GetTim(0);
+                    timFile = timFile.WithWeaponTexture(plwTim, 1);
+                    timFile = timFile.WithWeaponTexture(plwTim, 3);
+                }
             }
 
             // First get how tall the new EMD is compared to the old one

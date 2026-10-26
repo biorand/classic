@@ -5,13 +5,13 @@ using System.IO.Compression;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Text.Json;
 
 namespace IntelOrca.Biohazard.BioRand
 {
-    public class DataManager : IDisposable
+    public partial class DataManager : IDisposable
     {
         private readonly List<IArea> _areas = new();
+        private readonly object _areasLock = new();
 
         public DataManager()
         {
@@ -24,7 +24,14 @@ namespace IntelOrca.Biohazard.BioRand
 
         public void Dispose()
         {
-            foreach (var area in _areas)
+            IArea[] areas;
+            lock (_areasLock)
+            {
+                areas = _areas.ToArray();
+                _areas.Clear();
+            }
+
+            foreach (var area in areas)
             {
                 area.Dispose();
             }
@@ -32,15 +39,21 @@ namespace IntelOrca.Biohazard.BioRand
 
         public void AddFileSystem(string path)
         {
-            _areas.Add(new FileSystemArea(path));
+            lock (_areasLock)
+            {
+                _areas.Add(new FileSystemArea(path));
+            }
         }
 
         public void AddZip(string path, string basePath = "")
         {
-            _areas.Add(new ZipArea(path, basePath));
+            lock (_areasLock)
+            {
+                _areas.Add(new ZipArea(path, basePath));
+            }
         }
 
-        public string GetPath(string baseName, string path) => Path.Combine(baseName, path);
+        public string GetPath(string baseName, string path) => CombinePath(baseName, path);
 
         public string GetPath(BioVersion version, string path)
         {
@@ -62,7 +75,8 @@ namespace IntelOrca.Biohazard.BioRand
 
         public byte[]? GetData(string path)
         {
-            foreach (var area in _areas)
+            path = NormalizePath(path);
+            foreach (var area in GetAreasSnapshot())
             {
                 using var result = area.GetData(path);
                 if (result != null)
@@ -100,28 +114,26 @@ namespace IntelOrca.Biohazard.BioRand
             return null;
         }
 
+        /// <summary>
+        /// Deserializes one of the BioRand data files. T must be registered in
+        /// <see cref="BioRandJsonContext"/> so this also works under NativeAOT.
+        /// </summary>
         public T GetJson<T>(BioVersion version, string path)
         {
-            var options = new JsonSerializerOptions()
-            {
-                ReadCommentHandling = JsonCommentHandling.Skip,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            };
-            // options.Converters.Add(new RdtIdConverter());
-
             var json = GetText(version, path);
             if (json == null)
                 throw new Exception($"{path} not found");
 
-            var map = JsonSerializer.Deserialize<T>(json, options)!;
+            var map = BioRandJson.Deserialize<T>(json);
             return map;
         }
 
         public string[] GetDirectories(BioVersion version, string baseName) => GetDirectories(GetSubPath(version, baseName));
         public string[] GetDirectories(string baseName)
         {
+            baseName = NormalizePath(baseName);
             var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            foreach (var area in _areas)
+            foreach (var area in GetAreasSnapshot())
             {
                 result.AddRange(area.GetDirectories(baseName));
             }
@@ -131,11 +143,12 @@ namespace IntelOrca.Biohazard.BioRand
         }
 
         public string[] GetFiles(BioVersion version, string baseName) => GetFiles(GetSubPath(version, baseName));
-        public string[] GetFiles(string a, string b) => GetFiles(Path.Combine(a, b));
+        public string[] GetFiles(string a, string b) => GetFiles(CombinePath(a, b));
         public string[] GetFiles(string baseName)
         {
+            baseName = NormalizePath(baseName);
             var result = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
-            foreach (var area in _areas)
+            foreach (var area in GetAreasSnapshot())
             {
                 result.AddRange(area.GetFiles(baseName));
             }
@@ -154,7 +167,7 @@ namespace IntelOrca.Biohazard.BioRand
             var directories = GetDirectories(baseName);
             foreach (var directory in directories)
             {
-                files.AddRange(GetFiles(Path.Combine(directory, tag)));
+                files.AddRange(GetFiles(CombinePath(directory, tag)));
             }
             return files.ToArray();
         }
@@ -163,10 +176,10 @@ namespace IntelOrca.Biohazard.BioRand
         {
             return version switch
             {
-                BioVersion.Biohazard1 => Path.Combine("re1", basePath),
-                BioVersion.Biohazard2 => Path.Combine("re2", basePath),
-                BioVersion.Biohazard3 => Path.Combine("re3", basePath),
-                BioVersion.BiohazardCv => Path.Combine("recv", basePath),
+                BioVersion.Biohazard1 => CombinePath("re1", basePath),
+                BioVersion.Biohazard2 => CombinePath("re2", basePath),
+                BioVersion.Biohazard3 => CombinePath("re3", basePath),
+                BioVersion.BiohazardCv => CombinePath("recv", basePath),
                 _ => throw new NotImplementedException(),
             };
         }
@@ -174,6 +187,39 @@ namespace IntelOrca.Biohazard.BioRand
         internal string GetPath(string biorandModuleFilename)
         {
             throw new NotImplementedException();
+        }
+
+        private static string NormalizePath(string? path)
+        {
+            if (path == null || path.Length == 0)
+                return string.Empty;
+
+            var normalized = path.Replace('\\', '/');
+            if (normalized.Length > 1)
+                normalized = normalized.TrimEnd('/');
+            return normalized;
+        }
+
+        private static string CombinePath(string? basePath, string? path)
+        {
+            var normalizedBasePath = NormalizePath(basePath);
+            var normalizedPath = NormalizePath(path);
+            if (normalizedBasePath.Length == 0)
+                return normalizedPath;
+            if (normalizedPath.Length == 0)
+                return normalizedBasePath;
+            if (normalizedPath[0] == '/')
+                return normalizedPath;
+            return normalizedBasePath.TrimEnd('/') + "/" + normalizedPath;
+        }
+
+        private IArea[] GetAreasSnapshot()
+        {
+            lock (_areasLock)
+            {
+                EnsureEmbeddedAreaLocked();
+                return _areas.ToArray();
+            }
         }
 
         private interface IArea : IDisposable
@@ -236,17 +282,35 @@ namespace IntelOrca.Biohazard.BioRand
 
             private static string? ResolvePathCaseInsensitive(string basePath, string path)
             {
+                path = NormalizePath(path);
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
                 {
-                    var fullPath = Path.Combine(basePath, path);
+                    var fullPath = Path.Combine(basePath, path.Replace('/', Path.DirectorySeparatorChar));
                     if (File.Exists(fullPath) || Directory.Exists(fullPath))
                         return fullPath;
 
                     return null;
                 }
 
-                var segments = path.Split(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
-                var currentPath = basePath;
+                string currentPath;
+                string[] segments;
+                if (Path.IsPathRooted(path))
+                {
+                    var root = Path.GetPathRoot(path) ?? "/";
+                    currentPath = root;
+                    segments = path[root.Length..].Split(
+                        new[] { '/', '\\' },
+                        StringSplitOptions.RemoveEmptyEntries);
+                }
+                else
+                {
+                    currentPath = basePath;
+                    segments = path.Split(
+                        new[] { '/', '\\' },
+                        StringSplitOptions.RemoveEmptyEntries);
+                    if (!Directory.Exists(currentPath))
+                        return null;
+                }
 
                 foreach (var segment in segments)
                 {
@@ -256,7 +320,14 @@ namespace IntelOrca.Biohazard.BioRand
                     var entries = Directory.GetFileSystemEntries(currentPath);
                     var match = entries
                         .Select(Path.GetFileName)
-                        .FirstOrDefault(name => name?.Equals(segment, StringComparison.OrdinalIgnoreCase) == true);
+                        .FirstOrDefault(name => name?.Equals(segment, StringComparison.Ordinal) == true);
+
+                    if (match == null)
+                    {
+                        match = entries
+                            .Select(Path.GetFileName)
+                            .FirstOrDefault(name => name?.Equals(segment, StringComparison.OrdinalIgnoreCase) == true);
+                    }
 
                     if (match == null)
                         return null;
@@ -299,7 +370,7 @@ namespace IntelOrca.Biohazard.BioRand
                     try
                     {
                         var normalizedPath = TransformFilePath(path);
-                        var entry = _zip.Entries.FirstOrDefault(x => x.FullName.Equals(normalizedPath, StringComparison.OrdinalIgnoreCase));
+                        var entry = _zip.Entries.FirstOrDefault(x => GetEntryPath(x).Equals(normalizedPath, StringComparison.OrdinalIgnoreCase));
                         if (entry != null)
                         {
                             var ms = new MemoryStream();
@@ -326,10 +397,12 @@ namespace IntelOrca.Biohazard.BioRand
 
                 var normalized = TransformDirectoryPath(path);
                 return _zip.Entries
-                    .Where(x => x.FullName.StartsWith(normalized, StringComparison.OrdinalIgnoreCase))
-                    .Select(x => x.FullName[normalized.Length..])
+                    .Select(GetEntryPath)
+                    .Where(x => x.StartsWith(normalized, StringComparison.OrdinalIgnoreCase))
+                    .Select(x => x[normalized.Length..])
                     .Where(x => x.Length > 0 && x.Contains('/'))
                     .Select(x => x[..x.IndexOf('/')])
+                    .Distinct(StringComparer.OrdinalIgnoreCase)
                     .ToArray();
             }
 
@@ -340,37 +413,43 @@ namespace IntelOrca.Biohazard.BioRand
 
                 var normalized = TransformDirectoryPath(path);
                 return _zip.Entries
-                    .Where(x => x.FullName.StartsWith(normalized, StringComparison.OrdinalIgnoreCase))
-                    .Select(x => x.FullName[normalized.Length..])
+                    .Select(GetEntryPath)
+                    .Where(x => x.StartsWith(normalized, StringComparison.OrdinalIgnoreCase))
+                    .Select(x => x[normalized.Length..])
                     .Where(x => x.Length > 0 && !x.Contains('/'))
                     .ToArray();
             }
 
+            private static string GetEntryPath(ZipArchiveEntry entry)
+            {
+                return entry.FullName.Replace('\\', '/');
+            }
+
             private string TransformFilePath(string path)
             {
-                var normalized = NormalizeFilePath(path);
-                normalized = _basePath + normalized;
-                return normalized;
+                var normalized = NormalizeFilePath(path).TrimStart('/');
+                return _basePath + normalized;
             }
 
             private string TransformDirectoryPath(string path)
             {
                 var normalized = NormalizeDirectoryPath(path);
-                normalized = _basePath + normalized;
-                return normalized;
+                if (_basePath.Length == 0)
+                    return normalized;
+                return _basePath + normalized.TrimStart('/');
             }
 
             private static string NormalizeFilePath(string path)
             {
-                return path.Replace("\\", "/");
+                return NormalizePath(path);
             }
 
             private static string NormalizeDirectoryPath(string path)
             {
-                if (path == "")
+                var normalized = NormalizePath(path);
+                if (normalized.Length == 0)
                     return "";
 
-                var normalized = path.Replace("\\", "/");
                 if (!normalized.EndsWith("/"))
                     normalized += '/';
                 return normalized;

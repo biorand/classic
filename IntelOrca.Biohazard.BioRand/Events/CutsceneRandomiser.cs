@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text.Json;
 using IntelOrca.Biohazard.BioRand.Events.Plots;
 using IntelOrca.Biohazard.BioRand.RE2;
@@ -552,11 +551,7 @@ namespace IntelOrca.Biohazard.BioRand.Events
             _cutsceneRoomInfoMap.Clear();
 
             var json = _dataManager.GetText(BioVersion.Biohazard2, "cutscene.json");
-            var map = JsonSerializer.Deserialize<Dictionary<string, CutsceneRoomInfo>>(json, new JsonSerializerOptions()
-            {
-                ReadCommentHandling = JsonCommentHandling.Skip,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            })!;
+            var map = BioRandJson.Deserialize<Dictionary<string, CutsceneRoomInfo>>(json);
             foreach (var kvp in map)
             {
                 var key = RdtId.Parse(kvp.Key);
@@ -567,21 +562,31 @@ namespace IntelOrca.Biohazard.BioRand.Events
         private void ReadEnemyPlacements()
         {
             var json = _dataManager.GetText(BioVersion.Biohazard2, "enemy.json");
-            _allEnemyPositions = JsonSerializer.Deserialize<EnemyPosition[]>(json, new JsonSerializerOptions()
-            {
-                ReadCommentHandling = JsonCommentHandling.Skip,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            })!;
+            _allEnemyPositions = BioRandJson.Deserialize<EnemyPosition[]>(json);
         }
 
         private void InitialisePlots()
         {
-            _registeredPlots = Assembly
-                .GetExecutingAssembly()
-                .GetTypes()
-                .Where(x => x.Implements(typeof(IPlot)))
-                .Select(x => (IPlot)Activator.CreateInstance(x))
-                .ToArray();
+            _registeredPlots = CreateRegisteredPlots();
+        }
+
+        internal static IPlot[] CreateRegisteredPlots()
+        {
+            return
+            [
+                new AllyPassByPlot(),
+                new AllyPatrolPlot(),
+                new AllyWaitPlot(),
+                new AnnouncerPlot(),
+                new EnemyFromDarkPlot(),
+                new EnemyWakeUpPlot(),
+                new EnemyWalksInPlot(),
+                new MurderPlot(),
+                new NoisePlot(),
+                new PartnerPlot(),
+                new PartnerPlotJoinable(),
+                new StaticEnemyPlot()
+            ];
         }
 
         private readonly static byte[] _availableFlags4 = new byte[]

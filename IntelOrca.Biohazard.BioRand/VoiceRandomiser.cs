@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.Json;
 
 namespace IntelOrca.Biohazard.BioRand
 {
@@ -588,21 +587,24 @@ namespace IntelOrca.Biohazard.BioRand
 
         private static string GetVoicePath(VoiceSample sample)
         {
-            return Path.Combine(sample.BasePath, sample.Path);
+            return ResolveFilePath(Path.Combine(sample.BasePath, sample.Path));
         }
 
         private static string GetVoicePath(string basePath, VoiceSample sample)
         {
-            return Path.Combine(basePath, sample.Path);
+            return ResolveFilePath(Path.Combine(basePath, sample.Path));
+        }
+
+        private static string ResolveFilePath(string path)
+        {
+            if (!Path.IsPathRooted(path))
+                return path;
+            return FileRepository.ResolvePathCaseInsensitive(path) ?? path;
         }
 
         private VoiceSample[] LoadVoiceInfoFromJson(string json)
         {
-            var voiceList = JsonSerializer.Deserialize<Dictionary<string, VoiceSample>>(json, new JsonSerializerOptions()
-            {
-                ReadCommentHandling = JsonCommentHandling.Skip,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-            });
+            var voiceList = BioRandJson.Deserialize<Dictionary<string, VoiceSample>>(json);
 
             var samples = new List<VoiceSample>();
             foreach (var kvp in voiceList!)
@@ -720,7 +722,7 @@ namespace IntelOrca.Biohazard.BioRand
         }
 
         [DebuggerDisplay("Actor = {Actor} RdtId = {Rdt} Path = {Path}")]
-        private class VoiceSample
+        internal class VoiceSample
         {
             private RdtId[]? _cachedRdtIds;
 
@@ -845,7 +847,7 @@ namespace IntelOrca.Biohazard.BioRand
             }
         }
 
-        private class VoiceSampleSplit
+        internal class VoiceSampleSplit
         {
             public string? Actor { get; set; }
             public double Split { get; set; }
@@ -854,13 +856,13 @@ namespace IntelOrca.Biohazard.BioRand
             public VoiceSampleNameClip? NameClipped { get; set; }
         }
 
-        private class VoiceSampleNameClip
+        internal class VoiceSampleNameClip
         {
             public double Start { get; set; }
             public double End { get; set; }
         }
 
-        private class VoiceSampleReplacement
+        internal class VoiceSampleReplacement
         {
             public VoiceSample Source { get; }
             public double Start { get; }

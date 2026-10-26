@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using IntelOrca.Biohazard.Extensions;
 using IntelOrca.Biohazard.Room;
 using IntelOrca.Biohazard.Script;
@@ -13,12 +11,7 @@ namespace IntelOrca.Biohazard.BioRand
         private static void GenerateMapJson(GameData gameData)
         {
             var map = GenerateMap(gameData.Rdts);
-            var json = JsonSerializer.Serialize(map, new JsonSerializerOptions()
-            {
-                DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault,
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                WriteIndented = true
-            });
+            var json = BioRandJson.Serialize(map);
             File.WriteAllText("map.json", json);
         }
 

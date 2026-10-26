@@ -1,37 +1,62 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using OpenSoftware.DgmlTools;
-using OpenSoftware.DgmlTools.Builders;
-using OpenSoftware.DgmlTools.Model;
+using System.Xml.Linq;
 
 namespace IntelOrca.Biohazard.BioRand
 {
     internal class PlayGraph
     {
+        private static readonly XNamespace s_dgmlNamespace = "http://schemas.microsoft.com/vs/2009/dgml";
+
         public PlayNode? Start { get; set; }
         public PlayNode? End { get; set; }
 
         public void GenerateDgml(string path, IItemHelper itemHelper)
         {
-            var builder = new DgmlBuilder()
+            var nodes = GetAllNodes()
+                .OrderBy(x => x.RdtId)
+                .ToArray();
+
+            var nodeElements = new List<XElement>();
+            foreach (var node in nodes)
             {
-                NodeBuilders = new[]
+                var element = new XElement(
+                    s_dgmlNamespace + "Node",
+                    new XAttribute("Id", node.RdtId.ToString()),
+                    new XAttribute("Label", GetNodeLabel(node, itemHelper)));
+
+                var background = GetNodeBackground(node);
+                if (background != null)
                 {
-                    new NodeBuilder<PlayNode>(n => GetNode(n, itemHelper))
-                },
-                LinkBuilders = new LinkBuilder[]
+                    element.Add(new XAttribute("Background", background));
+                }
+                nodeElements.Add(element);
+            }
+
+            var linkElements = new List<XElement>();
+            foreach (var node in nodes)
+            {
+                foreach (var link in GetLinksForNode(node, itemHelper))
                 {
-                    new LinksBuilder<PlayNode>(n => GetLinksForNode(n, itemHelper))
-                },
-                CategoryBuilders = new CategoryBuilder[0],
-                StyleBuilders = new StyleBuilder[0]
-            };
-            var dgmlGraph = builder.Build(GetAllNodes());
-            dgmlGraph.WriteToFile(path);
+                    linkElements.Add(new XElement(
+                        s_dgmlNamespace + "Link",
+                        new XAttribute("Source", link.Source),
+                        new XAttribute("Target", link.Target),
+                        new XAttribute("Label", link.Label)));
+                }
+            }
+
+            var document = new XDocument(
+                new XDeclaration("1.0", "utf-8", null),
+                new XElement(
+                    s_dgmlNamespace + "DirectedGraph",
+                    new XElement(s_dgmlNamespace + "Nodes", nodeElements),
+                    new XElement(s_dgmlNamespace + "Links", linkElements)));
+            document.Save(path);
         }
 
-        private Node GetNode(PlayNode node, IItemHelper itemHelper)
+        private static string GetNodeLabel(PlayNode node, IItemHelper itemHelper)
         {
             var label = node.RdtId.ToString();
             foreach (var keyItem in node.PlacedKeyItems)
@@ -44,27 +69,26 @@ namespace IntelOrca.Biohazard.BioRand
                 var potentialKeyItems = node.Items.Count(x => x.Priority == ItemPriority.Normal && (x.Requires?.Length ?? 0) == 0) - node.PlacedKeyItems.Count;
                 label += $"\n{potentialKeyItems}/{node.Items.Length - node.PlacedKeyItems.Count} other items";
             }
-
-            var result = new Node()
-            {
-                Id = node.RdtId.ToString(),
-                Label = label
-            };
-
-            if (node == Start || node == End)
-                result.Properties["Background"] = "LightBlue";
-            if (node.Category == DoorRandoCategory.Box)
-                result.Properties["Background"] = "Green";
-            if (node.Category == DoorRandoCategory.Bridge)
-                result.Properties["Background"] = "Orange";
-            if (node.Category == DoorRandoCategory.Segment)
-                result.Properties["Background"] = "Red";
-            return result;
+            return label;
         }
 
-        private List<Link> GetLinksForNode(PlayNode node, IItemHelper itemHelper)
+        private string? GetNodeBackground(PlayNode node)
         {
-            var links = new List<Link>();
+            string? background = null;
+            if (node == Start || node == End)
+                background = "LightBlue";
+            if (node.Category == DoorRandoCategory.Box)
+                background = "Green";
+            if (node.Category == DoorRandoCategory.Bridge)
+                background = "Orange";
+            if (node.Category == DoorRandoCategory.Segment)
+                background = "Red";
+            return background;
+        }
+
+        private List<(string Source, string Target, string Label)> GetLinksForNode(PlayNode node, IItemHelper itemHelper)
+        {
+            var links = new List<(string Source, string Target, string Label)>();
             foreach (var edge in node.Edges)
             {
                 if (!IsLinkAccessible(edge))
@@ -95,12 +119,10 @@ namespace IntelOrca.Biohazard.BioRand
                     label += $"\n[{itemHelper.GetItemName((byte)key)}]";
                 }
 
-                links.Add(new Link()
-                {
-                    Source = node.RdtId.ToString(),
-                    Target = edge.Node.RdtId.ToString(),
-                    Label = label
-                });
+                links.Add((
+                    node.RdtId.ToString(),
+                    edge.Node.RdtId.ToString(),
+                    label));
             }
             return links;
         }

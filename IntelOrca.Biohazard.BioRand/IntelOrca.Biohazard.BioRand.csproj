@@ -2,12 +2,15 @@
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <LangVersion>12.0</LangVersion>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <ItemGroup>
+    <InternalsVisibleTo Include="biorand-cli.Tests" />
+  </ItemGroup>
+  <ItemGroup>
     <PackageReference Include="System.Text.Json" Version="9.0.8" />
-    <PackageReference Include="OpenSoftware.DgmlBuilder" Version="2.1.0" />
     <PackageReference Include="NVorbis" Version="0.10.5" />
   </ItemGroup>
   <ItemGroup>
@@ -32,7 +35,7 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <Target Name="CopyDllModuleToData" BeforeTargets="Compile">
+  <Target Name="CopyDllModuleToData" BeforeTargets="Compile" Condition="Exists('..\biorandmod\bin\biorand.dll')">
     <Copy SourceFiles="..\biorandmod\bin\biorand.dll" DestinationFolder="data" />
   </Target>
 </Project>

@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace IntelOrca.Biohazard.BioRand
@@ -250,11 +249,7 @@ namespace IntelOrca.Biohazard.BioRand
 
         private BgmList GetBgmList(string bgmJson)
         {
-            var dict = JsonSerializer.Deserialize<Dictionary<string, string[]>>(bgmJson, new JsonSerializerOptions()
-            {
-                PropertyNamingPolicy = JsonNamingPolicy.CamelCase,
-                ReadCommentHandling = JsonCommentHandling.Skip
-            });
+            var dict = BioRandJson.Deserialize<Dictionary<string, string[]>>(bgmJson);
             if (dict == null)
                 throw new Exception();
             return new BgmList(dict);
