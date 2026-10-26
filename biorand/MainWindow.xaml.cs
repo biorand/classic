@@ -101,7 +101,7 @@ namespace IntelOrca.Biohazard.BioRand
 
         private void LoadSettings()
         {
-            _settings = RandoAppSettings.Load();
+            _settings = AppSettingsStore.Load();
             using (SuspendEvents())
             {
                 gameLocation1.Location = _settings.GamePath1;
@@ -197,7 +197,7 @@ namespace IntelOrca.Biohazard.BioRand
                     _settings.SeedCv = _config.ToString();
                     break;
             }
-            _settings.Save();
+            AppSettingsStore.Save(_settings);
         }
 
         private void InitializeEvents()
@@ -870,7 +870,7 @@ namespace IntelOrca.Biohazard.BioRand
                 var randomiser = GetRandomizer();
                 await Task.Run(() => randomiser.Generate(_config, new RandoProgress(this)));
                 progressLabel.Text = string.Empty;
-                RandoAppSettings.LogGeneration(_config.ToString(), GetGameLocation());
+                AppSettingsStore.LogGeneration(_config.ToString(), GetGameLocation());
                 ShowGenerateCompleteMessage();
             }
             catch (Exception ex)
@@ -1076,7 +1076,7 @@ namespace IntelOrca.Biohazard.BioRand
             if (index >= 0 && index <= 3)
                 _config.Game = (byte)(index + 1);
             _settings.LastSelectedGame = index;
-            _settings.Save();
+            AppSettingsStore.Save(_settings);
 
             UpdateUi();
         }
