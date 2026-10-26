@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <AssemblyName>biorand-cli</AssemblyName>
+    <RootNamespace>IntelOrca.Biohazard.BioRand.Cli</RootNamespace>
+    <PublishAot>true</PublishAot>
+    <StripSymbols>true</StripSymbols>
+    <TrimmerSingleWarn>false</TrimmerSingleWarn>
+    <EnableTrimAnalyzer>true</EnableTrimAnalyzer>
+    <InvariantGlobalization>false</InvariantGlobalization>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="biorand-cli.Tests" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\IntelOrca.Biohazard.BioRand\IntelOrca.Biohazard.BioRand.csproj" />
+    <ProjectReference Include="..\IntelOrca.Biohazard.BioRand.Graphics\IntelOrca.Biohazard.BioRand.Graphics.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="..\IntelOrca.Biohazard.BioRand\data\**\*"
+                      Exclude="..\IntelOrca.Biohazard.BioRand\data\biorand.dll"
+                      LogicalName="core-data/%(RecursiveDir)%(Filename)%(Extension)" />
+    <EmbeddedResource Include="..\biorandmod\bin\biorand.dll"
+                      LogicalName="core-data/biorand.dll"
+                      Condition="Exists('..\biorandmod\bin\biorand.dll')" />
+  </ItemGroup>
+
+  <Target Name="RequireBioRandModule" BeforeTargets="Publish" Condition="!Exists('..\biorandmod\bin\biorand.dll')">
+    <Error Text="biorandmod/bin/biorand.dll is required for a self-contained biorand-cli build. Build biorandmod first or copy the module into biorandmod/bin." />
+  </Target>
+
+  <Import Project="..\version.props" />
+</Project>

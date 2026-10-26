@@ -22,6 +22,29 @@ The mod will generate a sub directory called `mod_biorand` in your RE installati
 
 A `.dgml` file for both Leon and Claire is also generated which is a directed graph of the map. A DGML file can be converted to an image using third party software such as Visual Studio (+ DGML editor component).
 
+## Command line
+
+`biorand-cli` is a headless version of the randomizer for Windows x64 and Linux
+x64. It does not need the .NET runtime.
+
+```
+biorand-cli [-s seed] [-i input] [-o output] [-f]
+```
+
+* `-s, --seed` takes a seed string (`R8...`), which also selects the game, or a
+  number, which uses the options from the last seed saved for the last selected
+  game. Without a seed, a random seed is generated with those saved options.
+* `-i, --input` is the game folder, or the PS2 ISO for CVX. When omitted, the
+  game path from the settings is used.
+* `-o, --output` is the mod folder to create. For CVX PS2 output it is the folder
+  that will contain `recvx_biorand.iso`.
+* `-f, --force` replaces a previous BioRand output in that folder.
+
+The CLI shares `settings.json` with the GUI (`%APPDATA%\biorand` on Windows,
+`~/.config/biorand` on Linux, or the path in `BIORAND_CONFIG`). It reads the game
+paths, options and CVX output mode (`generateCvPcMod`) from it, and saves the
+generated seed and selected game back.
+
 ## Known issues
 * The game can occasionally crash at the end of playing the sourcenext logo. You can work around this issue by skipping the logo, or disabling movies from the REbirth launcher.
 
