@@ -1,0 +1,11 @@
+<Project>
+  <!-- Shared by the GUI and biorand-cli so both report the same version. -->
+  <PropertyGroup>
+    <Version>3.3.2</Version>
+  </PropertyGroup>
+  <Target Name="SetSourceRevisionId" BeforeTargets="InitializeSourceControlInformation">
+    <Exec Command="git describe --long --always --exclude=* --abbrev=7" ConsoleToMSBuild="True" IgnoreExitCode="False">
+      <Output PropertyName="SourceRevisionId" TaskParameter="ConsoleOutput" />
+    </Exec>
+  </Target>
+</Project>
