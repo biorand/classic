@@ -81,6 +81,25 @@ namespace IntelOrca.Biohazard.BioRand.RECV
             Patch(gameData, RdtId.Parse("A100"), 0x54668 + 1, ReCvItemIds.SqValveHandle);
             Patch(gameData, RdtId.Parse("A100"), 0x5467A + 2, ReCvItemIds.SqValveHandle);
 
+            if (config.RandomDoors)
+            {
+                // Using the security card in A1C0 ends Claire's game, so only allow it
+                // once the gold dragonfly door in A1E0 has been opened (FG_EVENT 448).
+                // Replaces the room flag clears in the init script, which are redundant
+                // as room flags are reset on every room change.
+                Patch(gameData, RdtId.Parse("A1C0"), 0x1BA80A, new byte[] {
+                    0x01, 0x0E,                         // if
+                    0x04, 0x01, 0xC0, 0x01, 0x00, 0x01, //     ck FG_EVENT, 448, 0, 1
+                    0x05, 0x01, 0xB9, 0x01, 0x00, 0x00, //     set FG_EVENT, 441, 0, 0
+                    0x03, 0x00,                         // endif
+                    0x05, 0x04, 0x02, 0x00, 0x00, 0x01, // set FG_ROOM, 2, 0, 1
+                    0x05, 0x04, 0x03, 0x00, 0x00, 0x01, // set FG_ROOM, 3, 0, 1
+                    0x05, 0x04, 0x04, 0x00, 0x00, 0x01, // set FG_ROOM, 4, 0, 1
+                    0x05, 0x04, 0x05, 0x00, 0x00, 0x01, // set FG_ROOM, 5, 0, 1
+                    0xF4, 0xF4                          // nop
+                });
+            }
+
             // Do not put Rodrigo's gift into special slot
             Nop(gameData, RdtId.Parse("8170"), 0x14D26E);
             Nop(gameData, RdtId.Parse("8170"), 0x14EB68);
@@ -131,6 +150,14 @@ namespace IntelOrca.Biohazard.BioRand.RECV
                 return;
 
             rrdt.Patches.Add(new KeyValuePair<int, byte>(offset, value));
+        }
+
+        public void Patch(GameData gameData, RdtId rtdId, int offset, byte[] values)
+        {
+            for (int i = 0; i < values.Length; i++)
+            {
+                Patch(gameData, rtdId, offset + i, values[i]);
+            }
         }
     }
 }
