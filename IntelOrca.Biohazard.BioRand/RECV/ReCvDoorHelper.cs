@@ -74,6 +74,13 @@ namespace IntelOrca.Biohazard.BioRand.RECV
                 Nop(gameData, RdtId.Parse("70A0"), 0x1F3140);
             }
 
+            // Give the Sq. Valve Handle instead of the Socket, so the Octa
+            // Valve Handle can never be lost by combining it with the Socket
+            // while it is still needed elsewhere
+            Patch(gameData, RdtId.Parse("A100"), 0x53A0A + 2, ReCvItemIds.SqValveHandle);
+            Patch(gameData, RdtId.Parse("A100"), 0x54668 + 1, ReCvItemIds.SqValveHandle);
+            Patch(gameData, RdtId.Parse("A100"), 0x5467A + 2, ReCvItemIds.SqValveHandle);
+
             // Do not put Rodrigo's gift into special slot
             Nop(gameData, RdtId.Parse("8170"), 0x14D26E);
             Nop(gameData, RdtId.Parse("8170"), 0x14EB68);
