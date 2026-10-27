@@ -5372,10 +5372,11 @@
       "items": [
         {
           "id": 7,
+          // The valve only accepts the Sq. Valve Handle
           "globalId": 44,
           "type": 54,
           "amount": 1,
-          "requires": [ 88, 113 ]
+          "requires": [ 114 ]
         }
       ]
     },
