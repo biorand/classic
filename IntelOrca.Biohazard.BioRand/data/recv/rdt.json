@@ -6125,21 +6125,31 @@
       ]
     },
     "A1C0": {
+      // Using the Security Card here starts the Steve fight, then switches
+      // to Chris (main_12: player_change_set + set_door_call 9, 32), which
+      // ends Claire's game early. Keep it out of door rando, and don't make
+      // the logic place a card just to open it.
+      "doorRando": [
+        {
+          "category": "exclude"
+        }
+      ],
       "doors": [
         {
           "id": 0,
           "target": "A1D0",
-          "entranceId": 0
+          "entranceId": 0,
+          "randomize": false
         }
-      ],
-      "requires": [ 105 ]
+      ]
     },
     "A1D0": {
       "doors": [
         {
           "id": 0,
           "target": "A1C0",
-          "entranceId": 0
+          "entranceId": 0,
+          "randomize": false
         },
         {
           "id": 2,
