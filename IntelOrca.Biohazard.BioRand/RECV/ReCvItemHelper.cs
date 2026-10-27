@@ -390,8 +390,11 @@ namespace IntelOrca.Biohazard.BioRand.RECV
         {
             if (weapon == ReCvItemIds.BowGun)
             {
+                // Not BowGunPowderUnused: GetItem turns 130 into 35 before the
+                // room script compares VAR_ITEM_ID, so scripted pickups that
+                // confirm the item with cmpb would never be marked as taken.
                 return new[] {
-                    ReCvItemIds.BowGunPowderUnused
+                    ReCvItemIds.BowGunPowder
                 };
             }
             return new byte[0];
