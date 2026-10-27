@@ -1559,7 +1559,8 @@
           "id": 13,
           "globalId": 196,
           "type": 15,
-          "amount": 6
+          "amount": 6,
+          "offsets": [ "0x70A84" ]
         },
         {
           "id": 12,
@@ -1568,17 +1569,14 @@
           "amount": 1
         },
         {
+          // Silver Dragonfly, given by an event on AOT 5 (not a floor item).
+          // Nop the gate check so it can still be taken after the gate opens.
           "id": 5,
           "globalId": 17,
-          "type": 15,
-          "amount": 1
-        },
-        {
-          "id": 254,
-          "globalId": 1003,
           "type": 119,
           "amount": 1,
-          "offsets": [ 464256 ]
+          "nop": [ "0x70A9E" ],
+          "offsets": [ "0x71580" ]
         }
       ]
     },
