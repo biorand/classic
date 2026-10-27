@@ -88,6 +88,12 @@ namespace IntelOrca.Biohazard.BioRand
                         {
                             _haveItems.Add(item);
                         }
+                        if (_config.Game == 4)
+                        {
+                            // HACK RE CV 7060 takes these items away
+                            _haveItems.Remove(ReCvItemIds.OctaValveHandle);
+                            _haveItems.Remove(ReCvItemIds.GasMask);
+                        }
                     }
                     else if (_config.Game == 1)
                     {
