@@ -1023,7 +1023,8 @@
           "id": 7,
           "globalId": 169,
           "type": 22,
-          "amount": 1
+          "amount": 1,
+          "nop": [ "0x14B260" ]
         }
       ]
     },
@@ -1290,6 +1291,13 @@
         }
       ],
       "items": [
+        {
+          "id": 4,
+          "globalId": 187,
+          "type": 21,
+          "amount": 1,
+          "nop": [ "0x14EF22" ]
+        },
         {
           "id": 5,
           "globalId": 188,
@@ -2126,6 +2134,13 @@
       ],
       "items": [
         {
+          "id": 8,
+          "globalId": 228,
+          "type": 15,
+          "amount": 6,
+          "nop": [ "0x1AAF2C" ]
+        },
+        {
           "id": 9,
           "globalId": 229,
           "type": 21,
@@ -2301,12 +2316,13 @@
           "amount": 6,
           "requires": [ 76 ]
         },
-        // {
-        //   "id": 6,
-        //   "globalId": 238,
-        //   "type": 15,
-        //   "amount": 6
-        // },
+        {
+          "id": 6,
+          "globalId": 238,
+          "type": 15,
+          "amount": 6,
+          "nop": [ "0x16A2E4" ]
+        },
         {
           "id": 7,
           "globalId": 439,
@@ -2498,6 +2514,13 @@
       ],
       "items": [
         {
+          "id": 6,
+          "globalId": 247,
+          "type": 14,
+          "amount": 6,
+          "nop": [ "0x187520" ]
+        },
+        {
           "id": 4,
           "globalId": 248,
           "type": 12,
@@ -2629,6 +2652,13 @@
         }
       ],
       "items": [
+        {
+          "id": 11,
+          "globalId": 252,
+          "type": 14,
+          "amount": 6,
+          "nop": [ "0x1806F4" ]
+        },
         {
           "id": 12,
           "globalId": 27,
@@ -3364,6 +3394,8 @@
           "amount": 1,
           "priority": "low"
         },
+        // Item 297 is an alternate of 296: both use AOT 4, so only one can
+        // be picked up.
         // {
         //   "id": 4,
         //   "globalId": 297,
@@ -3555,12 +3587,13 @@
         }
       ],
       "items": [
-        // {
-        //   "id": 8,
-        //   "globalId": 228,
-        //   "type": 15,
-        //   "amount": 6
-        // },
+        // 40C0 marks this taken on entry; that set is nopped on 40C0's copy.
+        {
+          "id": 8,
+          "globalId": 228,
+          "type": 15,
+          "amount": 6
+        },
         {
           "id": 9,
           "globalId": 229,
@@ -3639,24 +3672,26 @@
           "offsets": [ "0xDACBA" ],
           "requires": [ 97 ]
         },
-        // {
-        //   "id": 5,
-        //   "globalId": 305,
-        //   "type": 129,
-        //   "amount": 1
-        // },
+        {
+          "id": 5,
+          "globalId": 305,
+          "type": 129,
+          "amount": 1,
+          "nop": [ "0xDA45E" ]
+        },
         {
           "id": 6,
           "globalId": 306,
           "type": 14,
           "amount": 6
         },
-        // {
-        //   "id": 7,
-        //   "globalId": 307,
-        //   "type": 37,
-        //   "amount": 6
-        // },
+        {
+          "id": 7,
+          "globalId": 307,
+          "type": 37,
+          "amount": 6,
+          "nop": [ "0xDA44A" ]
+        },
         {
           "id": 8,
           "globalId": 308,
@@ -4425,12 +4460,13 @@
           "amount": 6,
           "priority": "low"
         },
-        // {
-        //   "id": 7,
-        //   "globalId": 238,
-        //   "type": 15,
-        //   "amount": 6
-        // },
+        {
+          "id": 7,
+          "globalId": 238,
+          "type": 15,
+          "amount": 6,
+          "nop": [ "0xAE420" ]
+        },
         {
           "id": 9,
           "globalId": 439,
@@ -4510,13 +4546,14 @@
           "globalId": 354,
           "type": 18,
           "amount": 30
+        },
+        {
+          "id": 15,
+          "globalId": 351,
+          "type": 16,
+          "amount": 6,
+          "nop": [ "0x1E04CC" ]
         }
-        // {
-        //   "id": 15,
-        //   "globalId": 351,
-        //   "type": 16,
-        //   "amount": 6
-        // }
       ]
     },
     "8161": {
@@ -4550,13 +4587,14 @@
           "globalId": 354,
           "type": 18,
           "amount": 30
+        },
+        {
+          "id": 15,
+          "globalId": 351,
+          "type": 16,
+          "amount": 6,
+          "nop": [ "0x1DF9CC" ]
         }
-        // {
-        //   "id": 15,
-        //   "globalId": 351,
-        //   "type": 16,
-        //   "amount": 6
-        // }
       ]
     },
     "8170": {
@@ -5407,12 +5445,13 @@
           "type": 23,
           "amount": 1
         },
-        // {
-        //   "id": 4,
-        //   "globalId": 369,
-        //   "type": 23,
-        //   "amount": 1
-        // },
+        {
+          "id": 4,
+          "globalId": 369,
+          "type": 23,
+          "amount": 1,
+          "nop": [ "0x17CE3A" ]
+        },
         {
           "id": 5,
           "globalId": 370,
@@ -5514,7 +5553,8 @@
           "id": 10,
           "globalId": 380,
           "type": 14,
-          "amount": 6
+          "amount": 6,
+          "nop": [ "0x5DDFE" ]
         },
         {
           "id": 11,
@@ -5538,13 +5578,15 @@
           "id": 17,
           "globalId": 449,
           "type": 23,
-          "amount": 1
+          "amount": 1,
+          "nop": [ "0x5DE06" ]
         },
         {
           "id": 18,
           "globalId": 450,
           "type": 23,
-          "amount": 1
+          "amount": 1,
+          "nop": [ "0x5DE0C" ]
         },
         {
           "id": 16,
@@ -5693,12 +5735,13 @@
           "type": 21,
           "amount": 1
         },
-        // {
-        //   "id": 5,
-        //   "globalId": 389,
-        //   "type": 21,
-        //   "amount": 1
-        // }
+        {
+          "id": 5,
+          "globalId": 389,
+          "type": 21,
+          "amount": 1,
+          "nop": [ "0x111D12" ]
+        },
         {
           "id": 6,
           "globalId": 390,
@@ -5757,13 +5800,14 @@
           "globalId": 398,
           "type": 12,
           "amount": 15
+        },
+        {
+          "id": 4,
+          "globalId": 399,
+          "type": 14,
+          "amount": 6,
+          "nop": [ "0x175A70" ]
         }
-        // {
-        //   "id": 4,
-        //   "globalId": 399,
-        //   "type": 14,
-        //   "amount": 6
-        // }
       ]
     },
     "A140": {
@@ -5837,12 +5881,13 @@
           "type": 20,
           "amount": 1
         },
-        // {
-        //   "id": 6,
-        //   "globalId": 406,
-        //   "type": 20,
-        //   "amount": 1
-        // },
+        {
+          "id": 6,
+          "globalId": 406,
+          "type": 20,
+          "amount": 1,
+          "nop": [ "0x4162E" ]
+        },
         {
           "id": 7,
           "globalId": 407,
@@ -6105,18 +6150,20 @@
           "type": 18,
           "amount": 30
         },
-        // {
-        //   "id": 6,
-        //   "globalId": 427,
-        //   "type": 16,
-        //   "amount": 6
-        // },
-        // {
-        //   "id": 5,
-        //   "globalId": 428,
-        //   "type": 18,
-        //   "amount": 30
-        // },
+        {
+          "id": 6,
+          "globalId": 427,
+          "type": 16,
+          "amount": 6,
+          "nop": [ "0x77A4C" ]
+        },
+        {
+          "id": 5,
+          "globalId": 428,
+          "type": 18,
+          "amount": 30,
+          "nop": [ "0x77A3C" ]
+        },
         {
           "id": 4,
           "globalId": 429,
@@ -6168,7 +6215,8 @@
           "id": 9,
           "globalId": 431,
           "type": 128,
-          "amount": 1
+          "amount": 1,
+          "nop": [ "0x1D2298" ]
         },
         {
           "id": 10,
