@@ -15,6 +15,9 @@ namespace IntelOrca.Biohazard.BioRand
     {
         private List<(EmrFlags, double)> _emrScales = new List<(EmrFlags, double)>();
         private readonly List<OpcodeBase> _cvEarlyFrameOpcodes = new List<OpcodeBase>();
+        private readonly List<UnknownOpcode> _cvAddedItemOpcodes = new List<UnknownOpcode>();
+
+        internal const byte CvAddedItemId = 255;
 
         public BioVersion Version => RdtFile.Version;
         public IRdt RdtFile { get; set; }
@@ -275,6 +278,14 @@ namespace IntelOrca.Biohazard.BioRand
                 Nop(offset);
             }
 
+            if (raw?.ItemId == CvAddedItemId)
+            {
+                foreach (var op in _cvAddedItemOpcodes)
+                {
+                    SetCvItemOpcode(op, item.Type);
+                }
+            }
+
             var hasOffsets = raw?.Offsets != null && raw.Offsets.Length != 0;
             if (!hasOffsets || raw?.ItemId != null)
             {
@@ -363,26 +374,7 @@ namespace IntelOrca.Biohazard.BioRand
                 // 0x08/0x06 address sb_id (variable 8); 0xC7's second operand
                 // is the replacement type; 0x7C uses prm0 (the room 10B
                 // workaround).
-                var op = (UnknownOpcode)opcode;
-                if (op.Opcode == 0x08)
-                {
-                    op.Data[1] = (byte)type;
-                }
-                else if (op.Opcode == 0x06)
-                {
-                    if (op.Data[0] == 8 && op.Data[1] == 0)
-                    {
-                        op.Data[2] = (byte)type;
-                    }
-                }
-                else if (op.Opcode == 0x7C)
-                {
-                    op.Data[3] = (byte)type;
-                }
-                else if (op.Opcode == 0xC7)
-                {
-                    op.Data[1] = (byte)type;
-                }
+                SetCvItemOpcode((UnknownOpcode)opcode, type);
             }
             else
             {
@@ -411,6 +403,29 @@ namespace IntelOrca.Biohazard.BioRand
                     enemy.SoundBank = soundBank;
                     enemy.Texture = texture;
                 }
+            }
+        }
+
+        private static void SetCvItemOpcode(UnknownOpcode op, ushort type)
+        {
+            if (op.Opcode == 0x08)
+            {
+                op.Data[1] = (byte)type;
+            }
+            else if (op.Opcode == 0x06)
+            {
+                if (op.Data[0] == 8 && op.Data[1] == 0)
+                {
+                    op.Data[2] = (byte)type;
+                }
+            }
+            else if (op.Opcode == 0x7C)
+            {
+                op.Data[3] = (byte)type;
+            }
+            else if (op.Opcode == 0xC7)
+            {
+                op.Data[1] = (byte)type;
             }
         }
 
@@ -669,6 +684,13 @@ namespace IntelOrca.Biohazard.BioRand
                 RdtFile = rdtBuilder.ToRdt();
             }
         }
+
+        internal void AddEarlyFrameOpcode(OpcodeBase opcode) => _cvEarlyFrameOpcodes.Add(opcode);
+
+        /// <summary>
+        /// Registers an added opcode that names the item of this room's map entry with an itemId of <see cref="CvAddedItemId"/>.
+        /// </summary>
+        internal void AddCvItemOpcode(UnknownOpcode opcode) => _cvAddedItemOpcodes.Add(opcode);
 
         private void AppendFrameOpcodes()
         {

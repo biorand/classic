@@ -5,6 +5,27 @@ namespace IntelOrca.Biohazard.BioRand.RECV
 {
     internal class ReCvDoorHelper : IDoorHelper
     {
+        // In room scripts, a flag value of 0 means the engine's bit is set and 1 means it is clear.
+        // Unused by rooms 1020, 1021, 1030 and 1031.
+        private const byte CutsceneSkippedRoomFlag = 30;
+        // Value 0 once a door transition has started
+        private const int DoorTransitionCutFlag = 31;
+        // Not used by any room script
+        private const int GraveyardReturnEventFlag = 102;
+        private const int SteveReturnEventFlag = 103;
+        // Value 0 while a cutscene has control of the game
+        private const int CinematicCutFlag = 29;
+        // Opens the screen that gives VAR_ITEM_ID to the player
+        private const byte ItemGetScreenCutFlag = 27;
+        // The item get screen gives the item without asking, if there is room for it
+        private const byte ItemWithoutAskingCutFlag = 17;
+        // Value 0 once the item get screen has given the item
+        private const int ItemTakenCutFlag = 20;
+        // Unused by room 1031. Value 0 once the room has offered Steve's item since being entered.
+        private const byte HandoverOfferedRoomFlag = 30;
+        // Not used by any room script
+        private const int SteveItemTakenEventFlag = 101;
+
         public byte[] GetReservedLockIds() => new byte[0];
 
         public void Begin(RandoConfig config, GameData gameData, Map map)
@@ -25,6 +46,8 @@ namespace IntelOrca.Biohazard.BioRand.RECV
                 Nop(gameData, RdtId.Parse("1050"), 0x1DF2AA, 0x1DF2BE); // Force RDT1031 to load
                 Nop(gameData, RdtId.Parse("1050"), 0x1DF2C2, 0x1DF2CC); // Force RDT1031 to load
             }
+
+            AddFirstVisitCutscenes(gameData);
 
             // Force window cutscene on item interaction
             Nop(gameData, RdtId.Parse("1070"), 0x1819AE);
@@ -114,6 +137,170 @@ namespace IntelOrca.Biohazard.BioRand.RECV
 
         public void End(RandoConfig config, GameData gameData, Map map)
         {
+        }
+
+        /// <summary>
+        /// The briefcase can only be taken in 1021 and the medal only used in 1031, but
+        /// the graveyard and Steve cutscenes are only in 1020 and 1030. Every door leads
+        /// to 1021 and 1031, which pass through to the cutscene room on the first visit.
+        /// The cutscene room then returns to the working room as soon as the cutscene ends.
+        /// </summary>
+        private void AddFirstVisitCutscenes(GameData gameData)
+        {
+            var eventFlag = (byte)0x01;
+            var roomFlag = (byte)0x04;
+            var cutFlag = (byte)0x0A;
+            var specialFlag = (byte)0x06;
+
+            AddRoomReload(gameData, RdtId.Parse("1021"), RdtId.Parse("1020"), null, Check(eventFlag, 104, 1));
+            AddRoomReload(gameData, RdtId.Parse("1031"), RdtId.Parse("1030"), null, Check(eventFlag, 107, 1));
+
+            // Cutscene over: FG_ROOM 6 is only clear from its start until it ends or is skipped
+            AddRoomReload(gameData, RdtId.Parse("1020"), RdtId.Parse("1021"), GraveyardReturnEventFlag,
+                Check(eventFlag, 104, 0), Check(roomFlag, 6, 1), Check(cutFlag, CinematicCutFlag, 1));
+
+            // Cutscene skipped, leave once the skip events have tidied up
+            AddRoomReload(gameData, RdtId.Parse("1020"), RdtId.Parse("1021"), GraveyardReturnEventFlag,
+                Check(roomFlag, CutsceneSkippedRoomFlag, 0));
+            Patch(gameData, RdtId.Parse("1020"), 0x1EF24C, new byte[] { 0x05, roomFlag, CutsceneSkippedRoomFlag, 0x00, 0x00, 0x00 });
+            Patch(gameData, RdtId.Parse("1020"), 0x1EF258, new byte[] { 0xF4, 0xF4, 0xF4, 0xF4 }); // bgm_on_ex
+
+            // Both the normal and the skip events finish by setting FG_SPECIAL 27
+            AddRoomReload(gameData, RdtId.Parse("1030"), RdtId.Parse("1031"), SteveReturnEventFlag,
+                Check(eventFlag, 107, 0), Check(specialFlag, 27, 1), Check(cutFlag, CinematicCutFlag, 1));
+
+            // Put the player back where the cutscene left them, using the cutscene's own placement
+            AddReturnPlacement(gameData, RdtId.Parse("1021"), GraveyardReturnEventFlag,
+                new UnknownOpcode(0, 0x65, new byte[] { 0x00, 0x00, 0x00 }), // load_work
+                new UnknownOpcode(0, 0x69, new byte[] { 0x0C, 0x00, 0x00, 0x00, 0x00 }), // common_ctr_base_pos_set
+                new UnknownOpcode(0, 0x64, new byte[] { 0x07, 0xB0, 0x36, 0x00, 0x00, 0x28, 0x23 }), // player_ctr_pos_set
+                new UnknownOpcode(0, 0x69, new byte[] { 0x0D, 0x00, 0x00, 0x00, 0x00 }), // common_ctr_base_ang_set
+                new UnknownOpcode(0, 0x69, new byte[] { 0x0B, 0x00, 0x5A, 0x00, 0x00 }), // common_ctr_pos_set2
+                new UnknownOpcode(0, 0x64, new byte[] { 0x80 })); // player_ctr_motion_init
+            AddReturnPlacement(gameData, RdtId.Parse("1031"), SteveReturnEventFlag,
+                new UnknownOpcode(0, 0x65, new byte[] { 0x00, 0x00, 0x00 }), // load_work
+                new UnknownOpcode(0, 0x69, new byte[] { 0x0C, 0x01, 0x00, 0x00, 0x00 }), // common_ctr_base_pos_set
+                new UnknownOpcode(0, 0x64, new byte[] { 0x07, 0x00, 0x05, 0x00, 0x00, 0xF6, 0x2C }), // player_ctr_pos_set
+                new UnknownOpcode(0, 0x69, new byte[] { 0x0D, 0x00, 0x00, 0x00, 0x00 }), // common_ctr_base_ang_set
+                new UnknownOpcode(0, 0x69, new byte[] { 0x0B, 0x00, 0x5A, 0x00, 0x00 }), // common_ctr_pos_set2
+                new UnknownOpcode(0, 0x69, new byte[] { 0x17, 0x01, 0x00 }), // common_ctr_flag_set
+                new UnknownOpcode(0, 0x64, new byte[] { 0x80 })); // player_ctr_motion_init
+
+            // These rooms mark the map as visited, which changes the door logic in 1010 and 1050
+            Nop(gameData, RdtId.Parse("1020"), 0x1EE352);
+            Nop(gameData, RdtId.Parse("1030"), 0x27B5A2);
+
+            // Steve must not change the player's weapon
+            Nop(gameData, RdtId.Parse("1030"), 0x27B910);
+            Nop(gameData, RdtId.Parse("1030"), 0x27B92C, 0x27B932);
+
+            // What Steve hands over is a randomised item, which 1031 gives instead so it can be retried
+            Nop(gameData, RdtId.Parse("1030"), 0x27B940, 0x27B950);
+            Nop(gameData, RdtId.Parse("1030"), 0x27CA10, 0x27CA20);
+            AddSteveHandover(gameData);
+        }
+
+        /// <summary>
+        /// Without a free slot the game refuses the item and forgets about it, so offer it
+        /// again each time the player enters the room until it has been taken.
+        /// </summary>
+        private void AddSteveHandover(GameData gameData)
+        {
+            var rrdt = gameData.GetRdt(RdtId.Parse("1031"));
+            if (rrdt == null)
+                return;
+
+            var cutFlag = (byte)0x0A;
+            var type = ReCvItemIds.Handgun;
+            var isHandoverItem = new UnknownOpcode(0, 0x06, new byte[] { 0x08, 0x00, type }); // cmpb VAR_ITEM_ID
+            var setHandoverItem = new UnknownOpcode(0, 0x08, new byte[] { 0x08, type, 0x00 }); // setb VAR_ITEM_ID
+            rrdt.AddCvItemOpcode(isHandoverItem);
+            rrdt.AddCvItemOpcode(setHandoverItem);
+
+            // The room's own script clears FG_CUT_BG 20 later on in this frame
+            AddEarlyFrameBlock(rrdt, new List<UnknownOpcode>
+            {
+                Check(0x01, SteveItemTakenEventFlag, 1),
+                Check(cutFlag, ItemTakenCutFlag, 0),
+                isHandoverItem,
+                SetEvent(SteveItemTakenEventFlag, 0)
+            });
+            AddEarlyFrameBlock(rrdt, new List<UnknownOpcode>
+            {
+                Check(0x01, 107, 0),
+                Check(0x01, SteveItemTakenEventFlag, 1),
+                Check(0x04, HandoverOfferedRoomFlag, 1),
+                Check(cutFlag, DoorTransitionCutFlag, 1),
+                Check(cutFlag, CinematicCutFlag, 1),
+                new UnknownOpcode(0, 0x05, new byte[] { 0x04, HandoverOfferedRoomFlag, 0x00, 0x00, 0x00 }),
+                new UnknownOpcode(0, 0x05, new byte[] { cutFlag, ItemGetScreenCutFlag, 0x00, 0x00, 0x00 }),
+                setHandoverItem,
+                new UnknownOpcode(0, 0x05, new byte[] { cutFlag, ItemWithoutAskingCutFlag, 0x00, 0x00, 0x00 })
+            });
+        }
+
+        private static UnknownOpcode Check(byte kind, int index, byte value)
+        {
+            return new UnknownOpcode(0, 0x04, new byte[] { kind, (byte)(index & 0xFF), (byte)((index >> 8) & 0xFF), 0x00, value });
+        }
+
+        /// <summary>
+        /// When the conditions are met, leaves the room for another variant of it,
+        /// using the load screen rather than a door animation.
+        /// </summary>
+        private void AddRoomReload(GameData gameData, RdtId rdtId, RdtId target, int? returnEventFlag, params UnknownOpcode[] conditions)
+        {
+            var rrdt = gameData.GetRdt(rdtId);
+            if (rrdt == null)
+                return;
+
+            var variant = (byte)(target.Variant ?? 0);
+            var body = new List<UnknownOpcode>(conditions) { Check(0x0A, DoorTransitionCutFlag, 1) };
+            if (returnEventFlag != null)
+                body.Add(SetEvent(returnEventFlag.Value, 0));
+            body.Add(new UnknownOpcode(0, 0x92, new byte[] { 0x00 })); // bg_se_off_2
+            body.Add(new UnknownOpcode(0, 0x93, new byte[] { 0x00 })); // bgm_off_2
+            body.Add(new UnknownOpcode(0, 0xB6, new byte[] { variant })); // room_sound_case
+            body.Add(new UnknownOpcode(0, 0x37, new byte[] { variant })); // room_case_no
+            body.Add(new UnknownOpcode(0, 0x33, new byte[] { 0x00, 0x00, 0x00, (byte)target.Stage, (byte)target.Room, 0x00, 0xFF })); // set_door_call
+            AddEarlyFrameBlock(rrdt, body);
+        }
+
+        /// <summary>
+        /// Runs the given opcodes once, the first time the room runs after the flag was set by a room reload.
+        /// </summary>
+        private void AddReturnPlacement(GameData gameData, RdtId rdtId, int returnEventFlag, params UnknownOpcode[] placement)
+        {
+            var rrdt = gameData.GetRdt(rdtId);
+            if (rrdt == null)
+                return;
+
+            var body = new List<UnknownOpcode>
+            {
+                Check(0x01, returnEventFlag, 0),
+                SetEvent(returnEventFlag, 1)
+            };
+            body.AddRange(placement);
+            AddEarlyFrameBlock(rrdt, body);
+        }
+
+        // At the top of the frame script, as the end of it is not always reached
+        private static void AddEarlyFrameBlock(RandomizedRdt rrdt, List<UnknownOpcode> body)
+        {
+            body.Add(new UnknownOpcode(0, 0x03, new byte[] { 0x00 })); // endif
+
+            var size = 0;
+            foreach (var opcode in body)
+                size += opcode.Length;
+
+            rrdt.AddEarlyFrameOpcode(new UnknownOpcode(0, 0x01, new byte[] { (byte)size }));
+            foreach (var opcode in body)
+                rrdt.AddEarlyFrameOpcode(opcode);
+        }
+
+        private static UnknownOpcode SetEvent(int index, byte value)
+        {
+            return new UnknownOpcode(0, 0x05, new byte[] { 0x01, (byte)(index & 0xFF), (byte)((index >> 8) & 0xFF), 0x00, value });
         }
 
         private void SetFlag(GameData gameData, RdtId rtdId, byte kind, int index, byte value)

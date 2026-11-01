@@ -140,14 +140,6 @@
     "1030": {
       "items": [
         {
-          "id": 0,
-          "globalId": 1000,
-          "type": 9,
-          "amount": 15,
-          "priority": "low",
-          "offsets": [ 2603334, 2607638 ]
-        },
-        {
           "id": 1,
           "globalId": 127,
           "type": 12,
@@ -189,6 +181,14 @@
           "type": 12,
           "amount": 15,
           "offsets": [ 1846542 ]
+        },
+        {
+          "id": 255,
+          "itemId": 255,
+          "globalId": 1000,
+          "type": 9,
+          "amount": 15,
+          "priority": "low"
         }
       ]
     },
