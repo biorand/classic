@@ -104,6 +104,11 @@ namespace IntelOrca.Biohazard.BioRand
         public bool NoReturn { get; set; }
         public bool NoUnlock { get; set; }
         public bool IsBridgeEdge { get; set; }
+        /// <summary>
+        /// This bridge room can only be reached through the fixed door leading to this
+        /// door, so the segment connects to the room on the other side of it instead.
+        /// </summary>
+        public bool IsBridgeEntry { get; set; }
         public int[]? Requires { get; set; }
         public string[]? RequiresRoom { get; set; }
         public bool? DoorRando { get; set; }

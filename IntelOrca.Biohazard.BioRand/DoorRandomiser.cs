@@ -20,6 +20,7 @@ namespace IntelOrca.Biohazard.BioRand
         private IItemHelper _itemHelper;
 
         private int _keyItemSpotsLeft;
+        private PlayEdge? _reservedEdge;
         private readonly HashSet<ushort> _keyItemRequiredSet = new HashSet<ushort>();
         private int _numUnconnectedEdges;
         private int _numKeyEdges;
@@ -147,6 +148,14 @@ namespace IntelOrca.Biohazard.BioRand
 
             if (numAreas == 1)
             {
+                // A room that only leads to a removed segment room has nowhere to go
+                var bridgeEntryNodes = _nodesLeft
+                    .Where(x => x.Category == DoorRandoCategory.Segment)
+                    .Select(GetBridgeEntryEdge)
+                    .Where(x => x != null)
+                    .Select(x => GetOrCreateNode(x!.OriginalTargetRdt))
+                    .ToArray();
+                _nodesLeft.RemoveMany(bridgeEntryNodes);
                 _nodesLeft.RemoveAll(x => x.Category == DoorRandoCategory.Segment);
                 var areaSuperNodes = GetAreaSuperNodes(numAreas);
                 pool.AddRange(areaSuperNodes[0]);
@@ -252,6 +261,9 @@ namespace IntelOrca.Biohazard.BioRand
             _keyItemSpotsLeft = 0;
             _keyItemRequiredSet.Clear();
 
+            var bridgeEntryEdge = GetBridgeEntryEdge(end);
+            var bridgeEntryNode = bridgeEntryEdge == null ? null : GetOrCreateNode(bridgeEntryEdge.OriginalTargetRdt);
+
             var nonLinearBridgeNode = end.Edges.Count > 2;
             if (nonLinearBridgeNode)
             {
@@ -264,13 +276,30 @@ namespace IntelOrca.Biohazard.BioRand
                 CalculateEdgeCounts(pool);
                 unfinishedEdges = GetUnfinishedEdges(pool);
 
+                // Not every door can lead to the bridge entry, so hold on to one
+                // that can until the rest of the area is finished
+                if (bridgeEntryNode != null && _reservedEdge == null && unfinishedEdges.Length > 1)
+                {
+                    _reservedEdge = unfinishedEdges
+                        .Where(x => bridgeEntryNode.Edges.Any(y => ValidateConnection(g_endConstraints, x, y)))
+                        .OrderBy(x => x.Requires.Length)
+                        .FirstOrDefault();
+                }
+
                 if (g_debugLogging)
                     _logger.WriteLine($"        Edges left: {_numUnconnectedEdges} (key = {_numKeyEdges}, unlocked = {_numUnlockedEdges})");
             } while (ConnectUpRandomNode(unfinishedEdges, pool));
-            if (!end.Visited && !ConnectUpNode(end, unfinishedEdges))
+            _reservedEdge = null;
+            var connectNode = bridgeEntryNode ?? end;
+            if (!connectNode.Visited && !ConnectUpNode(connectNode, unfinishedEdges))
             {
                 _logger.WriteLine($"    Failed to connect to end node {end.RdtId}");
                 throw new Exception("Unable to connect end node");
+            }
+            if (bridgeEntryEdge != null && bridgeEntryNode != null)
+            {
+                var entrance = bridgeEntryNode.Edges.First(x => !x.Randomize && x.OriginalTargetRdt == end.RdtId);
+                ConnectEdges(entrance, bridgeEntryEdge);
             }
 
             // Lock other side of begin -> begin + 1 door
@@ -315,6 +344,11 @@ namespace IntelOrca.Biohazard.BioRand
             }
 
             pool.RemoveAll(x => x.Visited);
+        }
+
+        private static PlayEdge? GetBridgeEntryEdge(PlayNode node)
+        {
+            return node.Edges.FirstOrDefault(x => x.Raw?.IsBridgeEntry == true);
         }
 
         private void FinalChecks(PlayGraph graph)
@@ -807,6 +841,10 @@ namespace IntelOrca.Biohazard.BioRand
 
             // Already connected
             if (entrance.Node != null || exit.Node != null)
+                return false;
+
+            // Being kept for the bridge entry
+            if (entrance == _reservedEdge || exit == _reservedEdge)
                 return false;
 
             foreach (var constraint in constraints)

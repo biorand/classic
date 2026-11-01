@@ -2622,6 +2622,7 @@
           "id": 5,
           "target": "6000",
           "requires": [ 69, 70, 71 ],
+          "randomize": false,
           "entranceId": 5,
           "offsets": [ "0xA4848", "0xA4852", "0xA485C" ]
         }
@@ -2754,7 +2755,16 @@
         {
           "id": 5,
           "target": "5010",
-          "entranceId": 0
+          "entranceId": 0,
+          "doorRando": false
+        },
+        {
+          "id": 5,
+          "target": "5011",
+          "entranceId": 0,
+          "randomize": false,
+          "isBridgeEntry": true,
+          "doorRando": true
         },
         {
           "id": 2,
