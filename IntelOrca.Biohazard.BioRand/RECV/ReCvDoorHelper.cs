@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using IntelOrca.Biohazard.Room;
 using IntelOrca.Biohazard.Script.Opcodes;
 
 namespace IntelOrca.Biohazard.BioRand.RECV
@@ -25,6 +26,12 @@ namespace IntelOrca.Biohazard.BioRand.RECV
         private const byte HandoverOfferedRoomFlag = 30;
         // Not used by any room script
         private const int SteveItemTakenEventFlag = 101;
+
+        // The rooms that can be played, and the variants that only have their first visit cutscenes
+        private static readonly RdtId GraveyardRoom = RdtId.Parse("1021");
+        private static readonly RdtId GraveyardCutsceneRoom = RdtId.Parse("1020");
+        private static readonly RdtId SteveRoom = RdtId.Parse("1031");
+        private static readonly RdtId SteveCutsceneRoom = RdtId.Parse("1030");
 
         public byte[] GetReservedLockIds() => new byte[0];
 
@@ -142,6 +149,47 @@ namespace IntelOrca.Biohazard.BioRand.RECV
 
         public void End(RandoConfig config, GameData gameData, Map map)
         {
+            if (config.RandomDoors)
+            {
+                // The player can still be in a cutscene room after its cutscene, so its doors
+                // must lead to the same rooms as the working room's.
+                MirrorDoorTargets(gameData, GraveyardRoom, GraveyardCutsceneRoom);
+                MirrorDoorTargets(gameData, SteveRoom, SteveCutsceneRoom);
+            }
+        }
+
+        /// <summary>
+        /// Gives the doors of another variant of a room the targets the door randomiser set
+        /// for this variant. Only doors that are native door AOTs in both variants are copied,
+        /// as an AOT with the same index can be something else in the other variant.
+        /// Door locks are not copied, as setting them has no effect on RE:CV rooms.
+        /// </summary>
+        private static void MirrorDoorTargets(GameData gameData, RdtId sourceId, RdtId targetId)
+        {
+            var source = gameData.GetRdt(sourceId);
+            var target = gameData.GetRdt(targetId);
+            if (source == null || target == null)
+                return;
+
+            foreach (var (edge, doorTarget, destination) in source.CvDoorTargets)
+            {
+                var doorId = edge.DoorId!.Value;
+                // Offsets are script addresses in the source room, so do not apply them to the target room
+                if (edge.Raw.Offsets != null && edge.Raw.Offsets.Length != 0)
+                    continue;
+                if (!IsNativeDoor(target, doorId))
+                    continue;
+                if (edge.Raw.AltId is int altId && !IsNativeDoor(target, altId))
+                    continue;
+
+                target.SetDoorTarget(edge, doorTarget, destination);
+            }
+        }
+
+        private static bool IsNativeDoor(RandomizedRdt rdt, int aotIndex)
+        {
+            var aots = ((RdtCv)rdt.RdtFile).Aots;
+            return aotIndex < aots.Length && aots[aotIndex].Kind == 0;
         }
 
         /// <summary>
@@ -157,32 +205,32 @@ namespace IntelOrca.Biohazard.BioRand.RECV
             var cutFlag = (byte)0x0A;
             var specialFlag = (byte)0x06;
 
-            AddRoomReload(gameData, RdtId.Parse("1021"), RdtId.Parse("1020"), null, Check(eventFlag, 104, 1));
-            AddRoomReload(gameData, RdtId.Parse("1031"), RdtId.Parse("1030"), null, Check(eventFlag, 107, 1));
+            AddRoomReload(gameData, GraveyardRoom, GraveyardCutsceneRoom, null, Check(eventFlag, 104, 1));
+            AddRoomReload(gameData, SteveRoom, SteveCutsceneRoom, null, Check(eventFlag, 107, 1));
 
             // Cutscene over: FG_ROOM 6 is only clear from its start until it ends or is skipped
-            AddRoomReload(gameData, RdtId.Parse("1020"), RdtId.Parse("1021"), GraveyardReturnEventFlag,
+            AddRoomReload(gameData, GraveyardCutsceneRoom, GraveyardRoom, GraveyardReturnEventFlag,
                 Check(eventFlag, 104, 0), Check(roomFlag, 6, 1), Check(cutFlag, CinematicCutFlag, 1));
 
             // Cutscene skipped, leave once the skip events have tidied up
-            AddRoomReload(gameData, RdtId.Parse("1020"), RdtId.Parse("1021"), GraveyardReturnEventFlag,
+            AddRoomReload(gameData, GraveyardCutsceneRoom, GraveyardRoom, GraveyardReturnEventFlag,
                 Check(roomFlag, CutsceneSkippedRoomFlag, 0));
-            Patch(gameData, RdtId.Parse("1020"), 0x1EF24C, new byte[] { 0x05, roomFlag, CutsceneSkippedRoomFlag, 0x00, 0x00, 0x00 });
-            Patch(gameData, RdtId.Parse("1020"), 0x1EF258, new byte[] { 0xF4, 0xF4, 0xF4, 0xF4 }); // bgm_on_ex
+            Patch(gameData, GraveyardCutsceneRoom, 0x1EF24C, new byte[] { 0x05, roomFlag, CutsceneSkippedRoomFlag, 0x00, 0x00, 0x00 });
+            Patch(gameData, GraveyardCutsceneRoom, 0x1EF258, new byte[] { 0xF4, 0xF4, 0xF4, 0xF4 }); // bgm_on_ex
 
             // Both the normal and the skip events finish by setting FG_SPECIAL 27
-            AddRoomReload(gameData, RdtId.Parse("1030"), RdtId.Parse("1031"), SteveReturnEventFlag,
+            AddRoomReload(gameData, SteveCutsceneRoom, SteveRoom, SteveReturnEventFlag,
                 Check(eventFlag, 107, 0), Check(specialFlag, 27, 1), Check(cutFlag, CinematicCutFlag, 1));
 
             // Put the player back where the cutscene left them, using the cutscene's own placement
-            AddReturnPlacement(gameData, RdtId.Parse("1021"), GraveyardReturnEventFlag,
+            AddReturnPlacement(gameData, GraveyardRoom, GraveyardReturnEventFlag,
                 new UnknownOpcode(0, 0x65, new byte[] { 0x00, 0x00, 0x00 }), // load_work
                 new UnknownOpcode(0, 0x69, new byte[] { 0x0C, 0x00, 0x00, 0x00, 0x00 }), // common_ctr_base_pos_set
                 new UnknownOpcode(0, 0x64, new byte[] { 0x07, 0xB0, 0x36, 0x00, 0x00, 0x28, 0x23 }), // player_ctr_pos_set
                 new UnknownOpcode(0, 0x69, new byte[] { 0x0D, 0x00, 0x00, 0x00, 0x00 }), // common_ctr_base_ang_set
                 new UnknownOpcode(0, 0x69, new byte[] { 0x0B, 0x00, 0x5A, 0x00, 0x00 }), // common_ctr_pos_set2
                 new UnknownOpcode(0, 0x64, new byte[] { 0x80 })); // player_ctr_motion_init
-            AddReturnPlacement(gameData, RdtId.Parse("1031"), SteveReturnEventFlag,
+            AddReturnPlacement(gameData, SteveRoom, SteveReturnEventFlag,
                 new UnknownOpcode(0, 0x65, new byte[] { 0x00, 0x00, 0x00 }), // load_work
                 new UnknownOpcode(0, 0x69, new byte[] { 0x0C, 0x01, 0x00, 0x00, 0x00 }), // common_ctr_base_pos_set
                 new UnknownOpcode(0, 0x64, new byte[] { 0x07, 0x00, 0x05, 0x00, 0x00, 0xF6, 0x2C }), // player_ctr_pos_set
@@ -192,16 +240,16 @@ namespace IntelOrca.Biohazard.BioRand.RECV
                 new UnknownOpcode(0, 0x64, new byte[] { 0x80 })); // player_ctr_motion_init
 
             // These rooms mark the map as visited, which changes the door logic in 1010 and 1050
-            Nop(gameData, RdtId.Parse("1020"), 0x1EE352);
-            Nop(gameData, RdtId.Parse("1030"), 0x27B5A2);
+            Nop(gameData, GraveyardCutsceneRoom, 0x1EE352);
+            Nop(gameData, SteveCutsceneRoom, 0x27B5A2);
 
             // Steve must not change the player's weapon
-            Nop(gameData, RdtId.Parse("1030"), 0x27B910);
-            Nop(gameData, RdtId.Parse("1030"), 0x27B92C, 0x27B932);
+            Nop(gameData, SteveCutsceneRoom, 0x27B910);
+            Nop(gameData, SteveCutsceneRoom, 0x27B92C, 0x27B932);
 
             // What Steve hands over is a randomised item, which 1031 gives instead so it can be retried
-            Nop(gameData, RdtId.Parse("1030"), 0x27B940, 0x27B950);
-            Nop(gameData, RdtId.Parse("1030"), 0x27CA10, 0x27CA20);
+            Nop(gameData, SteveCutsceneRoom, 0x27B940, 0x27B950);
+            Nop(gameData, SteveCutsceneRoom, 0x27CA10, 0x27CA20);
             AddSteveHandover(gameData);
         }
 
@@ -211,7 +259,7 @@ namespace IntelOrca.Biohazard.BioRand.RECV
         /// </summary>
         private void AddSteveHandover(GameData gameData)
         {
-            var rrdt = gameData.GetRdt(RdtId.Parse("1031"));
+            var rrdt = gameData.GetRdt(SteveRoom);
             if (rrdt == null)
                 return;
 

@@ -16,6 +16,12 @@ namespace IntelOrca.Biohazard.BioRand
         private List<(EmrFlags, double)> _emrScales = new List<(EmrFlags, double)>();
         private readonly List<OpcodeBase> _cvEarlyFrameOpcodes = new List<OpcodeBase>();
         private readonly List<UnknownOpcode> _cvAddedItemOpcodes = new List<UnknownOpcode>();
+        private readonly List<(PlayEdge Edge, RdtId Target, DoorEntrance Destination)> _cvDoorTargets = new List<(PlayEdge, RdtId, DoorEntrance)>();
+
+        /// <summary>
+        /// The door targets set on this room by the door randomiser, so they can be copied to another variant of the room.
+        /// </summary>
+        internal IReadOnlyList<(PlayEdge Edge, RdtId Target, DoorEntrance Destination)> CvDoorTargets => _cvDoorTargets;
 
         internal const byte CvAddedItemId = 255;
 
@@ -65,6 +71,8 @@ namespace IntelOrca.Biohazard.BioRand
             {
                 if (edge.Raw.Randomize == false)
                     return;
+
+                _cvDoorTargets.Add((edge, target, destination));
 
                 var offsets = Map.ParseNopArray(edge.Raw.Offsets, this);
 
