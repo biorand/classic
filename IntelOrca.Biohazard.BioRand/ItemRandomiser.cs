@@ -93,6 +93,11 @@ namespace IntelOrca.Biohazard.BioRand
                             // HACK RE CV 7060 takes these items away
                             _haveItems.Remove(ReCvItemIds.OctaValveHandle);
                             _haveItems.Remove(ReCvItemIds.GasMask);
+
+                            // HACK RE CV items used up in one segment but needed again in another
+                            // e.g. the eagle plates are used on the 8080 bridge, but 1080 needs one too
+                            _haveItems.Remove(ReCvItemIds.EaglePlate);
+                            _haveItems.Remove(ReCvItemIds.MusicBoxPlate);
                         }
                     }
                     else if (_config.Game == 1)
