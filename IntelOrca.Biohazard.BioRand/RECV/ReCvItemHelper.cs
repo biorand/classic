@@ -370,6 +370,8 @@ namespace IntelOrca.Biohazard.BioRand.RECV
                 ReCvItemIds.AcidRounds => 12,
                 ReCvItemIds.FlameRounds => 12,
                 ReCvItemIds.BowGunArrows => 60,
+                ReCvItemIds.BowGunPowder => 20,
+                ReCvItemIds.GunPowderArrow => 40,
                 ReCvItemIds.M93RPart => 18,
                 ReCvItemIds.MagnumBulletsInsideCase => 12,
                 ReCvItemIds.InkRibbon => 6,
