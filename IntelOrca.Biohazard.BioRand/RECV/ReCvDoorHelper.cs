@@ -49,6 +49,11 @@ namespace IntelOrca.Biohazard.BioRand.RECV
 
             AddFirstVisitCutscenes(gameData);
 
+            // Once the training facility has been visited (FG_EVENT 189), the door from 2000
+            // loads 2021, whose door to the palace (2070) ignores the ID card lock (FG_EVENT 4).
+            // Only 2020 has the card reader, so go there until the door has been unlocked.
+            AddRoomReload(gameData, RdtId.Parse("2021"), RdtId.Parse("2020"), null, Check(0x01, 4, 1));
+
             // Force window cutscene on item interaction
             Nop(gameData, RdtId.Parse("1070"), 0x1819AE);
 
