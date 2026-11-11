@@ -1039,7 +1039,7 @@
           "id": 0,
           "target": "2020",
           "entranceId": 0,
-          "offsets": [ "0x46ECA", "0x46EDC", "0x46EE6" ]
+          "offsets": [ "0x46EBC", "0x46ECA", "0x46EDC", "0x46EE6" ]
         },
         {
           "id": 1,
